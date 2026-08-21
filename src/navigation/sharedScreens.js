@@ -1,0 +1,48 @@
+import React from 'react';
+
+import ActivityDetailScreen from '../screens/activities/ActivityDetailScreen';
+import BookActivityScreen from '../screens/activities/BookActivityScreen';
+import ActivitiesScreen from '../screens/activities/ActivitiesScreen';
+import EventDetailScreen from '../screens/events/EventDetailScreen';
+import EventsScreen from '../screens/events/EventsScreen';
+import DestinationDetailScreen from '../screens/explore/DestinationDetailScreen';
+import DiningScreen from '../screens/dining/DiningScreen';
+import DiningVenueScreen from '../screens/dining/DiningVenueScreen';
+import ConciergeScreen from '../screens/concierge/ConciergeScreen';
+import ItineraryScreen from '../screens/itinerary/ItineraryScreen';
+import PromotionsScreen from '../screens/promotions/PromotionsScreen';
+import NotificationsScreen from '../screens/notifications/NotificationsScreen';
+import FeedbackScreen from '../screens/feedback/FeedbackScreen';
+import ContactReceptionScreen from '../screens/contact/ContactReceptionScreen';
+import NewRequestScreen from '../screens/requests/NewRequestScreen';
+import RequestDetailScreen from '../screens/requests/RequestDetailScreen';
+import DigitalCheckInScreen from '../screens/mystay/DigitalCheckInScreen';
+import MapScreen from '../screens/explore/MapScreen';
+
+// Registers the full set of cross-tab detail/utility screens onto a given
+// Stack.Navigator so navigation.navigate('ActivityDetail', {...}) works
+// consistently no matter which bottom tab the user started from.
+export function addSharedScreens(Stack) {
+  return (
+    <>
+      <Stack.Screen name="ActivityDetail" component={ActivityDetailScreen} />
+      <Stack.Screen name="BookActivity" component={BookActivityScreen} />
+      <Stack.Screen name="Activities" component={ActivitiesScreen} />
+      <Stack.Screen name="EventDetail" component={EventDetailScreen} />
+      <Stack.Screen name="Events" component={EventsScreen} />
+      <Stack.Screen name="DestinationDetail" component={DestinationDetailScreen} />
+      <Stack.Screen name="Dining" component={DiningScreen} />
+      <Stack.Screen name="DiningVenue" component={DiningVenueScreen} />
+      <Stack.Screen name="Concierge" component={ConciergeScreen} />
+      <Stack.Screen name="Itinerary" component={ItineraryScreen} />
+      <Stack.Screen name="Promotions" component={PromotionsScreen} />
+      <Stack.Screen name="Notifications" component={NotificationsScreen} />
+      <Stack.Screen name="Feedback" component={FeedbackScreen} />
+      <Stack.Screen name="ContactReception" component={ContactReceptionScreen} />
+      <Stack.Screen name="NewRequest" component={NewRequestScreen} />
+      <Stack.Screen name="RequestDetail" component={RequestDetailScreen} />
+      <Stack.Screen name="DigitalCheckIn" component={DigitalCheckInScreen} />
+      <Stack.Screen name="MapScreen" component={MapScreen} />
+    </>
+  );
+}

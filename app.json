@@ -1,0 +1,16 @@
+{
+  "expo": {
+    "name": "Ocean Oasis Guest Experience",
+    "slug": "ocean-oasis-guest-experience",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#0B3B45"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": { "supportsTablet": true },
+    "android": {},
+    "web": {}
+  }
+}

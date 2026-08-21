@@ -1,0 +1,103 @@
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
+
+import { ScreenHeader, ErrorState, Field } from '../../components/UI';
+import ImagePlaceholder from '../../components/ImagePlaceholder';
+import Button from '../../components/Button';
+import { colors, spacing, radius, font } from '../../theme/theme';
+import { DINING_VENUES } from '../../data/mockData';
+
+export default function DiningVenueScreen({ route, navigation }) {
+  const { venueId } = route.params || {};
+  const venue = DINING_VENUES.find((v) => v.id === venueId);
+  const [showForm, setShowForm] = useState(false);
+  const [party, setParty] = useState('2');
+  const [time, setTime] = useState('7:00 PM');
+  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  if (!venue) {
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
+        <ErrorState title="Venue not found" onRetry={() => navigation.goBack()} />
+      </SafeAreaView>
+    );
+  }
+
+  const submit = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setSubmitted(true);
+    }, 800);
+  };
+
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
+      <ScreenHeader title={venue.name} onBack={() => navigation.goBack()} />
+      <ScrollView contentContainerStyle={{ padding: spacing.lg }}>
+        <ImagePlaceholder kind={venue.image} style={{ height: 170 }} iconSize={40} />
+        <Text style={styles.type}>{venue.type}</Text>
+        <Text style={styles.name}>{venue.name}</Text>
+        <Text style={styles.desc}>{venue.description}</Text>
+
+        <View style={styles.infoBox}>
+          <InfoRow icon="time-outline" label="Hours" value={venue.hours} />
+          <InfoRow icon="shirt-outline" label="Dress Code" value={venue.dressCode} />
+          <InfoRow icon="location-outline" label="Location" value={venue.location} />
+        </View>
+
+        <Button label="View Menu" variant="outline" onPress={() => {}} style={{ marginTop: spacing.lg }} />
+
+        {!submitted ? (
+          !showForm ? (
+            <Button
+              label={venue.reservationRequired ? 'Reserve a Table' : 'Request Room Service'}
+              onPress={() => setShowForm(true)}
+              style={{ marginTop: spacing.sm }}
+            />
+          ) : (
+            <View style={styles.formBox}>
+              <Field label="Party Size" value={party} onChangeText={setParty} keyboardType="number-pad" />
+              <Field label="Preferred Time" value={time} onChangeText={setTime} />
+              <Button label="Submit" onPress={submit} loading={loading} />
+            </View>
+          )
+        ) : (
+          <View style={styles.confirmBox}>
+            <Ionicons name="checkmark-circle" size={22} color={colors.success} />
+            <Text style={styles.confirmText}>Your request for {venue.name} has been sent. We'll confirm shortly.</Text>
+          </View>
+        )}
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+function InfoRow({ icon, label, value }) {
+  return (
+    <View style={styles.infoRow}>
+      <Ionicons name={icon} size={16} color={colors.deepOcean} />
+      <Text style={styles.infoLabel}>{label}</Text>
+      <Text style={styles.infoValue} numberOfLines={2}>{value}</Text>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  type: { fontSize: 12, fontWeight: '700', color: colors.turquoiseDark, marginTop: spacing.md, letterSpacing: 0.5 },
+  name: { fontSize: 24, fontWeight: '700', color: colors.charcoal, fontFamily: font.display, marginTop: 4 },
+  desc: { fontSize: 14, color: colors.slate, marginTop: 8, lineHeight: 21 },
+  infoBox: { backgroundColor: colors.white, borderRadius: radius.lg, padding: spacing.md, marginTop: spacing.lg, borderWidth: 1, borderColor: colors.border, gap: 10 },
+  infoRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  infoLabel: { fontSize: 12, color: colors.slate, width: 74 },
+  infoValue: { fontSize: 12.5, color: colors.charcoal, fontWeight: '600', flex: 1 },
+  formBox: { marginTop: spacing.lg, backgroundColor: colors.white, borderRadius: radius.lg, padding: spacing.md, borderWidth: 1, borderColor: colors.border },
+  confirmBox: {
+    flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: '#E4F1E9',
+    padding: spacing.md, borderRadius: radius.md, marginTop: spacing.lg,
+  },
+  confirmText: { flex: 1, fontSize: 12.5, color: colors.success, lineHeight: 18 },
+});

@@ -1,0 +1,207 @@
+import React, { useMemo } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
+
+import { Card, SectionHeader, Badge, IconTile } from '../../components/UI';
+import ImagePlaceholder from '../../components/ImagePlaceholder';
+import Logo from '../../components/Logo';
+import { colors, spacing, radius, font, shadow } from '../../theme/theme';
+import { useApp } from '../../context/AppContext';
+
+function daysBetween(a, b) {
+  const d1 = new Date(a);
+  const d2 = new Date(b);
+  return Math.max(0, Math.round((d2 - d1) / 86400000));
+}
+
+function formatDateLong(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+}
+
+export default function HomeScreen({ navigation }) {
+  const { guest, reservation, room, unreadNotificationCount, events, activities, promotions } = useApp();
+
+  const today = '2026-08-15';
+  const nightsRemaining = daysBetween(today, reservation.checkOut);
+  const todaysEvents = useMemo(() => events.filter((e) => e.date === today && e.status !== 'DRAFT'), [events]);
+  const recommendation = activities[0];
+  const promo = promotions.find((p) => p.status === 'PUBLISHED');
+  const primaryInterest = guest.interests?.[0];
+
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: spacing.xxl }}>
+        {/* Header */}
+        <View style={styles.header}>
+          <Logo size="sm" />
+          <TouchableOpacity onPress={() => navigation.navigate('Notifications')} style={styles.bellWrap}>
+            <Ionicons name="notifications-outline" size={24} color={colors.deepOcean} />
+            {unreadNotificationCount > 0 && (
+              <View style={styles.bellDot}>
+                <Text style={styles.bellDotText}>{unreadNotificationCount}</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.greetingBlock}>
+          <Text style={styles.greeting}>Good morning, {guest.firstName}</Text>
+          <Text style={styles.greetingSub}>Welcome to Ocean Oasis.</Text>
+          <View style={styles.metaRow}>
+            <Text style={styles.metaText}>{formatDateLong(today)}</Text>
+            <Text style={styles.metaDot}>·</Text>
+            <Ionicons name="partly-sunny-outline" size={14} color={colors.slate} />
+            <Text style={styles.metaText}>29°C</Text>
+          </View>
+        </View>
+
+        {/* My Stay Card */}
+        <View style={styles.section}>
+          <LinearGradient colors={[colors.deepOcean, colors.turquoiseDark]} style={styles.stayCard}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.stayRoom}>ROOM {room.number}</Text>
+              <Text style={styles.stayDates}>
+                {new Date(reservation.checkIn).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} –{' '}
+                {new Date(reservation.checkOut).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+              </Text>
+              <Text style={styles.stayNights}>{nightsRemaining} nights remaining</Text>
+              <TouchableOpacity
+                style={styles.stayBtn}
+                onPress={() => navigation.getParent()?.navigate('My Stay')}
+              >
+                <Text style={styles.stayBtnText}>View Stay</Text>
+                <Ionicons name="arrow-forward" size={14} color={colors.deepOcean} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.stayIconWrap}>
+              <Ionicons name="bed" size={44} color="rgba(255,255,255,0.35)" />
+            </View>
+          </LinearGradient>
+        </View>
+
+        {/* Quick Actions */}
+        <View style={styles.section}>
+          <SectionHeader title="Quick Actions" />
+          <View style={styles.quickGrid}>
+            <IconTile label="Request Something" icon="chatbubble-ellipses" onPress={() => navigation.navigate('NewRequest')} />
+            <IconTile label="Book an Activity" icon="sunny" onPress={() => navigation.navigate('Activities')} color={colors.turquoiseDark} />
+            <IconTile label="Dining" icon="restaurant" onPress={() => navigation.navigate('Dining')} color={colors.forest} />
+            <IconTile label="Explore Dominica" icon="compass" onPress={() => navigation.getParent()?.navigate('Explore')} color={colors.gold} />
+            <IconTile label="Feedback" icon="star" onPress={() => navigation.navigate('Feedback')} color={colors.turquoiseDark} />
+            <IconTile label="Contact Reception" icon="call" onPress={() => navigation.navigate('ContactReception')} color={colors.deepOcean2} />
+            <IconTile label="Concierge" icon="sparkles" onPress={() => navigation.navigate('Concierge')} color={colors.forest} />
+            <IconTile label="Promotions" icon="pricetag" onPress={() => navigation.navigate('Promotions')} color={colors.gold} />
+          </View>
+        </View>
+
+        {/* Today at Ocean Oasis */}
+        <View style={styles.section}>
+          <SectionHeader title="Today at Ocean Oasis" actionLabel="See all" onAction={() => navigation.navigate('Events')} />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: spacing.sm }}>
+            {todaysEvents.map((event) => (
+              <TouchableOpacity key={event.id} onPress={() => navigation.navigate('EventDetail', { eventId: event.id })}>
+                <Card style={styles.eventCard}>
+                  <Text style={styles.eventTime}>{event.time}</Text>
+                  <Text style={styles.eventTitle}>{event.title}</Text>
+                  <Text style={styles.eventLocation} numberOfLines={1}>{event.location}</Text>
+                </Card>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* Recommended */}
+        <View style={styles.section}>
+          <SectionHeader title="Recommended for You" />
+          <TouchableOpacity onPress={() => navigation.navigate('ActivityDetail', { activityId: recommendation.id })}>
+            <Card style={{ padding: 0, overflow: 'hidden' }}>
+              <ImagePlaceholder kind={recommendation.image} style={{ height: 140, borderRadius: 0 }} iconSize={40} />
+              <View style={{ padding: spacing.md }}>
+                <Badge label={primaryInterest ? `Because you love ${primaryInterest}` : 'Popular with guests'} tone="info" />
+                <Text style={styles.recTitle}>{recommendation.name}</Text>
+                <Text style={styles.recDesc} numberOfLines={2}>{recommendation.shortDescription}</Text>
+                <View style={styles.recFooter}>
+                  <Text style={styles.recPrice}>{recommendation.price}</Text>
+                  <View style={styles.exploreBtn}>
+                    <Text style={styles.exploreBtnText}>Explore</Text>
+                    <Ionicons name="chevron-forward" size={14} color={colors.deepOcean} />
+                  </View>
+                </View>
+              </View>
+            </Card>
+          </TouchableOpacity>
+        </View>
+
+        {/* Promotion */}
+        {promo && (
+        <View style={[styles.section, { marginBottom: spacing.lg }]}>
+          <SectionHeader title="Current Promotion" actionLabel="See all" onAction={() => navigation.navigate('Promotions')} />
+          <TouchableOpacity onPress={() => navigation.navigate('Promotions')}>
+            <LinearGradient colors={[colors.gold, colors.goldSoft]} style={styles.promoCard}>
+              <Ionicons name="wine" size={28} color={colors.deepOcean} style={{ marginBottom: 8 }} />
+              <Text style={styles.promoTitle}>{promo.title}</Text>
+              <Text style={styles.promoDesc}>{promo.description}</Text>
+              <View style={styles.promoCta}>
+                <Text style={styles.promoCtaText}>View Offer</Text>
+                <Ionicons name="arrow-forward" size={14} color={colors.deepOcean} />
+              </View>
+            </LinearGradient>
+          </TouchableOpacity>
+        </View>
+        )}
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  header: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: spacing.lg, paddingTop: spacing.sm,
+  },
+  bellWrap: { padding: 4 },
+  bellDot: {
+    position: 'absolute', top: 0, right: 0, backgroundColor: colors.error,
+    borderRadius: 8, minWidth: 16, height: 16, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 3,
+  },
+  bellDotText: { color: colors.white, fontSize: 9, fontWeight: '700' },
+  greetingBlock: { paddingHorizontal: spacing.lg, marginTop: spacing.md },
+  greeting: { fontFamily: font.display, fontSize: 24, fontWeight: '700', color: colors.charcoal },
+  greetingSub: { fontSize: 14, color: colors.slate, marginTop: 2 },
+  metaRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 8 },
+  metaText: { fontSize: 12.5, color: colors.slate },
+  metaDot: { color: colors.slate },
+  section: { paddingHorizontal: spacing.lg, marginTop: spacing.lg },
+  stayCard: {
+    borderRadius: radius.lg, padding: spacing.lg, flexDirection: 'row',
+    alignItems: 'center', justifyContent: 'space-between', ...shadow.soft,
+  },
+  stayRoom: { color: colors.sandLight, fontSize: 12, fontWeight: '700', letterSpacing: 1.5 },
+  stayDates: { color: colors.white, fontSize: 20, fontWeight: '700', marginTop: 6, fontFamily: font.display },
+  stayNights: { color: colors.sandLight, fontSize: 13, marginTop: 4 },
+  stayBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: colors.white,
+    alignSelf: 'flex-start', paddingHorizontal: 14, paddingVertical: 9, borderRadius: radius.pill, marginTop: spacing.md,
+  },
+  stayBtnText: { color: colors.deepOcean, fontWeight: '700', fontSize: 12.5 },
+  stayIconWrap: { marginLeft: spacing.sm },
+  quickGrid: { flexDirection: 'row', flexWrap: 'wrap', marginTop: spacing.sm },
+  eventCard: { width: 140, marginRight: 0 },
+  eventTime: { color: colors.turquoiseDark, fontWeight: '700', fontSize: 12 },
+  eventTitle: { color: colors.charcoal, fontWeight: '700', fontSize: 14.5, marginTop: 4 },
+  eventLocation: { color: colors.slate, fontSize: 11.5, marginTop: 3 },
+  recTitle: { fontSize: 17, fontWeight: '700', color: colors.charcoal, marginTop: 8, fontFamily: font.display },
+  recDesc: { fontSize: 13, color: colors.slate, marginTop: 3, lineHeight: 18 },
+  recFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: spacing.sm },
+  recPrice: { fontSize: 13.5, fontWeight: '700', color: colors.charcoal },
+  exploreBtn: { flexDirection: 'row', alignItems: 'center', gap: 3 },
+  exploreBtnText: { color: colors.deepOcean, fontWeight: '700', fontSize: 12.5 },
+  promoCard: { borderRadius: radius.lg, padding: spacing.lg, ...shadow.soft },
+  promoTitle: { fontSize: 18, fontWeight: '700', color: colors.deepOcean, fontFamily: font.display },
+  promoDesc: { fontSize: 13, color: colors.deepOcean2, marginTop: 4, lineHeight: 18 },
+  promoCta: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: spacing.sm },
+  promoCtaText: { color: colors.deepOcean, fontWeight: '700', fontSize: 12.5 },
+});
