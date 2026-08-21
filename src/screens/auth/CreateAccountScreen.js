@@ -8,18 +8,24 @@ import { colors, spacing } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 export default function CreateAccountScreen({ navigation }) {
-  const { signIn } = useApp();
+  const { signUp } = useApp();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      navigation.navigate('MagicLink', { fromSignup: true });
-    }, 900);
+    setError('');
+    const parts = name.trim().split(/\s+/);
+    const result = await signUp({ email, password, firstName: parts[0] || '', lastName: parts.slice(1).join(' ') });
+    setLoading(false);
+    if (!result?.ok) {
+      setError(result.error || 'Unable to create your account.');
+      return;
+    }
+    navigation.navigate('MagicLink', { fromSignup: true });
   };
 
   return (
@@ -32,6 +38,7 @@ export default function CreateAccountScreen({ navigation }) {
         <Field label="Full Name" value={name} onChangeText={setName} placeholder="Amara Whitfield" />
         <Field label="Email" value={email} onChangeText={setEmail} placeholder="you@example.com" keyboardType="email-address" />
         <Field label="Password" value={password} onChangeText={setPassword} placeholder="••••••••" secureTextEntry />
+        {error ? <Text style={styles.error}>{error}</Text> : null}
 
         <Button label="Create Account" onPress={handleCreate} loading={loading} style={{ marginTop: spacing.sm }} />
       </ScrollView>
@@ -43,4 +50,5 @@ const styles = StyleSheet.create({
   content: { padding: spacing.lg },
   heading: { fontSize: 24, fontWeight: '700', color: colors.charcoal, marginBottom: 4 },
   sub: { fontSize: 13.5, color: colors.slate, marginBottom: spacing.lg },
+  error: { color: colors.error, fontSize: 13, marginBottom: spacing.md },
 });

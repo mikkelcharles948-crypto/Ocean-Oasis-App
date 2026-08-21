@@ -12,13 +12,14 @@ export default function SignInScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      signIn();
-    }, 900);
+    setError('');
+    const result = await signIn(email, password);
+    setLoading(false);
+    if (!result?.ok) setError(result.error || 'Unable to sign in.');
   };
 
   return (
@@ -30,6 +31,7 @@ export default function SignInScreen({ navigation }) {
 
         <Field label="Email" value={email} onChangeText={setEmail} placeholder="you@example.com" keyboardType="email-address" />
         <Field label="Password" value={password} onChangeText={setPassword} placeholder="••••••••" secureTextEntry />
+        {error ? <Text style={styles.error}>{error}</Text> : null}
 
         <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')} style={{ alignSelf: 'flex-end', marginBottom: spacing.lg }}>
           <Text style={styles.link}>Forgot password?</Text>
@@ -61,4 +63,5 @@ const styles = StyleSheet.create({
   link: { color: colors.turquoiseDark, fontWeight: '600', fontSize: 13.5 },
   footerRow: { flexDirection: 'row', justifyContent: 'center', marginTop: spacing.lg },
   footerText: { color: colors.slate, fontSize: 13.5 },
+  error: { color: colors.error, fontSize: 13, marginBottom: spacing.md },
 });

@@ -55,6 +55,21 @@ npx expo start
 ```
 Then scan the QR code with Expo Go. If it doesn't connect (restrictive Wi-Fi/VPN), use `npx expo start --tunnel`.
 
+## Supabase setup
+
+The app is configured for Supabase Auth, Realtime, and the initial database schema.
+
+1. Copy `.env.example` to `.env.local` and set the Supabase URL and publishable key.
+2. Install the Supabase CLI, then authenticate with `supabase login`.
+3. Link the project and apply the migration:
+
+```
+npx supabase link --project-ref zmwsyhzelweigdgaerhs
+npx supabase db push
+```
+
+The schema and Row-Level Security policies are in `supabase/migrations/`. The mobile client is in `src/lib/supabase.js`. Supabase Auth session persistence and service-request Realtime updates are wired into `src/context/AppContext.js`; remaining domain mutations should be migrated from local state to database calls as backend workflows are finalized.
+
 ## Architecture notes (for connecting a real backend later)
 
 - All state — guest, staff, and management — lives in one `src/context/AppContext.js`. Every mutation (submit a request, assign staff, update room status, publish a promotion, book an activity with capacity enforcement) is a named function already called by name from screens, not inline setState. Swapping the internals for real API calls (Supabase is a natural fit given the shape of this data) means editing this one file — no screen changes.

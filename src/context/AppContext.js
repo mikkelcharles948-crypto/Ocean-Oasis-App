@@ -1,10 +1,11 @@
-import React, { createContext, useContext, useMemo, useState, useCallback } from 'react';
+import React, { createContext, useContext, useMemo, useState, useCallback, useEffect } from 'react';
 import {
   GUEST, RESERVATION, ROOM, INITIAL_SERVICE_REQUESTS, INITIAL_NOTIFICATIONS,
   ACTIVITIES, EVENTS, PROMOTIONS, ROOMS, STAFF_DIRECTORY, REQUEST_CATEGORY_TO_DEPARTMENT,
   INITIAL_MAINTENANCE_ISSUES, INITIAL_CONTENT_ITEMS, INITIAL_AUDIT_LOG, INITIAL_STAFF_NOTIFICATIONS,
   OTHER_GUESTS, OTHER_FEEDBACK, ROLE_SURFACES,
 } from '../data/mockData';
+import { supabase } from '../lib/supabase';
 
 const AppContext = createContext(null);
 
@@ -25,6 +26,7 @@ const nextId = (prefix) => `${prefix}_${idCounter++}`;
 // -----------------------------------------------------------------------
 
 export function AppProvider({ children }) {
+  const [authSession, setAuthSession] = useState(null);
   const [hasOnboarded, setHasOnboarded] = useState(false);
 
   // Which top-level experience is active: null (picker), 'guest', 'staff', 'management'.
@@ -61,6 +63,43 @@ export function AppProvider({ children }) {
   const [feedback, setFeedback] = useState(OTHER_FEEDBACK);
   const [propertySettings, setPropertySettings] = useState({ lowRatingThreshold: 3 });
 
+  useEffect(() => {
+    let mounted = true;
+    supabase.auth.getSession().then(({ data }) => {
+      if (mounted) setAuthSession(data.session);
+    });
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setAuthSession(session);
+      if (!session) setIsAuthenticated(false);
+    });
+    return () => {
+      mounted = false;
+      listener.subscription.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('service-request-updates')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'service_requests' }, (payload) => {
+        const row = payload.new;
+        if (!row?.id) return;
+        setServiceRequests((prev) => {
+          if (payload.eventType === 'DELETE') return prev.filter((item) => item.id !== payload.old.id);
+          const next = {
+            ...row,
+            assignedStaffName: row.assigned_staff_id || row.assignedStaffName || null,
+            createdAt: row.created_at || row.createdAt,
+            completedAt: row.completed_at || row.completedAt,
+          };
+          const exists = prev.some((item) => item.id === next.id);
+          return exists ? prev.map((item) => (item.id === next.id ? { ...item, ...next } : item)) : [next, ...prev];
+        });
+      })
+      .subscribe();
+    return () => supabase.removeChannel(channel);
+  }, []);
+
   // ---------------------------------------------------------------------
   // Onboarding / experience switching
   // ---------------------------------------------------------------------
@@ -79,8 +118,29 @@ export function AppProvider({ children }) {
   // ---------------------------------------------------------------------
   // Guest auth
   // ---------------------------------------------------------------------
-  const signIn = useCallback(() => setIsAuthenticated(true), []);
-  const signOut = useCallback(() => { setIsAuthenticated(false); setExperience(null); }, []);
+  const signIn = useCallback(async (email, password) => {
+    if (!email || !password) {
+      setIsAuthenticated(true);
+      return { ok: true };
+    }
+    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+    if (error) return { ok: false, error: error.message };
+    setIsAuthenticated(true);
+    return { ok: true };
+  }, []);
+  const signUp = useCallback(async ({ email, password, firstName, lastName }) => {
+    const { data, error } = await supabase.auth.signUp({
+      email: email.trim(),
+      password,
+      options: { data: { first_name: firstName, last_name: lastName } },
+    });
+    return { ok: !error, error: error?.message, data };
+  }, []);
+  const signOut = useCallback(async () => {
+    await supabase.auth.signOut();
+    setIsAuthenticated(false);
+    setExperience(null);
+  }, []);
 
   // ---------------------------------------------------------------------
   // Staff / Management auth
@@ -310,7 +370,7 @@ export function AppProvider({ children }) {
     () => ({
       hasOnboarded, completeOnboarding,
       experience, chooseExperience, exitToExperiencePicker,
-      isAuthenticated, signIn, signOut,
+      isAuthenticated, authSession, signIn, signUp, signOut,
       opsSession, opsSignIn, opsSignOut, canAccessSurface,
       guest, setGuest, reservation, room,
       itinerary, addToItinerary, removeFromItinerary,
@@ -333,7 +393,7 @@ export function AppProvider({ children }) {
     }),
     [
       hasOnboarded, completeOnboarding, experience, chooseExperience, exitToExperiencePicker,
-      isAuthenticated, signIn, signOut, opsSession, opsSignIn, opsSignOut, canAccessSurface,
+      isAuthenticated, authSession, signIn, signUp, signOut, opsSession, opsSignIn, opsSignOut, canAccessSurface,
       guest, reservation, room, itinerary, addToItinerary, removeFromItinerary,
       serviceRequests, submitServiceRequest, assignRequestToStaff, updateRequestStatus, addRequestNote,
       savedActivityIds, toggleSavedActivity, notifications, markNotificationRead, markAllNotificationsRead, unreadNotificationCount,

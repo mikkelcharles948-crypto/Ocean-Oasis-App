@@ -1,0 +1,19 @@
+project_id = "zmwsyhzelweigdgaerhs"
+
+[api]
+enabled = true
+
+[db]
+port = 54322
+
+[studio]
+enabled = true
+port = 54323
+
+[auth]
+enabled = true
+site_url = "http://localhost:8081"
+additional_redirect_urls = ["exp://127.0.0.1:8081", "exp://192.168.100.3:8081"]
+
+[storage]
+enabled = true
