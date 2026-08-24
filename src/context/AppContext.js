@@ -6,6 +6,13 @@ import {
   OTHER_GUESTS, OTHER_FEEDBACK, ROLE_SURFACES,
 } from '../data/mockData';
 import { supabase } from '../lib/supabase';
+import {
+  loadGuestData,
+  createServiceRequest as createRemoteServiceRequest,
+  updateServiceRequest as updateRemoteServiceRequest,
+  bookActivity as bookRemoteActivity,
+  updateGuestProfile as updateRemoteGuestProfile,
+} from '../services/supabaseData';
 
 const AppContext = createContext(null);
 
@@ -27,6 +34,9 @@ const nextId = (prefix) => `${prefix}_${idCounter++}`;
 
 export function AppProvider({ children }) {
   const [authSession, setAuthSession] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [dataLoading, setDataLoading] = useState(false);
+  const [dataError, setDataError] = useState(null);
   const [hasOnboarded, setHasOnboarded] = useState(false);
 
   // Which top-level experience is active: null (picker), 'guest', 'staff', 'management'.
@@ -66,10 +76,14 @@ export function AppProvider({ children }) {
   useEffect(() => {
     let mounted = true;
     supabase.auth.getSession().then(({ data }) => {
-      if (mounted) setAuthSession(data.session);
+      if (mounted) {
+        setAuthSession(data.session);
+        setAuthLoading(false);
+      }
     });
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setAuthSession(session);
+      setAuthLoading(false);
       if (!session) setIsAuthenticated(false);
     });
     return () => {
@@ -78,17 +92,50 @@ export function AppProvider({ children }) {
     };
   }, []);
 
+  const refreshGuestData = useCallback(async () => {
+    if (!authSession?.user?.id) return { ok: false, error: 'Authentication required.' };
+    setDataLoading(true);
+    setDataError(null);
+    try {
+      const data = await loadGuestData(authSession.user.id);
+      if (data.guest) setGuest(data.guest);
+      if (data.reservation) setReservation(data.reservation);
+      setRooms(data.rooms);
+      setServiceRequests(data.serviceRequests);
+      setActivityBookings(data.activityBookings);
+      setFeedback(data.feedback);
+      setNotifications(data.notifications);
+      setActivities(data.activities);
+      setEvents(data.events);
+      setPromotions(data.promotions);
+      return { ok: true };
+    } catch (error) {
+      setDataError('We could not load your latest stay data. Please retry.');
+      return { ok: false, error: 'Unable to load your latest stay data.' };
+    } finally {
+      setDataLoading(false);
+    }
+  }, [authSession?.user?.id]);
+
   useEffect(() => {
+    refreshGuestData();
+  }, [refreshGuestData]);
+
+  useEffect(() => {
+    if (!authSession?.user?.id || !guest?.id || guest.id === GUEST.id) return undefined;
     const channel = supabase
-      .channel('service-request-updates')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'service_requests' }, (payload) => {
+      .channel(`service-request-updates-${guest.id}`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'service_requests', filter: `guest_id=eq.${guest.id}` }, (payload) => {
+        if (payload.eventType === 'DELETE') {
+          setServiceRequests((prev) => prev.filter((item) => item.id !== payload.old?.id));
+          return;
+        }
         const row = payload.new;
         if (!row?.id) return;
         setServiceRequests((prev) => {
-          if (payload.eventType === 'DELETE') return prev.filter((item) => item.id !== payload.old.id);
           const next = {
             ...row,
-            assignedStaffName: row.assigned_staff_id || row.assignedStaffName || null,
+            assignedStaffId: row.assigned_staff_id || null,
             createdAt: row.created_at || row.createdAt,
             completedAt: row.completed_at || row.completedAt,
           };
@@ -98,7 +145,7 @@ export function AppProvider({ children }) {
       })
       .subscribe();
     return () => supabase.removeChannel(channel);
-  }, []);
+  }, [authSession?.user?.id, guest?.id]);
 
   // ---------------------------------------------------------------------
   // Onboarding / experience switching
@@ -142,6 +189,24 @@ export function AppProvider({ children }) {
     setExperience(null);
   }, []);
 
+  const updateGuest = useCallback(async (changes) => {
+    if (authSession?.user?.id && guest.id !== GUEST.id) {
+      try {
+        const persistedGuest = await updateRemoteGuestProfile(guest.id, {
+          first_name: changes.firstName,
+          last_name: changes.lastName,
+          phone: changes.phone,
+        });
+        setGuest(persistedGuest);
+        return { ok: true, data: persistedGuest };
+      } catch (error) {
+        return { ok: false, error: 'Your profile could not be saved. Please try again.' };
+      }
+    }
+    setGuest((previous) => ({ ...previous, ...changes }));
+    return { ok: true };
+  }, [authSession?.user?.id, guest.id]);
+
   // ---------------------------------------------------------------------
   // Staff / Management auth
   // ---------------------------------------------------------------------
@@ -174,7 +239,7 @@ export function AppProvider({ children }) {
   // ---------------------------------------------------------------------
   // Service Requests — shared between Guest ("Requests") and Staff ("Requests")
   // ---------------------------------------------------------------------
-  const submitServiceRequest = useCallback((request) => {
+  const submitServiceRequest = useCallback(async (request) => {
     const category = request.category;
     const department = REQUEST_CATEGORY_TO_DEPARTMENT[category] || 'Front Desk';
     const newRequest = {
@@ -189,20 +254,39 @@ export function AppProvider({ children }) {
       notes: [],
       ...request,
     };
+    if (authSession?.user?.id && guest.id !== GUEST.id) {
+      try {
+        const persistedRequest = await createRemoteServiceRequest(guest.id, room.number, { ...request, department });
+        setServiceRequests((prev) => [persistedRequest, ...prev]);
+        return { ok: true, data: persistedRequest };
+      } catch (error) {
+        return { ok: false, error: 'Your request could not be submitted. Please try again.' };
+      }
+    }
     setServiceRequests((prev) => [newRequest, ...prev]);
     setStaffNotifications((prev) => [{ id: nextId('sn'), title: 'New guest request', body: `${category} — Room ${room.number}`, category: 'Requests', createdAt: new Date().toISOString(), read: false }, ...prev]);
-    return newRequest;
-  }, [room, guest]);
+    return { ok: true, data: newRequest };
+  }, [room, guest, authSession?.user?.id]);
 
   const assignRequestToStaff = useCallback((requestId, staffName) => {
     setServiceRequests((prev) => prev.map((r) => (r.id === requestId ? { ...r, assignedStaffName: staffName, status: r.status === 'Received' ? 'Assigned' : r.status } : r)));
     logAudit(`Assigned request #${requestId} to ${staffName}`);
   }, [logAudit]);
 
-  const updateRequestStatus = useCallback((requestId, status) => {
+  const updateRequestStatus = useCallback(async (requestId, status) => {
+    if (authSession?.user?.id && guest.id !== GUEST.id) {
+      try {
+        const persistedRequest = await updateRemoteServiceRequest(requestId, { status, completed_at: status === 'Completed' ? new Date().toISOString() : null });
+        setServiceRequests((prev) => prev.map((r) => (r.id === requestId ? { ...r, ...persistedRequest } : r)));
+        return { ok: true, data: persistedRequest };
+      } catch (error) {
+        return { ok: false, error: 'The request status could not be updated.' };
+      }
+    }
     setServiceRequests((prev) => prev.map((r) => (r.id === requestId ? { ...r, status, completedAt: status === 'Completed' ? new Date().toISOString() : r.completedAt } : r)));
     logAudit(`Changed request #${requestId} status → ${status}`);
-  }, [logAudit]);
+    return { ok: true };
+  }, [logAudit, authSession?.user?.id, guest.id]);
 
   const addRequestNote = useCallback((requestId, text) => {
     setServiceRequests((prev) => prev.map((r) => (r.id === requestId ? { ...r, notes: [...(r.notes || []), { text, by: opsSession?.name || 'Staff', at: new Date().toISOString() }] } : r)));
@@ -224,7 +308,21 @@ export function AppProvider({ children }) {
     return activity;
   }, [logAudit]);
 
-  const bookActivity = useCallback(({ activityId, guests }) => {
+  const bookActivity = useCallback(async ({ activityId, guests }) => {
+    if (authSession?.user?.id && guest.id !== GUEST.id) {
+      try {
+        const booking = await bookRemoteActivity(activityId, guests);
+        setActivityBookings((prev) => [booking, ...prev]);
+        return { ok: true, booking };
+      } catch (error) {
+        const message = error?.message?.toLowerCase().includes('full')
+          ? 'This activity is now full.'
+          : error?.message?.toLowerCase().includes('already booked')
+            ? 'You already have a booking for this activity.'
+            : 'This activity could not be booked. Please try again.';
+        return { ok: false, error: message };
+      }
+    }
     const activity = activities.find((a) => a.id === activityId);
     if (!activity) return { ok: false, error: 'Activity not found.' };
     const alreadyBooked = activityBookings.filter((b) => b.activityId === activityId).reduce((sum, b) => sum + b.guests, 0);
@@ -234,7 +332,7 @@ export function AppProvider({ children }) {
     setActivityBookings((prev) => [...prev, booking]);
     setStaffNotifications((prev) => [{ id: nextId('sn'), title: 'New activity booking', body: `${activity.name} — ${guests} guest(s)`, category: 'Activities', createdAt: new Date().toISOString(), read: false }, ...prev]);
     return { ok: true, booking };
-  }, [activities, activityBookings, guest, room]);
+  }, [activities, activityBookings, guest, room, authSession?.user?.id]);
 
   // ---------------------------------------------------------------------
   // Events — Staff/Management create as DRAFT, publish to Guest calendar.
@@ -370,7 +468,8 @@ export function AppProvider({ children }) {
     () => ({
       hasOnboarded, completeOnboarding,
       experience, chooseExperience, exitToExperiencePicker,
-      isAuthenticated, authSession, signIn, signUp, signOut,
+      isAuthenticated, authSession, authLoading, dataLoading, dataError, refreshGuestData, signIn, signUp, signOut,
+      updateGuest,
       opsSession, opsSignIn, opsSignOut, canAccessSurface,
       guest, setGuest, reservation, room,
       itinerary, addToItinerary, removeFromItinerary,
@@ -393,7 +492,7 @@ export function AppProvider({ children }) {
     }),
     [
       hasOnboarded, completeOnboarding, experience, chooseExperience, exitToExperiencePicker,
-      isAuthenticated, authSession, signIn, signUp, signOut, opsSession, opsSignIn, opsSignOut, canAccessSurface,
+      isAuthenticated, authSession, authLoading, dataLoading, dataError, refreshGuestData, signIn, signUp, signOut, updateGuest, opsSession, opsSignIn, opsSignOut, canAccessSurface,
       guest, reservation, room, itinerary, addToItinerary, removeFromItinerary,
       serviceRequests, submitServiceRequest, assignRequestToStaff, updateRequestStatus, addRequestNote,
       savedActivityIds, toggleSavedActivity, notifications, markNotificationRead, markAllNotificationsRead, unreadNotificationCount,

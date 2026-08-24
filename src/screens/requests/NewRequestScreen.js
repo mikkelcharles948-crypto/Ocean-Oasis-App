@@ -17,14 +17,15 @@ export default function NewRequestScreen({ navigation, route }) {
   const [preferredTime, setPreferredTime] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setSubmitting(true);
-    setTimeout(() => {
-      submitServiceRequest({ category: category?.label || category, description, preferredTime: preferredTime || 'No preference' });
-      setSubmitting(false);
-      setSuccess(true);
-    }, 800);
+    setError('');
+    const result = await submitServiceRequest({ category: category?.label || category, description, preferredTime: preferredTime || 'No preference' });
+    setSubmitting(false);
+    if (result?.ok) setSuccess(true);
+    else setError(result?.error || 'Your request could not be submitted.');
   };
 
   if (success) {
@@ -70,6 +71,7 @@ export default function NewRequestScreen({ navigation, route }) {
 
         <Field label="Description" value={description} onChangeText={setDescription} placeholder="Tell us what you need…" multiline />
         <Field label="Preferred Time (optional)" value={preferredTime} onChangeText={setPreferredTime} placeholder="e.g. As soon as possible, 4:00 PM" />
+        {error ? <Text style={styles.error}>{error}</Text> : null}
 
         <TouchableOpacity style={styles.imageBtn}>
           <Ionicons name="camera-outline" size={18} color={colors.slate} />
@@ -97,6 +99,7 @@ const styles = StyleSheet.create({
   },
   catTileSelected: { backgroundColor: colors.deepOcean, borderColor: colors.deepOcean },
   catLabel: { fontSize: 10.5, fontWeight: '600', color: colors.charcoal, textAlign: 'center' },
+  error: { color: colors.error, fontSize: 13, marginTop: spacing.sm },
   imageBtn: {
     flexDirection: 'row', alignItems: 'center', gap: 8, borderWidth: 1, borderColor: colors.border,
     borderStyle: 'dashed', borderRadius: radius.md, padding: spacing.sm, justifyContent: 'center', marginBottom: spacing.sm,

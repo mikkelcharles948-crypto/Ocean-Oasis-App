@@ -68,7 +68,9 @@ npx supabase link --project-ref zmwsyhzelweigdgaerhs
 npx supabase db push
 ```
 
-The schema and Row-Level Security policies are in `supabase/migrations/`. The mobile client is in `src/lib/supabase.js`. Supabase Auth session persistence and service-request Realtime updates are wired into `src/context/AppContext.js`; remaining domain mutations should be migrated from local state to database calls as backend workflows are finalized.
+The schema and Row-Level Security policies are in `supabase/migrations/`. The mobile client is in `src/lib/supabase.js`. Supabase Auth session persistence, guest data loading, persisted profile/request/booking operations, and scoped service-request Realtime updates are wired into `src/context/AppContext.js`.
+
+For local development only, run `npx supabase start` followed by `npx supabase db reset` to apply migrations and the repeatable seed in `supabase/seed.sql`. Never run `db reset` against the linked production project. Staff roles must be assigned by an administrator in Supabase; new Auth users are created as guests and cannot self-promote.
 
 ## Architecture notes (for connecting a real backend later)
 
