@@ -4,21 +4,25 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 import Button from '../../components/Button';
-import { ScreenHeader } from '../../components/UI';
+import { ScreenHeader, Field } from '../../components/UI';
 import { colors, spacing } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 export default function MagicLinkScreen({ navigation, route }) {
-  const { signIn } = useApp();
+  const { sendMagicLink } = useApp();
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
+  const [sent, setSent] = useState(false);
   const fromSignup = route?.params?.fromSignup;
   const [verifying, setVerifying] = useState(false);
 
-  const handleTapLink = () => {
+  const handleTapLink = async () => {
     setVerifying(true);
-    setTimeout(() => {
-      setVerifying(false);
-      signIn();
-    }, 1200);
+    setError('');
+    const result = await sendMagicLink(email);
+    setVerifying(false);
+    if (result?.ok) setSent(true);
+    else setError(result?.error || 'Unable to send the sign-in link.');
   };
 
   return (
@@ -37,10 +41,13 @@ export default function MagicLinkScreen({ navigation, route }) {
             : "We've sent a secure sign-in link to your email. Tap it on this device to continue."}
         </Text>
 
+        <Field label="Email" value={email} onChangeText={setEmail} placeholder="you@example.com" keyboardType="email-address" />
+        {error ? <Text style={styles.error}>{error}</Text> : null}
         <Button
-          label={verifying ? 'Verifying…' : 'Simulate Tapping Email Link'}
+          label={verifying ? 'Sending…' : sent ? 'Link Sent' : 'Send Sign-In Link'}
           onPress={handleTapLink}
           loading={verifying}
+          disabled={sent}
           style={{ marginTop: spacing.lg }}
         />
         <Text style={styles.hint}>(In production this screen is opened automatically from the email link.)</Text>
@@ -58,4 +65,5 @@ const styles = StyleSheet.create({
   heading: { fontSize: 21, fontWeight: '700', color: colors.charcoal, textAlign: 'center' },
   sub: { fontSize: 13.5, color: colors.slate, textAlign: 'center', marginTop: 8, lineHeight: 20 },
   hint: { fontSize: 11.5, color: colors.slate, marginTop: spacing.md, textAlign: 'center', fontStyle: 'italic' },
+  error: { fontSize: 13, color: colors.error, marginTop: spacing.sm },
 });

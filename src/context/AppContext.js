@@ -167,8 +167,7 @@ export function AppProvider({ children }) {
   // ---------------------------------------------------------------------
   const signIn = useCallback(async (email, password) => {
     if (!email || !password) {
-      setIsAuthenticated(true);
-      return { ok: true };
+      return { ok: false, error: 'Enter your email and password.' };
     }
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     if (error) return { ok: false, error: error.message };
@@ -182,6 +181,14 @@ export function AppProvider({ children }) {
       options: { data: { first_name: firstName, last_name: lastName } },
     });
     return { ok: !error, error: error?.message, data };
+  }, []);
+  const sendMagicLink = useCallback(async (email) => {
+    if (!email?.trim()) return { ok: false, error: 'Enter your email address.' };
+    const { error } = await supabase.auth.signInWithOtp({
+      email: email.trim(),
+      options: { shouldCreateUser: true },
+    });
+    return error ? { ok: false, error: error.message } : { ok: true };
   }, []);
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
@@ -243,7 +250,6 @@ export function AppProvider({ children }) {
     const category = request.category;
     const department = REQUEST_CATEGORY_TO_DEPARTMENT[category] || 'Front Desk';
     const newRequest = {
-      id: nextId('sr'),
       status: 'Received',
       createdAt: new Date().toISOString(),
       roomNumber: room.number,
@@ -468,7 +474,7 @@ export function AppProvider({ children }) {
     () => ({
       hasOnboarded, completeOnboarding,
       experience, chooseExperience, exitToExperiencePicker,
-      isAuthenticated, authSession, authLoading, dataLoading, dataError, refreshGuestData, signIn, signUp, signOut,
+      isAuthenticated, authSession, authLoading, dataLoading, dataError, refreshGuestData, signIn, signUp, sendMagicLink, signOut,
       updateGuest,
       opsSession, opsSignIn, opsSignOut, canAccessSurface,
       guest, setGuest, reservation, room,
@@ -492,7 +498,7 @@ export function AppProvider({ children }) {
     }),
     [
       hasOnboarded, completeOnboarding, experience, chooseExperience, exitToExperiencePicker,
-      isAuthenticated, authSession, authLoading, dataLoading, dataError, refreshGuestData, signIn, signUp, signOut, updateGuest, opsSession, opsSignIn, opsSignOut, canAccessSurface,
+      isAuthenticated, authSession, authLoading, dataLoading, dataError, refreshGuestData, signIn, signUp, sendMagicLink, signOut, updateGuest, opsSession, opsSignIn, opsSignOut, canAccessSurface,
       guest, reservation, room, itinerary, addToItinerary, removeFromItinerary,
       serviceRequests, submitServiceRequest, assignRequestToStaff, updateRequestStatus, addRequestNote,
       savedActivityIds, toggleSavedActivity, notifications, markNotificationRead, markAllNotificationsRead, unreadNotificationCount,

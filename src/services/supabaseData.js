@@ -97,9 +97,7 @@ export async function loadGuestData(userId) {
 }
 
 export async function createServiceRequest(guestId, roomNumber, request) {
-  const requestId = `sr_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
   const { data, error } = await supabase.from('service_requests').insert({
-    id: requestId,
     guest_id: guestId,
     room_number: roomNumber,
     category: request.category,
