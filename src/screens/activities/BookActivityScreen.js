@@ -26,23 +26,20 @@ export default function BookActivityScreen({ route, navigation }) {
     );
   }
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     setLoading(true);
     setError(null);
-    setTimeout(() => {
-      const result = bookActivity({ activityId: activity.id, guests });
-      if (!result.ok) {
-        setLoading(false);
-        setError(result.error);
-        return;
-      }
-      addToItinerary({
-        type: 'activity', refId: activity.id, title: activity.name,
-        date: activity.date, time: activity.time, location: activity.location,
-      });
-      setLoading(false);
-      setConfirmed(true);
-    }, 900);
+    const result = await bookActivity({ activityId: activity.id, guests });
+    setLoading(false);
+    if (!result.ok) {
+      setError(result.error || 'This activity could not be booked. Please try again.');
+      return;
+    }
+    addToItinerary({
+      type: 'activity', refId: activity.id, title: activity.name,
+      date: activity.date, time: activity.time, location: activity.location,
+    });
+    setConfirmed(true);
   };
 
   if (confirmed) {

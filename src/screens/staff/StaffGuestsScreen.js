@@ -30,7 +30,7 @@ export default function StaffGuestsScreen({ navigation }) {
             <Card style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
               <View style={styles.avatar}><Text style={styles.avatarText}>{item.firstName[0]}{item.lastName[0]}</Text></View>
               <View style={{ flex: 1 }}>
-                <Text style={styles.name}>{item.firstName} {item.lastName}{item.isAppUser ? ' (You)' : ''}</Text>
+                <Text style={styles.name}>{item.firstName} {item.lastName}</Text>
                 <Text style={styles.meta}>Room {item.roomNumber} · {item.reservationNumber}</Text>
               </View>
               <Ionicons name="chevron-forward" size={18} color={colors.slate} />

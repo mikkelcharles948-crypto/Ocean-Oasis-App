@@ -10,9 +10,9 @@ import { useApp } from '../../context/AppContext';
 
 export default function MagicLinkScreen({ navigation, route }) {
   const { sendMagicLink } = useApp();
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(route?.params?.email || '');
   const [error, setError] = useState('');
-  const [sent, setSent] = useState(false);
+  const [sent, setSent] = useState(!!route?.params?.email);
   const fromSignup = route?.params?.fromSignup;
   const [verifying, setVerifying] = useState(false);
 

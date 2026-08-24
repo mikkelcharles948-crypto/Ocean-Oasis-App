@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
-import { ScreenHeader, EmptyState } from '../../components/UI';
+import { ScreenHeader, EmptyState, timeAgo } from '../../components/UI';
 import { colors, spacing, font } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
@@ -40,7 +40,7 @@ export default function NotificationsScreen({ navigation }) {
             <View style={{ flex: 1 }}>
               <View style={styles.rowTop}>
                 <Text style={styles.category}>{item.category}</Text>
-                <Text style={styles.time}>{item.time}</Text>
+                <Text style={styles.time}>{item.createdAt ? timeAgo(item.createdAt) : item.time}</Text>
               </View>
               <Text style={styles.title}>{item.title}</Text>
               <Text style={styles.body}>{item.body}</Text>

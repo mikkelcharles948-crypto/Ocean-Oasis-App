@@ -116,6 +116,7 @@ export default function HomeScreen({ navigation }) {
         </View>
 
         {/* Recommended */}
+        {recommendation && (
         <View style={styles.section}>
           <SectionHeader title={t('home.recommendedForYou')} />
           <TouchableOpacity onPress={() => navigation.navigate('ActivityDetail', { activityId: recommendation.id })}>
@@ -136,6 +137,7 @@ export default function HomeScreen({ navigation }) {
             </Card>
           </TouchableOpacity>
         </View>
+        )}
 
         {/* Promotion */}
         {promo && (

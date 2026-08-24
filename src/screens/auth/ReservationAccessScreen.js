@@ -6,27 +6,39 @@ import { ScreenHeader, Field } from '../../components/UI';
 import Button from '../../components/Button';
 import { colors, spacing } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
+import { supabase } from '../../lib/supabase';
 import { RESERVATION } from '../../data/mockData';
 
 export default function ReservationAccessScreen({ navigation }) {
-  const { signIn } = useApp();
+  const { sendMagicLink } = useApp();
   const [reservationNumber, setReservationNumber] = useState('');
   const [lastName, setLastName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleVerify = () => {
+  const handleVerify = async () => {
     setError('');
     if (!reservationNumber || !lastName) {
       setError('Please enter both your reservation number and last name.');
       return;
     }
     setLoading(true);
-    setTimeout(() => {
+    const { data: email, error: lookupError } = await supabase.rpc('find_guest_email_for_reservation', {
+      p_reservation_number: reservationNumber.trim(),
+      p_last_name: lastName.trim(),
+    });
+    if (lookupError || !email) {
       setLoading(false);
-      // Mock validation against the sample reservation
-      signIn();
-    }, 1000);
+      setError('We could not find a reservation matching those details.');
+      return;
+    }
+    const result = await sendMagicLink(email);
+    setLoading(false);
+    if (!result?.ok) {
+      setError(result?.error || 'Unable to send your sign-in link. Please try again.');
+      return;
+    }
+    navigation.navigate('MagicLink', { email });
   };
 
   return (

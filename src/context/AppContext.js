@@ -68,7 +68,6 @@ export function AppProvider({ children }) {
 
   const [guest, setGuest] = useState(GUEST);
   const [reservation, setReservation] = useState(RESERVATION);
-  const [room] = useState(ROOM);
 
   const [itinerary, setItinerary] = useState([]);
   const [serviceRequests, setServiceRequests] = useState(INITIAL_SERVICE_REQUESTS);
@@ -84,6 +83,14 @@ export function AppProvider({ children }) {
 
   // Operations data
   const [rooms, setRooms] = useState(ROOMS);
+
+  // The guest's own room — derived from their reservation against the loaded
+  // room list rather than a fixed value, so real guests see their actual
+  // room instead of the demo's room 204.
+  const room = useMemo(
+    () => rooms.find((r) => r.id === reservation?.roomId) || ROOM,
+    [rooms, reservation?.roomId]
+  );
   const [maintenanceIssues, setMaintenanceIssues] = useState([]);
   const [contentItems, setContentItems] = useState([]);
   const [auditLog, setAuditLog] = useState([]);
@@ -667,12 +674,27 @@ export function AppProvider({ children }) {
   // ---------------------------------------------------------------------
   // Notifications (guest + staff, kept separate since they're different audiences)
   // ---------------------------------------------------------------------
-  const markNotificationRead = useCallback((id) => {
+  const markNotificationRead = useCallback(async (id) => {
     setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
-  }, []);
-  const markAllNotificationsRead = useCallback(() => {
+    if (authSession?.user?.id) {
+      try {
+        await markRemoteNotificationRead(id);
+      } catch (error) {
+        // Non-critical — the badge count just stays stale until the next refresh.
+      }
+    }
+  }, [authSession?.user?.id]);
+  const markAllNotificationsRead = useCallback(async () => {
+    const unreadIds = notifications.filter((n) => !n.read).map((n) => n.id);
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-  }, []);
+    if (authSession?.user?.id && unreadIds.length) {
+      try {
+        await markAllRemoteStaffNotificationsRead(unreadIds);
+      } catch (error) {
+        // Non-critical — the badge count just stays stale until the next refresh.
+      }
+    }
+  }, [authSession?.user?.id, notifications]);
   const markStaffNotificationRead = useCallback(async (id) => {
     try {
       await markRemoteNotificationRead(id);

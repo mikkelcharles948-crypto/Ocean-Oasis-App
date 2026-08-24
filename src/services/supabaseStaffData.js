@@ -6,6 +6,7 @@ import { mapServiceRequest, mapActivity, mapEvent, mapPromotion, mapBooking, map
 const generateId = (prefix) => `${prefix}_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`;
 
 const guestName = (row) => `${row.guests?.first_name || ''} ${row.guests?.last_name || ''}`.trim();
+const guestRoomNumber = (row) => (row.guests?.reservations || [])[0]?.rooms?.number || null;
 
 export function mapProfile(row) {
   if (!row) return null;
@@ -65,7 +66,7 @@ export async function loadStaffData() {
     supabase.from('promotions').select('*').order('created_at', { ascending: false }),
     supabase.from('activity_bookings').select('*, guests(first_name, last_name)').order('created_at', { ascending: false }),
     supabase.from('maintenance_issues').select('*').order('created_at', { ascending: false }),
-    supabase.from('feedback').select('*, guests(first_name, last_name)').order('created_at', { ascending: false }),
+    supabase.from('feedback').select('*, guests(first_name, last_name, reservations(check_in, rooms(number)))').order('created_at', { ascending: false }),
     supabase.from('content_items').select('*').order('updated_at', { ascending: false }),
     supabase.from('audit_log').select('*').order('created_at', { ascending: false }).limit(200),
     supabase.from('notifications').select('*').not('recipient_role', 'is', null).order('created_at', { ascending: false }),
@@ -85,7 +86,7 @@ export async function loadStaffData() {
     promotions: (promotionsResult.data || []).map(mapPromotion),
     activityBookings: (bookingsResult.data || []).map((row) => ({ ...mapBooking(row), guestName: guestName(row) })),
     maintenanceIssues: (maintenanceResult.data || []).map(mapMaintenanceIssue),
-    feedback: (feedbackResult.data || []).map((row) => ({ ...row, guestName: guestName(row) })),
+    feedback: (feedbackResult.data || []).map((row) => ({ ...row, guestName: guestName(row), roomNumber: guestRoomNumber(row) })),
     contentItems: (contentResult.data || []).map(mapContentItem),
     auditLog: (auditResult.data || []).map(mapAuditLog),
     staffNotifications: (notificationsResult.data || []).map(mapNotification),
