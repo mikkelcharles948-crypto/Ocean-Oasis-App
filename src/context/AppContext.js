@@ -11,6 +11,7 @@ import {
   bookActivity as bookRemoteActivity,
   updateGuestProfile as updateRemoteGuestProfile,
   createFeedback as createRemoteFeedback,
+  completeGuestCheckIn as completeRemoteGuestCheckIn,
 } from '../services/supabaseData';
 import {
   loadStaffData, loadStaffDirectory, writeAuditEntry,
@@ -73,7 +74,10 @@ export function AppProvider({ children }) {
   const [serviceRequests, setServiceRequests] = useState(INITIAL_SERVICE_REQUESTS);
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
   const [savedActivityIds, setSavedActivityIds] = useState([]);
-  const [checkedIn, setCheckedIn] = useState(false);
+  // Derived from the reservation's own status rather than tracked separately,
+  // so a guest who's already checked in (digitally in a prior session, or by
+  // front-desk staff) never sees a stale "complete check-in" prompt.
+  const checkedIn = reservation?.status === 'checked_in';
 
   // Shared catalog data — guest screens read these; staff/management write them.
   const [activities, setActivities] = useState(ACTIVITIES);
@@ -713,10 +717,19 @@ export function AppProvider({ children }) {
     }
   }, [staffNotifications]);
 
-  const completeDigitalCheckIn = useCallback(() => {
-    setCheckedIn(true);
+  const completeDigitalCheckIn = useCallback(async () => {
+    if (authSession?.user?.id && guest.id !== GUEST.id && reservation?.id) {
+      try {
+        const updated = await completeRemoteGuestCheckIn(reservation.id);
+        setReservation((r) => ({ ...r, ...updated }));
+        return { ok: true };
+      } catch (error) {
+        return { ok: false, error: 'Check-in could not be completed. Please try again.' };
+      }
+    }
     setReservation((r) => ({ ...r, status: 'checked_in' }));
-  }, []);
+    return { ok: true };
+  }, [authSession?.user?.id, guest?.id, reservation?.id]);
 
   const unreadNotificationCount = useMemo(() => notifications.filter((n) => !n.read).length, [notifications]);
   const unreadStaffNotificationCount = useMemo(() => staffNotifications.filter((n) => !n.read).length, [staffNotifications]);

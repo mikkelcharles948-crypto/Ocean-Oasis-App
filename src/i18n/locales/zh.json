@@ -183,6 +183,7 @@
       "luggage": "行李协助",
       "wakeup": "叫醒服务",
       "concierge": "礼宾服务",
+      "roomupgrade": "客房升级",
       "other": "其他"
     },
     "status": {
@@ -205,6 +206,7 @@
     "commentsPlaceholder": "请告诉我们更多信息…",
     "submitFeedback": "提交反馈",
     "submitError": "您的反馈未能提交,请重试。",
+    "overallRequired": "请先为您的整体体验评分,然后再提交。",
     "thankYou": "谢谢您。",
     "thankYouSub": "您的反馈将帮助我们提升您的住宿体验。",
     "followUp": "我们的宾客关系团队已收到通知，可能会尽快与您联系。",
@@ -286,6 +288,13 @@
     "luggageAssistance": "行李协助",
     "leaveFeedback": "留下反馈",
     "roomAmenities": "客房设施",
+    "upgrades": {
+      "title": "可升级的房型",
+      "subtitle": "高于您当前等级的可选房型",
+      "fromPrice": "每晚起价 ${{price}}",
+      "request": "申请此升级",
+      "requested": "已申请升级"
+    },
     "contactReception": "联系前台",
     "checkinFlow": {
       "title": "数字化入住",
@@ -345,7 +354,8 @@
       "transportation": "交通方式",
       "reviewAndConfirm": "核对并确认",
       "continue": "继续",
-      "goToMyStay": "前往我的住宿"
+      "goToMyStay": "前往我的住宿",
+      "finishError": "无法完成办理入住,请重试。"
     }
   },
   "profile": {

@@ -183,6 +183,7 @@
       "luggage": "Luggage Assistance",
       "wakeup": "Wake-up Call",
       "concierge": "Concierge",
+      "roomupgrade": "Room Upgrade",
       "other": "Other"
     },
     "status": {
@@ -205,6 +206,7 @@
     "commentsPlaceholder": "Tell us more…",
     "submitFeedback": "Submit Feedback",
     "submitError": "Your feedback could not be submitted. Please try again.",
+    "overallRequired": "Please rate your overall experience before submitting.",
     "thankYou": "Thank you.",
     "thankYouSub": "Your feedback helps us make your stay better.",
     "followUp": "Our guest relations team has been notified and may follow up with you shortly.",
@@ -286,6 +288,13 @@
     "luggageAssistance": "Luggage Assistance",
     "leaveFeedback": "Leave Feedback",
     "roomAmenities": "Room Amenities",
+    "upgrades": {
+      "title": "Potential Room Upgrades",
+      "subtitle": "Available room categories above your current tier",
+      "fromPrice": "From ${{price}}/night",
+      "request": "Request This Upgrade",
+      "requested": "Upgrade Requested"
+    },
     "contactReception": "Contact Reception",
     "checkinFlow": {
       "title": "Digital Check-In",
@@ -345,7 +354,8 @@
       "transportation": "Transportation",
       "reviewAndConfirm": "Review & Confirm",
       "continue": "Continue",
-      "goToMyStay": "Go to My Stay"
+      "goToMyStay": "Go to My Stay",
+      "finishError": "Check-in could not be completed. Please try again."
     }
   },
   "profile": {

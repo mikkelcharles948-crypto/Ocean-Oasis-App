@@ -183,6 +183,7 @@
       "luggage": "Ayuda con el equipaje",
       "wakeup": "Llamada para despertar",
       "concierge": "Conserjería",
+      "roomupgrade": "Mejora de habitación",
       "other": "Otro"
     },
     "status": {
@@ -205,6 +206,7 @@
     "commentsPlaceholder": "Cuéntanos más…",
     "submitFeedback": "Enviar comentarios",
     "submitError": "No se pudo enviar tu comentario. Por favor, inténtalo de nuevo.",
+    "overallRequired": "Por favor, califica tu experiencia general antes de enviar.",
     "thankYou": "Gracias.",
     "thankYouSub": "Tus comentarios nos ayudan a mejorar tu estancia.",
     "followUp": "Nuestro equipo de relaciones con huéspedes ha sido notificado y podría contactarte próximamente.",
@@ -286,6 +288,13 @@
     "luggageAssistance": "Ayuda con el equipaje",
     "leaveFeedback": "Dejar comentarios",
     "roomAmenities": "Comodidades de la habitación",
+    "upgrades": {
+      "title": "Posibles mejoras de habitación",
+      "subtitle": "Categorías de habitación disponibles por encima de tu nivel actual",
+      "fromPrice": "Desde ${{price}}/noche",
+      "request": "Solicitar esta mejora",
+      "requested": "Mejora solicitada"
+    },
     "contactReception": "Contactar recepción",
     "checkinFlow": {
       "title": "Registro digital",
@@ -345,7 +354,8 @@
       "transportation": "Transporte",
       "reviewAndConfirm": "Revisar y confirmar",
       "continue": "Continuar",
-      "goToMyStay": "Ir a Mi estancia"
+      "goToMyStay": "Ir a Mi estancia",
+      "finishError": "No se pudo completar el check-in. Por favor, inténtalo de nuevo."
     }
   },
   "profile": {

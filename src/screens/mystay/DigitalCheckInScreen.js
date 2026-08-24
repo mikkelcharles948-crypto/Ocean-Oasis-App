@@ -21,6 +21,8 @@ export default function DigitalCheckInScreen({ navigation }) {
   const { t } = useTranslation();
   const { guest, reservation, room, completeDigitalCheckIn } = useApp();
   const [step, setStep] = useState(0);
+  const [finishing, setFinishing] = useState(false);
+  const [finishError, setFinishError] = useState('');
   const [form, setForm] = useState({
     idNumber: '', arrivalTime: reservation.arrivalTime, transport: 'hotelTransfer',
     preferences: [], specialRequests: reservation.specialRequests, agreed: false,
@@ -43,8 +45,15 @@ export default function DigitalCheckInScreen({ navigation }) {
     }));
   };
 
-  const handleFinish = () => {
-    completeDigitalCheckIn();
+  const handleFinish = async () => {
+    setFinishing(true);
+    setFinishError('');
+    const result = await completeDigitalCheckIn();
+    setFinishing(false);
+    if (!result?.ok) {
+      setFinishError(result?.error || t('mystay.checkinFlow.finishError'));
+      return;
+    }
     navigation.goBack();
   };
 
@@ -192,7 +201,10 @@ export default function DigitalCheckInScreen({ navigation }) {
             disabled={step === 7 && !form.agreed}
           />
         ) : (
-          <Button label={t('mystay.checkinFlow.goToMyStay')} onPress={handleFinish} />
+          <>
+            {finishError ? <Text style={styles.finishError}>{finishError}</Text> : null}
+            <Button label={t('mystay.checkinFlow.goToMyStay')} onPress={handleFinish} loading={finishing} />
+          </>
         )}
       </View>
     </SafeAreaView>
@@ -228,4 +240,5 @@ const styles = StyleSheet.create({
   confirmTitle: { fontSize: 22, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
   confirmSub: { fontSize: 14, color: colors.slate, marginTop: 4 },
   footer: { padding: spacing.lg },
+  finishError: { color: colors.error, fontSize: 13, marginBottom: spacing.sm, textAlign: 'center' },
 });

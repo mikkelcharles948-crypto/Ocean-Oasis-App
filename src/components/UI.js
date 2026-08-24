@@ -14,10 +14,13 @@ export function Card({ children, style, onPress }) {
   );
 }
 
-export function SectionHeader({ title, actionLabel, onAction }) {
+export function SectionHeader({ title, subtitle, actionLabel, onAction }) {
   return (
     <View style={styles.sectionHeader}>
-      <Text style={styles.sectionTitle}>{title}</Text>
+      <View style={{ flex: 1 }}>
+        <Text style={styles.sectionTitle}>{title}</Text>
+        {subtitle ? <Text style={styles.sectionSubtitle}>{subtitle}</Text> : null}
+      </View>
       {actionLabel ? (
         <TouchableOpacity onPress={onAction}>
           <Text style={styles.sectionAction}>{actionLabel}</Text>
@@ -247,6 +250,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   sectionTitle: { fontSize: 19, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
+  sectionSubtitle: { fontSize: 12.5, color: colors.slate, marginTop: 2 },
   sectionAction: { fontSize: 13, fontWeight: '600', color: colors.turquoiseDark },
   badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: radius.pill, alignSelf: 'flex-start' },
   badgeText: { fontSize: 11, fontWeight: '700', letterSpacing: 0.3 },

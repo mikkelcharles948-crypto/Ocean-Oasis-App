@@ -27,6 +27,10 @@ export default function FeedbackScreen({ navigation }) {
   const overall = ratings['Overall Experience'] || 0;
 
   const handleSubmit = async () => {
+    if (overall < 1) {
+      setError(t('feedback.overallRequired'));
+      return;
+    }
     setSubmitting(true);
     setError('');
     const result = await submitFeedback({ ratings, comments });

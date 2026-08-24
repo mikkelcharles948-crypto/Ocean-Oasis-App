@@ -60,7 +60,7 @@ export default function NewRequestScreen({ navigation, route }) {
                   name={{
                     broom: 'broom', towel: 'towel', soap: 'shower-head', laundry: 'washing-machine',
                     roomservice: 'room-service', tools: 'tools', car: 'car', luggage: 'bag-suitcase',
-                    alarm: 'alarm', concierge: 'bell-outline', other: 'dots-horizontal',
+                    alarm: 'alarm', concierge: 'bell-outline', roomupgrade: 'arrow-up-bold-circle-outline', other: 'dots-horizontal',
                   }[c.icon] || 'dots-horizontal'}
                   size={20}
                   color={selected ? colors.white : colors.deepOcean}

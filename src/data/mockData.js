@@ -593,6 +593,7 @@ export const SERVICE_REQUEST_CATEGORIES = [
   { id: 'luggage', label: 'Luggage Assistance', icon: 'luggage' },
   { id: 'wakeup', label: 'Wake-up Call', icon: 'alarm' },
   { id: 'concierge', label: 'Concierge', icon: 'concierge' },
+  { id: 'roomupgrade', label: 'Room Upgrade', icon: 'roomupgrade' },
   { id: 'other', label: 'Other', icon: 'other' },
 ];
 
@@ -728,6 +729,7 @@ export const REQUEST_CATEGORY_TO_DEPARTMENT = {
   'Luggage Assistance': 'Front Desk',
   'Wake-up Call': 'Front Desk',
   Concierge: 'Concierge',
+  'Room Upgrade': 'Front Desk',
   Other: 'Front Desk',
 };
 
@@ -744,6 +746,7 @@ export const REQUEST_CATEGORY_TO_ROLE = {
   'Luggage Assistance': 'FRONT_DESK',
   'Wake-up Call': 'FRONT_DESK',
   Concierge: 'CONCIERGE',
+  'Room Upgrade': 'FRONT_DESK',
   Other: 'FRONT_DESK',
 };
 
@@ -774,6 +777,66 @@ for (let floor = 1; floor <= 4; floor++) {
 // Guarantee room 204 exists and matches the guest's reservation used throughout the app.
 const idx204 = ROOMS.findIndex((r) => r.number === '204');
 if (idx204 >= 0) ROOMS[idx204] = { ...ROOMS[idx204], type: 'Ocean View Suite', status: 'OCCUPIED_CLEAN' };
+
+// Every Ocean Oasis room includes these — confirmed from the hotel's own
+// accommodations page (oceanoasisdominica.com/accommodation-dominica).
+const STANDARD_ROOM_AMENITIES = ['Furnished balcony', 'Bathrobe & slippers', 'Pod coffee maker', 'In-room dining', 'Air conditioning', 'Free Wi-Fi'];
+
+// Room tiers, low to high — matches the `type` values already assigned to
+// the 37-room ROOMS list above. Nightly rates are indicative starting
+// rates (this app has no live PMS/rate feed yet), shown to guests as "from".
+export const ROOM_TYPES = [
+  {
+    id: 'garden_view_room',
+    name: 'Garden View Room',
+    tier: 1,
+    description: 'A calm, design-forward retreat overlooking Ocean Oasis’s tropical gardens — the same thoughtful in-room amenities as every category, in our most intimate footprint.',
+    bedConfig: '1 King or 2 Queen Beds',
+    maxOccupancy: 2,
+    amenities: [...STANDARD_ROOM_AMENITIES],
+    fromPricePerNight: 245,
+  },
+  {
+    id: 'ocean_view_room',
+    name: 'Ocean View Room',
+    tier: 2,
+    description: 'Wake up to sunset-facing Caribbean water views. Same chic, design-forward styling as our Garden View rooms, with the sea as your backdrop.',
+    bedConfig: '1 King or 2 Queen Beds',
+    maxOccupancy: 2,
+    amenities: [...STANDARD_ROOM_AMENITIES, 'Ocean view', 'Rain shower'],
+    fromPricePerNight: 305,
+  },
+  {
+    id: 'ocean_view_suite',
+    name: 'Ocean View Suite',
+    tier: 3,
+    description: 'A separate living area and an expanded balcony built for lingering over sunset, with panoramic water views throughout.',
+    bedConfig: '1 King Bed + Sofa Bed',
+    maxOccupancy: 3,
+    amenities: [...STANDARD_ROOM_AMENITIES, 'Ocean view', 'Rain shower', 'Mini bar', 'Separate living area'],
+    fromPricePerNight: 385,
+  },
+  {
+    id: 'family_suite',
+    name: 'Family Suite',
+    tier: 4,
+    description: 'Two connected sleeping areas and extra room to spread out — built for families or groups travelling together without giving up the water views.',
+    bedConfig: '1 King Bed + 2 Twin Beds',
+    maxOccupancy: 4,
+    amenities: [...STANDARD_ROOM_AMENITIES, 'Ocean view', 'Rain shower', 'Mini bar', 'Two sleeping areas', 'Extra bedding on request'],
+    fromPricePerNight: 425,
+  },
+  {
+    id: 'presidential_suite',
+    name: 'Presidential Suite',
+    tier: 5,
+    description: 'Ocean Oasis’s top-floor signature suite — the most expansive layout on the property, with sweeping sunset views and elevated in-room service.',
+    bedConfig: '1 King Bed + Sofa Bed',
+    maxOccupancy: 4,
+    amenities: [...STANDARD_ROOM_AMENITIES, 'Ocean view', 'Rain shower', 'Premium mini bar', 'Separate living area', 'Private plunge pool access', 'Priority concierge service'],
+    fromPricePerNight: 620,
+  },
+];
 
 export const MAINTENANCE_CATEGORIES = ['AC', 'Plumbing', 'Electrical', 'Internet', 'Appliances', 'Furniture', 'Structural', 'Other'];
 export const MAINTENANCE_SEVERITIES = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'];

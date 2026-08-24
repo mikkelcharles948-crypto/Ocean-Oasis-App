@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,14 +8,63 @@ import { Card, Badge, SectionHeader } from '../../components/UI';
 import Button from '../../components/Button';
 import { colors, spacing, radius, font } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
+import { ROOM_TYPES } from '../../data/mockData';
 
 function fmt(dateStr) {
   return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
+function UpgradeCard({ tier, onRequested }) {
+  const { t } = useTranslation();
+  const { submitServiceRequest } = useApp();
+  const [requesting, setRequesting] = useState(false);
+  const [requested, setRequested] = useState(false);
+
+  const handleRequest = async () => {
+    setRequesting(true);
+    const result = await submitServiceRequest({
+      category: 'Room Upgrade',
+      description: `Guest is interested in upgrading to a ${tier.name}.`,
+    });
+    setRequesting(false);
+    if (result?.ok !== false) {
+      setRequested(true);
+      onRequested?.();
+    }
+  };
+
+  return (
+    <Card style={styles.upgradeCard}>
+      <View style={styles.upgradeHeaderRow}>
+        <Text style={styles.upgradeName}>{tier.name}</Text>
+        <Text style={styles.upgradePrice}>{t('mystay.upgrades.fromPrice', { price: tier.fromPricePerNight })}</Text>
+      </View>
+      <Text style={styles.upgradeDesc}>{tier.description}</Text>
+      <View style={styles.amenityWrap}>
+        {tier.amenities.slice(0, 4).map((a) => (
+          <View key={a} style={styles.amenityChip}>
+            <Ionicons name="checkmark-circle" size={12} color={colors.success} />
+            <Text style={styles.amenityText}>{a}</Text>
+          </View>
+        ))}
+      </View>
+      <Button
+        label={requested ? t('mystay.upgrades.requested') : t('mystay.upgrades.request')}
+        variant={requested ? 'outline' : 'primary'}
+        disabled={requested}
+        loading={requesting}
+        onPress={handleRequest}
+        style={{ marginTop: spacing.sm }}
+      />
+    </Card>
+  );
+}
+
 export default function MyStayScreen({ navigation }) {
   const { t } = useTranslation();
   const { guest, reservation, room, checkedIn } = useApp();
+  const currentTierIndex = ROOM_TYPES.findIndex((rt) => rt.name === room.type);
+  const upgradeOptions = currentTierIndex >= 0 ? ROOM_TYPES.slice(currentTierIndex + 1) : [];
 
   const timeline = [
     { key: 'arrival', label: t('mystay.timeline.arrival'), done: true, icon: 'airplane' },
@@ -28,7 +77,7 @@ export default function MyStayScreen({ navigation }) {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: spacing.lg, paddingBottom: spacing.xxl }}>
         <Text style={styles.headerTitle}>{t('mystay.title')}</Text>
 
-        {!checkedIn && (
+        {reservation.status === 'confirmed' && (
           <TouchableOpacity onPress={() => navigation.navigate('DigitalCheckIn')}>
             <Card style={styles.checkinBanner}>
               <View style={{ flex: 1 }}>
@@ -96,7 +145,7 @@ export default function MyStayScreen({ navigation }) {
           <SectionHeader title={t('mystay.roomAmenities')} />
           <Card>
             <View style={styles.amenityWrap}>
-              {room.amenities.map((a) => (
+              {(room.amenities || []).map((a) => (
                 <View key={a} style={styles.amenityChip}>
                   <Ionicons name="checkmark-circle" size={14} color={colors.success} />
                   <Text style={styles.amenityText}>{a}</Text>
@@ -105,6 +154,15 @@ export default function MyStayScreen({ navigation }) {
             </View>
           </Card>
         </View>
+
+        {upgradeOptions.length > 0 && (
+          <View style={{ marginTop: spacing.lg }}>
+            <SectionHeader title={t('mystay.upgrades.title')} subtitle={t('mystay.upgrades.subtitle')} />
+            {upgradeOptions.map((tier) => (
+              <UpgradeCard key={tier.id} tier={tier} />
+            ))}
+          </View>
+        )}
 
         <Button
           label={t('mystay.contactReception')}
@@ -149,4 +207,9 @@ const styles = StyleSheet.create({
   amenityWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   amenityChip: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: colors.sandLight, paddingHorizontal: 10, paddingVertical: 6, borderRadius: radius.pill },
   amenityText: { fontSize: 11.5, color: colors.charcoal, fontWeight: '600' },
+  upgradeCard: { marginBottom: spacing.sm },
+  upgradeHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  upgradeName: { fontSize: 15.5, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
+  upgradePrice: { fontSize: 12.5, fontWeight: '700', color: colors.turquoiseDark },
+  upgradeDesc: { fontSize: 12.5, color: colors.slate, marginTop: 4, lineHeight: 18, marginBottom: spacing.sm },
 });

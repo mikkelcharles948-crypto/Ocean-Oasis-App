@@ -183,6 +183,7 @@
       "luggage": "Aide aux bagages",
       "wakeup": "Appel de réveil",
       "concierge": "Conciergerie",
+      "roomupgrade": "Surclassement de chambre",
       "other": "Autre"
     },
     "status": {
@@ -205,6 +206,7 @@
     "commentsPlaceholder": "Dites-nous en plus…",
     "submitFeedback": "Envoyer l'avis",
     "submitError": "Votre avis n'a pas pu être envoyé. Veuillez réessayer.",
+    "overallRequired": "Veuillez évaluer votre expérience globale avant d'envoyer.",
     "thankYou": "Merci.",
     "thankYouSub": "Votre avis nous aide à améliorer votre séjour.",
     "followUp": "Notre équipe des relations clients a été informée et pourrait vous recontacter prochainement.",
@@ -286,6 +288,13 @@
     "luggageAssistance": "Aide aux bagages",
     "leaveFeedback": "Laisser un avis",
     "roomAmenities": "Équipements de la chambre",
+    "upgrades": {
+      "title": "Surclassements possibles",
+      "subtitle": "Catégories de chambres disponibles au-dessus de votre niveau actuel",
+      "fromPrice": "À partir de {{price}} $/nuit",
+      "request": "Demander ce surclassement",
+      "requested": "Surclassement demandé"
+    },
     "contactReception": "Contacter la réception",
     "checkinFlow": {
       "title": "Enregistrement numérique",
@@ -345,7 +354,8 @@
       "transportation": "Transport",
       "reviewAndConfirm": "Vérifier et confirmer",
       "continue": "Continuer",
-      "goToMyStay": "Aller à Mon séjour"
+      "goToMyStay": "Aller à Mon séjour",
+      "finishError": "La procédure d'enregistrement n'a pas pu être terminée. Veuillez réessayer."
     }
   },
   "profile": {

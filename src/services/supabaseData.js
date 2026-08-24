@@ -151,6 +151,12 @@ export async function createFeedback(guestId, { overall, ratings, comments, reso
   return data;
 }
 
+export async function completeGuestCheckIn(reservationId) {
+  const { data, error } = await supabase.rpc('complete_guest_checkin', { p_reservation_id: reservationId });
+  if (error) throw error;
+  return mapReservation(data);
+}
+
 export async function updateGuestProfile(guestId, changes) {
   const { data, error } = await supabase.from('guests').update(changes).eq('id', guestId).select().single();
   if (error) throw error;
