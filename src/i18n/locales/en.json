@@ -386,6 +386,24 @@
       "zh": "中文"
     }
   },
+  "pastStays": {
+    "loadError": "We could not load your stay history. Please try again.",
+    "emptyTitle": "No stay history yet",
+    "emptySub": "Your completed reservations will appear here after checkout.",
+    "status": {
+      "confirmed": "Upcoming",
+      "checked_in": "Current Stay",
+      "checked_out": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "roomWithNumber": "{{type}} · Room {{number}}",
+    "nights_one": "{{count}} night",
+    "nights_other": "{{count}} nights",
+    "adults_one": "{{count}} adult",
+    "adults_other": "{{count}} adults",
+    "children_one": ", {{count}} child",
+    "children_other": ", {{count}} children"
+  },
   "onboarding": {
     "welcomeTitle": "Welcome to Ocean Oasis",
     "welcomeSubtitle": "Your island experience starts here.",
@@ -465,7 +483,10 @@
     "lastName": "Last Name",
     "lastNamePlaceholder": "Whitfield",
     "accessMyStay": "Access My Stay",
-    "reservationNumberRequired": "Please enter both your reservation number and last name."
+    "reservationNumberRequired": "Please enter both your reservation number and last name.",
+    "enterEmailAddress": "Enter your email address.",
+    "reservationLookupFailed": "We could not find a reservation matching those details.",
+    "unableToSendLinkRetry": "Unable to send your sign-in link. Please try again."
   },
   "experience": {
     "eyebrow": "ONE PLATFORM · THREE EXPERIENCES",

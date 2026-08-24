@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, SectionList, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Card, EmptyState } from '../../components/UI';
 import Button from '../../components/Button';
@@ -15,6 +16,7 @@ function fmtDate(dateStr) {
 }
 
 export default function ItineraryScreen({ navigation }) {
+  const { t } = useTranslation();
   const { itinerary, removeFromItinerary } = useApp();
 
   const sections = useMemo(() => {
@@ -30,13 +32,13 @@ export default function ItineraryScreen({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-      <ScreenHeader title="My Itinerary" onBack={() => navigation.goBack()} />
+      <ScreenHeader title={t('itinerary.title')} onBack={() => navigation.goBack()} />
       {itinerary.length === 0 ? (
         <EmptyState
           icon="calendar-outline"
-          title="Your itinerary is waiting for you."
-          subtitle="Explore today's experiences and start planning."
-          actionLabel="Explore Activities"
+          title={t('itinerary.emptyTitle')}
+          subtitle={t('itinerary.emptySub')}
+          actionLabel={t('itinerary.exploreActivities')}
           onAction={() => navigation.navigate('Activities')}
         />
       ) : (

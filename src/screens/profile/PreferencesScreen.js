@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { useTranslation } from 'react-i18next';
+
 import { ScreenHeader, Pill } from '../../components/UI';
 import Button from '../../components/Button';
 import { colors, spacing, font } from '../../theme/theme';
@@ -9,6 +11,7 @@ import { INTERESTS } from '../../data/mockData';
 import { useApp } from '../../context/AppContext';
 
 export default function PreferencesScreen({ navigation }) {
+  const { t } = useTranslation();
   const { guest, setGuest } = useApp();
   const [selected, setSelected] = useState(guest.interests || []);
   const [saving, setSaving] = useState(false);
@@ -28,16 +31,16 @@ export default function PreferencesScreen({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-      <ScreenHeader title="Preferences & Interests" onBack={() => navigation.goBack()} />
+      <ScreenHeader title={t('profile.preferencesTitle')} onBack={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={{ padding: spacing.lg }}>
-        <Text style={styles.heading}>What are you interested in?</Text>
-        <Text style={styles.sub}>We'll use this to personalize recommendations across the app.</Text>
+        <Text style={styles.heading}>{t('profile.whatInterested')}</Text>
+        <Text style={styles.sub}>{t('profile.personalizeSub')}</Text>
         <View style={styles.pillWrap}>
           {INTERESTS.map((i) => (
-            <Pill key={i.id} label={i.label} selected={selected.includes(i.id)} onPress={() => toggle(i.id)} />
+            <Pill key={i.id} label={t(`onboarding.interests.${i.id}`)} selected={selected.includes(i.id)} onPress={() => toggle(i.id)} />
           ))}
         </View>
-        <Button label="Save Preferences" onPress={save} loading={saving} style={{ marginTop: spacing.lg }} />
+        <Button label={t('profile.savePreferences')} onPress={save} loading={saving} style={{ marginTop: spacing.lg }} />
       </ScrollView>
     </SafeAreaView>
   );

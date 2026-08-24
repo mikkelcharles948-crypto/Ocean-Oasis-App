@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import Button from '../../components/Button';
 import { ScreenHeader, Field } from '../../components/UI';
@@ -9,6 +10,7 @@ import { colors, spacing } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 export default function MagicLinkScreen({ navigation, route }) {
+  const { t } = useTranslation();
   const { sendMagicLink } = useApp();
   const [email, setEmail] = useState(route?.params?.email || '');
   const [error, setError] = useState('');
@@ -22,35 +24,33 @@ export default function MagicLinkScreen({ navigation, route }) {
     const result = await sendMagicLink(email);
     setVerifying(false);
     if (result?.ok) setSent(true);
-    else setError(result?.error || 'Unable to send the sign-in link.');
+    else setError(result?.error || t('auth.unableToSendLink'));
   };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-      <ScreenHeader title={fromSignup ? 'Verify Email' : 'Magic Link'} onBack={() => navigation.goBack()} />
+      <ScreenHeader title={fromSignup ? t('auth.verifyEmailTitle') : t('auth.magicLinkTitle')} onBack={() => navigation.goBack()} />
       <View style={styles.content}>
         <View style={styles.iconCircle}>
           <Ionicons name="mail-outline" size={30} color={colors.deepOcean} />
         </View>
         <Text style={styles.heading}>
-          {fromSignup ? 'Verify your email' : 'Check your inbox'}
+          {fromSignup ? t('auth.verifyYourEmail') : t('auth.checkYourInbox')}
         </Text>
         <Text style={styles.sub}>
-          {fromSignup
-            ? "We've sent a verification link to your email. Tap it to activate your Ocean Oasis account."
-            : "We've sent a secure sign-in link to your email. Tap it on this device to continue."}
+          {fromSignup ? t('auth.verifyEmailSub') : t('auth.magicLinkSub')}
         </Text>
 
-        <Field label="Email" value={email} onChangeText={setEmail} placeholder="you@example.com" keyboardType="email-address" />
+        <Field label={t('auth.email')} value={email} onChangeText={setEmail} placeholder="you@example.com" keyboardType="email-address" />
         {error ? <Text style={styles.error}>{error}</Text> : null}
         <Button
-          label={verifying ? 'Sending…' : sent ? 'Link Sent' : 'Send Sign-In Link'}
+          label={verifying ? t('auth.sending') : sent ? t('auth.linkSent') : t('auth.sendSignInLink')}
           onPress={handleTapLink}
           loading={verifying}
           disabled={sent}
           style={{ marginTop: spacing.lg }}
         />
-        <Text style={styles.hint}>(In production this screen is opened automatically from the email link.)</Text>
+        <Text style={styles.hint}>{t('auth.devHint')}</Text>
       </View>
     </SafeAreaView>
   );

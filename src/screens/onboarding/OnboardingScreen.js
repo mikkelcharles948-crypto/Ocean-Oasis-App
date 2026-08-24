@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Dimensions, FlatList, TouchableOpacity } from '
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import Logo from '../../components/Logo';
 import Button from '../../components/Button';
@@ -21,6 +22,7 @@ const SLIDES = [
 ];
 
 export default function OnboardingScreen() {
+  const { t } = useTranslation();
   const { completeOnboarding } = useApp();
   const [index, setIndex] = useState(0);
   const [selectedInterests, setSelectedInterests] = useState([]);
@@ -45,8 +47,8 @@ export default function OnboardingScreen() {
         <LinearGradient colors={[colors.deepOcean, colors.turquoiseDark]} style={styles.slide}>
           <SafeAreaView style={styles.centerFill}>
             <Logo size="lg" light />
-            <Text style={styles.welcomeTitle}>Welcome to Ocean Oasis</Text>
-            <Text style={styles.welcomeSubtitle}>Your island experience starts here.</Text>
+            <Text style={styles.welcomeTitle}>{t('onboarding.welcomeTitle')}</Text>
+            <Text style={styles.welcomeSubtitle}>{t('onboarding.welcomeSubtitle')}</Text>
           </SafeAreaView>
         </LinearGradient>
       );
@@ -60,33 +62,31 @@ export default function OnboardingScreen() {
               <MaterialCommunityIcons name="wave" size={40} color={colors.white} />
               <MaterialCommunityIcons name="drama-masks" size={40} color={colors.white} />
             </View>
-            <Text style={styles.title}>Discover Dominica</Text>
-            <Text style={styles.subtitle}>
-              Rainforest peaks, volcanic reefs, and Creole culture — the Nature Island, right outside your door.
-            </Text>
+            <Text style={styles.title}>{t('onboarding.discoverTitle')}</Text>
+            <Text style={styles.subtitle}>{t('onboarding.discoverSubtitle')}</Text>
           </SafeAreaView>
         </LinearGradient>
       );
     }
     if (item.kind === 'everything') {
       const items = [
-        ['room-service', 'Hotel Services'],
-        ['hiking', 'Activities'],
-        ['silverware-fork-knife', 'Dining'],
-        ['calendar-star', 'Events'],
-        ['tag-heart', 'Promotions'],
-        ['face-agent', 'Concierge'],
-        ['star-outline', 'Feedback'],
+        ['room-service', 'hotelServices'],
+        ['hiking', 'activities'],
+        ['silverware-fork-knife', 'dining'],
+        ['calendar-star', 'events'],
+        ['tag-heart', 'promotions'],
+        ['face-agent', 'concierge'],
+        ['star-outline', 'feedback'],
       ];
       return (
         <LinearGradient colors={[colors.deepOcean2, colors.deepOceanLight]} style={styles.slide}>
           <SafeAreaView style={styles.centerFill}>
-            <Text style={styles.title}>Everything you need,{'\n'}right at your fingertips.</Text>
+            <Text style={styles.title}>{t('onboarding.everythingTitle')}</Text>
             <View style={styles.grid}>
-              {items.map(([icon, label]) => (
-                <View key={label} style={styles.gridItem}>
+              {items.map(([icon, key]) => (
+                <View key={key} style={styles.gridItem}>
                   <MaterialCommunityIcons name={icon} size={24} color={colors.gold} />
-                  <Text style={styles.gridLabel}>{label}</Text>
+                  <Text style={styles.gridLabel}>{t(`onboarding.items.${key}`)}</Text>
                 </View>
               ))}
             </View>
@@ -97,13 +97,13 @@ export default function OnboardingScreen() {
     return (
       <LinearGradient colors={[colors.deepOcean, colors.forest]} style={styles.slide}>
         <SafeAreaView style={styles.interestsFill}>
-          <Text style={styles.title}>Make your stay yours.</Text>
-          <Text style={styles.subtitle}>Select a few interests so we can personalize your recommendations.</Text>
+          <Text style={styles.title}>{t('onboarding.interestsTitle')}</Text>
+          <Text style={styles.subtitle}>{t('onboarding.interestsSubtitle')}</Text>
           <View style={styles.pillWrap}>
             {INTERESTS.map((i) => (
               <Pill
                 key={i.id}
-                label={i.label}
+                label={t(`onboarding.interests.${i.id}`)}
                 selected={selectedInterests.includes(i.id)}
                 onPress={() => toggleInterest(i.id)}
               />
@@ -138,12 +138,12 @@ export default function OnboardingScreen() {
           {index < SLIDES.length - 1 ? (
             <>
               <TouchableOpacity onPress={finish}>
-                <Text style={styles.skip}>Skip</Text>
+                <Text style={styles.skip}>{t('onboarding.skip')}</Text>
               </TouchableOpacity>
-              <Button label="Continue" onPress={() => goTo(index + 1)} fullWidth={false} style={{ paddingHorizontal: 32 }} />
+              <Button label={t('onboarding.continue')} onPress={() => goTo(index + 1)} fullWidth={false} style={{ paddingHorizontal: 32 }} />
             </>
           ) : (
-            <Button label="Continue" onPress={finish} style={{ flex: 1 }} />
+            <Button label={t('onboarding.continue')} onPress={finish} style={{ flex: 1 }} />
           )}
         </View>
       </SafeAreaView>

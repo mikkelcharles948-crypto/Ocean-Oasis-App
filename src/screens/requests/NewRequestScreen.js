@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Field } from '../../components/UI';
 import Button from '../../components/Button';
@@ -10,6 +11,7 @@ import { SERVICE_REQUEST_CATEGORIES } from '../../data/mockData';
 import { useApp } from '../../context/AppContext';
 
 export default function NewRequestScreen({ navigation, route }) {
+  const { t } = useTranslation();
   const { submitServiceRequest } = useApp();
   const preselected = route?.params?.category;
   const [category, setCategory] = useState(preselected || null);
@@ -22,23 +24,23 @@ export default function NewRequestScreen({ navigation, route }) {
   const handleSubmit = async () => {
     setSubmitting(true);
     setError('');
-    const result = await submitServiceRequest({ category: category?.label || category, description, preferredTime: preferredTime || 'No preference' });
+    const result = await submitServiceRequest({ category: category?.label || category, description, preferredTime: preferredTime || t('requests.noPreference') });
     setSubmitting(false);
     if (result?.ok) setSuccess(true);
-    else setError(result?.error || 'Your request could not be submitted.');
+    else setError(result?.error || t('requests.couldNotSubmit'));
   };
 
   if (success) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-        <ScreenHeader title="Request Sent" onBack={() => navigation.goBack()} />
+        <ScreenHeader title={t('requests.requestSentTitle')} onBack={() => navigation.goBack()} />
         <View style={styles.successWrap}>
           <View style={styles.successCircle}>
             <Ionicons name="checkmark" size={32} color={colors.white} />
           </View>
-          <Text style={styles.successTitle}>Request received.</Text>
-          <Text style={styles.successSub}>Our team has been notified and will update you as it progresses.</Text>
-          <Button label="Back to Requests" onPress={() => navigation.goBack()} style={{ marginTop: spacing.lg }} />
+          <Text style={styles.successTitle}>{t('requests.requestReceived')}</Text>
+          <Text style={styles.successSub}>{t('requests.requestReceivedSub')}</Text>
+          <Button label={t('requests.backToRequests')} onPress={() => navigation.goBack()} style={{ marginTop: spacing.lg }} />
         </View>
       </SafeAreaView>
     );
@@ -46,9 +48,9 @@ export default function NewRequestScreen({ navigation, route }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-      <ScreenHeader title="Request Something" onBack={() => navigation.goBack()} />
+      <ScreenHeader title={t('requests.requestSomething')} onBack={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: spacing.xxl }}>
-        <Text style={styles.label}>Category</Text>
+        <Text style={styles.label}>{t('requests.category')}</Text>
         <View style={styles.grid}>
           {SERVICE_REQUEST_CATEGORIES.map((c) => {
             const selected = category?.id === c.id || category === c.label;
@@ -63,23 +65,23 @@ export default function NewRequestScreen({ navigation, route }) {
                   size={20}
                   color={selected ? colors.white : colors.deepOcean}
                 />
-                <Text style={[styles.catLabel, selected && { color: colors.white }]}>{c.label}</Text>
+                <Text style={[styles.catLabel, selected && { color: colors.white }]}>{t(`requests.categoryOptions.${c.id}`)}</Text>
               </TouchableOpacity>
             );
           })}
         </View>
 
-        <Field label="Description" value={description} onChangeText={setDescription} placeholder="Tell us what you need…" multiline />
-        <Field label="Preferred Time (optional)" value={preferredTime} onChangeText={setPreferredTime} placeholder="e.g. As soon as possible, 4:00 PM" />
+        <Field label={t('requests.description')} value={description} onChangeText={setDescription} placeholder={t('requests.descriptionPlaceholder')} multiline />
+        <Field label={t('requests.preferredTimeOptional')} value={preferredTime} onChangeText={setPreferredTime} placeholder={t('requests.preferredTimePlaceholder')} />
         {error ? <Text style={styles.error}>{error}</Text> : null}
 
         <TouchableOpacity style={styles.imageBtn}>
           <Ionicons name="camera-outline" size={18} color={colors.slate} />
-          <Text style={styles.imageBtnText}>Attach a photo (optional)</Text>
+          <Text style={styles.imageBtnText}>{t('requests.attachPhoto')}</Text>
         </TouchableOpacity>
 
         <Button
-          label="Submit Request"
+          label={t('requests.submitRequest')}
           onPress={handleSubmit}
           loading={submitting}
           disabled={!category || !description}

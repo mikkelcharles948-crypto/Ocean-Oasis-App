@@ -386,6 +386,24 @@
       "zh": "中文"
     }
   },
+  "pastStays": {
+    "loadError": "No pudimos cargar tu historial de estadías. Inténtalo de nuevo.",
+    "emptyTitle": "Aún no hay historial de estadías",
+    "emptySub": "Tus reservas completadas aparecerán aquí después del check-out.",
+    "status": {
+      "confirmed": "Próxima",
+      "checked_in": "Estadía actual",
+      "checked_out": "Completada",
+      "cancelled": "Cancelada"
+    },
+    "roomWithNumber": "{{type}} · Habitación {{number}}",
+    "nights_one": "{{count}} noche",
+    "nights_other": "{{count}} noches",
+    "adults_one": "{{count}} adulto",
+    "adults_other": "{{count}} adultos",
+    "children_one": ", {{count}} niño",
+    "children_other": ", {{count}} niños"
+  },
   "onboarding": {
     "welcomeTitle": "Bienvenido a Ocean Oasis",
     "welcomeSubtitle": "Tu experiencia isleña comienza aquí.",
@@ -465,7 +483,10 @@
     "lastName": "Apellido",
     "lastNamePlaceholder": "Whitfield",
     "accessMyStay": "Acceder a mi estancia",
-    "reservationNumberRequired": "Ingresa tanto tu número de reserva como tu apellido."
+    "reservationNumberRequired": "Ingresa tanto tu número de reserva como tu apellido.",
+    "enterEmailAddress": "Ingresa tu dirección de correo electrónico.",
+    "reservationLookupFailed": "No pudimos encontrar una reserva que coincida con esos datos.",
+    "unableToSendLinkRetry": "No se pudo enviar tu enlace de acceso. Inténtalo de nuevo."
   },
   "experience": {
     "eyebrow": "UNA PLATAFORMA · TRES EXPERIENCIAS",

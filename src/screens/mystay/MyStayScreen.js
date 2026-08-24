@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { Card, Badge, SectionHeader } from '../../components/UI';
 import Button from '../../components/Button';
@@ -13,25 +14,26 @@ function fmt(dateStr) {
 }
 
 export default function MyStayScreen({ navigation }) {
+  const { t } = useTranslation();
   const { guest, reservation, room, checkedIn } = useApp();
 
   const timeline = [
-    { key: 'arrival', label: 'Arrival', done: true, icon: 'airplane' },
-    { key: 'stay', label: 'During Your Stay', done: false, icon: 'sunny' },
-    { key: 'departure', label: 'Departure', done: false, icon: 'exit' },
+    { key: 'arrival', label: t('mystay.timeline.arrival'), done: true, icon: 'airplane' },
+    { key: 'stay', label: t('mystay.timeline.duringStay'), done: false, icon: 'sunny' },
+    { key: 'departure', label: t('mystay.timeline.departure'), done: false, icon: 'exit' },
   ];
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: spacing.lg, paddingBottom: spacing.xxl }}>
-        <Text style={styles.headerTitle}>My Stay</Text>
+        <Text style={styles.headerTitle}>{t('mystay.title')}</Text>
 
         {!checkedIn && (
           <TouchableOpacity onPress={() => navigation.navigate('DigitalCheckIn')}>
             <Card style={styles.checkinBanner}>
               <View style={{ flex: 1 }}>
-                <Text style={styles.checkinTitle}>Complete Digital Check-In</Text>
-                <Text style={styles.checkinSub}>Skip the front desk — takes about 3 minutes.</Text>
+                <Text style={styles.checkinTitle}>{t('mystay.completeCheckIn')}</Text>
+                <Text style={styles.checkinSub}>{t('mystay.completeCheckInSub')}</Text>
               </View>
               <Ionicons name="chevron-forward" size={20} color={colors.deepOcean} />
             </Card>
@@ -41,20 +43,20 @@ export default function MyStayScreen({ navigation }) {
         <Card style={{ marginTop: spacing.md }}>
           <View style={styles.rowBetween}>
             <Text style={styles.guestName}>{guest.firstName} {guest.lastName}</Text>
-            <Badge label={checkedIn ? 'Checked In' : reservation.status.replace('_', ' ')} tone={checkedIn ? 'success' : 'info'} />
+            <Badge label={checkedIn ? t('mystay.checkedIn') : reservation.status.replace('_', ' ')} tone={checkedIn ? 'success' : 'info'} />
           </View>
           <View style={styles.detailGrid}>
-            <Detail label="Room" value={`${room.number} · ${room.type}`} />
-            <Detail label="Reservation No." value={reservation.reservationNumber} />
-            <Detail label="Check-in" value={fmt(reservation.checkIn)} />
-            <Detail label="Check-out" value={fmt(reservation.checkOut)} />
-            <Detail label="Nights" value={String(reservation.nights)} />
-            <Detail label="Guests" value={`${reservation.adults} Adults`} />
+            <Detail label={t('mystay.room')} value={`${room.number} · ${room.type}`} />
+            <Detail label={t('mystay.reservationNo')} value={reservation.reservationNumber} />
+            <Detail label={t('mystay.checkIn')} value={fmt(reservation.checkIn)} />
+            <Detail label={t('mystay.checkOut')} value={fmt(reservation.checkOut)} />
+            <Detail label={t('mystay.nights')} value={String(reservation.nights)} />
+            <Detail label={t('mystay.guestsLabel')} value={t('mystay.guests', { count: reservation.adults })} />
           </View>
         </Card>
 
         <View style={{ marginTop: spacing.lg }}>
-          <SectionHeader title="Your Journey" />
+          <SectionHeader title={t('mystay.yourJourney')} />
           <Card>
             {timeline.map((step, i) => (
               <View key={step.key} style={styles.timelineRow}>
@@ -67,21 +69,21 @@ export default function MyStayScreen({ navigation }) {
                 <View style={{ flex: 1, paddingBottom: spacing.lg }}>
                   <Text style={styles.timelineLabel}>{step.label}</Text>
                   {step.key === 'arrival' && (
-                    <Text style={styles.timelineDetail}>Arrival {reservation.arrivalTime} · Airport transfer arranged</Text>
+                    <Text style={styles.timelineDetail}>{t('mystay.arrivalDetail', { time: reservation.arrivalTime })}</Text>
                   )}
                   {step.key === 'stay' && (
                     <View style={styles.timelineLinks}>
-                      <TouchableOpacity onPress={() => navigation.navigate('Activities')}><Text style={styles.timelineLink}>Activities</Text></TouchableOpacity>
-                      <TouchableOpacity onPress={() => navigation.navigate('Dining')}><Text style={styles.timelineLink}>Dining</Text></TouchableOpacity>
-                      <TouchableOpacity onPress={() => navigation.navigate('Events')}><Text style={styles.timelineLink}>Events</Text></TouchableOpacity>
-                      <TouchableOpacity onPress={() => navigation.getParent()?.navigate('Requests')}><Text style={styles.timelineLink}>Service Requests</Text></TouchableOpacity>
+                      <TouchableOpacity onPress={() => navigation.navigate('Activities')}><Text style={styles.timelineLink}>{t('mystay.activitiesLink')}</Text></TouchableOpacity>
+                      <TouchableOpacity onPress={() => navigation.navigate('Dining')}><Text style={styles.timelineLink}>{t('mystay.diningLink')}</Text></TouchableOpacity>
+                      <TouchableOpacity onPress={() => navigation.navigate('Events')}><Text style={styles.timelineLink}>{t('mystay.eventsLink')}</Text></TouchableOpacity>
+                      <TouchableOpacity onPress={() => navigation.getParent()?.navigate('Requests')}><Text style={styles.timelineLink}>{t('mystay.serviceRequestsLink')}</Text></TouchableOpacity>
                     </View>
                   )}
                   {step.key === 'departure' && (
                     <View style={styles.timelineLinks}>
-                      <Text style={styles.timelineDetail}>Checkout 11:00 AM</Text>
-                      <TouchableOpacity onPress={() => navigation.navigate('NewRequest', { category: 'Luggage Assistance' })}><Text style={styles.timelineLink}>Luggage Assistance</Text></TouchableOpacity>
-                      <TouchableOpacity onPress={() => navigation.navigate('Feedback')}><Text style={styles.timelineLink}>Leave Feedback</Text></TouchableOpacity>
+                      <Text style={styles.timelineDetail}>{t('mystay.checkoutDetail')}</Text>
+                      <TouchableOpacity onPress={() => navigation.navigate('NewRequest', { category: 'Luggage Assistance' })}><Text style={styles.timelineLink}>{t('mystay.luggageAssistance')}</Text></TouchableOpacity>
+                      <TouchableOpacity onPress={() => navigation.navigate('Feedback')}><Text style={styles.timelineLink}>{t('mystay.leaveFeedback')}</Text></TouchableOpacity>
                     </View>
                   )}
                 </View>
@@ -91,7 +93,7 @@ export default function MyStayScreen({ navigation }) {
         </View>
 
         <View style={{ marginTop: spacing.lg }}>
-          <SectionHeader title="Room Amenities" />
+          <SectionHeader title={t('mystay.roomAmenities')} />
           <Card>
             <View style={styles.amenityWrap}>
               {room.amenities.map((a) => (
@@ -105,7 +107,7 @@ export default function MyStayScreen({ navigation }) {
         </View>
 
         <Button
-          label="Contact Reception"
+          label={t('mystay.contactReception')}
           variant="outline"
           onPress={() => navigation.navigate('ContactReception')}
           style={{ marginTop: spacing.lg }}

@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { useTranslation } from 'react-i18next';
+
 import { ScreenHeader, Field } from '../../components/UI';
 import Button from '../../components/Button';
 import { colors, spacing } from '../../theme/theme';
@@ -10,6 +12,7 @@ import { supabase } from '../../lib/supabase';
 import { RESERVATION } from '../../data/mockData';
 
 export default function ReservationAccessScreen({ navigation }) {
+  const { t } = useTranslation();
   const { sendMagicLink } = useApp();
   const [reservationNumber, setReservationNumber] = useState('');
   const [lastName, setLastName] = useState('');
@@ -19,7 +22,7 @@ export default function ReservationAccessScreen({ navigation }) {
   const handleVerify = async () => {
     setError('');
     if (!reservationNumber || !lastName) {
-      setError('Please enter both your reservation number and last name.');
+      setError(t('auth.reservationNumberRequired'));
       return;
     }
     setLoading(true);
@@ -29,13 +32,13 @@ export default function ReservationAccessScreen({ navigation }) {
     });
     if (lookupError || !email) {
       setLoading(false);
-      setError('We could not find a reservation matching those details.');
+      setError(t('auth.reservationLookupFailed'));
       return;
     }
     const result = await sendMagicLink(email);
     setLoading(false);
     if (!result?.ok) {
-      setError(result?.error || 'Unable to send your sign-in link. Please try again.');
+      setError(result?.error || t('auth.unableToSendLinkRetry'));
       return;
     }
     navigation.navigate('MagicLink', { email });
@@ -43,22 +46,22 @@ export default function ReservationAccessScreen({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-      <ScreenHeader title="Reservation Access" onBack={() => navigation.goBack()} />
+      <ScreenHeader title={t('auth.reservationAccessTitle')} onBack={() => navigation.goBack()} />
       <View style={styles.content}>
-        <Text style={styles.heading}>Already staying with us?</Text>
-        <Text style={styles.sub}>Enter your reservation number and last name to access your stay.</Text>
+        <Text style={styles.heading}>{t('auth.alreadyStaying')}</Text>
+        <Text style={styles.sub}>{t('auth.reservationAccessSub')}</Text>
 
         <Field
-          label="Reservation Number"
+          label={t('auth.reservationNumber')}
           value={reservationNumber}
           onChangeText={setReservationNumber}
           placeholder={`e.g. ${RESERVATION.reservationNumber}`}
         />
-        <Field label="Last Name" value={lastName} onChangeText={setLastName} placeholder="Whitfield" />
+        <Field label={t('auth.lastName')} value={lastName} onChangeText={setLastName} placeholder={t('auth.lastNamePlaceholder')} />
 
         {error ? <Text style={styles.error}>{error}</Text> : null}
 
-        <Button label="Access My Stay" onPress={handleVerify} loading={loading} style={{ marginTop: spacing.sm }} />
+        <Button label={t('auth.accessMyStay')} onPress={handleVerify} loading={loading} style={{ marginTop: spacing.sm }} />
       </View>
     </SafeAreaView>
   );

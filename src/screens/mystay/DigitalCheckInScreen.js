@@ -2,30 +2,34 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Field, Pill } from '../../components/UI';
 import Button from '../../components/Button';
 import { colors, spacing, radius, font } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
-const STEPS = [
-  'Reservation', 'Guest Details', 'Identification', 'Arrival Info',
-  'Transportation', 'Preferences', 'Special Requests', 'Terms', 'Confirmation',
+const STEP_KEYS = [
+  'reservation', 'guestDetails', 'identification', 'arrivalInfo',
+  'transportation', 'preferences', 'specialRequests', 'terms', 'confirmation',
 ];
 
+const TRANSPORT_OPTIONS = ['hotelTransfer', 'rentalCar', 'ownTransportation', 'taxi'];
+const PREF_OPTIONS = ['extraPillows', 'highFloor', 'quietRoom', 'lateCheckout', 'celebrationSetup'];
+
 export default function DigitalCheckInScreen({ navigation }) {
+  const { t } = useTranslation();
   const { guest, reservation, room, completeDigitalCheckIn } = useApp();
   const [step, setStep] = useState(0);
   const [form, setForm] = useState({
-    idNumber: '', arrivalTime: reservation.arrivalTime, transport: 'Hotel Transfer',
+    idNumber: '', arrivalTime: reservation.arrivalTime, transport: 'hotelTransfer',
     preferences: [], specialRequests: reservation.specialRequests, agreed: false,
   });
 
-  const isLast = step === STEPS.length - 1;
-  const isConfirmation = step === STEPS.length - 1;
+  const isConfirmation = step === STEP_KEYS.length - 1;
 
   const next = () => {
-    if (step < STEPS.length - 1) setStep(step + 1);
+    if (step < STEP_KEYS.length - 1) setStep(step + 1);
   };
   const back = () => {
     if (step === 0) navigation.goBack();
@@ -46,61 +50,77 @@ export default function DigitalCheckInScreen({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-      <ScreenHeader title="Digital Check-In" onBack={back} />
+      <ScreenHeader title={t('mystay.checkinFlow.title')} onBack={back} />
       {!isConfirmation && (
         <View style={styles.progressWrap}>
           <View style={styles.progressTrack}>
-            <View style={[styles.progressFill, { width: `${((step + 1) / STEPS.length) * 100}%` }]} />
+            <View style={[styles.progressFill, { width: `${((step + 1) / STEP_KEYS.length) * 100}%` }]} />
           </View>
-          <Text style={styles.progressLabel}>Step {step + 1} of {STEPS.length} — {STEPS[step]}</Text>
+          <Text style={styles.progressLabel}>
+            {t('mystay.checkinFlow.stepProgress', {
+              current: step + 1,
+              total: STEP_KEYS.length,
+              stepName: t(`mystay.checkinFlow.steps.${STEP_KEYS[step]}`),
+            })}
+          </Text>
         </View>
       )}
 
       <ScrollView contentContainerStyle={styles.content}>
         {step === 0 && (
           <View>
-            <Text style={styles.stepTitle}>Confirm your reservation</Text>
+            <Text style={styles.stepTitle}>{t('mystay.checkinFlow.confirmReservationTitle')}</Text>
             <View style={styles.summaryBox}>
-              <SummaryRow label="Guest" value={`${guest.firstName} ${guest.lastName}`} />
-              <SummaryRow label="Reservation No." value={reservation.reservationNumber} />
-              <SummaryRow label="Room" value={`${room.number} · ${room.type}`} />
-              <SummaryRow label="Check-in" value={reservation.checkIn} />
-              <SummaryRow label="Check-out" value={reservation.checkOut} />
+              <SummaryRow label={t('mystay.checkinFlow.guest')} value={`${guest.firstName} ${guest.lastName}`} />
+              <SummaryRow label={t('mystay.checkinFlow.reservationNo')} value={reservation.reservationNumber} />
+              <SummaryRow label={t('mystay.checkinFlow.room')} value={`${room.number} · ${room.type}`} />
+              <SummaryRow label={t('mystay.checkinFlow.checkIn')} value={reservation.checkIn} />
+              <SummaryRow label={t('mystay.checkinFlow.checkOut')} value={reservation.checkOut} />
             </View>
           </View>
         )}
 
         {step === 1 && (
           <View>
-            <Text style={styles.stepTitle}>Guest details</Text>
-            <Field label="First Name" value={guest.firstName} onChangeText={() => {}} />
-            <Field label="Last Name" value={guest.lastName} onChangeText={() => {}} />
-            <Field label="Email" value={guest.email} onChangeText={() => {}} />
-            <Field label="Phone" value={guest.phone} onChangeText={() => {}} />
+            <Text style={styles.stepTitle}>{t('mystay.checkinFlow.guestDetailsTitle')}</Text>
+            <Field label={t('mystay.checkinFlow.firstName')} value={guest.firstName} onChangeText={() => {}} />
+            <Field label={t('mystay.checkinFlow.lastName')} value={guest.lastName} onChangeText={() => {}} />
+            <Field label={t('mystay.checkinFlow.email')} value={guest.email} onChangeText={() => {}} />
+            <Field label={t('mystay.checkinFlow.phone')} value={guest.phone} onChangeText={() => {}} />
           </View>
         )}
 
         {step === 2 && (
           <View>
-            <Text style={styles.stepTitle}>Identification</Text>
-            <Text style={styles.stepSub}>For local registry requirements, please provide your passport or national ID number.</Text>
-            <Field label="ID / Passport Number" value={form.idNumber} onChangeText={(v) => setForm({ ...form, idNumber: v })} placeholder="e.g. P1234567" />
+            <Text style={styles.stepTitle}>{t('mystay.checkinFlow.identificationTitle')}</Text>
+            <Text style={styles.stepSub}>{t('mystay.checkinFlow.identificationSub')}</Text>
+            <Field
+              label={t('mystay.checkinFlow.idNumber')}
+              value={form.idNumber}
+              onChangeText={(v) => setForm({ ...form, idNumber: v })}
+              placeholder={t('mystay.checkinFlow.idNumberPlaceholder')}
+            />
           </View>
         )}
 
         {step === 3 && (
           <View>
-            <Text style={styles.stepTitle}>Arrival information</Text>
-            <Field label="Estimated Arrival Time" value={form.arrivalTime} onChangeText={(v) => setForm({ ...form, arrivalTime: v })} />
+            <Text style={styles.stepTitle}>{t('mystay.checkinFlow.arrivalInfoTitle')}</Text>
+            <Field label={t('mystay.checkinFlow.estimatedArrivalTime')} value={form.arrivalTime} onChangeText={(v) => setForm({ ...form, arrivalTime: v })} />
           </View>
         )}
 
         {step === 4 && (
           <View>
-            <Text style={styles.stepTitle}>Transportation</Text>
+            <Text style={styles.stepTitle}>{t('mystay.checkinFlow.transportationTitle')}</Text>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-              {['Hotel Transfer', 'Rental Car', 'Own Transportation', 'Taxi'].map((t) => (
-                <Pill key={t} label={t} selected={form.transport === t} onPress={() => setForm({ ...form, transport: t })} />
+              {TRANSPORT_OPTIONS.map((id) => (
+                <Pill
+                  key={id}
+                  label={t(`mystay.checkinFlow.transportOptions.${id}`)}
+                  selected={form.transport === id}
+                  onPress={() => setForm({ ...form, transport: id })}
+                />
               ))}
             </View>
           </View>
@@ -108,11 +128,16 @@ export default function DigitalCheckInScreen({ navigation }) {
 
         {step === 5 && (
           <View>
-            <Text style={styles.stepTitle}>Preferences</Text>
-            <Text style={styles.stepSub}>Help us prepare your room and experience.</Text>
+            <Text style={styles.stepTitle}>{t('mystay.checkinFlow.preferencesTitle')}</Text>
+            <Text style={styles.stepSub}>{t('mystay.checkinFlow.preferencesSub')}</Text>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-              {['Extra pillows', 'High floor', 'Quiet room', 'Late checkout', 'Celebration setup'].map((p) => (
-                <Pill key={p} label={p} selected={form.preferences.includes(p)} onPress={() => togglePref(p)} />
+              {PREF_OPTIONS.map((id) => (
+                <Pill
+                  key={id}
+                  label={t(`mystay.checkinFlow.prefOptions.${id}`)}
+                  selected={form.preferences.includes(id)}
+                  onPress={() => togglePref(id)}
+                />
               ))}
             </View>
           </View>
@@ -120,9 +145,9 @@ export default function DigitalCheckInScreen({ navigation }) {
 
         {step === 6 && (
           <View>
-            <Text style={styles.stepTitle}>Special requests</Text>
+            <Text style={styles.stepTitle}>{t('mystay.checkinFlow.specialRequestsTitle')}</Text>
             <Field
-              label="Anything else we should know?"
+              label={t('mystay.checkinFlow.specialRequestsLabel')}
               value={form.specialRequests}
               onChangeText={(v) => setForm({ ...form, specialRequests: v })}
               multiline
@@ -132,16 +157,13 @@ export default function DigitalCheckInScreen({ navigation }) {
 
         {step === 7 && (
           <View>
-            <Text style={styles.stepTitle}>Terms & consent</Text>
+            <Text style={styles.stepTitle}>{t('mystay.checkinFlow.termsTitle')}</Text>
             <View style={styles.termsBox}>
-              <Text style={styles.termsText}>
-                By continuing, you confirm the information provided is accurate and agree to Ocean Oasis's stay
-                policies, including check-in/check-out times and applicable charges.
-              </Text>
+              <Text style={styles.termsText}>{t('mystay.checkinFlow.termsText')}</Text>
             </View>
             <TouchableOpacity style={styles.checkboxRow} onPress={() => setForm({ ...form, agreed: !form.agreed })}>
               <Ionicons name={form.agreed ? 'checkbox' : 'square-outline'} size={22} color={colors.deepOcean} />
-              <Text style={styles.checkboxLabel}>I agree to the terms and conditions</Text>
+              <Text style={styles.checkboxLabel}>{t('mystay.checkinFlow.agreeTerms')}</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -151,12 +173,12 @@ export default function DigitalCheckInScreen({ navigation }) {
             <View style={styles.successCircle}>
               <Ionicons name="checkmark" size={34} color={colors.white} />
             </View>
-            <Text style={styles.confirmTitle}>You're all set.</Text>
-            <Text style={styles.confirmSub}>Welcome to Ocean Oasis.</Text>
+            <Text style={styles.confirmTitle}>{t('mystay.checkinFlow.allSet')}</Text>
+            <Text style={styles.confirmSub}>{t('mystay.checkinFlow.welcomeToOceanOasis')}</Text>
             <View style={styles.summaryBox}>
-              <SummaryRow label="Room" value={`${room.number} · ${room.type}`} />
-              <SummaryRow label="Arrival" value={form.arrivalTime} />
-              <SummaryRow label="Transportation" value={form.transport} />
+              <SummaryRow label={t('mystay.checkinFlow.room')} value={`${room.number} · ${room.type}`} />
+              <SummaryRow label={t('mystay.checkinFlow.arrival')} value={form.arrivalTime} />
+              <SummaryRow label={t('mystay.checkinFlow.transportation')} value={t(`mystay.checkinFlow.transportOptions.${form.transport}`)} />
             </View>
           </View>
         )}
@@ -165,12 +187,12 @@ export default function DigitalCheckInScreen({ navigation }) {
       <View style={styles.footer}>
         {!isConfirmation ? (
           <Button
-            label={step === STEPS.length - 2 ? 'Review & Confirm' : 'Continue'}
+            label={step === STEP_KEYS.length - 2 ? t('mystay.checkinFlow.reviewAndConfirm') : t('mystay.checkinFlow.continue')}
             onPress={next}
             disabled={step === 7 && !form.agreed}
           />
         ) : (
-          <Button label="Go to My Stay" onPress={handleFinish} />
+          <Button label={t('mystay.checkinFlow.goToMyStay')} onPress={handleFinish} />
         )}
       </View>
     </SafeAreaView>

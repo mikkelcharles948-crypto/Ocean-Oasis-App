@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader } from '../../components/UI';
 import { colors, spacing, radius, font } from '../../theme/theme';
@@ -23,27 +24,28 @@ function Option({ icon, title, subtitle, onPress, tone = 'normal' }) {
 }
 
 export default function ContactReceptionScreen({ navigation }) {
-  const call = () => Linking.openURL(`tel:${PROPERTY_INFO.phone.replace(/[^\d+]/g, '')}`).catch(() => Alert.alert('Unable to place call in this preview.'));
+  const { t } = useTranslation();
+  const call = () => Linking.openURL(`tel:${PROPERTY_INFO.phone.replace(/[^\d+]/g, '')}`).catch(() => Alert.alert(t('contact.unableToCall')));
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-      <ScreenHeader title="Contact Reception" onBack={() => navigation.goBack()} />
+      <ScreenHeader title={t('contact.title')} onBack={() => navigation.goBack()} />
       <View style={{ padding: spacing.lg, gap: spacing.md }}>
-        <Text style={styles.intro}>Reach our team directly for anything you need during your stay.</Text>
+        <Text style={styles.intro}>{t('contact.intro')}</Text>
 
-        <Option icon="call" title="Call Reception" subtitle="Speak with our front desk now" onPress={call} />
-        <Option icon="chatbubble-ellipses" title="Message Reception" subtitle="Send a message, we'll reply shortly" onPress={() => navigation.navigate('NewRequest', { category: 'Concierge' })} />
-        <Option icon="sparkles" title="Request Concierge" subtitle="Recommendations, reservations & more" onPress={() => navigation.navigate('Concierge')} />
+        <Option icon="call" title={t('contact.callReception')} subtitle={t('contact.callReceptionSub')} onPress={call} />
+        <Option icon="chatbubble-ellipses" title={t('contact.messageReception')} subtitle={t('contact.messageReceptionSub')} onPress={() => navigation.navigate('NewRequest', { category: 'Concierge' })} />
+        <Option icon="sparkles" title={t('contact.requestConcierge')} subtitle={t('contact.requestConciergeSub')} onPress={() => navigation.navigate('Concierge')} />
 
-        <Text style={styles.sectionLabel}>Urgent</Text>
+        <Text style={styles.sectionLabel}>{t('contact.urgent')}</Text>
         <Option
           icon="alert-circle"
-          title="Emergency / Important Assistance"
-          subtitle="For urgent safety or medical concerns"
+          title={t('contact.emergencyTitle')}
+          subtitle={t('contact.emergencySub')}
           onPress={() =>
-            Alert.alert('Emergency Assistance', 'This will connect you directly to hotel security and front desk staff.', [
-              { text: 'Cancel', style: 'cancel' },
-              { text: 'Call Now', onPress: call },
+            Alert.alert(t('contact.emergencyAlertTitle'), t('contact.emergencyAlertMsg'), [
+              { text: t('contact.cancel'), style: 'cancel' },
+              { text: t('contact.callNow'), onPress: call },
             ])
           }
           tone="emergency"

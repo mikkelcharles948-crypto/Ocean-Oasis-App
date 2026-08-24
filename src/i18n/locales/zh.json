@@ -386,6 +386,24 @@
       "zh": "中文"
     }
   },
+  "pastStays": {
+    "loadError": "我们无法加载您的入住历史，请重试。",
+    "emptyTitle": "暂无入住历史",
+    "emptySub": "退房后，您已完成的预订将显示在此处。",
+    "status": {
+      "confirmed": "即将入住",
+      "checked_in": "当前入住",
+      "checked_out": "已完成",
+      "cancelled": "已取消"
+    },
+    "roomWithNumber": "{{type}} · {{number}} 号房",
+    "nights_one": "{{count}} 晚",
+    "nights_other": "{{count}} 晚",
+    "adults_one": "{{count}} 位成人",
+    "adults_other": "{{count}} 位成人",
+    "children_one": "，{{count}} 位儿童",
+    "children_other": "，{{count}} 位儿童"
+  },
   "onboarding": {
     "welcomeTitle": "欢迎来到 Ocean Oasis",
     "welcomeSubtitle": "您的海岛之旅由此开始。",
@@ -465,7 +483,10 @@
     "lastName": "姓氏",
     "lastNamePlaceholder": "Whitfield",
     "accessMyStay": "访问我的住宿",
-    "reservationNumberRequired": "请输入您的预订编号和姓氏。"
+    "reservationNumberRequired": "请输入您的预订编号和姓氏。",
+    "enterEmailAddress": "请输入您的电子邮箱地址。",
+    "reservationLookupFailed": "我们未找到与这些信息匹配的预订。",
+    "unableToSendLinkRetry": "无法发送您的登录链接，请重试。"
   },
   "experience": {
     "eyebrow": "一个平台 · 三种体验",

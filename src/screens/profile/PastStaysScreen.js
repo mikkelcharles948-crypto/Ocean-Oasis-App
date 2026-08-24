@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Card, EmptyState } from '../../components/UI';
 import { colors, spacing, font } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 import { loadPastStays } from '../../services/supabaseData';
-
-const STATUS_LABELS = { confirmed: 'Upcoming', checked_in: 'Current Stay', checked_out: 'Completed', cancelled: 'Cancelled' };
 
 function formatDate(iso) {
   if (!iso) return '';
@@ -16,9 +15,17 @@ function formatDate(iso) {
 }
 
 export default function PastStaysScreen({ navigation }) {
+  const { t } = useTranslation();
   const { guest, authSession } = useApp();
   const [stays, setStays] = useState(null);
   const [error, setError] = useState('');
+
+  const STATUS_LABELS = {
+    confirmed: t('pastStays.status.confirmed'),
+    checked_in: t('pastStays.status.checked_in'),
+    checked_out: t('pastStays.status.checked_out'),
+    cancelled: t('pastStays.status.cancelled'),
+  };
 
   useEffect(() => {
     let mounted = true;
@@ -28,13 +35,13 @@ export default function PastStaysScreen({ navigation }) {
     }
     loadPastStays(guest.id)
       .then((data) => { if (mounted) setStays(data); })
-      .catch(() => { if (mounted) setError('We could not load your stay history. Please try again.'); });
+      .catch(() => { if (mounted) setError(t('pastStays.loadError')); });
     return () => { mounted = false; };
   }, [guest?.id, authSession?.user?.id]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-      <ScreenHeader title="Past Stays" onBack={() => navigation.goBack()} />
+      <ScreenHeader title={t('profile.pastStays')} onBack={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: spacing.xxl }}>
         {stays === null && !error && (
           <View style={{ paddingTop: spacing.xl, alignItems: 'center' }}>
@@ -43,7 +50,7 @@ export default function PastStaysScreen({ navigation }) {
         )}
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
         {stays && stays.length === 0 && (
-          <EmptyState icon="time-outline" title="No stay history yet" subtitle="Your completed reservations will appear here after checkout." />
+          <EmptyState icon="time-outline" title={t('pastStays.emptyTitle')} subtitle={t('pastStays.emptySub')} />
         )}
         {stays?.map((stay) => (
           <Card key={stay.id} style={{ marginBottom: spacing.sm }}>
@@ -52,8 +59,15 @@ export default function PastStaysScreen({ navigation }) {
               <Text style={styles.status}>{STATUS_LABELS[stay.status] || stay.status}</Text>
             </View>
             <Text style={styles.dates}>{formatDate(stay.checkIn)} – {formatDate(stay.checkOut)}</Text>
-            {stay.roomType ? <Text style={styles.room}>{stay.roomType}{stay.roomNumber ? ` · Room ${stay.roomNumber}` : ''}</Text> : null}
-            <Text style={styles.meta}>{stay.nights} night{stay.nights === 1 ? '' : 's'} · {stay.adults} adult{stay.adults === 1 ? '' : 's'}{stay.children ? `, ${stay.children} child${stay.children === 1 ? '' : 'ren'}` : ''}</Text>
+            {stay.roomType ? (
+              <Text style={styles.room}>
+                {stay.roomNumber ? t('pastStays.roomWithNumber', { type: stay.roomType, number: stay.roomNumber }) : stay.roomType}
+              </Text>
+            ) : null}
+            <Text style={styles.meta}>
+              {t('pastStays.nights', { count: stay.nights })} · {t('pastStays.adults', { count: stay.adults })}
+              {stay.children ? t('pastStays.children', { count: stay.children }) : ''}
+            </Text>
           </Card>
         ))}
       </ScrollView>

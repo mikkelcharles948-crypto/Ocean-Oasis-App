@@ -2,30 +2,33 @@ import React from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { Card, Badge, EmptyState } from '../../components/UI';
 import { colors, spacing, radius, font } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 const STATUS_TONE = { Received: 'info', Assigned: 'warning', 'In Progress': 'warning', Completed: 'success' };
+const STATUS_KEY = { Received: 'received', Assigned: 'assigned', 'In Progress': 'inProgress', Completed: 'completed' };
 
-function timeAgo(iso) {
+function timeAgo(iso, t) {
   const diffMs = Date.now() - new Date(iso).getTime();
   const hrs = Math.floor(diffMs / 3600000);
-  if (hrs < 1) return 'Just now';
-  if (hrs < 24) return `${hrs}h ago`;
-  return `${Math.floor(hrs / 24)}d ago`;
+  if (hrs < 1) return t('requests.justNow');
+  if (hrs < 24) return t('requests.hoursAgo', { count: hrs });
+  return t('requests.daysAgo', { count: Math.floor(hrs / 24) });
 }
 
 export default function RequestsScreen({ navigation }) {
+  const { t } = useTranslation();
   const { serviceRequests } = useApp();
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
       <View style={styles.header}>
         <View>
-          <Text style={styles.headerTitle}>Requests</Text>
-          <Text style={styles.headerSub}>Housekeeping, dining, concierge, and more.</Text>
+          <Text style={styles.headerTitle}>{t('requests.title')}</Text>
+          <Text style={styles.headerSub}>{t('requests.subtitle')}</Text>
         </View>
       </View>
 
@@ -34,13 +37,13 @@ export default function RequestsScreen({ navigation }) {
           <Ionicons name="add" size={22} color={colors.white} />
         </View>
         <View style={{ flex: 1 }}>
-          <Text style={styles.newBtnTitle}>Request Something</Text>
-          <Text style={styles.newBtnSub}>Housekeeping, towels, maintenance, transportation & more</Text>
+          <Text style={styles.newBtnTitle}>{t('requests.requestSomething')}</Text>
+          <Text style={styles.newBtnSub}>{t('requests.requestSomethingSub')}</Text>
         </View>
         <Ionicons name="chevron-forward" size={18} color={colors.deepOcean} />
       </TouchableOpacity>
 
-      <Text style={styles.historyLabel}>Request History</Text>
+      <Text style={styles.historyLabel}>{t('requests.requestHistory')}</Text>
 
       <FlatList
         data={serviceRequests}
@@ -49,8 +52,8 @@ export default function RequestsScreen({ navigation }) {
         ListEmptyComponent={
           <EmptyState
             icon="chatbox-ellipses-outline"
-            title="No requests yet"
-            subtitle="When you request something from our team, you'll see its status here."
+            title={t('requests.noRequestsTitle')}
+            subtitle={t('requests.noRequestsSub')}
           />
         }
         renderItem={({ item }) => (
@@ -59,9 +62,9 @@ export default function RequestsScreen({ navigation }) {
               <View style={{ flex: 1 }}>
                 <Text style={styles.reqCategory}>{item.category}</Text>
                 <Text style={styles.reqDesc} numberOfLines={1}>{item.description}</Text>
-                <Text style={styles.reqTime}>{timeAgo(item.createdAt)}</Text>
+                <Text style={styles.reqTime}>{timeAgo(item.createdAt, t)}</Text>
               </View>
-              <Badge label={item.status} tone={STATUS_TONE[item.status]} />
+              <Badge label={t(`requests.status.${STATUS_KEY[item.status] || item.status}`)} tone={STATUS_TONE[item.status]} />
             </Card>
           </TouchableOpacity>
         )}

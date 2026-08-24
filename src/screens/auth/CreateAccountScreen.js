@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { useTranslation } from 'react-i18next';
+
 import { ScreenHeader, Field } from '../../components/UI';
 import Button from '../../components/Button';
 import { colors, spacing } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 export default function CreateAccountScreen({ navigation }) {
+  const { t } = useTranslation();
   const { signUp } = useApp();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -22,7 +25,7 @@ export default function CreateAccountScreen({ navigation }) {
     const result = await signUp({ email, password, firstName: parts[0] || '', lastName: parts.slice(1).join(' ') });
     setLoading(false);
     if (!result?.ok) {
-      setError(result.error || 'Unable to create your account.');
+      setError(result.error || t('auth.unableToCreateAccount'));
       return;
     }
     navigation.navigate('MagicLink', { fromSignup: true });
@@ -30,17 +33,17 @@ export default function CreateAccountScreen({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-      <ScreenHeader title="Create Account" onBack={() => navigation.goBack()} />
+      <ScreenHeader title={t('auth.createAccountTitle')} onBack={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <Text style={styles.heading}>Join Ocean Oasis</Text>
-        <Text style={styles.sub}>Create an account to manage your stay and save your preferences.</Text>
+        <Text style={styles.heading}>{t('auth.joinOceanOasis')}</Text>
+        <Text style={styles.sub}>{t('auth.createAccountSub')}</Text>
 
-        <Field label="Full Name" value={name} onChangeText={setName} placeholder="Amara Whitfield" />
-        <Field label="Email" value={email} onChangeText={setEmail} placeholder="you@example.com" keyboardType="email-address" />
-        <Field label="Password" value={password} onChangeText={setPassword} placeholder="••••••••" secureTextEntry />
+        <Field label={t('auth.fullName')} value={name} onChangeText={setName} placeholder={t('auth.fullNamePlaceholder')} />
+        <Field label={t('auth.email')} value={email} onChangeText={setEmail} placeholder="you@example.com" keyboardType="email-address" />
+        <Field label={t('auth.password')} value={password} onChangeText={setPassword} placeholder="••••••••" secureTextEntry />
         {error ? <Text style={styles.error}>{error}</Text> : null}
 
-        <Button label="Create Account" onPress={handleCreate} loading={loading} style={{ marginTop: spacing.sm }} />
+        <Button label={t('auth.createAccount')} onPress={handleCreate} loading={loading} style={{ marginTop: spacing.sm }} />
       </ScrollView>
     </SafeAreaView>
   );

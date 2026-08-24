@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, EmptyState, timeAgo } from '../../components/UI';
 import { colors, spacing, font } from '../../theme/theme';
@@ -14,16 +15,17 @@ const CATEGORY_ICON = {
 };
 
 export default function NotificationsScreen({ navigation }) {
+  const { t } = useTranslation();
   const { notifications, markNotificationRead, markAllNotificationsRead } = useApp();
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
       <ScreenHeader
-        title="Notifications"
+        title={t('notifications.title')}
         onBack={() => navigation.goBack()}
         right={
           <TouchableOpacity onPress={markAllNotificationsRead}>
-            <Text style={styles.markAll}>Read all</Text>
+            <Text style={styles.markAll}>{t('notifications.readAll')}</Text>
           </TouchableOpacity>
         }
       />
@@ -31,7 +33,7 @@ export default function NotificationsScreen({ navigation }) {
         data={notifications}
         keyExtractor={(n) => n.id}
         contentContainerStyle={{ padding: spacing.lg, gap: spacing.sm }}
-        ListEmptyComponent={<EmptyState icon="notifications-off-outline" title="No notifications" subtitle="You're all caught up." />}
+        ListEmptyComponent={<EmptyState icon="notifications-off-outline" title={t('notifications.empty')} subtitle={t('notifications.emptySub')} />}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => markNotificationRead(item.id)} style={[styles.row, !item.read && styles.rowUnread]}>
             <View style={styles.iconWrap}>
@@ -39,7 +41,7 @@ export default function NotificationsScreen({ navigation }) {
             </View>
             <View style={{ flex: 1 }}>
               <View style={styles.rowTop}>
-                <Text style={styles.category}>{item.category}</Text>
+                <Text style={styles.category}>{t(`notifications.category.${item.category}`, { defaultValue: item.category })}</Text>
                 <Text style={styles.time}>{item.createdAt ? timeAgo(item.createdAt) : item.time}</Text>
               </View>
               <Text style={styles.title}>{item.title}</Text>

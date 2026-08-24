@@ -2,26 +2,26 @@ import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader } from '../../components/UI';
 import { colors, spacing, radius, font } from '../../theme/theme';
 import { CONCIERGE_FAQ } from '../../data/mockData';
 
-function findAnswer(question) {
+function findAnswer(question, fallback) {
   const lower = question.toLowerCase();
   const match = CONCIERGE_FAQ.find((f) => f.question.toLowerCase() === lower);
   if (match) return match.answer;
   const partial = CONCIERGE_FAQ.find((f) =>
     lower.split(' ').some((word) => word.length > 3 && f.question.toLowerCase().includes(word))
   );
-  return partial
-    ? partial.answer
-    : "I can help with hotel services, activities, dining, and events. Try one of the suggested questions below, or contact reception for anything more specific.";
+  return partial ? partial.answer : fallback;
 }
 
 export default function ConciergeScreen({ navigation }) {
+  const { t } = useTranslation();
   const [messages, setMessages] = useState([
-    { id: 'm0', role: 'concierge', text: 'How can we help make your stay better?' },
+    { id: 'm0', role: 'concierge', text: t('concierge.greeting') },
   ]);
   const [input, setInput] = useState('');
   const scrollRef = useRef(null);
@@ -29,7 +29,7 @@ export default function ConciergeScreen({ navigation }) {
   const send = (text) => {
     if (!text.trim()) return;
     const userMsg = { id: `u_${Date.now()}`, role: 'user', text };
-    const answer = findAnswer(text);
+    const answer = findAnswer(text, t('concierge.fallbackAnswer'));
     const botMsg = { id: `b_${Date.now()}`, role: 'concierge', text: answer };
     setMessages((prev) => [...prev, userMsg, botMsg]);
     setInput('');
@@ -38,7 +38,7 @@ export default function ConciergeScreen({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-      <ScreenHeader title="Digital Concierge" onBack={() => navigation.goBack()} />
+      <ScreenHeader title={t('concierge.title')} onBack={() => navigation.goBack()} />
       <ScrollView ref={scrollRef} contentContainerStyle={styles.chatArea} onContentSizeChange={() => scrollRef.current?.scrollToEnd({ animated: true })}>
         {messages.map((m) => (
           <View key={m.id} style={[styles.bubbleRow, m.role === 'user' && styles.bubbleRowUser]}>
@@ -50,7 +50,7 @@ export default function ConciergeScreen({ navigation }) {
 
         {messages.length === 1 && (
           <View style={styles.suggestedWrap}>
-            <Text style={styles.suggestedLabel}>Suggested questions</Text>
+            <Text style={styles.suggestedLabel}>{t('concierge.suggestedQuestions')}</Text>
             {CONCIERGE_FAQ.map((f) => (
               <TouchableOpacity key={f.question} style={styles.suggestedChip} onPress={() => send(f.question)}>
                 <Text style={styles.suggestedText}>{f.question}</Text>
@@ -66,7 +66,7 @@ export default function ConciergeScreen({ navigation }) {
           style={styles.input}
           value={input}
           onChangeText={setInput}
-          placeholder="Ask the concierge…"
+          placeholder={t('concierge.inputPlaceholder')}
           placeholderTextColor={colors.slate}
           onSubmitEditing={() => send(input)}
         />
