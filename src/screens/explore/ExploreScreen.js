@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { Card, Badge, Pill } from '../../components/UI';
 import ImagePlaceholder from '../../components/ImagePlaceholder';
@@ -9,6 +10,7 @@ import { colors, spacing, radius, font } from '../../theme/theme';
 import { DESTINATIONS, DESTINATION_CATEGORIES } from '../../data/mockData';
 
 export default function ExploreScreen({ navigation }) {
+  const { t } = useTranslation();
   const [category, setCategory] = useState('All');
 
   const filtered = useMemo(
@@ -19,17 +21,17 @@ export default function ExploreScreen({ navigation }) {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Explore Dominica</Text>
+        <Text style={styles.headerTitle}>{t('explore.title')}</Text>
         <TouchableOpacity onPress={() => navigation.navigate('MapScreen')} style={styles.mapBtn}>
           <Ionicons name="map-outline" size={20} color={colors.deepOcean} />
         </TouchableOpacity>
       </View>
-      <Text style={styles.headerSub}>The Nature Island — waterfalls, reefs, and rainforest, curated for you.</Text>
+      <Text style={styles.headerSub}>{t('explore.subtitle')}</Text>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.pillScroll} contentContainerStyle={{ paddingHorizontal: spacing.lg }}>
-        <Pill label="All" selected={category === 'All'} onPress={() => setCategory('All')} />
+        <Pill label={t('explore.all')} selected={category === 'All'} onPress={() => setCategory('All')} />
         {DESTINATION_CATEGORIES.map((c) => (
-          <Pill key={c} label={c} selected={category === c} onPress={() => setCategory(c)} />
+          <Pill key={c} label={t(`common.category.${c}`)} selected={category === c} onPress={() => setCategory(c)} />
         ))}
       </ScrollView>
 
@@ -40,16 +42,16 @@ export default function ExploreScreen({ navigation }) {
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => navigation.navigate('DestinationDetail', { destinationId: item.id })}>
             <Card style={{ padding: 0, overflow: 'hidden', flexDirection: 'row' }}>
-              <ImagePlaceholder kind={item.image} style={{ width: 110, height: 130, borderRadius: 0 }} iconSize={28} />
+              <ImagePlaceholder kind={item.image} uri={item.imageUrl} style={{ width: 110, height: 130, borderRadius: 0 }} iconSize={28} />
               <View style={{ flex: 1, padding: spacing.sm }}>
-                <Badge label={item.category} tone="info" />
+                <Badge label={t(`common.category.${item.category}`)} tone="info" />
                 <Text style={styles.cardTitle}>{item.title}</Text>
                 <Text style={styles.cardDesc} numberOfLines={2}>{item.description}</Text>
                 <View style={styles.metaRow}>
                   <Ionicons name="time-outline" size={12} color={colors.slate} />
                   <Text style={styles.metaText}>{item.travelTime}</Text>
                   <Ionicons name="trending-up-outline" size={12} color={colors.slate} style={{ marginLeft: 8 }} />
-                  <Text style={styles.metaText}>{item.difficulty}</Text>
+                  <Text style={styles.metaText}>{t(`common.difficulty.${item.difficulty}`)}</Text>
                 </View>
               </View>
             </Card>

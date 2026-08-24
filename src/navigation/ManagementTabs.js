@@ -16,6 +16,7 @@ import ManagementStaffPerformanceScreen from '../screens/management/ManagementSt
 import ManagementAuditLogScreen from '../screens/management/ManagementAuditLogScreen';
 import ManagementSettingsScreen from '../screens/management/ManagementSettingsScreen';
 import { colors } from '../theme/theme';
+import GlassSurface from '../components/GlassSurface';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -52,6 +53,9 @@ export default function ManagementTabs() {
         tabBarInactiveTintColor: colors.slate,
         tabBarStyle: styles.tabBar,
         tabBarLabelStyle: styles.tabLabel,
+        tabBarBackground: () => (
+          <GlassSurface style={styles.tabBarGlass} borderRadius={0} intensity={46} tint="light" />
+        ),
         tabBarIcon: ({ focused }) => {
           const map = {
             Overview: focused ? 'stats-chart' : 'stats-chart-outline',
@@ -75,9 +79,10 @@ export default function ManagementTabs() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    backgroundColor: colors.white, borderTopWidth: 0, height: 84, paddingTop: 8, paddingBottom: 24,
-    shadowColor: '#0B3B45', shadowOffset: { width: 0, height: -2 }, shadowOpacity: 0.06, shadowRadius: 8,
+    backgroundColor: 'transparent', borderTopWidth: 0, height: 84, paddingTop: 8, paddingBottom: 24,
+    elevation: 0,
   },
+  tabBarGlass: { flex: 1, borderWidth: 0, borderTopWidth: 1 },
   tabLabel: { fontSize: 11, fontWeight: '600', marginTop: 2 },
   iconWrap: { alignItems: 'center', justifyContent: 'center' },
 });

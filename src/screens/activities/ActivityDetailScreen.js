@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import ImagePlaceholder from '../../components/ImagePlaceholder';
 import { Badge, ErrorState } from '../../components/UI';
@@ -9,7 +10,10 @@ import Button from '../../components/Button';
 import { colors, spacing, radius, font } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
+const AVAILABILITY_KEY = { Available: 'available', 'Limited spots': 'limitedSpots' };
+
 export default function ActivityDetailScreen({ route, navigation }) {
+  const { t } = useTranslation();
   const { activityId } = route.params || {};
   const { activities, savedActivityIds, toggleSavedActivity } = useApp();
   const activity = activities.find((a) => a.id === activityId);
@@ -17,7 +21,7 @@ export default function ActivityDetailScreen({ route, navigation }) {
   if (!activity) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-        <ErrorState title="Activity not found" onRetry={() => navigation.goBack()} />
+        <ErrorState title={t('activities.notFound')} onRetry={() => navigation.goBack()} />
       </SafeAreaView>
     );
   }
@@ -28,7 +32,7 @@ export default function ActivityDetailScreen({ route, navigation }) {
     <View style={{ flex: 1, backgroundColor: colors.ivory }}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View>
-          <ImagePlaceholder kind={activity.image} style={{ height: 240, borderRadius: 0 }} iconSize={52} />
+          <ImagePlaceholder kind={activity.image} uri={activity.imageUrl} style={{ height: 240, borderRadius: 0 }} iconSize={52} />
           <SafeAreaView style={styles.overlayRow} edges={['top']}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.circleBtn}>
               <Ionicons name="chevron-back" size={22} color={colors.white} />
@@ -41,19 +45,19 @@ export default function ActivityDetailScreen({ route, navigation }) {
 
         <View style={styles.content}>
           <View style={styles.rowBetween}>
-            <Badge label={activity.category} tone="info" />
-            <Badge label={activity.availability} tone={activity.availability === 'Available' ? 'success' : 'warning'} />
+            <Badge label={t(`common.category.${activity.category}`)} tone="info" />
+            <Badge label={t(`common.availability.${AVAILABILITY_KEY[activity.availability] || 'available'}`)} tone={activity.availability === 'Available' ? 'success' : 'warning'} />
           </View>
           <Text style={styles.title}>{activity.name}</Text>
           <Text style={styles.description}>{activity.description}</Text>
 
           <View style={styles.statsRow}>
-            <Stat icon="calendar-outline" label="Date" value={activity.date} />
-            <Stat icon="time-outline" label="Time" value={activity.time} />
-            <Stat icon="hourglass-outline" label="Duration" value={activity.duration} />
+            <Stat icon="calendar-outline" label={t('activities.date')} value={activity.date} />
+            <Stat icon="time-outline" label={t('activities.time')} value={activity.time} />
+            <Stat icon="hourglass-outline" label={t('activities.duration')} value={activity.duration} />
           </View>
 
-          <Section title="What to Bring">
+          <Section title={t('activities.whatToBring')}>
             {activity.whatToBring.map((w) => (
               <View key={w} style={styles.bulletRow}>
                 <Ionicons name="checkmark-circle-outline" size={16} color={colors.turquoiseDark} />
@@ -62,11 +66,11 @@ export default function ActivityDetailScreen({ route, navigation }) {
             ))}
           </Section>
 
-          <Section title="Meeting Point">
+          <Section title={t('activities.meetingPoint')}>
             <Text style={styles.plainText}>{activity.meetingPoint}</Text>
           </Section>
 
-          <Section title="Cancellation Policy">
+          <Section title={t('activities.cancellationPolicy')}>
             <Text style={styles.plainText}>{activity.cancellationPolicy}</Text>
           </Section>
         </View>
@@ -78,7 +82,7 @@ export default function ActivityDetailScreen({ route, navigation }) {
           <Text style={styles.footerLocation}>{activity.location}</Text>
         </View>
         <Button
-          label="Reserve Activity"
+          label={t('activities.reserveActivity')}
           onPress={() => navigation.navigate('BookActivity', { activityId: activity.id })}
           fullWidth={false}
           style={{ paddingHorizontal: 28 }}

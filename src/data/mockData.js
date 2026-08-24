@@ -56,6 +56,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: '1.5–2 hrs',
     image: 'ocean',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Scotts_Head%2C_Dominica_014.jpg',
   },
   {
     id: 'd_2',
@@ -68,6 +69,7 @@ export const DESTINATIONS = [
     difficulty: 'Challenging',
     duration: 'Full day',
     image: 'volcano',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Dominica_boiling_lake.jpg',
   },
   {
     id: 'd_3',
@@ -80,6 +82,7 @@ export const DESTINATIONS = [
     difficulty: 'Moderate',
     duration: '1.5 hrs',
     image: 'waterfall',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Trafalgar_Falls_at_Morne_Trois_Pitons_National_Park.jpg',
   },
   {
     id: 'd_4',
@@ -92,6 +95,7 @@ export const DESTINATIONS = [
     difficulty: 'Moderate',
     duration: 'Half day',
     image: 'rainforest',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Morne_Trois_Pitons_National_Park%2C_Dominica_-_jungle.jpg',
   },
   {
     id: 'd_5',
@@ -104,6 +108,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: '1 hr',
     image: 'pool',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Emerald_Pool%2C_Dominica.jpg',
   },
   {
     id: 'd_6',
@@ -116,6 +121,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: '3 hrs',
     image: 'whale',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Baleine_Ile_de_la_Dominique.jpg',
   },
   {
     id: 'd_7',
@@ -128,6 +134,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: '2 hrs',
     image: 'market',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Produce_Market%2C_Roseau%2C_Dominica.jpg',
   },
   {
     id: 'd_8',
@@ -140,6 +147,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: '1.5 hrs',
     image: 'springs',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Dominica%2C_Karibik_-_Laudat_-_Wotten_Waven_%E2%80%93_Fond_Cani_-_panoramio.jpg',
   },
   {
     id: 'd_9',
@@ -152,6 +160,72 @@ export const DESTINATIONS = [
     difficulty: 'Challenging',
     duration: '3 hrs',
     image: 'gorge',
+    // No verified real photo found for this specific site yet — falls back to the icon placeholder.
+  },
+  {
+    id: 'd_10',
+    title: 'Cabrits National Park & Fort Shirley',
+    category: 'Culture',
+    description:
+      'An 18th-century British garrison restored on a forested peninsula overlooking Prince Rupert Bay, with sweeping coastal views and Dominica\'s richest colonial history.',
+    distance: '45 min drive',
+    travelTime: '45 min',
+    difficulty: 'Easy',
+    duration: '2 hrs',
+    image: 'market',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Fort_Shirley%2C_Dominica%2C_2026.jpg',
+  },
+  {
+    id: 'd_11',
+    title: 'Indian River, Portsmouth',
+    category: 'Nature',
+    description:
+      'A quiet, guide-paddled river through a mangrove swamp draped in buttress roots — one of Dominica\'s most photographed spots, and a filming location for Pirates of the Caribbean.',
+    distance: '45 min drive',
+    travelTime: '45 min',
+    difficulty: 'Easy',
+    duration: '1.5 hrs',
+    image: 'rainforest',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Indian_River_in_Portsmouth%2C_Dominica.jpg',
+  },
+  {
+    id: 'd_12',
+    title: 'Middleham Falls',
+    category: 'Nature',
+    description:
+      'A demanding rainforest hike rewarded by Dominica\'s tallest waterfall, plunging over 200 feet into a cool jungle pool.',
+    distance: '35 min drive + hike',
+    travelTime: '35 min',
+    difficulty: 'Challenging',
+    duration: '3 hrs',
+    image: 'waterfall',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Middleham_Falls_at_Morne_Trois_Pitons_National_Park.jpg',
+  },
+  {
+    id: 'd_13',
+    title: 'Freshwater Lake',
+    category: 'Nature',
+    description:
+      'The highest lake in the Lesser Antilles, ringed by cloud forest inside Morne Trois Pitons National Park — a peaceful spot for a rim walk with mountain views.',
+    distance: '35 min drive',
+    travelTime: '35 min',
+    difficulty: 'Moderate',
+    duration: '1.5 hrs',
+    image: 'pool',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Freshwater_Lake%2C_Dominica.jpg',
+  },
+  {
+    id: 'd_14',
+    title: 'Kalinago Territory',
+    category: 'Culture',
+    description:
+      'Home to the descendants of the Kalinago (Carib) people, the last pre-Columbian community in the Caribbean — visit the cultural village to see traditional canoe-building, basket weaving, and craft.',
+    distance: '1 hr drive',
+    travelTime: '1 hr',
+    difficulty: 'Easy',
+    duration: 'Half day',
+    image: 'culture',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Carib_Territory_(Dominica).jpg',
   },
 ];
 
@@ -177,6 +251,7 @@ export const ACTIVITIES = [
     meetingPoint: 'Ocean Oasis Beach Desk',
     cancellationPolicy: 'Free cancellation up to 24 hours before the activity.',
     image: 'snorkel',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Scotts_Head%2C_Dominica_014.jpg',
   },
   {
     id: 'a_2',
@@ -197,6 +272,7 @@ export const ACTIVITIES = [
     meetingPoint: 'Hotel Lobby',
     cancellationPolicy: 'Free cancellation up to 24 hours before the activity.',
     image: 'rainforest',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Rainforest_(Dominica).jpg',
   },
   {
     id: 'a_3',
@@ -217,6 +293,7 @@ export const ACTIVITIES = [
     meetingPoint: 'Marina Dock',
     cancellationPolicy: 'Free cancellation up to 48 hours before departure.',
     image: 'catamaran',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Sailing_Catamaran_at_sunset.jpg',
   },
   {
     id: 'a_4',
@@ -237,6 +314,7 @@ export const ACTIVITIES = [
     meetingPoint: 'Beach Yoga Deck',
     cancellationPolicy: 'No cancellation fee.',
     image: 'yoga',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Yoga_At_Dawn_on_Bondi_Beach.jpg',
   },
   {
     id: 'a_5',
@@ -257,6 +335,7 @@ export const ACTIVITIES = [
     meetingPoint: 'Culinary Studio',
     cancellationPolicy: 'Free cancellation up to 24 hours before class.',
     image: 'cooking',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Chef_prepares_fresh_ingredients_by_chopping_red_vegetables.jpg',
   },
   {
     id: 'a_6',
@@ -278,6 +357,48 @@ export const ACTIVITIES = [
     cancellationPolicy: 'Free cancellation up to 48 hours before the activity.',
     image: 'gorge',
   },
+  {
+    id: 'a_7',
+    capacity: 18,
+    priceValue: 55,
+    name: 'Indian River Guided Boat Tour',
+    category: 'Nature',
+    shortDescription: 'Quiet paddle through mangrove swamp on Dominica\'s most iconic river.',
+    description:
+      'A licensed local guide rows you upstream along the Indian River, past buttress-root mangroves and swamp bloodwood trees, finishing with a stop at a riverside bush bar.',
+    date: '2026-08-18',
+    time: '10:00 AM',
+    duration: '1.5 hrs',
+    price: '$55 per person',
+    availability: 'Available',
+    location: 'Portsmouth',
+    whatToBring: ['Camera', 'Insect repellent', 'Light rain jacket'],
+    meetingPoint: 'Hotel Lobby',
+    cancellationPolicy: 'Free cancellation up to 24 hours before the activity.',
+    image: 'rainforest',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Indian_River_in_Portsmouth%2C_Dominica.jpg',
+  },
+  {
+    id: 'a_8',
+    capacity: 20,
+    priceValue: 70,
+    name: 'Kalinago Cultural Village Tour',
+    category: 'Culture',
+    shortDescription: 'Guided visit to the Kalinago Territory with craft demonstrations.',
+    description:
+      'Meet descendants of the Kalinago people in their territory on Dominica\'s east coast, with demonstrations of traditional canoe-building, basket weaving, and cassava bread making.',
+    date: '2026-08-19',
+    time: '9:00 AM',
+    duration: '4 hrs',
+    price: '$70 per person',
+    availability: 'Available',
+    location: 'Kalinago Territory',
+    whatToBring: ['Comfortable shoes', 'Camera', 'Cash for crafts'],
+    meetingPoint: 'Hotel Lobby',
+    cancellationPolicy: 'Free cancellation up to 48 hours before the activity.',
+    image: 'culture',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Carib_Territory_(Dominica).jpg',
+  },
 ];
 
 export const EVENTS = [
@@ -289,6 +410,18 @@ export const EVENTS = [
   { id: 'e_6', title: 'Guided Nature Walk', category: 'Adventure', date: '2026-08-16', time: '10:00 AM', location: 'Garden Trailhead', description: 'A relaxed walk through the property\'s botanical gardens.', icon: 'nature', capacity: 20, status: 'PUBLISHED' },
   { id: 'e_7', title: 'Cultural Performance', category: 'Culture', date: '2026-08-16', time: '8:00 PM', location: 'Main Terrace', description: 'Traditional Creole dance and drumming performance.', icon: 'culture', capacity: 100, status: 'PUBLISHED' },
   { id: 'e_8', title: 'Cooking Experience', category: 'Food', date: '2026-08-17', time: '4:00 PM', location: 'Culinary Studio', description: 'Hands-on class exploring Dominican flavours.', icon: 'cooking', capacity: 12, status: 'PUBLISHED' },
+
+  // Island-wide festivals (not hotel-run) — sourced from discoverdominica.com's
+  // 2026 festivals & events calendar, so guests can plan trips around them.
+  { id: 'e_9', title: 'Comess', category: 'Festival', date: '2026-06-27', time: '10:00 PM – 4:00 AM', location: 'La Plas Dame Park, Colihaut', description: 'A colourful bouyon night featuring paint, water, and powder.', icon: 'music', capacity: null, status: 'PUBLISHED' },
+  { id: 'e_10', title: 'Wellness Fair 2026: Be Well in Nature', category: 'Festival', date: '2026-07-04', time: '9:00 AM – 4:00 PM', location: 'UWI Global Campus Dominica', description: 'Free island-wide celebration of natural health and holistic living.', icon: 'yoga', capacity: null, status: 'PUBLISHED' },
+  { id: 'e_11', title: 'Gouté Domnik', category: 'Festival', date: '2026-07-19', time: 'All week', location: 'Island-wide', description: 'A week-long taste of Dominica — restaurant week, a One Pot Competition, and Farmers\' Marketplace, through July 26.', icon: 'cooking', capacity: null, status: 'PUBLISHED' },
+  { id: 'e_12', title: 'Bike Fest 2026', category: 'Festival', date: '2026-07-31', time: 'All weekend', location: 'Island-wide', description: 'Four days of drag racing, exhibitions, and an island-wide ride-out, through August 3.', icon: 'adventure', capacity: null, status: 'PUBLISHED' },
+  { id: 'e_13', title: 'Dive Fest', category: 'Festival', date: '2026-08-29', time: 'All weekend', location: 'Island-wide dive sites', description: 'Dominica\'s longest-running celebration of the deep — volcanic reef diving and marine reserve exploration.', icon: 'wave', capacity: null, status: 'PUBLISHED' },
+  { id: 'e_14', title: 'Flavours of the World Festival', category: 'Festival', date: '2026-10-04', time: 'All day', location: 'Roseau', description: 'A celebration of island cultures through international cuisine, language, and global rhythms.', icon: 'culture', capacity: null, status: 'PUBLISHED' },
+  { id: 'e_15', title: 'World Creole Music Festival', category: 'Festival', date: '2026-10-23', time: 'All weekend', location: 'Windsor Park, Roseau', description: 'The 26th annual WCMF — bouyon, zouk, soca, and Creole music, through October 25.', icon: 'music', capacity: null, status: 'PUBLISHED', imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Le_World_Creole_Music_Festival.jpg' },
+  { id: 'e_16', title: 'WATO Riverfront Food and Culture Festival', category: 'Festival', date: '2026-10-31', time: 'All day', location: 'Roseau riverfront', description: 'Themed "Ancestors" this year — open-fire cooking by Caribbean chefs.', icon: 'cooking', capacity: null, status: 'PUBLISHED' },
+  { id: 'e_17', title: 'Dominica Carnival — Mas Domnik', category: 'Festival', date: '2027-01-09', time: 'All month', location: 'Island-wide', description: '"The Real Mas" — bouyon, calypso, and costumes, running through February 10, 2027.', icon: 'culture', capacity: null, status: 'PUBLISHED' },
 ];
 
 export const DINING_VENUES = [
@@ -302,6 +435,7 @@ export const DINING_VENUES = [
     location: 'Main Building, Level 3',
     reservationRequired: true,
     image: 'finedining',
+    imageUrl: 'https://symphony.cdn.tambourine.com/_fusion/ocean-oasis/media/oceanedgedevelopment-homepage-gallery-01-69028ae57d28a.jpg',
   },
   {
     id: 'v_2',
@@ -313,6 +447,7 @@ export const DINING_VENUES = [
     location: 'Ground Floor, Garden Wing',
     reservationRequired: false,
     image: 'terrace',
+    imageUrl: 'https://symphony.cdn.tambourine.com/_fusion/ocean-oasis/media/oceanedgedevelopment-homepage-gallery-02-69028ae71481e.jpg',
   },
   {
     id: 'v_3',
@@ -324,6 +459,7 @@ export const DINING_VENUES = [
     location: 'Pool Deck',
     reservationRequired: false,
     image: 'bar',
+    imageUrl: 'https://symphony.cdn.tambourine.com/_fusion/ocean-oasis/media/oceanedgedevelopment-homepage-gallery-03-69028ae892712.jpg',
   },
   {
     id: 'v_4',
@@ -335,6 +471,7 @@ export const DINING_VENUES = [
     location: 'Delivered to your room',
     reservationRequired: false,
     image: 'roomservice',
+    imageUrl: 'https://symphony.cdn.tambourine.com/_fusion/ocean-oasis/media/oceanedgedevelopment-homepage-gallery-04-69028ae9e7bce.jpg',
   },
 ];
 
@@ -346,6 +483,7 @@ export const PROMOTIONS = [
     validity: 'Valid through August 31, 2026',
     terms: 'Applies to selected cocktails only. Cannot be combined with other offers.',
     image: 'cocktail',
+    imageUrl: 'https://symphony.cdn.tambourine.com/_fusion/ocean-oasis/media/oceanedgedevelopment-homepage-gallery-03-69028ae892712.jpg',
     status: 'PUBLISHED', targetAudience: 'All guests', impressions: 842, clicks: 216, bookings: 58, redemptions: 47, revenue: 1410,
   },
   {
@@ -355,6 +493,7 @@ export const PROMOTIONS = [
     validity: 'Available year-round, subject to availability',
     terms: 'Advance booking required. Minimum 2 guests.',
     image: 'privatedining',
+    imageUrl: 'https://symphony.cdn.tambourine.com/_fusion/ocean-oasis/media/oceanedgedevelopment-homepage-gallery-05-69028aeb59ab8.jpg',
     status: 'PUBLISHED', targetAudience: 'Couples', impressions: 530, clicks: 140, bookings: 22, redemptions: 19, revenue: 3610,
   },
   {
@@ -364,6 +503,7 @@ export const PROMOTIONS = [
     validity: 'Valid through September 15, 2026',
     terms: 'Discount applies to lower-priced activity. Subject to availability.',
     image: 'adventure',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Rainforest_(Dominica).jpg',
     status: 'PUBLISHED', targetAudience: 'Adventure interest', impressions: 410, clicks: 96, bookings: 31, redemptions: 26, revenue: 1860,
   },
   {
@@ -373,9 +513,74 @@ export const PROMOTIONS = [
     validity: 'Subject to availability at check-in',
     terms: 'Cannot be guaranteed in advance.',
     image: 'room',
+    imageUrl: 'https://symphony.cdn.tambourine.com/_fusion/ocean-oasis/media/oceanedgedevelopment-homepage-gallery-06-69028aecd33e8.jpg',
     status: 'PUBLISHED', targetAudience: 'All guests', impressions: 298, clicks: 74, bookings: 12, redemptions: 9, revenue: 0,
   },
 ];
+
+export const DINING_MENUS = {
+  v_1: {
+    sections: [
+      {
+        title: 'Starters',
+        items: [
+          { name: 'Callaloo Soup', price: '$9', description: 'Dasheen leaves, coconut milk, local herbs.' },
+          { name: 'Christophene Fritters', price: '$11', description: 'Chayote squash, saltfish, scotch bonnet aioli.' },
+          { name: 'Dock-Caught Ceviche', price: '$14', description: "Chef's daily catch, lime, red onion, plantain crisps." },
+        ],
+      },
+      {
+        title: 'Mains',
+        items: [
+          { name: 'Grilled Mahi Mahi', price: '$32', description: 'Coconut rice, callaloo, tamarind glaze.' },
+          { name: 'Braised Oxtail', price: '$29', description: 'Slow-cooked, butter beans, provision mash.' },
+          { name: 'Roasted Vegetable Curry', price: '$24', description: 'Seasonal market vegetables, coconut curry, roti.' },
+        ],
+      },
+      {
+        title: 'Desserts',
+        items: [
+          { name: 'Coconut Tart', price: '$8', description: 'Toasted coconut, passionfruit coulis.' },
+          { name: 'Rum Cake', price: '$8', description: "Dominican rum, spiced butter sauce." },
+        ],
+      },
+    ],
+  },
+  v_2: {
+    sections: [
+      { title: 'Breakfast', items: [
+        { name: 'Continental Spread', price: 'Included', description: 'Pastries, tropical fruit, yogurt, cereals.' },
+        { name: 'Bakes & Saltfish', price: '$12', description: 'Traditional fried bakes with saltfish souse.' },
+      ] },
+      { title: 'Lunch & Dinner', items: [
+        { name: 'Grilled Chicken Sandwich', price: '$14', description: 'House pepper sauce, provision chips.' },
+        { name: 'Terrace Salad', price: '$13', description: 'Local greens, avocado, citrus vinaigrette.' },
+        { name: 'Wood-Fired Flatbread', price: '$16', description: "Chef's daily topping selection." },
+      ] },
+    ],
+  },
+  v_3: {
+    sections: [
+      { title: 'Signature Cocktails', items: [
+        { name: 'Sunset Special', price: '$12', description: 'Rum, passionfruit, lime, ginger beer.' },
+        { name: "Dominica Sour", price: '$13', description: 'Local rum, bitters, egg white.' },
+      ] },
+      { title: 'Light Bites', items: [
+        { name: 'Plantain Chips & Dip', price: '$8', description: 'House pepper aioli.' },
+        { name: 'Coconut Shrimp', price: '$15', description: 'Sweet chili glaze.' },
+      ] },
+    ],
+  },
+  v_4: {
+    sections: [
+      { title: 'Available 24 Hours', items: [
+        { name: 'Club Sandwich', price: '$16', description: 'Triple-decker, hand-cut fries.' },
+        { name: 'Caribbean Fruit Plate', price: '$10', description: "Chef's seasonal selection." },
+        { name: 'Late-Night Pasta', price: '$18', description: 'Garlic, chili, herb oil.' },
+      ] },
+    ],
+  },
+};
 
 export const SERVICE_REQUEST_CATEGORIES = [
   { id: 'housekeeping', label: 'Housekeeping', icon: 'broom' },
@@ -526,18 +731,21 @@ export const REQUEST_CATEGORY_TO_DEPARTMENT = {
   Other: 'Front Desk',
 };
 
-export const STAFF_DIRECTORY = [
-  { id: 'st_1', name: 'Marcus Bellamy', role: 'GENERAL_MANAGER', department: 'Front Desk' },
-  { id: 'st_2', name: 'Elena Sinclair', role: 'MANAGEMENT', department: 'Front Desk' },
-  { id: 'st_3', name: 'James Douglas', role: 'FRONT_DESK', department: 'Front Desk' },
-  { id: 'st_4', name: 'Priya Chandra', role: 'CONCIERGE', department: 'Concierge' },
-  { id: 'st_5', name: 'Grace Osei', role: 'HOUSEKEEPING', department: 'Housekeeping' },
-  { id: 'st_6', name: 'Noah Fitzgerald', role: 'HOUSEKEEPING', department: 'Housekeeping' },
-  { id: 'st_7', name: 'Adrian Torres', role: 'MAINTENANCE', department: 'Maintenance' },
-  { id: 'st_8', name: 'Zara Anand', role: 'FOOD_AND_BEVERAGE', department: 'Food & Beverage' },
-  { id: 'st_9', name: 'Kwame Moreau', role: 'ACTIVITIES_MANAGER', department: 'Activities' },
-  { id: 'st_10', name: 'Ruby Hastings', role: 'MARKETING', department: 'Front Desk' },
-];
+// Which staff role should be notified (via the notifications table's
+// role-broadcast rows) when a guest submits a request in this category.
+export const REQUEST_CATEGORY_TO_ROLE = {
+  Housekeeping: 'HOUSEKEEPING',
+  'Extra Towels': 'HOUSEKEEPING',
+  Toiletries: 'HOUSEKEEPING',
+  Laundry: 'HOUSEKEEPING',
+  'Room Service': 'FOOD_AND_BEVERAGE',
+  Maintenance: 'MAINTENANCE',
+  Transportation: 'FRONT_DESK',
+  'Luggage Assistance': 'FRONT_DESK',
+  'Wake-up Call': 'FRONT_DESK',
+  Concierge: 'CONCIERGE',
+  Other: 'FRONT_DESK',
+};
 
 export const ROOM_STATUSES = ['VACANT_CLEAN', 'VACANT_DIRTY', 'OCCUPIED_CLEAN', 'OCCUPIED_SERVICE_REQUIRED', 'INSPECTION_REQUIRED', 'OUT_OF_ORDER'];
 export const ROOM_STATUS_LABELS = {
@@ -570,28 +778,7 @@ if (idx204 >= 0) ROOMS[idx204] = { ...ROOMS[idx204], type: 'Ocean View Suite', s
 export const MAINTENANCE_CATEGORIES = ['AC', 'Plumbing', 'Electrical', 'Internet', 'Appliances', 'Furniture', 'Structural', 'Other'];
 export const MAINTENANCE_SEVERITIES = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'];
 
-export const INITIAL_MAINTENANCE_ISSUES = [
-  { id: 'm_1', roomNumber: '204', category: 'AC', severity: 'HIGH', description: 'AC unit not cooling, compressor noise.', status: 'OPEN', createdAt: new Date(Date.now() - 12 * 60000).toISOString(), resolvedAt: null },
-  { id: 'm_2', roomNumber: '312', category: 'Plumbing', severity: 'MEDIUM', description: 'Slow drain in bathroom sink.', status: 'IN_PROGRESS', createdAt: new Date(Date.now() - 180 * 60000).toISOString(), resolvedAt: null },
-  { id: 'm_3', roomNumber: '108', category: 'Electrical', severity: 'LOW', description: 'Bedside lamp flickering.', status: 'RESOLVED', createdAt: new Date(Date.now() - 1400 * 60000).toISOString(), resolvedAt: new Date(Date.now() - 1350 * 60000).toISOString() },
-];
-
 export const CONTENT_STATUSES = ['DRAFT', 'SCHEDULED', 'PUBLISHED', 'ARCHIVED'];
-export const INITIAL_CONTENT_ITEMS = [
-  { id: 'c_1', type: 'Destination', title: 'Champagne Reef', status: 'PUBLISHED', updatedAt: new Date(Date.now() - 5 * 86400000).toISOString() },
-  { id: 'c_2', type: 'FAQ', title: 'What time is breakfast?', status: 'PUBLISHED', updatedAt: new Date(Date.now() - 12 * 86400000).toISOString() },
-  { id: 'c_3', type: 'Announcement', title: 'Pool maintenance Aug 19, 2–3 PM', status: 'PUBLISHED', updatedAt: new Date(Date.now() - 1 * 86400000).toISOString() },
-  { id: 'c_4', type: 'Destination', title: 'Ti Kwen Glo Cho Hot Springs', status: 'DRAFT', updatedAt: new Date(Date.now() - 2 * 86400000).toISOString() },
-];
-
-export const INITIAL_AUDIT_LOG = [
-  { id: 'log_1', actorName: 'Ruby Hastings', actorRole: 'MARKETING', action: 'Published promotion "Sunset Special"', timestamp: new Date(Date.now() - 60 * 24 * 60000).toISOString() },
-  { id: 'log_2', actorName: 'Grace Osei', actorRole: 'HOUSEKEEPING', action: 'Updated room 108 status to Vacant · Clean', timestamp: new Date(Date.now() - 200 * 60000).toISOString() },
-];
-
-export const INITIAL_STAFF_NOTIFICATIONS = [
-  { id: 'sn_1', title: 'Urgent maintenance request', body: 'Room 204 — AC not cooling.', category: 'Maintenance', createdAt: new Date(Date.now() - 12 * 60000).toISOString(), read: false },
-];
 
 // Real Ocean Oasis Hotel Dominica contact/location details, sourced from
 // oceanoasisdominica.com — used throughout Contact Reception and Explore.
@@ -605,16 +792,3 @@ export const PROPERTY_INFO = {
 };
 
 export const TARGET_AUDIENCES = ['All guests', 'New arrivals', 'Families', 'Couples', 'Adventure interest', 'Wellness interest'];
-
-// Seed a couple of "other guests" (beyond the app's own signed-in guest) so
-// staff/management screens have more than one row to show in a demo.
-export const OTHER_GUESTS = [
-  { id: 'g_2001', firstName: 'Daniel', lastName: 'Okafor', roomNumber: '108', reservationNumber: 'OO-58101', checkIn: '2026-08-16', checkOut: '2026-08-20' },
-  { id: 'g_2002', firstName: 'Sophia', lastName: 'Reyes', roomNumber: '312', reservationNumber: 'OO-58102', checkIn: '2026-08-14', checkOut: '2026-08-19' },
-  { id: 'g_2003', firstName: 'Noah', lastName: 'Fitzgerald Jr.', roomNumber: '105', reservationNumber: 'OO-58103', checkIn: '2026-08-17', checkOut: '2026-08-22' },
-];
-
-export const OTHER_FEEDBACK = [
-  { id: 'fb_seed_1', guestName: 'Daniel Okafor', roomNumber: '108', overall: 2, ratings: { Room: 3, Cleanliness: 2, Service: 2, Food: 3, Activities: 3 }, comments: 'Room was not ready at check-in and the AC was noisy all night.', createdAt: new Date(Date.now() - 90 * 60000).toISOString(), resolved: false, resolutionNote: '' },
-  { id: 'fb_seed_2', guestName: 'Sophia Reyes', roomNumber: '312', overall: 5, ratings: { Room: 5, Cleanliness: 5, Service: 5, Food: 4, Activities: 5 }, comments: 'Wonderful stay, the snorkeling excursion was the highlight!', createdAt: new Date(Date.now() - 400 * 60000).toISOString(), resolved: true, resolutionNote: '' },
-];

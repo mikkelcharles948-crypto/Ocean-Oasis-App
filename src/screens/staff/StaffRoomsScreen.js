@@ -2,8 +2,10 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
 
 import { Card, Badge } from '../../components/UI';
+import GlassSurface from '../../components/GlassSurface';
 import { colors, spacing, radius, font } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 import { ROOM_STATUSES, ROOM_STATUS_LABELS } from '../../data/mockData';
@@ -64,7 +66,8 @@ export default function StaffRoomsScreen() {
 
       <Modal visible={!!active} transparent animationType="fade" onRequestClose={() => setActiveId(null)}>
         <View style={styles.modalBackdrop}>
-          <View style={styles.modalPanel}>
+          <BlurView intensity={20} tint="dark" style={StyleSheet.absoluteFill} />
+          <GlassSurface style={styles.modalPanel} borderRadius={radius.lg} intensity={38} tint="light">
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Room {active?.number}</Text>
               <TouchableOpacity onPress={() => setActiveId(null)}><Ionicons name="close" size={22} color={colors.slate} /></TouchableOpacity>
@@ -86,7 +89,7 @@ export default function StaffRoomsScreen() {
                 </View>
               </>
             )}
-          </View>
+          </GlassSurface>
         </View>
       </Modal>
     </SafeAreaView>
@@ -112,7 +115,7 @@ const styles = StyleSheet.create({
   roomNum: { fontSize: 16, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
   dot: { width: 8, height: 8, borderRadius: 4, marginTop: 6 },
   modalBackdrop: { flex: 1, backgroundColor: 'rgba(9,46,55,0.5)', justifyContent: 'center', padding: spacing.lg },
-  modalPanel: { backgroundColor: colors.white, borderRadius: radius.lg, padding: spacing.lg },
+  modalPanel: { borderRadius: radius.lg, padding: spacing.lg },
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.sm },
   modalTitle: { fontSize: 18, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
   modalMeta: { fontSize: 12.5, color: colors.slate, marginBottom: 8 },

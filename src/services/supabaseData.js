@@ -36,15 +36,15 @@ export function mapReservation(row) {
 }
 
 export function mapActivity(row) {
-  return row ? { ...row, shortDescription: row.short_description, priceValue: Number(row.price_value || 0), date: row.activity_date, time: row.activity_time, whatToBring: row.what_to_bring || [], meetingPoint: row.meeting_point, cancellationPolicy: row.cancellation_policy } : row;
+  return row ? { ...row, shortDescription: row.short_description, priceValue: Number(row.price_value || 0), date: row.activity_date, time: row.activity_time, whatToBring: row.what_to_bring || [], meetingPoint: row.meeting_point, cancellationPolicy: row.cancellation_policy, imageUrl: row.image_url } : row;
 }
 
 export function mapEvent(row) {
-  return row ? { ...row, date: row.event_date, time: row.event_time } : row;
+  return row ? { ...row, date: row.event_date, time: row.event_time, imageUrl: row.image_url } : row;
 }
 
 export function mapPromotion(row) {
-  return row ? { ...row, targetAudience: row.target_audience } : row;
+  return row ? { ...row, targetAudience: row.target_audience, imageUrl: row.image_url } : row;
 }
 
 export function mapServiceRequest(row) {
@@ -123,6 +123,32 @@ export async function updateServiceRequest(requestId, changes) {
   const { data, error } = await supabase.from('service_requests').update(changes).eq('id', requestId).select().single();
   if (error) throw error;
   return mapServiceRequest(data);
+}
+
+export async function loadPastStays(guestId) {
+  const { data, error } = await supabase
+    .from('reservations')
+    .select('*, rooms(number, type)')
+    .eq('guest_id', guestId)
+    .order('check_in', { ascending: false });
+  if (error) throw error;
+  return (data || []).map((row) => ({
+    ...mapReservation(row),
+    roomNumber: row.rooms?.number || null,
+    roomType: row.rooms?.type || null,
+  }));
+}
+
+export async function createFeedback(guestId, { overall, ratings, comments, resolved }) {
+  const { data, error } = await supabase.from('feedback').insert({
+    guest_id: guestId,
+    overall,
+    ratings: ratings || {},
+    comments: comments || null,
+    resolved,
+  }).select().single();
+  if (error) throw error;
+  return data;
 }
 
 export async function updateGuestProfile(guestId, changes) {

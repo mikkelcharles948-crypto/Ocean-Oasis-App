@@ -1,29 +1,43 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import Button from '../../components/Button';
-import { colors, spacing, radius, font, shadow } from '../../theme/theme';
+import { Field } from '../../components/UI';
+import { colors, spacing, font } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
-import { STAFF_DIRECTORY, ROLE_LABELS } from '../../data/mockData';
 
 export default function OpsLoginScreen({ route, navigation }) {
+  const { t } = useTranslation();
   const surface = route?.params?.surface || 'staff';
-  const { opsSignIn, canAccessSurface, chooseExperience } = useApp();
+  const { opsSignIn, chooseExperience } = useApp();
 
-  const eligibleStaff = STAFF_DIRECTORY.filter((s) => canAccessSurface(s.role, surface));
-  const [selected, setSelected] = useState(eligibleStaff[0]);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSignIn = () => {
-    if (!selected) return;
-    opsSignIn(selected.name, selected.role);
+  const handleSignIn = async () => {
+    if (!email.trim() || !password) {
+      setError(t('experience.enterEmailAndPassword'));
+      return;
+    }
+    setLoading(true);
+    setError('');
+    const result = await opsSignIn(email, password, surface);
+    setLoading(false);
+    if (!result?.ok) {
+      setError(result?.error || t('experience.unableToSignIn'));
+      return;
+    }
     chooseExperience(surface);
   };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-      <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.lg }}>
+      <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.lg }} keyboardShouldPersistTaps="handled">
         <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginBottom: spacing.md }}>
           <Ionicons name="chevron-back" size={24} color={colors.deepOcean} />
         </TouchableOpacity>
@@ -31,38 +45,18 @@ export default function OpsLoginScreen({ route, navigation }) {
         <View style={styles.iconWrap}>
           <Ionicons name={surface === 'staff' ? 'headset' : 'stats-chart'} size={26} color={colors.white} />
         </View>
-        <Text style={styles.title}>{surface === 'staff' ? 'Staff Sign In' : 'Management Sign In'}</Text>
+        <Text style={styles.title}>{surface === 'staff' ? t('experience.staffSignIn') : t('experience.managementSignIn')}</Text>
         <Text style={styles.subtitle}>
-          {surface === 'staff'
-            ? 'Choose a demo team member to open the operations dashboard.'
-            : 'Choose a demo manager to open the analytics dashboard.'}
+          {surface === 'staff' ? t('experience.staffSignInSub') : t('experience.managementSignInSub')}
         </Text>
 
-        <View style={{ marginTop: spacing.lg, gap: spacing.sm }}>
-          {eligibleStaff.map((s) => {
-            const isSelected = selected?.id === s.id;
-            return (
-              <TouchableOpacity
-                key={s.id}
-                style={[styles.staffRow, isSelected && styles.staffRowSelected]}
-                onPress={() => setSelected(s)}
-              >
-                <View style={styles.avatar}>
-                  <Text style={styles.avatarText}>{s.name.split(' ').map((n) => n[0]).join('').slice(0, 2)}</Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.staffName}>{s.name}</Text>
-                  <Text style={styles.staffMeta}>{ROLE_LABELS[s.role]} · {s.department}</Text>
-                </View>
-                {isSelected && <Ionicons name="checkmark-circle" size={22} color={colors.turquoise} />}
-              </TouchableOpacity>
-            );
-          })}
+        <View style={{ marginTop: spacing.lg }}>
+          <Field label={t('auth.email')} value={email} onChangeText={setEmail} placeholder="you@oceanoasisdominica.com" keyboardType="email-address" />
+          <Field label={t('auth.password')} value={password} onChangeText={setPassword} placeholder="••••••••" secureTextEntry />
+          {error ? <Text style={styles.error}>{error}</Text> : null}
         </View>
 
-        <Button label={`Enter ${surface === 'staff' ? 'Staff Dashboard' : 'Management Dashboard'}`} onPress={handleSignIn} style={{ marginTop: spacing.xl }} disabled={!selected} />
-
-        <Text style={styles.note}>Demo authentication — selecting a team member simulates sign-in. Production would use real credentials.</Text>
+        <Button label={surface === 'staff' ? t('experience.enterStaffDashboard') : t('experience.enterManagementDashboard')} onPress={handleSignIn} loading={loading} style={{ marginTop: spacing.md }} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -72,14 +66,5 @@ const styles = StyleSheet.create({
   iconWrap: { width: 52, height: 52, borderRadius: 26, backgroundColor: colors.deepOcean, alignItems: 'center', justifyContent: 'center', marginBottom: spacing.md },
   title: { fontSize: 22, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
   subtitle: { fontSize: 13.5, color: colors.slate, marginTop: 6, lineHeight: 19 },
-  staffRow: {
-    flexDirection: 'row', alignItems: 'center', gap: spacing.sm, backgroundColor: colors.white,
-    borderRadius: radius.md, padding: spacing.sm, borderWidth: 1.5, borderColor: 'transparent', ...shadow.card,
-  },
-  staffRowSelected: { borderColor: colors.turquoise, backgroundColor: '#EFFAF9' },
-  avatar: { width: 38, height: 38, borderRadius: 19, backgroundColor: colors.turquoiseDark, alignItems: 'center', justifyContent: 'center' },
-  avatarText: { color: colors.white, fontWeight: '700', fontSize: 12.5 },
-  staffName: { fontSize: 14, fontWeight: '700', color: colors.charcoal },
-  staffMeta: { fontSize: 11.5, color: colors.slate, marginTop: 1 },
-  note: { fontSize: 11, color: colors.slate, textAlign: 'center', marginTop: spacing.lg, lineHeight: 15 },
+  error: { color: colors.error, fontSize: 13, marginTop: 4, marginBottom: spacing.sm },
 });

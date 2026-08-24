@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Card, Badge, Pill, EmptyState } from '../../components/UI';
 import ImagePlaceholder from '../../components/ImagePlaceholder';
@@ -9,7 +10,10 @@ import { colors, spacing, font } from '../../theme/theme';
 import { ACTIVITY_CATEGORIES } from '../../data/mockData';
 import { useApp } from '../../context/AppContext';
 
+const AVAILABILITY_KEY = { Available: 'available', 'Limited spots': 'limitedSpots' };
+
 export default function ActivitiesScreen({ navigation }) {
+  const { t } = useTranslation();
   const { activities } = useApp();
   const [category, setCategory] = useState('All');
   const filtered = useMemo(
@@ -19,7 +23,7 @@ export default function ActivitiesScreen({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-      <ScreenHeader title="Activities" onBack={() => navigation.goBack()} />
+      <ScreenHeader title={t('activities.title')} onBack={() => navigation.goBack()} />
       <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -27,21 +31,21 @@ export default function ActivitiesScreen({ navigation }) {
         keyExtractor={(c) => c}
         style={{ flexGrow: 0, marginVertical: spacing.sm }}
         contentContainerStyle={{ paddingHorizontal: spacing.lg }}
-        renderItem={({ item }) => <Pill label={item} selected={category === item} onPress={() => setCategory(item)} />}
+        renderItem={({ item }) => <Pill label={item === 'All' ? t('explore.all') : t(`common.category.${item}`)} selected={category === item} onPress={() => setCategory(item)} />}
       />
       <FlatList
         data={filtered}
         keyExtractor={(a) => a.id}
         contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.sm, gap: spacing.md }}
-        ListEmptyComponent={<EmptyState icon="sunny-outline" title="No activities in this category" />}
+        ListEmptyComponent={<EmptyState icon="sunny-outline" title={t('activities.noActivities')} />}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => navigation.navigate('ActivityDetail', { activityId: item.id })}>
             <Card style={{ padding: 0, overflow: 'hidden' }}>
-              <ImagePlaceholder kind={item.image} style={{ height: 130, borderRadius: 0 }} iconSize={32} />
+              <ImagePlaceholder kind={item.image} uri={item.imageUrl} style={{ height: 130, borderRadius: 0 }} iconSize={32} />
               <View style={{ padding: spacing.md }}>
                 <View style={styles.rowBetween}>
-                  <Badge label={item.category} tone="info" />
-                  <Badge label={item.availability} tone={item.availability === 'Available' ? 'success' : 'warning'} />
+                  <Badge label={t(`common.category.${item.category}`)} tone="info" />
+                  <Badge label={t(`common.availability.${AVAILABILITY_KEY[item.availability] || 'available'}`)} tone={item.availability === 'Available' ? 'success' : 'warning'} />
                 </View>
                 <Text style={styles.title}>{item.name}</Text>
                 <Text style={styles.desc} numberOfLines={2}>{item.shortDescription}</Text>

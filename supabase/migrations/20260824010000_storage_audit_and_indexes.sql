@@ -25,15 +25,15 @@ for insert with check (bucket_id = 'promotion-media' and public.is_staff());
 create policy private_guest_upload_read on storage.objects
 for select using (
   bucket_id = 'private-guest-uploads'
-  and (owner_id = auth.uid() or public.is_staff())
+  and (owner_id = auth.uid()::text or public.is_staff())
 );
 create policy private_guest_upload_insert on storage.objects
 for insert with check (
   bucket_id = 'private-guest-uploads'
-  and (owner_id = auth.uid() or public.is_staff())
+  and (owner_id = auth.uid()::text or public.is_staff())
 );
 create policy private_guest_upload_delete on storage.objects
-for delete using (bucket_id = 'private-guest-uploads' and (owner_id = auth.uid() or public.is_staff()));
+for delete using (bucket_id = 'private-guest-uploads' and (owner_id = auth.uid()::text or public.is_staff()));
 
 create or replace function public.write_audit_entry()
 returns trigger

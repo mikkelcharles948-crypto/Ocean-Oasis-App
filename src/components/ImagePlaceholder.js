@@ -1,11 +1,12 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, StyleSheet, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { colors, radius } from '../theme/theme';
 
-// Stand-in for real hotel/destination photography. Swap for <Image source={{ uri }} />
-// once real asset URLs or bundled photos are available.
+// Renders a real photo when `uri` is supplied (falling back to the gradient
+// placeholder below if the remote image fails to load), otherwise the
+// gradient/icon stand-in.
 const ICONS = {
   ocean: 'wave', volcano: 'volcano', waterfall: 'waterfall', rainforest: 'forest',
   pool: 'pool', whale: 'whale', market: 'store', springs: 'hot-tub', gorge: 'terrain',
@@ -29,9 +30,22 @@ function hashStr(s = '') {
   return h;
 }
 
-export default function ImagePlaceholder({ kind = 'ocean', style, iconSize = 34, borderRadius = radius.lg }) {
+export default function ImagePlaceholder({ kind = 'ocean', uri, style, iconSize = 34, borderRadius = radius.lg }) {
+  const [failed, setFailed] = useState(false);
   const gradient = GRADIENTS[hashStr(kind) % GRADIENTS.length];
   const iconName = ICONS[kind] || 'island';
+
+  if (uri && !failed) {
+    return (
+      <Image
+        source={{ uri }}
+        style={[styles.wrap, { borderRadius }, style]}
+        resizeMode="cover"
+        onError={() => setFailed(true)}
+      />
+    );
+  }
+
   return (
     <LinearGradient
       colors={gradient}

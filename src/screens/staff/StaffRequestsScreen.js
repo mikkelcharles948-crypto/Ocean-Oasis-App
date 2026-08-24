@@ -2,18 +2,19 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
 
 import { Card, Badge, EmptyState, timeAgo } from '../../components/UI';
+import GlassSurface from '../../components/GlassSurface';
 import { colors, spacing, radius, font } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
-import { STAFF_DIRECTORY } from '../../data/mockData';
 
 const STATUS_TONE = { Received: 'info', Assigned: 'warning', 'In Progress': 'warning', Completed: 'success', Cancelled: 'neutral' };
 const PRIORITY_TONE = { URGENT: 'error', HIGH: 'warning', NORMAL: 'neutral' };
 const FILTERS = ['Open', 'Received', 'Assigned', 'In Progress', 'Completed', 'All'];
 
 export default function StaffRequestsScreen() {
-  const { serviceRequests, assignRequestToStaff, updateRequestStatus, addRequestNote } = useApp();
+  const { serviceRequests, assignRequestToStaff, updateRequestStatus, addRequestNote, staffDirectory } = useApp();
   const [filter, setFilter] = useState('Open');
   const [activeId, setActiveId] = useState(null);
   const [noteText, setNoteText] = useState('');
@@ -65,7 +66,7 @@ export default function StaffRequestsScreen() {
                 <Text style={styles.meta}>{item.department} · {timeAgo(item.createdAt)}</Text>
                 <Badge label={item.status} tone={STATUS_TONE[item.status]} />
               </View>
-              {item.assignedStaffName && <Text style={styles.assigned}>Assigned to {item.assignedStaffName}</Text>}
+              {item.assignedStaffId && <Text style={styles.assigned}>Assigned to {staffDirectory.find((s) => s.id === item.assignedStaffId)?.name}</Text>}
             </Card>
           </TouchableOpacity>
         )}
@@ -73,7 +74,8 @@ export default function StaffRequestsScreen() {
 
       <Modal visible={!!active} animationType="slide" transparent onRequestClose={() => setActiveId(null)}>
         <View style={styles.modalBackdrop}>
-          <View style={styles.modalPanel}>
+          <BlurView intensity={20} tint="dark" style={StyleSheet.absoluteFill} />
+          <GlassSurface style={styles.modalPanel} borderRadius={0} intensity={38} tint="light">
             <ScrollView keyboardShouldPersistTaps="handled">
               <View style={styles.modalHeader}>
                 <Text style={styles.modalTitle}>Room {active?.roomNumber}</Text>
@@ -92,9 +94,9 @@ export default function StaffRequestsScreen() {
 
                   <Text style={styles.fieldLabel}>Assign to staff</Text>
                   <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: spacing.md }}>
-                    {STAFF_DIRECTORY.filter((s) => s.department === active.department || s.role === 'GENERAL_MANAGER').map((s) => (
-                      <TouchableOpacity key={s.id} onPress={() => assignRequestToStaff(active.id, s.name)} style={[styles.chip, active.assignedStaffName === s.name && styles.chipActive]}>
-                        <Text style={[styles.chipText, active.assignedStaffName === s.name && styles.chipTextActive]}>{s.name}</Text>
+                    {staffDirectory.filter((s) => s.department === active.department || s.role === 'GENERAL_MANAGER').map((s) => (
+                      <TouchableOpacity key={s.id} onPress={() => assignRequestToStaff(active.id, s.id)} style={[styles.chip, active.assignedStaffId === s.id && styles.chipActive]}>
+                        <Text style={[styles.chipText, active.assignedStaffId === s.id && styles.chipTextActive]}>{s.name}</Text>
                       </TouchableOpacity>
                     ))}
                   </ScrollView>
@@ -129,7 +131,7 @@ export default function StaffRequestsScreen() {
                 </>
               )}
             </ScrollView>
-          </View>
+          </GlassSurface>
         </View>
       </Modal>
     </SafeAreaView>
@@ -150,7 +152,7 @@ const styles = StyleSheet.create({
   meta: { fontSize: 11.5, color: colors.slate },
   assigned: { fontSize: 11.5, color: colors.turquoiseDark, marginTop: 6, fontWeight: '600' },
   modalBackdrop: { flex: 1, backgroundColor: 'rgba(9,46,55,0.5)', justifyContent: 'flex-end' },
-  modalPanel: { backgroundColor: colors.white, borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, padding: spacing.lg, maxHeight: '85%' },
+  modalPanel: { borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, padding: spacing.lg, maxHeight: '85%' },
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.md },
   modalTitle: { fontSize: 19, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
   detailLine: { fontSize: 13.5, color: colors.charcoal, marginBottom: 6, lineHeight: 19 },

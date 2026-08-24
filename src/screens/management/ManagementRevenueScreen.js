@@ -2,11 +2,11 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Card, SectionHeader, KpiCard } from '../../components/UI';
+import { Card, ScreenHeader, SectionHeader, KpiCard } from '../../components/UI';
 import { colors, spacing, font } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
-export default function ManagementRevenueScreen() {
+export default function ManagementRevenueScreen({ navigation }) {
   const { activities, activityBookings, promotions } = useApp();
 
   const activityRevenue = activityBookings.reduce((s, b) => s + (b.amount || 0), 0);
@@ -19,8 +19,8 @@ export default function ManagementRevenueScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
+      <ScreenHeader title="Revenue Analytics" onBack={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: spacing.xxl }}>
-        <Text style={styles.heading}>Revenue Analytics</Text>
         <Text style={styles.sub}>Platform-attributed revenue only.</Text>
 
         <Card style={{ backgroundColor: '#E1F2F1', borderWidth: 0, marginBottom: spacing.md }}>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, ErrorState } from '../../components/UI';
 import ImagePlaceholder from '../../components/ImagePlaceholder';
@@ -10,6 +11,7 @@ import { colors, spacing, font } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 export default function EventDetailScreen({ route, navigation }) {
+  const { t } = useTranslation();
   const { eventId } = route.params || {};
   const { events, itinerary, addToItinerary } = useApp();
   const event = events.find((e) => e.id === eventId);
@@ -18,7 +20,7 @@ export default function EventDetailScreen({ route, navigation }) {
   if (!event) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-        <ErrorState title="Event not found" onRetry={() => navigation.goBack()} />
+        <ErrorState title={t('events.eventNotFound')} onRetry={() => navigation.goBack()} />
       </SafeAreaView>
     );
   }
@@ -31,9 +33,9 @@ export default function EventDetailScreen({ route, navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-      <ScreenHeader title="Event" onBack={() => navigation.goBack()} />
+      <ScreenHeader title={t('events.eventTitle')} onBack={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={{ padding: spacing.lg }}>
-        <ImagePlaceholder kind={event.icon} style={{ height: 160 }} iconSize={40} />
+        <ImagePlaceholder kind={event.icon} uri={event.imageUrl} style={{ height: 160 }} iconSize={40} />
         <Text style={styles.title}>{event.title}</Text>
         <View style={styles.metaRow}>
           <Ionicons name="time-outline" size={15} color={colors.slate} />
@@ -44,13 +46,13 @@ export default function EventDetailScreen({ route, navigation }) {
         <Text style={styles.description}>{event.description}</Text>
 
         <Button
-          label={isSaved ? 'Added to Itinerary' : 'Add to Itinerary'}
+          label={isSaved ? t('events.addedToItinerary') : t('events.addToItinerary')}
           onPress={handleSave}
           disabled={isSaved}
           style={{ marginTop: spacing.lg }}
         />
         <Button
-          label={reminderSet ? 'Reminder Set' : 'Set Reminder'}
+          label={reminderSet ? t('events.reminderSet') : t('events.setReminder')}
           variant="outline"
           onPress={() => setReminderSet(true)}
           disabled={reminderSet}

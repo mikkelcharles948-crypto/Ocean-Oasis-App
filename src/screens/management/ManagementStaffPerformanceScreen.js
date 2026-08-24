@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Card, ScreenHeader } from '../../components/UI';
 import { colors, spacing, font } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
-import { STAFF_DIRECTORY, ROLE_LABELS } from '../../data/mockData';
+import { ROLE_LABELS } from '../../data/mockData';
 
 function minutesBetween(a, b) {
   if (!a || !b) return null;
@@ -18,10 +18,10 @@ function fmtMins(n) {
 }
 
 export default function ManagementStaffPerformanceScreen({ navigation }) {
-  const { serviceRequests } = useApp();
+  const { serviceRequests, staffDirectory } = useApp();
 
-  const rows = STAFF_DIRECTORY.map((s) => {
-    const assigned = serviceRequests.filter((r) => r.assignedStaffName === s.name);
+  const rows = staffDirectory.map((s) => {
+    const assigned = serviceRequests.filter((r) => r.assignedStaffId === s.id);
     const completed = assigned.filter((r) => r.status === 'Completed' && r.completedAt);
     const avgResolution = completed.length
       ? Math.round(completed.reduce((sum, r) => sum + minutesBetween(r.createdAt, r.completedAt), 0) / completed.length)

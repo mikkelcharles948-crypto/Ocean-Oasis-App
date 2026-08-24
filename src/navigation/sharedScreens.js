@@ -8,6 +8,7 @@ import EventsScreen from '../screens/events/EventsScreen';
 import DestinationDetailScreen from '../screens/explore/DestinationDetailScreen';
 import DiningScreen from '../screens/dining/DiningScreen';
 import DiningVenueScreen from '../screens/dining/DiningVenueScreen';
+import MenuScreen from '../screens/dining/MenuScreen';
 import ConciergeScreen from '../screens/concierge/ConciergeScreen';
 import ItineraryScreen from '../screens/itinerary/ItineraryScreen';
 import PromotionsScreen from '../screens/promotions/PromotionsScreen';
@@ -18,6 +19,12 @@ import NewRequestScreen from '../screens/requests/NewRequestScreen';
 import RequestDetailScreen from '../screens/requests/RequestDetailScreen';
 import DigitalCheckInScreen from '../screens/mystay/DigitalCheckInScreen';
 import MapScreen from '../screens/explore/MapScreen';
+import PastStaysScreen from '../screens/profile/PastStaysScreen';
+import TermsScreen from '../screens/profile/TermsScreen';
+import PrivacyPolicyScreen from '../screens/profile/PrivacyPolicyScreen';
+import PrivacySettingsScreen from '../screens/profile/PrivacySettingsScreen';
+import AccessibilityScreen from '../screens/profile/AccessibilityScreen';
+import LanguageScreen from '../screens/profile/LanguageScreen';
 
 // Registers the full set of cross-tab detail/utility screens onto a given
 // Stack.Navigator so navigation.navigate('ActivityDetail', {...}) works
@@ -33,6 +40,7 @@ export function addSharedScreens(Stack) {
       <Stack.Screen name="DestinationDetail" component={DestinationDetailScreen} />
       <Stack.Screen name="Dining" component={DiningScreen} />
       <Stack.Screen name="DiningVenue" component={DiningVenueScreen} />
+      <Stack.Screen name="Menu" component={MenuScreen} />
       <Stack.Screen name="Concierge" component={ConciergeScreen} />
       <Stack.Screen name="Itinerary" component={ItineraryScreen} />
       <Stack.Screen name="Promotions" component={PromotionsScreen} />
@@ -43,6 +51,12 @@ export function addSharedScreens(Stack) {
       <Stack.Screen name="RequestDetail" component={RequestDetailScreen} />
       <Stack.Screen name="DigitalCheckIn" component={DigitalCheckInScreen} />
       <Stack.Screen name="MapScreen" component={MapScreen} />
+      <Stack.Screen name="PastStays" component={PastStaysScreen} />
+      <Stack.Screen name="Terms" component={TermsScreen} />
+      <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
+      <Stack.Screen name="PrivacySettings" component={PrivacySettingsScreen} />
+      <Stack.Screen name="Accessibility" component={AccessibilityScreen} />
+      <Stack.Screen name="Language" component={LanguageScreen} />
     </>
   );
 }

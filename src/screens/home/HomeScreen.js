@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-nati
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { Card, SectionHeader, Badge, IconTile } from '../../components/UI';
 import ImagePlaceholder from '../../components/ImagePlaceholder';
@@ -22,6 +23,7 @@ function formatDateLong(dateStr) {
 }
 
 export default function HomeScreen({ navigation }) {
+  const { t } = useTranslation();
   const { guest, reservation, room, unreadNotificationCount, events, activities, promotions } = useApp();
 
   const today = '2026-08-15';
@@ -48,8 +50,8 @@ export default function HomeScreen({ navigation }) {
         </View>
 
         <View style={styles.greetingBlock}>
-          <Text style={styles.greeting}>Good morning, {guest.firstName}</Text>
-          <Text style={styles.greetingSub}>Welcome to Ocean Oasis.</Text>
+          <Text style={styles.greeting}>{t('home.goodMorning', { name: guest.firstName })}</Text>
+          <Text style={styles.greetingSub}>{t('home.welcome')}</Text>
           <View style={styles.metaRow}>
             <Text style={styles.metaText}>{formatDateLong(today)}</Text>
             <Text style={styles.metaDot}>·</Text>
@@ -62,17 +64,17 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.section}>
           <LinearGradient colors={[colors.deepOcean, colors.turquoiseDark]} style={styles.stayCard}>
             <View style={{ flex: 1 }}>
-              <Text style={styles.stayRoom}>ROOM {room.number}</Text>
+              <Text style={styles.stayRoom}>{t('home.roomLabel', { number: room.number })}</Text>
               <Text style={styles.stayDates}>
                 {new Date(reservation.checkIn).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} –{' '}
                 {new Date(reservation.checkOut).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
               </Text>
-              <Text style={styles.stayNights}>{nightsRemaining} nights remaining</Text>
+              <Text style={styles.stayNights}>{t('home.nightsRemaining', { count: nightsRemaining })}</Text>
               <TouchableOpacity
                 style={styles.stayBtn}
                 onPress={() => navigation.getParent()?.navigate('My Stay')}
               >
-                <Text style={styles.stayBtnText}>View Stay</Text>
+                <Text style={styles.stayBtnText}>{t('home.viewStay')}</Text>
                 <Ionicons name="arrow-forward" size={14} color={colors.deepOcean} />
               </TouchableOpacity>
             </View>
@@ -84,22 +86,22 @@ export default function HomeScreen({ navigation }) {
 
         {/* Quick Actions */}
         <View style={styles.section}>
-          <SectionHeader title="Quick Actions" />
+          <SectionHeader title={t('home.quickActions')} />
           <View style={styles.quickGrid}>
-            <IconTile label="Request Something" icon="chatbubble-ellipses" onPress={() => navigation.navigate('NewRequest')} />
-            <IconTile label="Book an Activity" icon="sunny" onPress={() => navigation.navigate('Activities')} color={colors.turquoiseDark} />
-            <IconTile label="Dining" icon="restaurant" onPress={() => navigation.navigate('Dining')} color={colors.forest} />
-            <IconTile label="Explore Dominica" icon="compass" onPress={() => navigation.getParent()?.navigate('Explore')} color={colors.gold} />
-            <IconTile label="Feedback" icon="star" onPress={() => navigation.navigate('Feedback')} color={colors.turquoiseDark} />
-            <IconTile label="Contact Reception" icon="call" onPress={() => navigation.navigate('ContactReception')} color={colors.deepOcean2} />
-            <IconTile label="Concierge" icon="sparkles" onPress={() => navigation.navigate('Concierge')} color={colors.forest} />
-            <IconTile label="Promotions" icon="pricetag" onPress={() => navigation.navigate('Promotions')} color={colors.gold} />
+            <IconTile label={t('home.requestSomething')} icon="chatbubble-ellipses" onPress={() => navigation.navigate('NewRequest')} />
+            <IconTile label={t('home.bookActivity')} icon="sunny" onPress={() => navigation.navigate('Activities')} color={colors.turquoiseDark} />
+            <IconTile label={t('home.dining')} icon="restaurant" onPress={() => navigation.navigate('Dining')} color={colors.forest} />
+            <IconTile label={t('home.exploreDominica')} icon="compass" onPress={() => navigation.getParent()?.navigate('Explore')} color={colors.gold} />
+            <IconTile label={t('home.feedback')} icon="star" onPress={() => navigation.navigate('Feedback')} color={colors.turquoiseDark} />
+            <IconTile label={t('home.contactReception')} icon="call" onPress={() => navigation.navigate('ContactReception')} color={colors.deepOcean2} />
+            <IconTile label={t('home.concierge')} icon="sparkles" onPress={() => navigation.navigate('Concierge')} color={colors.forest} />
+            <IconTile label={t('home.promotions')} icon="pricetag" onPress={() => navigation.navigate('Promotions')} color={colors.gold} />
           </View>
         </View>
 
         {/* Today at Ocean Oasis */}
         <View style={styles.section}>
-          <SectionHeader title="Today at Ocean Oasis" actionLabel="See all" onAction={() => navigation.navigate('Events')} />
+          <SectionHeader title={t('home.todayAtOceanOasis')} actionLabel={t('home.seeAll')} onAction={() => navigation.navigate('Events')} />
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: spacing.sm }}>
             {todaysEvents.map((event) => (
               <TouchableOpacity key={event.id} onPress={() => navigation.navigate('EventDetail', { eventId: event.id })}>
@@ -115,18 +117,18 @@ export default function HomeScreen({ navigation }) {
 
         {/* Recommended */}
         <View style={styles.section}>
-          <SectionHeader title="Recommended for You" />
+          <SectionHeader title={t('home.recommendedForYou')} />
           <TouchableOpacity onPress={() => navigation.navigate('ActivityDetail', { activityId: recommendation.id })}>
             <Card style={{ padding: 0, overflow: 'hidden' }}>
-              <ImagePlaceholder kind={recommendation.image} style={{ height: 140, borderRadius: 0 }} iconSize={40} />
+              <ImagePlaceholder kind={recommendation.image} uri={recommendation.imageUrl} style={{ height: 140, borderRadius: 0 }} iconSize={40} />
               <View style={{ padding: spacing.md }}>
-                <Badge label={primaryInterest ? `Because you love ${primaryInterest}` : 'Popular with guests'} tone="info" />
+                <Badge label={primaryInterest ? t('home.becauseYouLove', { interest: primaryInterest }) : t('home.popularWithGuests')} tone="info" />
                 <Text style={styles.recTitle}>{recommendation.name}</Text>
                 <Text style={styles.recDesc} numberOfLines={2}>{recommendation.shortDescription}</Text>
                 <View style={styles.recFooter}>
                   <Text style={styles.recPrice}>{recommendation.price}</Text>
                   <View style={styles.exploreBtn}>
-                    <Text style={styles.exploreBtnText}>Explore</Text>
+                    <Text style={styles.exploreBtnText}>{t('home.explore')}</Text>
                     <Ionicons name="chevron-forward" size={14} color={colors.deepOcean} />
                   </View>
                 </View>
@@ -138,14 +140,14 @@ export default function HomeScreen({ navigation }) {
         {/* Promotion */}
         {promo && (
         <View style={[styles.section, { marginBottom: spacing.lg }]}>
-          <SectionHeader title="Current Promotion" actionLabel="See all" onAction={() => navigation.navigate('Promotions')} />
+          <SectionHeader title={t('home.currentPromotion')} actionLabel={t('home.seeAll')} onAction={() => navigation.navigate('Promotions')} />
           <TouchableOpacity onPress={() => navigation.navigate('Promotions')}>
             <LinearGradient colors={[colors.gold, colors.goldSoft]} style={styles.promoCard}>
               <Ionicons name="wine" size={28} color={colors.deepOcean} style={{ marginBottom: 8 }} />
               <Text style={styles.promoTitle}>{promo.title}</Text>
               <Text style={styles.promoDesc}>{promo.description}</Text>
               <View style={styles.promoCta}>
-                <Text style={styles.promoCtaText}>View Offer</Text>
+                <Text style={styles.promoCtaText}>{t('home.viewOffer')}</Text>
                 <Ionicons name="arrow-forward" size={14} color={colors.deepOcean} />
               </View>
             </LinearGradient>

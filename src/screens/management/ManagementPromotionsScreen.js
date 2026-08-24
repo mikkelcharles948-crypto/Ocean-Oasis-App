@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
 
 import { Card, ScreenHeader, Badge, Field } from '../../components/UI';
+import GlassSurface from '../../components/GlassSurface';
 import Button from '../../components/Button';
 import { colors, spacing, radius, font } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
@@ -62,7 +64,8 @@ export default function ManagementPromotionsScreen({ navigation }) {
 
       <Modal visible={showNew} transparent animationType="slide" onRequestClose={() => setShowNew(false)}>
         <View style={styles.modalBackdrop}>
-          <View style={styles.modalPanel}>
+          <BlurView intensity={20} tint="dark" style={StyleSheet.absoluteFill} />
+          <GlassSurface style={styles.modalPanel} borderRadius={0} intensity={38} tint="light">
             <ScrollView keyboardShouldPersistTaps="handled">
               <View style={styles.modalHeader}>
                 <Text style={styles.modalTitle}>New Promotion</Text>
@@ -83,7 +86,7 @@ export default function ManagementPromotionsScreen({ navigation }) {
               <Field label="End Date (YYYY-MM-DD)" value={form.endDate} onChangeText={(v) => setForm({ ...form, endDate: v })} />
               <Button label="Save as Draft" onPress={submit} style={{ marginTop: spacing.sm, marginBottom: spacing.lg }} />
             </ScrollView>
-          </View>
+          </GlassSurface>
         </View>
       </Modal>
     </SafeAreaView>
@@ -109,7 +112,7 @@ const styles = StyleSheet.create({
   miniStatValue: { fontSize: 13, fontWeight: '700', color: colors.deepOcean, marginTop: 2 },
   conversion: { fontSize: 11.5, color: colors.slate, marginTop: 8 },
   modalBackdrop: { flex: 1, backgroundColor: 'rgba(9,46,55,0.5)', justifyContent: 'flex-end' },
-  modalPanel: { backgroundColor: colors.white, borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, padding: spacing.lg, maxHeight: '88%' },
+  modalPanel: { borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, padding: spacing.lg, maxHeight: '88%' },
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.md },
   modalTitle: { fontSize: 18, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
   fieldLabel: { fontSize: 12.5, fontWeight: '700', color: colors.charcoal, marginBottom: 8 },

@@ -2,16 +2,25 @@ import React from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Card, Badge } from '../../components/UI';
 import ImagePlaceholder from '../../components/ImagePlaceholder';
 import { colors, spacing, font } from '../../theme/theme';
 import { DINING_VENUES } from '../../data/mockData';
 
+const TYPE_KEY = {
+  'Signature Restaurant': 'signatureRestaurant',
+  'All-Day Dining': 'allDayDining',
+  'Bar & Lounge': 'barLounge',
+  'Room Service': 'roomService',
+};
+
 export default function DiningScreen({ navigation }) {
+  const { t } = useTranslation();
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-      <ScreenHeader title="Dining" onBack={() => navigation.goBack()} />
+      <ScreenHeader title={t('dining.title')} onBack={() => navigation.goBack()} />
       <FlatList
         data={DINING_VENUES}
         keyExtractor={(v) => v.id}
@@ -19,9 +28,9 @@ export default function DiningScreen({ navigation }) {
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => navigation.navigate('DiningVenue', { venueId: item.id })}>
             <Card style={{ padding: 0, overflow: 'hidden' }}>
-              <ImagePlaceholder kind={item.image} style={{ height: 130, borderRadius: 0 }} iconSize={32} />
+              <ImagePlaceholder kind={item.image} uri={item.imageUrl} style={{ height: 130, borderRadius: 0 }} iconSize={32} />
               <View style={{ padding: spacing.md }}>
-                <Badge label={item.type} tone="info" />
+                <Badge label={t(`dining.type.${TYPE_KEY[item.type] || 'roomService'}`)} tone="info" />
                 <Text style={styles.name}>{item.name}</Text>
                 <Text style={styles.desc} numberOfLines={2}>{item.description}</Text>
                 <View style={styles.metaRow}>

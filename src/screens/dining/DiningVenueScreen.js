@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, ErrorState, Field } from '../../components/UI';
 import ImagePlaceholder from '../../components/ImagePlaceholder';
@@ -9,7 +10,15 @@ import Button from '../../components/Button';
 import { colors, spacing, radius, font } from '../../theme/theme';
 import { DINING_VENUES } from '../../data/mockData';
 
+const TYPE_KEY = {
+  'Signature Restaurant': 'signatureRestaurant',
+  'All-Day Dining': 'allDayDining',
+  'Bar & Lounge': 'barLounge',
+  'Room Service': 'roomService',
+};
+
 export default function DiningVenueScreen({ route, navigation }) {
+  const { t } = useTranslation();
   const { venueId } = route.params || {};
   const venue = DINING_VENUES.find((v) => v.id === venueId);
   const [showForm, setShowForm] = useState(false);
@@ -21,7 +30,7 @@ export default function DiningVenueScreen({ route, navigation }) {
   if (!venue) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-        <ErrorState title="Venue not found" onRetry={() => navigation.goBack()} />
+        <ErrorState title={t('dining.venueNotFound')} onRetry={() => navigation.goBack()} />
       </SafeAreaView>
     );
   }
@@ -38,37 +47,37 @@ export default function DiningVenueScreen({ route, navigation }) {
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
       <ScreenHeader title={venue.name} onBack={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={{ padding: spacing.lg }}>
-        <ImagePlaceholder kind={venue.image} style={{ height: 170 }} iconSize={40} />
-        <Text style={styles.type}>{venue.type}</Text>
+        <ImagePlaceholder kind={venue.image} uri={venue.imageUrl} style={{ height: 170 }} iconSize={40} />
+        <Text style={styles.type}>{t(`dining.type.${TYPE_KEY[venue.type] || 'roomService'}`)}</Text>
         <Text style={styles.name}>{venue.name}</Text>
         <Text style={styles.desc}>{venue.description}</Text>
 
         <View style={styles.infoBox}>
-          <InfoRow icon="time-outline" label="Hours" value={venue.hours} />
-          <InfoRow icon="shirt-outline" label="Dress Code" value={venue.dressCode} />
-          <InfoRow icon="location-outline" label="Location" value={venue.location} />
+          <InfoRow icon="time-outline" label={t('dining.hours')} value={venue.hours} />
+          <InfoRow icon="shirt-outline" label={t('dining.dressCode')} value={venue.dressCode} />
+          <InfoRow icon="location-outline" label={t('dining.location')} value={venue.location} />
         </View>
 
-        <Button label="View Menu" variant="outline" onPress={() => {}} style={{ marginTop: spacing.lg }} />
+        <Button label={t('dining.viewMenu')} variant="outline" onPress={() => navigation.navigate('Menu', { venueId: venue.id })} style={{ marginTop: spacing.lg }} />
 
         {!submitted ? (
           !showForm ? (
             <Button
-              label={venue.reservationRequired ? 'Reserve a Table' : 'Request Room Service'}
+              label={venue.reservationRequired ? t('dining.reserveTable') : t('dining.requestRoomService')}
               onPress={() => setShowForm(true)}
               style={{ marginTop: spacing.sm }}
             />
           ) : (
             <View style={styles.formBox}>
-              <Field label="Party Size" value={party} onChangeText={setParty} keyboardType="number-pad" />
-              <Field label="Preferred Time" value={time} onChangeText={setTime} />
-              <Button label="Submit" onPress={submit} loading={loading} />
+              <Field label={t('dining.partySize')} value={party} onChangeText={setParty} keyboardType="number-pad" />
+              <Field label={t('dining.preferredTime')} value={time} onChangeText={setTime} />
+              <Button label={t('dining.submit')} onPress={submit} loading={loading} />
             </View>
           )
         ) : (
           <View style={styles.confirmBox}>
             <Ionicons name="checkmark-circle" size={22} color={colors.success} />
-            <Text style={styles.confirmText}>Your request for {venue.name} has been sent. We'll confirm shortly.</Text>
+            <Text style={styles.confirmText}>{t('dining.confirmText', { venue: venue.name })}</Text>
           </View>
         )}
       </ScrollView>

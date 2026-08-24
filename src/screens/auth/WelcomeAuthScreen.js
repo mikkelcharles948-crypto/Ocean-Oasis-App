@@ -1,29 +1,37 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import Logo from '../../components/Logo';
 import Button from '../../components/Button';
 import { colors, spacing } from '../../theme/theme';
 
 export default function WelcomeAuthScreen({ navigation }) {
+  const { t } = useTranslation();
   return (
     <LinearGradient colors={[colors.deepOcean2, colors.deepOcean]} style={{ flex: 1 }}>
       <SafeAreaView style={styles.container}>
-        <View style={{ alignItems: 'center', marginTop: spacing.xxl }}>
+        {navigation.canGoBack() && (
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
+            <Ionicons name="chevron-back" size={24} color={colors.white} />
+          </TouchableOpacity>
+        )}
+        <View style={{ alignItems: 'center', marginTop: navigation.canGoBack() ? spacing.md : spacing.xxl }}>
           <Logo size="lg" light />
         </View>
 
         <View style={{ flex: 1 }} />
 
         <View style={styles.card}>
-          <Text style={styles.title}>Sign in to Ocean Oasis</Text>
-          <Text style={styles.subtitle}>Access your reservation, requests, and personalized recommendations.</Text>
+          <Text style={styles.title}>{t('auth.signInToOceanOasis')}</Text>
+          <Text style={styles.subtitle}>{t('auth.accessReservation')}</Text>
 
-          <Button label="Sign In" onPress={() => navigation.navigate('SignIn')} style={{ marginTop: spacing.lg }} />
+          <Button label={t('auth.signIn')} onPress={() => navigation.navigate('SignIn')} style={{ marginTop: spacing.lg }} />
           <Button
-            label="Create Account"
+            label={t('auth.createAccount')}
             variant="outline"
             onPress={() => navigation.navigate('CreateAccount')}
             style={{ marginTop: spacing.sm }}
@@ -31,14 +39,14 @@ export default function WelcomeAuthScreen({ navigation }) {
 
           <View style={styles.divider}>
             <View style={styles.line} />
-            <Text style={styles.dividerText}>or</Text>
+            <Text style={styles.dividerText}>{t('auth.or')}</Text>
             <View style={styles.line} />
           </View>
 
-          <Text style={styles.reservationTitle}>Already staying with us?</Text>
-          <Text style={styles.reservationSubtitle}>Enter your reservation number to access your stay.</Text>
+          <Text style={styles.reservationTitle}>{t('auth.alreadyStaying')}</Text>
+          <Text style={styles.reservationSubtitle}>{t('auth.enterReservationNumber')}</Text>
           <Button
-            label="Use Reservation Number"
+            label={t('auth.useReservationNumber')}
             variant="secondary"
             onPress={() => navigation.navigate('ReservationAccess')}
             style={{ marginTop: spacing.sm }}
@@ -51,6 +59,10 @@ export default function WelcomeAuthScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, paddingHorizontal: spacing.lg, paddingBottom: spacing.lg },
+  backBtn: {
+    width: 38, height: 38, borderRadius: 19, backgroundColor: 'rgba(255,255,255,0.15)',
+    alignItems: 'center', justifyContent: 'center', marginTop: spacing.sm,
+  },
   card: { backgroundColor: colors.white, borderRadius: 26, padding: spacing.lg, paddingTop: spacing.xl },
   title: { fontSize: 21, fontWeight: '700', color: colors.charcoal, textAlign: 'center' },
   subtitle: { fontSize: 13.5, color: colors.slate, textAlign: 'center', marginTop: 6, lineHeight: 19 },

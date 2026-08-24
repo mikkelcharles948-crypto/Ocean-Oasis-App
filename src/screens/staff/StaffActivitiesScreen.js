@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
 
 import { Card, Badge, ProgressBar, Field } from '../../components/UI';
+import GlassSurface from '../../components/GlassSurface';
 import Button from '../../components/Button';
 import { colors, spacing, radius, font } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
@@ -42,7 +44,7 @@ export default function StaffActivitiesScreen() {
         contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.sm, gap: spacing.sm, paddingBottom: spacing.xxl }}
         renderItem={({ item }) => {
           const bookings = bookingsFor(item.id);
-          const bookedGuests = bookings.reduce((s, b) => s + b.guests, 0);
+          const bookedGuests = bookings.reduce((s, b) => s + (b.guests || 0), 0);
           const util = item.capacity ? Math.min(100, Math.round((bookedGuests / item.capacity) * 100)) : 0;
           return (
             <TouchableOpacity onPress={() => setActiveId(item.id)}>
@@ -65,7 +67,8 @@ export default function StaffActivitiesScreen() {
 
       <Modal visible={!!active} transparent animationType="slide" onRequestClose={() => setActiveId(null)}>
         <View style={styles.modalBackdrop}>
-          <View style={styles.modalPanel}>
+          <BlurView intensity={20} tint="dark" style={StyleSheet.absoluteFill} />
+          <GlassSurface style={styles.modalPanel} borderRadius={0} intensity={38} tint="light">
             <ScrollView>
               <View style={styles.modalHeader}>
                 <Text style={styles.modalTitle}>{active?.name}</Text>
@@ -81,18 +84,19 @@ export default function StaffActivitiesScreen() {
                   {bookingsFor(active.id).length === 0 ? (
                     <Text style={styles.emptyText}>No bookings yet.</Text>
                   ) : bookingsFor(active.id).map((b) => (
-                    <Text key={b.id} style={styles.bookingLine}>{b.guestName} — {b.guests} guest(s)</Text>
+                    <Text key={b.id} style={styles.bookingLine}>{b.guestName || 'Guest'} — {b.guests || 0} guest(s)</Text>
                   ))}
                 </>
               )}
             </ScrollView>
-          </View>
+          </GlassSurface>
         </View>
       </Modal>
 
       <Modal visible={showNew} transparent animationType="slide" onRequestClose={() => setShowNew(false)}>
         <View style={styles.modalBackdrop}>
-          <View style={styles.modalPanel}>
+          <BlurView intensity={20} tint="dark" style={StyleSheet.absoluteFill} />
+          <GlassSurface style={styles.modalPanel} borderRadius={0} intensity={38} tint="light">
             <ScrollView keyboardShouldPersistTaps="handled">
               <View style={styles.modalHeader}>
                 <Text style={styles.modalTitle}>New Activity</Text>
@@ -109,7 +113,7 @@ export default function StaffActivitiesScreen() {
               <Field label="Meeting Point" value={form.meetingPoint} onChangeText={(v) => setForm({ ...form, meetingPoint: v })} />
               <Button label="Publish to Guest App" onPress={submit} style={{ marginTop: spacing.md, marginBottom: spacing.lg }} />
             </ScrollView>
-          </View>
+          </GlassSurface>
         </View>
       </Modal>
     </SafeAreaView>
@@ -125,7 +129,7 @@ const styles = StyleSheet.create({
   actMeta: { fontSize: 12, color: colors.slate, marginTop: 2 },
   utilLabel: { fontSize: 11.5, color: colors.slate },
   modalBackdrop: { flex: 1, backgroundColor: 'rgba(9,46,55,0.5)', justifyContent: 'flex-end' },
-  modalPanel: { backgroundColor: colors.white, borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, padding: spacing.lg, maxHeight: '88%' },
+  modalPanel: { borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, padding: spacing.lg, maxHeight: '88%' },
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.md },
   modalTitle: { fontSize: 18, fontWeight: '700', color: colors.charcoal, fontFamily: font.display, flex: 1 },
   detailLine: { fontSize: 13.5, color: colors.charcoal, marginBottom: 6, lineHeight: 19 },

@@ -10,7 +10,7 @@ import { ROLE_LABELS } from '../../data/mockData';
 
 export default function StaffProfileScreen({ navigation }) {
   const { opsSession, opsSignOut, serviceRequests } = useApp();
-  const myRequests = serviceRequests.filter((r) => r.assignedStaffName === opsSession?.name);
+  const myRequests = serviceRequests.filter((r) => r.assignedStaffId === opsSession?.id);
   const completed = myRequests.filter((r) => r.status === 'Completed').length;
 
   const handleSwitch = () => {

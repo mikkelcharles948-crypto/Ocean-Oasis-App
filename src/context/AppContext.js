@@ -1,9 +1,7 @@
 import React, { createContext, useContext, useMemo, useState, useCallback, useEffect } from 'react';
 import {
   GUEST, RESERVATION, ROOM, INITIAL_SERVICE_REQUESTS, INITIAL_NOTIFICATIONS,
-  ACTIVITIES, EVENTS, PROMOTIONS, ROOMS, STAFF_DIRECTORY, REQUEST_CATEGORY_TO_DEPARTMENT,
-  INITIAL_MAINTENANCE_ISSUES, INITIAL_CONTENT_ITEMS, INITIAL_AUDIT_LOG, INITIAL_STAFF_NOTIFICATIONS,
-  OTHER_GUESTS, OTHER_FEEDBACK, ROLE_SURFACES,
+  ACTIVITIES, EVENTS, PROMOTIONS, ROOMS, REQUEST_CATEGORY_TO_DEPARTMENT, REQUEST_CATEGORY_TO_ROLE, ROLE_SURFACES,
 } from '../data/mockData';
 import { supabase } from '../lib/supabase';
 import {
@@ -12,7 +10,27 @@ import {
   updateServiceRequest as updateRemoteServiceRequest,
   bookActivity as bookRemoteActivity,
   updateGuestProfile as updateRemoteGuestProfile,
+  createFeedback as createRemoteFeedback,
 } from '../services/supabaseData';
+import {
+  loadStaffData, loadStaffDirectory, writeAuditEntry,
+  assignServiceRequest as assignRemoteServiceRequest,
+  addServiceRequestNote as addRemoteServiceRequestNote,
+  createActivity as createRemoteActivity,
+  createEvent as createRemoteEvent,
+  publishEvent as publishRemoteEvent,
+  createPromotion as createRemotePromotion,
+  publishPromotion as publishRemotePromotion,
+  archivePromotion as archiveRemotePromotion,
+  updateRoomStatus as updateRemoteRoomStatus,
+  createMaintenanceIssue as createRemoteMaintenanceIssue,
+  updateMaintenanceStatus as updateRemoteMaintenanceStatus,
+  resolveFeedback as resolveRemoteFeedback,
+  setContentStatus as setRemoteContentStatus,
+  notifyStaffRole,
+  markNotificationRead as markRemoteNotificationRead,
+  markAllStaffNotificationsRead as markAllRemoteStaffNotificationsRead,
+} from '../services/supabaseStaffData';
 
 const AppContext = createContext(null);
 
@@ -46,7 +64,7 @@ export function AppProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Staff/Management auth — one session shape, gated by role per surface.
-  const [opsSession, setOpsSession] = useState(null); // { name, role, department }
+  const [opsSession, setOpsSession] = useState(null); // { id, name, role, department }
 
   const [guest, setGuest] = useState(GUEST);
   const [reservation, setReservation] = useState(RESERVATION);
@@ -66,12 +84,14 @@ export function AppProvider({ children }) {
 
   // Operations data
   const [rooms, setRooms] = useState(ROOMS);
-  const [maintenanceIssues, setMaintenanceIssues] = useState(INITIAL_MAINTENANCE_ISSUES);
-  const [contentItems, setContentItems] = useState(INITIAL_CONTENT_ITEMS);
-  const [auditLog, setAuditLog] = useState(INITIAL_AUDIT_LOG);
-  const [staffNotifications, setStaffNotifications] = useState(INITIAL_STAFF_NOTIFICATIONS);
-  const [feedback, setFeedback] = useState(OTHER_FEEDBACK);
+  const [maintenanceIssues, setMaintenanceIssues] = useState([]);
+  const [contentItems, setContentItems] = useState([]);
+  const [auditLog, setAuditLog] = useState([]);
+  const [staffNotifications, setStaffNotifications] = useState([]);
+  const [feedback, setFeedback] = useState([]);
   const [propertySettings, setPropertySettings] = useState({ lowRatingThreshold: 3 });
+  const [staffDirectory, setStaffDirectory] = useState([]);
+  const [allGuestsForStaff, setAllGuestsForStaff] = useState([]);
 
   useEffect(() => {
     let mounted = true;
@@ -117,9 +137,59 @@ export function AppProvider({ children }) {
     }
   }, [authSession?.user?.id]);
 
+  const refreshStaffData = useCallback(async () => {
+    setDataLoading(true);
+    setDataError(null);
+    try {
+      const [staffData, directory] = await Promise.all([loadStaffData(), loadStaffDirectory()]);
+      setServiceRequests(staffData.serviceRequests);
+      setRooms(staffData.rooms);
+      setActivities(staffData.activities);
+      setEvents(staffData.events);
+      setPromotions(staffData.promotions);
+      setActivityBookings(staffData.activityBookings);
+      setMaintenanceIssues(staffData.maintenanceIssues);
+      setFeedback(staffData.feedback);
+      setContentItems(staffData.contentItems);
+      setAuditLog(staffData.auditLog);
+      setStaffNotifications(staffData.staffNotifications);
+      setAllGuestsForStaff(staffData.allGuestsForStaff);
+      setStaffDirectory(directory);
+      return { ok: true };
+    } catch (error) {
+      setDataError('We could not load the latest operations data. Please retry.');
+      return { ok: false, error: 'Unable to load operations data.' };
+    } finally {
+      setDataLoading(false);
+    }
+  }, []);
+
+  // Every authenticated session is either a guest or a staff member — decided
+  // by whether their profiles.role is set — and loads the matching data. A
+  // single bare "always load guest data" effect would wipe staff dashboards
+  // (rooms, requests, etc.) the moment a staff member signs in.
   useEffect(() => {
-    refreshGuestData();
-  }, [refreshGuestData]);
+    let mounted = true;
+    async function resolveSession() {
+      if (!authSession?.user?.id) {
+        setOpsSession(null);
+        return;
+      }
+      const { data: profile } = await supabase.from('profiles').select('*').eq('id', authSession.user.id).maybeSingle();
+      if (!mounted) return;
+      if (profile?.role) {
+        setOpsSession({ id: profile.id, name: `${profile.first_name} ${profile.last_name}`.trim(), role: profile.role, department: profile.department });
+        await refreshStaffData();
+      } else {
+        setOpsSession(null);
+        await refreshGuestData();
+      }
+    }
+    resolveSession();
+    return () => {
+      mounted = false;
+    };
+  }, [authSession?.user?.id, refreshGuestData, refreshStaffData]);
 
   useEffect(() => {
     if (!authSession?.user?.id || !guest?.id || guest.id === GUEST.id) return undefined;
@@ -146,6 +216,54 @@ export function AppProvider({ children }) {
       .subscribe();
     return () => supabase.removeChannel(channel);
   }, [authSession?.user?.id, guest?.id]);
+
+  // Staff-side realtime: live-sync the ops dashboards across signed-in staff.
+  useEffect(() => {
+    if (!opsSession) return undefined;
+    const channel = supabase
+      .channel(`staff-ops-${opsSession.id}`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'service_requests' }, (payload) => {
+        if (payload.eventType === 'DELETE') {
+          setServiceRequests((prev) => prev.filter((item) => item.id !== payload.old?.id));
+          return;
+        }
+        const row = payload.new;
+        if (!row?.id) return;
+        setServiceRequests((prev) => {
+          const exists = prev.some((item) => item.id === row.id);
+          const next = { assignedStaffId: row.assigned_staff_id || null, createdAt: row.created_at, completedAt: row.completed_at, ...row };
+          return exists ? prev.map((item) => (item.id === row.id ? { ...item, ...next } : item)) : [next, ...prev];
+        });
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'rooms' }, (payload) => {
+        const row = payload.new;
+        if (!row?.id) return;
+        setRooms((prev) => prev.map((r) => (r.id === row.id ? { ...r, ...row } : r)));
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'maintenance_issues' }, (payload) => {
+        if (payload.eventType === 'DELETE') {
+          setMaintenanceIssues((prev) => prev.filter((item) => item.id !== payload.old?.id));
+          return;
+        }
+        const row = payload.new;
+        if (!row?.id) return;
+        const next = { ...row, roomNumber: row.room_number, assignedStaffId: row.assigned_staff_id, createdAt: row.created_at, resolvedAt: row.resolved_at };
+        setMaintenanceIssues((prev) => {
+          const exists = prev.some((item) => item.id === row.id);
+          return exists ? prev.map((item) => (item.id === row.id ? next : item)) : [next, ...prev];
+        });
+      })
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications' }, (payload) => {
+        const row = payload.new;
+        // Only role-broadcast rows belong on the staff feed — personal guest
+        // notifications (recipient_user_id set) are excluded, matching the
+        // filter loadStaffData() already applies on the initial load.
+        if (!row?.id || !row.recipient_role) return;
+        setStaffNotifications((prev) => (prev.some((n) => n.id === row.id) ? prev : [{ ...row, createdAt: row.created_at }, ...prev]));
+      })
+      .subscribe();
+    return () => supabase.removeChannel(channel);
+  }, [opsSession]);
 
   // ---------------------------------------------------------------------
   // Onboarding / experience switching
@@ -217,15 +335,32 @@ export function AppProvider({ children }) {
   // ---------------------------------------------------------------------
   // Staff / Management auth
   // ---------------------------------------------------------------------
-  const opsSignIn = useCallback((name, role) => {
-    const match = STAFF_DIRECTORY.find((s) => s.name === name);
-    setOpsSession({ name, role, department: match?.department || null });
-  }, []);
-  const opsSignOut = useCallback(() => { setOpsSession(null); setExperience(null); }, []);
   const canAccessSurface = useCallback((role, surface) => (ROLE_SURFACES[role] || []).includes(surface), []);
 
-  const logAudit = useCallback((action, actor) => {
-    setAuditLog((prev) => [{ id: nextId('log'), actorName: actor?.name || opsSession?.name || 'System', actorRole: actor?.role || opsSession?.role || 'SYSTEM', action, timestamp: new Date().toISOString() }, ...prev]);
+  const opsSignIn = useCallback(async (email, password, surface) => {
+    if (!email || !password) return { ok: false, error: 'Enter your email and password.' };
+    const { error: authError } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+    if (authError) return { ok: false, error: authError.message };
+    const { data: userData } = await supabase.auth.getUser();
+    const { data: profile, error: profileError } = await supabase.from('profiles').select('*').eq('id', userData?.user?.id).maybeSingle();
+    if (profileError || !profile?.role || !canAccessSurface(profile.role, surface)) {
+      await supabase.auth.signOut();
+      setOpsSession(null);
+      return { ok: false, error: 'This account does not have access to this dashboard.' };
+    }
+    setOpsSession({ id: profile.id, name: `${profile.first_name} ${profile.last_name}`.trim(), role: profile.role, department: profile.department });
+    return { ok: true };
+  }, [canAccessSurface]);
+
+  const opsSignOut = useCallback(async () => {
+    await supabase.auth.signOut();
+    setOpsSession(null);
+    setExperience(null);
+  }, []);
+
+  const logAudit = useCallback((action, metadata) => {
+    if (!opsSession) return;
+    writeAuditEntry(opsSession.id, opsSession.name, opsSession.role, action, metadata || {}).catch(() => {});
   }, [opsSession]);
 
   // ---------------------------------------------------------------------
@@ -264,6 +399,8 @@ export function AppProvider({ children }) {
       try {
         const persistedRequest = await createRemoteServiceRequest(guest.id, room.number, { ...request, department });
         setServiceRequests((prev) => [persistedRequest, ...prev]);
+        const role = REQUEST_CATEGORY_TO_ROLE[category] || 'FRONT_DESK';
+        notifyStaffRole(role, { category: 'Requests', title: 'New guest request', body: `${category} — Room ${room.number}` }).catch(() => {});
         return { ok: true, data: persistedRequest };
       } catch (error) {
         return { ok: false, error: 'Your request could not be submitted. Please try again.' };
@@ -274,13 +411,20 @@ export function AppProvider({ children }) {
     return { ok: true, data: newRequest };
   }, [room, guest, authSession?.user?.id]);
 
-  const assignRequestToStaff = useCallback((requestId, staffName) => {
-    setServiceRequests((prev) => prev.map((r) => (r.id === requestId ? { ...r, assignedStaffName: staffName, status: r.status === 'Received' ? 'Assigned' : r.status } : r)));
-    logAudit(`Assigned request #${requestId} to ${staffName}`);
-  }, [logAudit]);
+  const assignRequestToStaff = useCallback(async (requestId, staffId) => {
+    // service_requests already has a DB audit trigger — no separate logAudit call needed.
+    const current = serviceRequests.find((r) => r.id === requestId);
+    try {
+      const updated = await assignRemoteServiceRequest(requestId, staffId, current?.status);
+      setServiceRequests((prev) => prev.map((r) => (r.id === requestId ? { ...r, ...updated } : r)));
+      return { ok: true, data: updated };
+    } catch (error) {
+      return { ok: false, error: 'The request could not be assigned. Please try again.' };
+    }
+  }, [serviceRequests]);
 
   const updateRequestStatus = useCallback(async (requestId, status) => {
-    if (authSession?.user?.id && guest.id !== GUEST.id) {
+    if (authSession?.user?.id && (opsSession || guest.id !== GUEST.id)) {
       try {
         const persistedRequest = await updateRemoteServiceRequest(requestId, { status, completed_at: status === 'Completed' ? new Date().toISOString() : null });
         setServiceRequests((prev) => prev.map((r) => (r.id === requestId ? { ...r, ...persistedRequest } : r)));
@@ -290,12 +434,17 @@ export function AppProvider({ children }) {
       }
     }
     setServiceRequests((prev) => prev.map((r) => (r.id === requestId ? { ...r, status, completedAt: status === 'Completed' ? new Date().toISOString() : r.completedAt } : r)));
-    logAudit(`Changed request #${requestId} status → ${status}`);
     return { ok: true };
-  }, [logAudit, authSession?.user?.id, guest.id]);
+  }, [authSession?.user?.id, guest.id, opsSession]);
 
-  const addRequestNote = useCallback((requestId, text) => {
-    setServiceRequests((prev) => prev.map((r) => (r.id === requestId ? { ...r, notes: [...(r.notes || []), { text, by: opsSession?.name || 'Staff', at: new Date().toISOString() }] } : r)));
+  const addRequestNote = useCallback(async (requestId, text) => {
+    try {
+      const updated = await addRemoteServiceRequestNote(requestId, text, opsSession?.name || 'Staff');
+      setServiceRequests((prev) => prev.map((r) => (r.id === requestId ? { ...r, ...updated } : r)));
+      return { ok: true, data: updated };
+    } catch (error) {
+      return { ok: false, error: 'The note could not be saved. Please try again.' };
+    }
   }, [opsSession]);
 
   // ---------------------------------------------------------------------
@@ -307,19 +456,30 @@ export function AppProvider({ children }) {
     );
   }, []);
 
-  const createActivity = useCallback((payload) => {
-    const activity = { id: nextId('a'), availability: 'Available', whatToBring: [], cancellationPolicy: 'Free cancellation up to 24 hours before the activity.', ...payload };
-    setActivities((prev) => [activity, ...prev]);
-    logAudit(`Created activity "${payload.name}"`);
-    return activity;
-  }, [logAudit]);
+  const createActivity = useCallback(async (payload) => {
+    try {
+      const activity = await createRemoteActivity(payload, opsSession?.id || null);
+      setActivities((prev) => [activity, ...prev]);
+      logAudit(`Created activity "${payload.name}"`);
+      return { ok: true, data: activity };
+    } catch (error) {
+      return { ok: false, error: 'The activity could not be created. Please try again.' };
+    }
+  }, [logAudit, opsSession]);
 
   const bookActivity = useCallback(async ({ activityId, guests }) => {
     if (authSession?.user?.id && guest.id !== GUEST.id) {
       try {
         const booking = await bookRemoteActivity(activityId, guests);
-        setActivityBookings((prev) => [booking, ...prev]);
-        return { ok: true, booking };
+        // The RPC response has no guest name/room (those live on `guests`, not
+        // `activity_bookings`) — attach them from context so the booking is
+        // fully shaped the same way staff-loaded bookings are, whichever
+        // dashboard reads this array next.
+        const enrichedBooking = { ...booking, guestName: `${guest.firstName} ${guest.lastName}`.trim(), roomNumber: room.number };
+        setActivityBookings((prev) => [enrichedBooking, ...prev]);
+        const activity = activities.find((a) => a.id === activityId);
+        notifyStaffRole('ACTIVITIES_MANAGER', { category: 'Activities', title: 'New activity booking', body: `${activity?.name || 'Activity'} — ${guests} guest(s)` }).catch(() => {});
+        return { ok: true, booking: enrichedBooking };
       } catch (error) {
         const message = error?.message?.toLowerCase().includes('full')
           ? 'This activity is now full.'
@@ -343,69 +503,124 @@ export function AppProvider({ children }) {
   // ---------------------------------------------------------------------
   // Events — Staff/Management create as DRAFT, publish to Guest calendar.
   // ---------------------------------------------------------------------
-  const createEvent = useCallback((payload) => {
-    const event = { id: nextId('e'), status: 'DRAFT', icon: 'culture', ...payload };
-    setEvents((prev) => [event, ...prev]);
-    logAudit(`Created event "${payload.title}"`);
-    return event;
-  }, [logAudit]);
+  const createEvent = useCallback(async (payload) => {
+    try {
+      const event = await createRemoteEvent(payload, opsSession?.id || null);
+      setEvents((prev) => [event, ...prev]);
+      logAudit(`Created event "${payload.title}"`);
+      return { ok: true, data: event };
+    } catch (error) {
+      return { ok: false, error: 'The event could not be created. Please try again.' };
+    }
+  }, [logAudit, opsSession]);
 
-  const publishEvent = useCallback((eventId) => {
-    setEvents((prev) => prev.map((e) => (e.id === eventId ? { ...e, status: 'PUBLISHED' } : e)));
-    logAudit(`Published event #${eventId} — now visible to guests`);
+  const publishEvent = useCallback(async (eventId) => {
+    try {
+      const event = await publishRemoteEvent(eventId);
+      setEvents((prev) => prev.map((e) => (e.id === eventId ? { ...e, ...event } : e)));
+      logAudit(`Published event #${eventId} — now visible to guests`);
+      return { ok: true, data: event };
+    } catch (error) {
+      return { ok: false, error: 'The event could not be published. Please try again.' };
+    }
   }, [logAudit]);
 
   // ---------------------------------------------------------------------
   // Promotions — Management CMS, published to Guest App.
   // ---------------------------------------------------------------------
-  const createPromotion = useCallback((payload) => {
-    const promo = { id: nextId('p'), status: 'DRAFT', impressions: 0, clicks: 0, bookings: 0, redemptions: 0, revenue: 0, ...payload };
-    setPromotions((prev) => [promo, ...prev]);
-    logAudit(`Created promotion "${payload.title}"`);
-    return promo;
+  const createPromotion = useCallback(async (payload) => {
+    try {
+      const promo = await createRemotePromotion(payload, opsSession?.id || null);
+      setPromotions((prev) => [promo, ...prev]);
+      logAudit(`Created promotion "${payload.title}"`);
+      return { ok: true, data: promo };
+    } catch (error) {
+      return { ok: false, error: 'The promotion could not be created. Please try again.' };
+    }
+  }, [logAudit, opsSession]);
+
+  const publishPromotion = useCallback(async (promoId) => {
+    try {
+      const promo = await publishRemotePromotion(promoId);
+      setPromotions((prev) => prev.map((p) => (p.id === promoId ? { ...p, ...promo } : p)));
+      logAudit(`Published promotion #${promoId} — now visible to guests`);
+      return { ok: true, data: promo };
+    } catch (error) {
+      return { ok: false, error: 'The promotion could not be published. Please try again.' };
+    }
   }, [logAudit]);
 
-  const publishPromotion = useCallback((promoId) => {
-    setPromotions((prev) => prev.map((p) => (p.id === promoId ? { ...p, status: 'PUBLISHED' } : p)));
-    logAudit(`Published promotion #${promoId} — now visible to guests`);
-  }, [logAudit]);
-
-  const archivePromotion = useCallback((promoId) => {
-    setPromotions((prev) => prev.map((p) => (p.id === promoId ? { ...p, status: 'ARCHIVED' } : p)));
-    logAudit(`Archived promotion #${promoId}`);
+  const archivePromotion = useCallback(async (promoId) => {
+    try {
+      const promo = await archiveRemotePromotion(promoId);
+      setPromotions((prev) => prev.map((p) => (p.id === promoId ? { ...p, ...promo } : p)));
+      logAudit(`Archived promotion #${promoId}`);
+      return { ok: true, data: promo };
+    } catch (error) {
+      return { ok: false, error: 'The promotion could not be archived. Please try again.' };
+    }
   }, [logAudit]);
 
   // ---------------------------------------------------------------------
   // Rooms / Housekeeping
   // ---------------------------------------------------------------------
-  const updateRoomStatus = useCallback((roomId, status) => {
-    setRooms((prev) => {
-      const target = prev.find((r) => r.id === roomId);
-      logAudit(`Updated room ${target?.number} status to ${status.replace(/_/g, ' ')}`);
-      return prev.map((r) => (r.id === roomId ? { ...r, status } : r));
-    });
-  }, [logAudit]);
+  const updateRoomStatus = useCallback(async (roomId, status) => {
+    // rooms already has a DB audit trigger — no separate logAudit call needed.
+    try {
+      const updated = await updateRemoteRoomStatus(roomId, status);
+      setRooms((prev) => prev.map((r) => (r.id === roomId ? { ...r, ...updated } : r)));
+      return { ok: true, data: updated };
+    } catch (error) {
+      return { ok: false, error: 'The room status could not be updated. Please try again.' };
+    }
+  }, []);
 
   // ---------------------------------------------------------------------
   // Maintenance
   // ---------------------------------------------------------------------
-  const createMaintenanceIssue = useCallback((payload) => {
-    const issue = { id: nextId('m'), status: 'OPEN', createdAt: new Date().toISOString(), resolvedAt: null, ...payload };
-    setMaintenanceIssues((prev) => [issue, ...prev]);
-    logAudit(`Logged maintenance issue in room ${payload.roomNumber}`);
-    return issue;
+  const createMaintenanceIssue = useCallback(async (payload) => {
+    try {
+      const issue = await createRemoteMaintenanceIssue(payload);
+      setMaintenanceIssues((prev) => [issue, ...prev]);
+      logAudit(`Logged maintenance issue in room ${payload.roomNumber}`);
+      return { ok: true, data: issue };
+    } catch (error) {
+      return { ok: false, error: 'The maintenance issue could not be logged. Please try again.' };
+    }
   }, [logAudit]);
 
-  const updateMaintenanceStatus = useCallback((issueId, status) => {
-    setMaintenanceIssues((prev) => prev.map((m) => (m.id === issueId ? { ...m, status, resolvedAt: status === 'RESOLVED' ? new Date().toISOString() : m.resolvedAt } : m)));
-    logAudit(`Maintenance issue #${issueId} → ${status}`);
+  const updateMaintenanceStatus = useCallback(async (issueId, status) => {
+    try {
+      const issue = await updateRemoteMaintenanceStatus(issueId, status);
+      setMaintenanceIssues((prev) => prev.map((m) => (m.id === issueId ? { ...m, ...issue } : m)));
+      logAudit(`Maintenance issue #${issueId} → ${status}`);
+      return { ok: true, data: issue };
+    } catch (error) {
+      return { ok: false, error: 'The maintenance status could not be updated. Please try again.' };
+    }
   }, [logAudit]);
 
   // ---------------------------------------------------------------------
   // Feedback — shared: guest submits, staff/management see & resolve.
   // ---------------------------------------------------------------------
-  const submitFeedback = useCallback((data) => {
+  const submitFeedback = useCallback(async (data) => {
     const overall = data.ratings?.['Overall Experience'] || 0;
+    const resolved = overall > (propertySettings.lowRatingThreshold || 3);
+
+    if (authSession?.user?.id && guest.id !== GUEST.id) {
+      try {
+        const persisted = await createRemoteFeedback(guest.id, { overall, ratings: data.ratings, comments: data.comments, resolved });
+        const entry = { ...persisted, guestName: `${guest.firstName} ${guest.lastName}`.trim(), roomNumber: room.number };
+        setFeedback((prev) => [entry, ...prev]);
+        if (!resolved) {
+          notifyStaffRole('MANAGEMENT', { category: 'Feedback', title: 'Guest experience alert', body: `Room ${room.number} rated ${overall}/5` }).catch(() => {});
+        }
+        return entry;
+      } catch (error) {
+        return null;
+      }
+    }
+
     const entry = {
       id: nextId('fb'),
       guestName: `${guest.firstName} ${guest.lastName}`,
@@ -414,27 +629,39 @@ export function AppProvider({ children }) {
       ratings: data.ratings,
       comments: data.comments,
       createdAt: new Date().toISOString(),
-      resolved: overall > (propertySettings.lowRatingThreshold || 3),
+      resolved,
       resolutionNote: '',
     };
     setFeedback((prev) => [entry, ...prev]);
-    if (overall <= (propertySettings.lowRatingThreshold || 3)) {
+    if (!resolved) {
       setStaffNotifications((prev) => [{ id: nextId('sn'), title: 'Guest experience alert', body: `Room ${room.number} rated ${overall}/5`, category: 'Feedback', createdAt: new Date().toISOString(), read: false }, ...prev]);
     }
     return entry;
-  }, [guest, room, propertySettings]);
+  }, [guest, room, propertySettings, authSession?.user?.id]);
 
-  const resolveFeedback = useCallback((feedbackId, note) => {
-    setFeedback((prev) => prev.map((f) => (f.id === feedbackId ? { ...f, resolved: true, resolutionNote: note } : f)));
-    logAudit(`Resolved feedback #${feedbackId}`);
+  const resolveFeedback = useCallback(async (feedbackId, note) => {
+    try {
+      const entry = await resolveRemoteFeedback(feedbackId, note);
+      setFeedback((prev) => prev.map((f) => (f.id === feedbackId ? { ...f, ...entry } : f)));
+      logAudit(`Resolved feedback #${feedbackId}`);
+      return { ok: true, data: entry };
+    } catch (error) {
+      return { ok: false, error: 'The feedback could not be resolved. Please try again.' };
+    }
   }, [logAudit]);
 
   // ---------------------------------------------------------------------
   // Content CMS
   // ---------------------------------------------------------------------
-  const setContentStatus = useCallback((contentId, status) => {
-    setContentItems((prev) => prev.map((c) => (c.id === contentId ? { ...c, status, updatedAt: new Date().toISOString() } : c)));
-    logAudit(`Content "#${contentId}" set to ${status}`);
+  const setContentStatus = useCallback(async (contentId, status) => {
+    try {
+      const item = await setRemoteContentStatus(contentId, status);
+      setContentItems((prev) => prev.map((c) => (c.id === contentId ? { ...c, ...item } : c)));
+      logAudit(`Content "#${contentId}" set to ${status}`);
+      return { ok: true, data: item };
+    } catch (error) {
+      return { ok: false, error: 'The content status could not be updated. Please try again.' };
+    }
   }, [logAudit]);
 
   // ---------------------------------------------------------------------
@@ -446,12 +673,23 @@ export function AppProvider({ children }) {
   const markAllNotificationsRead = useCallback(() => {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
   }, []);
-  const markStaffNotificationRead = useCallback((id) => {
-    setStaffNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
+  const markStaffNotificationRead = useCallback(async (id) => {
+    try {
+      await markRemoteNotificationRead(id);
+      setStaffNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
+    } catch (error) {
+      // Non-critical — the badge count just stays stale until the next refresh.
+    }
   }, []);
-  const markAllStaffNotificationsRead = useCallback(() => {
-    setStaffNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-  }, []);
+  const markAllStaffNotificationsRead = useCallback(async () => {
+    const unreadIds = staffNotifications.filter((n) => !n.read).map((n) => n.id);
+    try {
+      await markAllRemoteStaffNotificationsRead(unreadIds);
+      setStaffNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    } catch (error) {
+      // Non-critical — the badge count just stays stale until the next refresh.
+    }
+  }, [staffNotifications]);
 
   const completeDigitalCheckIn = useCallback(() => {
     setCheckedIn(true);
@@ -460,15 +698,6 @@ export function AppProvider({ children }) {
 
   const unreadNotificationCount = useMemo(() => notifications.filter((n) => !n.read).length, [notifications]);
   const unreadStaffNotificationCount = useMemo(() => staffNotifications.filter((n) => !n.read).length, [staffNotifications]);
-
-  // ---------------------------------------------------------------------
-  // Combined guest directory for Staff "Guests" screen (this app's own
-  // signed-in guest + a handful of seeded "other guests in house").
-  // ---------------------------------------------------------------------
-  const allGuestsForStaff = useMemo(() => ([
-    { id: guest.id, firstName: guest.firstName, lastName: guest.lastName, roomNumber: room.number, reservationNumber: reservation.reservationNumber, checkIn: reservation.checkIn, checkOut: reservation.checkOut, isAppUser: true },
-    ...OTHER_GUESTS,
-  ]), [guest, room, reservation]);
 
   const value = useMemo(
     () => ({
@@ -492,8 +721,9 @@ export function AppProvider({ children }) {
       contentItems, setContentStatus,
       auditLog,
       staffNotifications, markStaffNotificationRead, markAllStaffNotificationsRead, unreadStaffNotificationCount,
-      staffDirectory: STAFF_DIRECTORY,
+      staffDirectory,
       allGuestsForStaff,
+      refreshStaffData,
       propertySettings, setPropertySettings,
     }),
     [
@@ -507,7 +737,7 @@ export function AppProvider({ children }) {
       promotions, createPromotion, publishPromotion, archivePromotion, rooms, updateRoomStatus,
       maintenanceIssues, createMaintenanceIssue, updateMaintenanceStatus, contentItems, setContentStatus,
       auditLog, staffNotifications, markStaffNotificationRead, markAllStaffNotificationsRead, unreadStaffNotificationCount,
-      allGuestsForStaff, propertySettings,
+      staffDirectory, allGuestsForStaff, refreshStaffData, propertySettings,
     ]
   );
 

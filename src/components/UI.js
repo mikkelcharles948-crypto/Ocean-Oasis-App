@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { colors, radius, spacing, font, shadow } from '../theme/theme';
+import GlassSurface from './GlassSurface';
 
 export function Card({ children, style, onPress }) {
   const Wrapper = onPress ? TouchableOpacity : View;
@@ -69,17 +71,29 @@ export function StarRating({ value, onChange, size = 26, readOnly = false }) {
 }
 
 export function ScreenHeader({ title, onBack, right }) {
+  // Frosted-glass header chrome. Screens stack SafeAreaView > ScreenHeader >
+  // ScrollView normally (nothing scrolls underneath it), so this is a
+  // lighter-touch "glass" treatment: a translucent/frosted panel with a
+  // soft edge, not a truly floating header with content blurring behind it.
   return (
-    <View style={styles.screenHeader}>
-      {onBack ? (
-        <TouchableOpacity onPress={onBack} style={styles.backBtn}>
-          <Ionicons name="chevron-back" size={24} color={colors.deepOcean} />
-        </TouchableOpacity>
-      ) : (
-        <View style={styles.backBtn} />
-      )}
-      <Text style={styles.screenHeaderTitle} numberOfLines={1}>{title}</Text>
-      <View style={styles.backBtn}>{right}</View>
+    <View style={styles.screenHeaderShadowWrap}>
+      <GlassSurface
+        style={styles.screenHeaderGlass}
+        contentStyle={styles.screenHeader}
+        borderRadius={0}
+        intensity={26}
+        tint="light"
+      >
+        {onBack ? (
+          <TouchableOpacity onPress={onBack} style={styles.backBtn}>
+            <Ionicons name="chevron-back" size={24} color={colors.deepOcean} />
+          </TouchableOpacity>
+        ) : (
+          <View style={styles.backBtn} />
+        )}
+        <Text style={styles.screenHeaderTitle} numberOfLines={1}>{title}</Text>
+        <View style={styles.backBtn}>{right}</View>
+      </GlassSurface>
     </View>
   );
 }
@@ -101,17 +115,18 @@ export function EmptyState({ icon = 'compass-outline', title, subtitle, actionLa
   );
 }
 
-export function ErrorState({ title = 'Something went wrong', subtitle = 'Please try again.', onRetry }) {
+export function ErrorState({ title, subtitle, onRetry }) {
+  const { t } = useTranslation();
   return (
     <View style={styles.empty}>
       <View style={[styles.emptyIconWrap, { backgroundColor: '#F7E7E1' }]}>
         <Ionicons name="alert-circle-outline" size={34} color={colors.error} />
       </View>
-      <Text style={styles.emptyTitle}>{title}</Text>
-      <Text style={styles.emptySubtitle}>{subtitle}</Text>
+      <Text style={styles.emptyTitle}>{title || t('common.somethingWrong')}</Text>
+      <Text style={styles.emptySubtitle}>{subtitle || t('common.pleaseTryAgain')}</Text>
       {onRetry ? (
         <TouchableOpacity style={styles.emptyBtn} onPress={onRetry}>
-          <Text style={styles.emptyBtnText}>Try Again</Text>
+          <Text style={styles.emptyBtnText}>{t('common.tryAgain')}</Text>
         </TouchableOpacity>
       ) : null}
     </View>
@@ -119,10 +134,11 @@ export function ErrorState({ title = 'Something went wrong', subtitle = 'Please 
 }
 
 export function OfflineBanner() {
+  const { t } = useTranslation();
   return (
     <View style={styles.offline}>
       <Ionicons name="cloud-offline-outline" size={16} color={colors.white} />
-      <Text style={styles.offlineText}>You're offline — showing saved content</Text>
+      <Text style={styles.offlineText}>{t('common.offline')}</Text>
     </View>
   );
 }
@@ -140,10 +156,12 @@ export function IconTile({ label, icon, iconSet = 'ion', onPress, color }) {
 }
 
 export function Field({ label, value, onChangeText, placeholder, multiline, keyboardType, secureTextEntry }) {
+  const inputRef = useRef(null);
   return (
     <View style={{ marginBottom: spacing.md }}>
       <Text style={styles.fieldLabel}>{label}</Text>
       <TextInput
+        ref={inputRef}
         style={[styles.input, multiline && { height: 100, textAlignVertical: 'top' }]}
         value={value}
         onChangeText={onChangeText}
@@ -152,6 +170,9 @@ export function Field({ label, value, onChangeText, placeholder, multiline, keyb
         multiline={multiline}
         keyboardType={keyboardType}
         secureTextEntry={secureTextEntry}
+        returnKeyType={multiline ? 'default' : 'done'}
+        blurOnSubmit={!multiline}
+        onSubmitEditing={multiline ? undefined : () => inputRef.current?.blur()}
       />
     </View>
   );
@@ -229,13 +250,19 @@ const styles = StyleSheet.create({
   sectionAction: { fontSize: 13, fontWeight: '600', color: colors.turquoiseDark },
   badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: radius.pill, alignSelf: 'flex-start' },
   badgeText: { fontSize: 11, fontWeight: '700', letterSpacing: 0.3 },
+  screenHeaderShadowWrap: {
+    ...shadow.card,
+  },
+  screenHeaderGlass: {
+    borderWidth: 0,
+    borderBottomWidth: 1,
+  },
   screenHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.sm,
-    backgroundColor: colors.ivory,
   },
   backBtn: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
   screenHeaderTitle: { flex: 1, textAlign: 'center', fontSize: 17, fontWeight: '700', color: colors.charcoal },

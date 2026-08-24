@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { Card } from '../../components/UI';
 import { colors, spacing, radius, font } from '../../theme/theme';
@@ -20,19 +21,22 @@ function Row({ icon, label, onPress, danger }) {
 }
 
 export default function ProfileScreen({ navigation }) {
+  const { t, i18n } = useTranslation();
   const { guest, signOut } = useApp();
 
+  const currentLanguageName = t(`profile.languageNames.${i18n.language}`, { defaultValue: t('profile.languageNames.en') });
+
   const confirmSignOut = () => {
-    Alert.alert('Sign Out', 'Are you sure you want to sign out?', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Sign Out', style: 'destructive', onPress: signOut },
+    Alert.alert(t('profile.signOutTitle'), t('profile.signOutMsg'), [
+      { text: t('profile.cancel'), style: 'cancel' },
+      { text: t('profile.logOut'), style: 'destructive', onPress: signOut },
     ]);
   };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
       <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: spacing.xxl }}>
-        <Text style={styles.headerTitle}>Profile</Text>
+        <Text style={styles.headerTitle}>{t('profile.title')}</Text>
 
         <Card style={styles.profileCard}>
           <View style={styles.avatar}>
@@ -47,36 +51,38 @@ export default function ProfileScreen({ navigation }) {
           </TouchableOpacity>
         </Card>
 
-        <SectionLabel text="Stay & Preferences" />
+        <SectionLabel text={t('profile.stayAndPreferences')} />
         <Card style={{ paddingVertical: 0 }}>
-          <Row icon="person-outline" label="Personal Details" onPress={() => navigation.navigate('ProfileDetails')} />
+          <Row icon="person-outline" label={t('profile.personalDetails')} onPress={() => navigation.navigate('ProfileDetails')} />
           <Divider />
-          <Row icon="options-outline" label="Preferences & Interests" onPress={() => navigation.navigate('Preferences')} />
+          <Row icon="options-outline" label={t('profile.preferencesInterests')} onPress={() => navigation.navigate('Preferences')} />
           <Divider />
-          <Row icon="notifications-outline" label="Notification Settings" onPress={() => navigation.navigate('Notifications')} />
+          <Row icon="notifications-outline" label={t('profile.notificationSettings')} onPress={() => navigation.navigate('Notifications')} />
           <Divider />
-          <Row icon="time-outline" label="Past Stays" onPress={() => {}} />
+          <Row icon="time-outline" label={t('profile.pastStays')} onPress={() => navigation.navigate('PastStays')} />
           <Divider />
-          <Row icon="star-outline" label="Feedback" onPress={() => navigation.navigate('Feedback')} />
+          <Row icon="calendar-outline" label={t('itinerary.title')} onPress={() => navigation.navigate('Itinerary')} />
+          <Divider />
+          <Row icon="star-outline" label={t('profile.feedback')} onPress={() => navigation.navigate('Feedback')} />
         </Card>
 
-        <SectionLabel text="App" />
+        <SectionLabel text={t('profile.app')} />
         <Card style={{ paddingVertical: 0 }}>
-          <Row icon="language-outline" label="Language: English" onPress={() => {}} />
+          <Row icon="language-outline" label={t('profile.languageLabel', { language: currentLanguageName })} onPress={() => navigation.navigate('Language')} />
           <Divider />
-          <Row icon="accessibility-outline" label="Accessibility" onPress={() => {}} />
+          <Row icon="accessibility-outline" label={t('profile.accessibility')} onPress={() => navigation.navigate('Accessibility')} />
           <Divider />
-          <Row icon="lock-closed-outline" label="Privacy" onPress={() => {}} />
+          <Row icon="lock-closed-outline" label={t('profile.privacy')} onPress={() => navigation.navigate('PrivacySettings')} />
           <Divider />
-          <Row icon="help-circle-outline" label="Help" onPress={() => navigation.navigate('Concierge')} />
+          <Row icon="help-circle-outline" label={t('profile.help')} onPress={() => navigation.navigate('Concierge')} />
           <Divider />
-          <Row icon="document-text-outline" label="Terms" onPress={() => {}} />
+          <Row icon="document-text-outline" label={t('profile.terms')} onPress={() => navigation.navigate('Terms')} />
           <Divider />
-          <Row icon="shield-checkmark-outline" label="Privacy Policy" onPress={() => {}} />
+          <Row icon="shield-checkmark-outline" label={t('profile.privacyPolicy')} onPress={() => navigation.navigate('PrivacyPolicy')} />
         </Card>
 
         <Card style={{ marginTop: spacing.md, paddingVertical: 0 }}>
-          <Row icon="log-out-outline" label="Log Out" onPress={confirmSignOut} danger />
+          <Row icon="log-out-outline" label={t('profile.logOut')} onPress={confirmSignOut} danger />
         </Card>
       </ScrollView>
     </SafeAreaView>
