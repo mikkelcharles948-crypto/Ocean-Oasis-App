@@ -9,7 +9,7 @@ import Logo from '../../components/Logo';
 import Button from '../../components/Button';
 import ImagePlaceholder from '../../components/ImagePlaceholder';
 import { Pill } from '../../components/UI';
-import { colors, spacing, font } from '../../theme/theme';
+import { colors, spacing, typography } from '../../theme/theme';
 import { INTERESTS } from '../../data/mockData';
 import { useApp } from '../../context/AppContext';
 
@@ -167,19 +167,19 @@ const styles = StyleSheet.create({
   centerFill: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: spacing.xl },
   interestsFill: { flex: 1, alignItems: 'center', paddingTop: 90, paddingHorizontal: spacing.xl },
   welcomeTitle: {
-    fontFamily: font.display, fontSize: 28, fontWeight: '700', color: colors.white,
+    ...typography.display, color: colors.white,
     marginTop: spacing.xl, textAlign: 'center',
   },
-  welcomeSubtitle: { fontSize: 15, color: colors.sandLight, marginTop: 10, textAlign: 'center' },
+  welcomeSubtitle: { ...typography.body, color: colors.sandLight, marginTop: 10, textAlign: 'center' },
   iconRow: { flexDirection: 'row', gap: 24, marginBottom: spacing.lg },
   title: {
-    fontFamily: font.display, fontSize: 26, fontWeight: '700', color: colors.white,
+    ...typography.display, color: colors.white,
     textAlign: 'center', marginBottom: spacing.sm,
   },
-  subtitle: { fontSize: 14.5, color: colors.sandLight, textAlign: 'center', lineHeight: 21 },
+  subtitle: { ...typography.body, color: colors.sandLight, textAlign: 'center' },
   grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', marginTop: spacing.xl, gap: 18 },
   gridItem: { width: 92, alignItems: 'center', gap: 8 },
-  gridLabel: { color: colors.white, fontSize: 12, fontWeight: '600', textAlign: 'center' },
+  gridLabel: { ...typography.caption, color: colors.white, textAlign: 'center' },
   pillWrap: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', marginTop: spacing.lg, gap: 4 },
   footer: { position: 'absolute', bottom: 0, left: 0, right: 0, paddingHorizontal: spacing.lg, paddingBottom: spacing.sm },
   dots: { flexDirection: 'row', justifyContent: 'center', gap: 6, marginBottom: spacing.md },

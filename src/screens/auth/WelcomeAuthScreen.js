@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import Logo from '../../components/Logo';
 import Button from '../../components/Button';
 import ImagePlaceholder from '../../components/ImagePlaceholder';
-import { colors, spacing, font, shadow } from '../../theme/theme';
+import { colors, spacing, shadow, typography } from '../../theme/theme';
 
 // Real Dominica rainforest waterfall (Middleham Falls), used as the
 // first-impression hero backdrop on this auth "front door" screen —
@@ -24,7 +24,13 @@ export default function WelcomeAuthScreen({ navigation }) {
       <LinearGradient colors={['rgba(11,59,69,0.5)', 'rgba(9,46,55,0.82)']} style={StyleSheet.absoluteFill} />
       <SafeAreaView style={styles.container}>
         {navigation.canGoBack() && (
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.backBtn}
+            accessibilityRole="button"
+            accessibilityLabel={t('common.back')}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
             <Ionicons name="chevron-back" size={24} color={colors.white} />
           </TouchableOpacity>
         )}
@@ -73,11 +79,11 @@ const styles = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center', marginTop: spacing.sm,
   },
   card: { backgroundColor: colors.white, borderRadius: 26, padding: spacing.lg, paddingTop: spacing.xl, ...shadow.float },
-  title: { fontSize: 21, fontWeight: '700', color: colors.charcoal, textAlign: 'center', fontFamily: font.display },
-  subtitle: { fontSize: 13.5, color: colors.slate, textAlign: 'center', marginTop: 6, lineHeight: 19 },
+  title: { ...typography.heading, color: colors.charcoal, textAlign: 'center' },
+  subtitle: { ...typography.bodySmall, color: colors.slate, textAlign: 'center', marginTop: 6 },
   divider: { flexDirection: 'row', alignItems: 'center', marginVertical: spacing.lg },
   line: { flex: 1, height: 1, backgroundColor: colors.border },
   dividerText: { marginHorizontal: 10, color: colors.slate, fontSize: 12 },
   reservationTitle: { fontSize: 15, fontWeight: '700', color: colors.charcoal, textAlign: 'center' },
-  reservationSubtitle: { fontSize: 13, color: colors.slate, textAlign: 'center', marginTop: 4 },
+  reservationSubtitle: { ...typography.bodySmall, color: colors.slate, textAlign: 'center', marginTop: 4 },
 });

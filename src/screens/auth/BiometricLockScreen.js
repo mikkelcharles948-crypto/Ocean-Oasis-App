@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import Button from '../../components/Button';
 import Logo from '../../components/Logo';
-import { colors, spacing, font } from '../../theme/theme';
+import { colors, spacing, typography } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 export default function BiometricLockScreen() {
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     width: 76, height: 76, borderRadius: 38, backgroundColor: 'rgba(255,255,255,0.12)',
     alignItems: 'center', justifyContent: 'center', marginTop: spacing.xl, marginBottom: spacing.lg,
   },
-  title: { fontSize: 22, fontWeight: '700', color: colors.white, fontFamily: font.display, textAlign: 'center' },
-  sub: { fontSize: 13.5, color: 'rgba(255,255,255,0.75)', textAlign: 'center', marginTop: 8, lineHeight: 19 },
-  error: { color: colors.goldSoft, fontSize: 13, marginTop: spacing.md, textAlign: 'center' },
+  title: { ...typography.heading, color: colors.white, textAlign: 'center' },
+  sub: { ...typography.bodySmall, color: 'rgba(255,255,255,0.75)', textAlign: 'center', marginTop: 8 },
+  error: { ...typography.bodySmall, color: colors.goldSoft, marginTop: spacing.md, textAlign: 'center' },
 });

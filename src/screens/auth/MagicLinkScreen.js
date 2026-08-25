@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import Button from '../../components/Button';
 import { ScreenHeader, Field } from '../../components/UI';
-import { colors, spacing, font } from '../../theme/theme';
+import { colors, spacing, typography } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 export default function MagicLinkScreen({ navigation, route }) {
@@ -62,8 +62,8 @@ const styles = StyleSheet.create({
     width: 68, height: 68, borderRadius: 34, backgroundColor: '#E1F2F1',
     alignItems: 'center', justifyContent: 'center', marginBottom: spacing.md,
   },
-  heading: { fontSize: 21, fontWeight: '700', color: colors.charcoal, textAlign: 'center', fontFamily: font.display },
-  sub: { fontSize: 13.5, color: colors.slate, textAlign: 'center', marginTop: 8, lineHeight: 20 },
+  heading: { ...typography.heading, color: colors.charcoal, textAlign: 'center' },
+  sub: { ...typography.bodySmall, color: colors.slate, textAlign: 'center', marginTop: 8 },
   hint: { fontSize: 11.5, color: colors.slate, marginTop: spacing.md, textAlign: 'center', fontStyle: 'italic' },
-  error: { fontSize: 13, color: colors.error, marginTop: spacing.sm },
+  error: { ...typography.bodySmall, color: colors.error, marginTop: spacing.sm },
 });
