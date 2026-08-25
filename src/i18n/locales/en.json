@@ -18,7 +18,8 @@
       "Wellness": "Wellness",
       "Entertainment": "Entertainment",
       "Family": "Family",
-      "Dining": "Dining"
+      "Dining": "Dining",
+      "Festival": "Festival"
     },
     "difficulty": {
       "Easy": "Easy",
@@ -102,7 +103,8 @@
     "activityLabel": "Activity",
     "guestsLabel": "Guests",
     "priceLabel": "Price",
-    "confirmReservation": "Confirm Reservation"
+    "confirmReservation": "Confirm Reservation",
+    "bookingError": "This activity could not be booked. Please try again."
   },
   "events": {
     "title": "Events",
@@ -132,6 +134,9 @@
     "preferredTime": "Preferred Time",
     "submit": "Submit",
     "confirmText": "Your request for {{venue}} has been sent. We'll confirm shortly.",
+    "menuTitle": "{{venue}} Menu",
+    "menuComingSoon": "Menu coming soon",
+    "menuComingSoonSub": "Ask our concierge for today's offerings.",
     "type": {
       "signatureRestaurant": "Signature Restaurant",
       "allDayDining": "All-Day Dining",
@@ -394,6 +399,111 @@
       "fr": "Français",
       "es": "Español",
       "zh": "中文"
+    }
+  },
+  "accessibility": {
+    "textSize": "Text Size",
+    "textSizes": {
+      "standard": "Standard",
+      "large": "Large",
+      "extraLarge": "Extra Large"
+    },
+    "display": "Display",
+    "boldText": "Bold Text",
+    "boldTextDesc": "Increase text weight for readability.",
+    "highContrast": "High Contrast",
+    "highContrastDesc": "Increase contrast between text and backgrounds.",
+    "reduceMotion": "Reduce Motion",
+    "reduceMotionDesc": "Minimize animations and transitions.",
+    "footnote": "These preferences apply to this device and take effect immediately."
+  },
+  "privacyPolicy": {
+    "updated": "Last updated: August 2026",
+    "intro": "This Privacy Policy explains how {{name}} collects, uses, and protects your information when you use this app.",
+    "sections": {
+      "collect": {
+        "title": "1. Information We Collect",
+        "body": "We collect information you provide directly — name, email, phone number, reservation details, service requests, activity bookings, and feedback — as well as basic device information needed to operate the app securely."
+      },
+      "use": {
+        "title": "2. How We Use Your Information",
+        "body": "Your information is used to manage your reservation, fulfil service and activity requests, respond to feedback, personalize recommendations (such as activities matching your interests), and communicate important updates about your stay."
+      },
+      "visibility": {
+        "title": "3. Who Can See Your Information",
+        "body": "Reservation and request details are visible to authorized hotel staff and management involved in fulfilling them. We do not sell your personal information to third parties."
+      },
+      "security": {
+        "title": "4. Data Storage & Security",
+        "body": "Your data is stored with industry-standard security controls, including role-based access so only staff with a legitimate need can view guest information."
+      },
+      "choices": {
+        "title": "5. Your Choices",
+        "body": "You can review and update your personal details at any time in Profile → Personal Details. You may also adjust marketing and personalization preferences in Profile → Privacy."
+      },
+      "retention": {
+        "title": "6. Data Retention",
+        "body": "We retain reservation and stay history to provide loyalty benefits and past-stay records. You may request deletion of your account data by contacting us using the details below, subject to legal and accounting retention requirements."
+      },
+      "contact": {
+        "title": "7. Contact",
+        "body": "Privacy questions or requests can be directed to {{email}} or {{phone}}, {{address}}."
+      }
+    }
+  },
+  "privacySettings": {
+    "intro": "Control how your information is used within the app. These preferences apply to this device.",
+    "personalization": {
+      "label": "Personalized Recommendations",
+      "desc": "Use my interests and activity history to recommend experiences."
+    },
+    "marketingEmails": {
+      "label": "Marketing Emails",
+      "desc": "Receive offers, promotions, and stay reminders by email."
+    },
+    "shareStayHistory": {
+      "label": "Share Stay History with Loyalty Partners",
+      "desc": "Allow past-stay data to be shared with partner loyalty programs."
+    },
+    "footnote": "For details on what data we collect and how it's used, see our Privacy Policy in Profile → Privacy Policy."
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "updated": "Last updated: August 2026",
+    "intro": "These Terms of Service govern your use of the {{name}} guest app. Please read them carefully.",
+    "sections": {
+      "acceptance": {
+        "title": "1. Acceptance of Terms",
+        "body": "By creating an account or using the {{name}} app, you agree to these Terms of Service. If you do not agree, please do not use the app."
+      },
+      "reservations": {
+        "title": "2. Reservations & Check-In",
+        "body": "Reservations made through this app are subject to availability and the rate policies communicated at the time of booking. Digital check-in is offered as a convenience and does not replace identity verification at the front desk where required by law."
+      },
+      "serviceRequests": {
+        "title": "3. Service Requests & Activities",
+        "body": "Service requests, activity bookings, and dining reservations submitted through the app are fulfilled on a best-effort basis and may be subject to capacity, weather, or operational constraints. We will notify you as soon as possible of any changes."
+      },
+      "conduct": {
+        "title": "4. Guest Conduct",
+        "body": "You agree to use the app only for lawful purposes connected with your stay, and not to submit false, abusive, or harassing content through service requests, feedback, or concierge messaging."
+      },
+      "cancellations": {
+        "title": "5. Cancellations",
+        "body": "Cancellation terms for reservations, activities, and dining follow the policy stated at the time of booking. Where no policy is stated, standard hotel cancellation terms apply — ask our front desk or concierge for details."
+      },
+      "liability": {
+        "title": "6. Limitation of Liability",
+        "body": "{{name}} is not liable for indirect or consequential loss arising from use of this app, including service interruptions, third-party excursion providers, or inaccuracies in third-party information (such as local event listings) presented for your convenience."
+      },
+      "changes": {
+        "title": "7. Changes to These Terms",
+        "body": "We may update these Terms from time to time. Continued use of the app after changes take effect constitutes acceptance of the revised Terms."
+      },
+      "contact": {
+        "title": "8. Contact",
+        "body": "Questions about these Terms can be directed to {{email}} or {{phone}}."
+      }
     }
   },
   "pastStays": {

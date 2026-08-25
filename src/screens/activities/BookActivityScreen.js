@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, ErrorState } from '../../components/UI';
 import Button from '../../components/Button';
@@ -9,6 +10,7 @@ import { colors, spacing, radius, font } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 export default function BookActivityScreen({ route, navigation }) {
+  const { t } = useTranslation();
   const { activityId } = route.params || {};
   const { activities, addToItinerary, bookActivity } = useApp();
   const activity = activities.find((a) => a.id === activityId);
@@ -21,7 +23,7 @@ export default function BookActivityScreen({ route, navigation }) {
   if (!activity) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-        <ErrorState title="Activity not found" onRetry={() => navigation.goBack()} />
+        <ErrorState title={t('activities.notFound')} onRetry={() => navigation.goBack()} />
       </SafeAreaView>
     );
   }
@@ -32,7 +34,7 @@ export default function BookActivityScreen({ route, navigation }) {
     const result = await bookActivity({ activityId: activity.id, guests });
     setLoading(false);
     if (!result.ok) {
-      setError(result.error || 'This activity could not be booked. Please try again.');
+      setError(result.error || t('activities.bookingError'));
       return;
     }
     addToItinerary({
@@ -45,15 +47,15 @@ export default function BookActivityScreen({ route, navigation }) {
   if (confirmed) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-        <ScreenHeader title="Confirmed" onBack={() => navigation.popToTop?.() || navigation.goBack()} />
+        <ScreenHeader title={t('activities.confirmed')} onBack={() => navigation.popToTop?.() || navigation.goBack()} />
         <View style={styles.successWrap}>
           <View style={styles.successCircle}>
             <Ionicons name="checkmark" size={32} color={colors.white} />
           </View>
-          <Text style={styles.successTitle}>Activity Reserved</Text>
-          <Text style={styles.successSub}>{activity.name} has been added to your itinerary.</Text>
-          <Button label="View Itinerary" onPress={() => navigation.navigate('Itinerary')} style={{ marginTop: spacing.lg }} />
-          <Button label="Done" variant="outline" onPress={() => navigation.goBack()} style={{ marginTop: spacing.sm }} />
+          <Text style={styles.successTitle}>{t('activities.activityReserved')}</Text>
+          <Text style={styles.successSub}>{t('activities.addedToItinerary', { name: activity.name })}</Text>
+          <Button label={t('activities.viewItinerary')} onPress={() => navigation.navigate('Itinerary')} style={{ marginTop: spacing.lg }} />
+          <Button label={t('activities.done')} variant="outline" onPress={() => navigation.goBack()} style={{ marginTop: spacing.sm }} />
         </View>
       </SafeAreaView>
     );
@@ -61,12 +63,12 @@ export default function BookActivityScreen({ route, navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-      <ScreenHeader title="Reserve Activity" onBack={() => navigation.goBack()} />
+      <ScreenHeader title={t('activities.reserveActivity')} onBack={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={{ padding: spacing.lg }}>
         <Text style={styles.activityName}>{activity.name}</Text>
         <Text style={styles.activityMeta}>{activity.date} · {activity.time}</Text>
 
-        <Text style={styles.label}>Number of Guests</Text>
+        <Text style={styles.label}>{t('activities.numberOfGuests')}</Text>
         <View style={styles.stepper}>
           <TouchableOpacity style={styles.stepperBtn} onPress={() => setGuests(Math.max(1, guests - 1))}>
             <Ionicons name="remove" size={18} color={colors.deepOcean} />
@@ -78,16 +80,16 @@ export default function BookActivityScreen({ route, navigation }) {
         </View>
 
         <View style={styles.summaryBox}>
-          <Text style={styles.summaryTitle}>Review Booking</Text>
-          <SummaryRow label="Activity" value={activity.name} />
-          <SummaryRow label="Date" value={activity.date} />
-          <SummaryRow label="Time" value={activity.time} />
-          <SummaryRow label="Guests" value={String(guests)} />
-          <SummaryRow label="Price" value={activity.price} />
+          <Text style={styles.summaryTitle}>{t('activities.reviewBooking')}</Text>
+          <SummaryRow label={t('activities.activityLabel')} value={activity.name} />
+          <SummaryRow label={t('activities.date')} value={activity.date} />
+          <SummaryRow label={t('activities.time')} value={activity.time} />
+          <SummaryRow label={t('activities.guestsLabel')} value={String(guests)} />
+          <SummaryRow label={t('activities.priceLabel')} value={activity.price} />
         </View>
 
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
-        <Button label="Confirm Reservation" onPress={handleConfirm} loading={loading} style={{ marginTop: spacing.lg }} />
+        <Button label={t('activities.confirmReservation')} onPress={handleConfirm} loading={loading} style={{ marginTop: spacing.lg }} />
       </ScrollView>
     </SafeAreaView>
   );

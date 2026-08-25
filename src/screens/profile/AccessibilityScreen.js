@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Switch, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Card, Pill } from '../../components/UI';
 import { colors, spacing, font } from '../../theme/theme';
 
 const TEXT_SIZES = ['Standard', 'Large', 'Extra Large'];
+const TEXT_SIZE_KEY = { Standard: 'standard', Large: 'large', 'Extra Large': 'extraLarge' };
 
 export default function AccessibilityScreen({ navigation }) {
+  const { t } = useTranslation();
   const [reduceMotion, setReduceMotion] = useState(false);
   const [highContrast, setHighContrast] = useState(false);
   const [boldText, setBoldText] = useState(false);
@@ -15,25 +18,25 @@ export default function AccessibilityScreen({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-      <ScreenHeader title="Accessibility" onBack={() => navigation.goBack()} />
+      <ScreenHeader title={t('profile.accessibility')} onBack={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: spacing.xxl }}>
-        <Text style={styles.sectionLabel}>Text Size</Text>
+        <Text style={styles.sectionLabel}>{t('accessibility.textSize')}</Text>
         <View style={{ flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.lg }}>
           {TEXT_SIZES.map((size) => (
-            <Pill key={size} label={size} selected={textSize === size} onPress={() => setTextSize(size)} />
+            <Pill key={size} label={t(`accessibility.textSizes.${TEXT_SIZE_KEY[size]}`)} selected={textSize === size} onPress={() => setTextSize(size)} />
           ))}
         </View>
 
-        <Text style={styles.sectionLabel}>Display</Text>
+        <Text style={styles.sectionLabel}>{t('accessibility.display')}</Text>
         <Card style={{ paddingVertical: 0 }}>
-          <ToggleRow label="Bold Text" description="Increase text weight for readability." value={boldText} onValueChange={setBoldText} />
+          <ToggleRow label={t('accessibility.boldText')} description={t('accessibility.boldTextDesc')} value={boldText} onValueChange={setBoldText} />
           <View style={styles.divider} />
-          <ToggleRow label="High Contrast" description="Increase contrast between text and backgrounds." value={highContrast} onValueChange={setHighContrast} />
+          <ToggleRow label={t('accessibility.highContrast')} description={t('accessibility.highContrastDesc')} value={highContrast} onValueChange={setHighContrast} />
           <View style={styles.divider} />
-          <ToggleRow label="Reduce Motion" description="Minimize animations and transitions." value={reduceMotion} onValueChange={setReduceMotion} />
+          <ToggleRow label={t('accessibility.reduceMotion')} description={t('accessibility.reduceMotionDesc')} value={reduceMotion} onValueChange={setReduceMotion} />
         </Card>
 
-        <Text style={styles.footnote}>These preferences apply to this device and take effect immediately.</Text>
+        <Text style={styles.footnote}>{t('accessibility.footnote')}</Text>
       </ScrollView>
     </SafeAreaView>
   );

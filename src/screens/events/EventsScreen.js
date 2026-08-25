@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Card, Pill, EmptyState } from '../../components/UI';
 import { colors, spacing, radius, font } from '../../theme/theme';
@@ -9,8 +10,10 @@ import { useApp } from '../../context/AppContext';
 
 const TODAY = '2026-08-15';
 const TOMORROW = '2026-08-16';
+const FILTER_KEY = { Today: 'today', Tomorrow: 'tomorrow', 'This Week': 'thisWeek' };
 
 export default function EventsScreen({ navigation }) {
+  const { t } = useTranslation();
   const [filter, setFilter] = useState('Today');
   const { itinerary, events } = useApp();
   const publishedEvents = useMemo(() => events.filter((e) => e.status !== 'DRAFT'), [events]);
@@ -25,17 +28,17 @@ export default function EventsScreen({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-      <ScreenHeader title="Events" onBack={() => navigation.goBack()} />
+      <ScreenHeader title={t('events.title')} onBack={() => navigation.goBack()} />
       <View style={styles.pillRow}>
         {['Today', 'Tomorrow', 'This Week'].map((f) => (
-          <Pill key={f} label={f} selected={filter === f} onPress={() => setFilter(f)} />
+          <Pill key={f} label={t(`events.filter.${FILTER_KEY[f]}`)} selected={filter === f} onPress={() => setFilter(f)} />
         ))}
       </View>
       <FlatList
         data={filtered}
         keyExtractor={(e) => e.id}
         contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.sm, gap: spacing.sm }}
-        ListEmptyComponent={<EmptyState icon="calendar-outline" title="No events for this period" />}
+        ListEmptyComponent={<EmptyState icon="calendar-outline" title={t('events.noEvents')} />}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => navigation.navigate('EventDetail', { eventId: item.id })}>
             <Card style={styles.card}>
@@ -44,7 +47,7 @@ export default function EventsScreen({ navigation }) {
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={styles.eventTitle}>{item.title}</Text>
-                <Text style={styles.eventLocation}>{item.location} · {item.category}</Text>
+                <Text style={styles.eventLocation}>{item.location} · {t(`common.category.${item.category}`, { defaultValue: item.category })}</Text>
               </View>
               {savedIds.includes(item.id) ? (
                 <Ionicons name="bookmark" size={18} color={colors.gold} />

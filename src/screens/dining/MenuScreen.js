@@ -1,12 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, ErrorState, EmptyState } from '../../components/UI';
 import { colors, spacing, radius, font } from '../../theme/theme';
 import { DINING_VENUES, DINING_MENUS } from '../../data/mockData';
 
 export default function MenuScreen({ route, navigation }) {
+  const { t } = useTranslation();
   const { venueId } = route.params || {};
   const venue = DINING_VENUES.find((v) => v.id === venueId);
   const menu = DINING_MENUS[venueId];
@@ -14,17 +16,17 @@ export default function MenuScreen({ route, navigation }) {
   if (!venue) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-        <ErrorState title="Venue not found" onRetry={() => navigation.goBack()} />
+        <ErrorState title={t('dining.venueNotFound')} onRetry={() => navigation.goBack()} />
       </SafeAreaView>
     );
   }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-      <ScreenHeader title={`${venue.name} Menu`} onBack={() => navigation.goBack()} />
+      <ScreenHeader title={t('dining.menuTitle', { venue: venue.name })} onBack={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: spacing.xxl }}>
         {!menu ? (
-          <EmptyState icon="restaurant-outline" title="Menu coming soon" subtitle="Ask our concierge for today's offerings." />
+          <EmptyState icon="restaurant-outline" title={t('dining.menuComingSoon')} subtitle={t('dining.menuComingSoonSub')} />
         ) : (
           menu.sections.map((section) => (
             <View key={section.title} style={{ marginBottom: spacing.lg }}>

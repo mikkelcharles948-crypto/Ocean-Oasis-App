@@ -18,7 +18,8 @@
       "Wellness": "养生",
       "Entertainment": "娱乐",
       "Family": "家庭",
-      "Dining": "餐饮"
+      "Dining": "餐饮",
+      "Festival": "节庆"
     },
     "difficulty": {
       "Easy": "简单",
@@ -102,7 +103,8 @@
     "activityLabel": "活动",
     "guestsLabel": "人数",
     "priceLabel": "价格",
-    "confirmReservation": "确认预订"
+    "confirmReservation": "确认预订",
+    "bookingError": "该活动预订未能成功，请重试。"
   },
   "events": {
     "title": "活动日程",
@@ -132,6 +134,9 @@
     "preferredTime": "期望时间",
     "submit": "提交",
     "confirmText": "您在{{venue}}的请求已发送，我们将尽快确认。",
+    "menuTitle": "{{venue}}菜单",
+    "menuComingSoon": "菜单即将上线",
+    "menuComingSoonSub": "请咨询我们的礼宾部了解今日供应。",
     "type": {
       "signatureRestaurant": "特色餐厅",
       "allDayDining": "全天候餐厅",
@@ -205,8 +210,8 @@
     "heading2": "有什么我们可以改进的地方吗？",
     "commentsPlaceholder": "请告诉我们更多信息…",
     "submitFeedback": "提交反馈",
-    "submitError": "您的反馈未能提交,请重试。",
-    "overallRequired": "请先为您的整体体验评分,然后再提交。",
+    "submitError": "您的反馈未能提交，请重试。",
+    "overallRequired": "请先为您的整体体验评分，然后再提交。",
     "thankYou": "谢谢您。",
     "thankYouSub": "您的反馈将帮助我们提升您的住宿体验。",
     "followUp": "我们的宾客关系团队已收到通知，可能会尽快与您联系。",
@@ -355,7 +360,7 @@
       "reviewAndConfirm": "核对并确认",
       "continue": "继续",
       "goToMyStay": "前往我的住宿",
-      "finishError": "无法完成办理入住,请重试。"
+      "finishError": "无法完成办理入住，请重试。"
     }
   },
   "profile": {
@@ -394,6 +399,111 @@
       "fr": "Français",
       "es": "Español",
       "zh": "中文"
+    }
+  },
+  "accessibility": {
+    "textSize": "文字大小",
+    "textSizes": {
+      "standard": "标准",
+      "large": "大",
+      "extraLarge": "特大"
+    },
+    "display": "显示",
+    "boldText": "粗体文字",
+    "boldTextDesc": "加粗文字以提升可读性。",
+    "highContrast": "高对比度",
+    "highContrastDesc": "增强文字与背景之间的对比度。",
+    "reduceMotion": "减弱动态效果",
+    "reduceMotionDesc": "减少动画和过渡效果。",
+    "footnote": "这些设置仅适用于本设备，并会立即生效。"
+  },
+  "privacyPolicy": {
+    "updated": "最近更新：2026年8月",
+    "intro": "本隐私政策说明了{{name}}在您使用本应用时如何收集、使用和保护您的信息。",
+    "sections": {
+      "collect": {
+        "title": "1. 我们收集的信息",
+        "body": "我们会收集您直接提供的信息——姓名、电子邮箱、电话号码、预订详情、服务请求、活动预订及反馈——以及确保应用安全运行所需的基本设备信息。"
+      },
+      "use": {
+        "title": "2. 我们如何使用您的信息",
+        "body": "我们使用您的信息来管理您的预订、处理服务与活动请求、回复您的反馈、个性化推荐内容（例如符合您兴趣的活动），并向您传达有关住宿的重要信息。"
+      },
+      "visibility": {
+        "title": "3. 谁可以查看您的信息",
+        "body": "预订与请求详情仅对负责处理相关事务的授权酒店员工及管理层可见。我们不会将您的个人信息出售给第三方。"
+      },
+      "security": {
+        "title": "4. 数据存储与安全",
+        "body": "您的数据采用符合行业标准的安全措施进行存储，包括基于角色的访问权限，确保只有出于正当需要的员工才能查看住客信息。"
+      },
+      "choices": {
+        "title": "5. 您的选择",
+        "body": "您可以随时在“我的 → 个人信息”中查看并更新您的个人资料，也可以在“我的 → 隐私”中调整营销与个性化偏好设置。"
+      },
+      "retention": {
+        "title": "6. 数据保留",
+        "body": "我们会保留您的预订与住宿记录，以便为您提供会员权益及历史入住记录。您可通过以下联系方式申请删除您的账户数据，但需符合适用的法律与财务留存要求。"
+      },
+      "contact": {
+        "title": "7. 联系方式",
+        "body": "如有隐私相关问题或请求，请通过{{email}}或{{phone}}（{{address}}）与我们联系。"
+      }
+    }
+  },
+  "privacySettings": {
+    "intro": "在应用内控制您的信息使用方式。这些设置仅适用于本设备。",
+    "personalization": {
+      "label": "个性化推荐",
+      "desc": "使用我的兴趣和活动记录来推荐体验项目。"
+    },
+    "marketingEmails": {
+      "label": "营销邮件",
+      "desc": "通过邮件接收优惠、促销及住宿提醒。"
+    },
+    "shareStayHistory": {
+      "label": "与忠诚度合作伙伴共享住宿记录",
+      "desc": "允许将历史住宿数据与合作忠诚度计划共享。"
+    },
+    "footnote": "如需了解我们收集哪些数据及其使用方式，请查看“我的 → 隐私政策”中的隐私政策。"
+  },
+  "terms": {
+    "title": "服务条款",
+    "updated": "最近更新：2026年8月",
+    "intro": "本服务条款规范您对{{name}}住客应用的使用。请仔细阅读。",
+    "sections": {
+      "acceptance": {
+        "title": "1. 条款接受",
+        "body": "创建账户或使用{{name}}应用即表示您同意本服务条款。如果您不同意，请不要使用本应用。"
+      },
+      "reservations": {
+        "title": "2. 预订与入住登记",
+        "body": "通过本应用进行的预订须视房态而定，并遵循预订时告知的价格政策。数字化入住登记是为方便住客而提供的服务，并不能替代法律要求下前台进行的身份核实。"
+      },
+      "serviceRequests": {
+        "title": "3. 服务请求与活动",
+        "body": "通过本应用提交的服务请求、活动预订及餐饮预订将尽力予以满足，但可能受名额、天气或运营条件的限制。如有任何变动，我们会尽快通知您。"
+      },
+      "conduct": {
+        "title": "4. 住客行为规范",
+        "body": "您同意仅将本应用用于与您的住宿相关的合法目的，不得通过服务请求、反馈或礼宾留言提交虚假、辱骂或骚扰性内容。"
+      },
+      "cancellations": {
+        "title": "5. 取消政策",
+        "body": "预订、活动及餐饮的取消条款以预订时告知的政策为准。若未说明具体政策，则适用酒店标准取消条款——详情请咨询前台或礼宾部。"
+      },
+      "liability": {
+        "title": "6. 责任限制",
+        "body": "对于因使用本应用而产生的间接或附带损失，包括服务中断、第三方外出活动供应商问题，或为方便住客而提供的第三方信息（如当地活动日程）存在的不准确之处，{{name}}概不负责。"
+      },
+      "changes": {
+        "title": "7. 条款变更",
+        "body": "我们可能会不时更新本条款。条款变更生效后继续使用本应用即视为您接受修订后的条款。"
+      },
+      "contact": {
+        "title": "8. 联系方式",
+        "body": "如对本条款有任何疑问，请通过{{email}}或{{phone}}与我们联系。"
+      }
     }
   },
   "pastStays": {

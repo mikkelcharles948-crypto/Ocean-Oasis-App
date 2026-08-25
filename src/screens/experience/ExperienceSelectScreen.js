@@ -3,36 +3,20 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import Logo from '../../components/Logo';
 import { colors, spacing, radius, font, shadow } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 const OPTIONS = [
-  {
-    key: 'guest',
-    title: 'Guest Experience',
-    subtitle: 'The digital concierge guests use during their stay — requests, activities, dining, itinerary, and more.',
-    icon: 'person-outline',
-    tone: colors.deepOcean,
-  },
-  {
-    key: 'staff',
-    title: 'Staff Operations',
-    subtitle: 'What your team uses to run the property day to day — requests, housekeeping, maintenance, activities.',
-    icon: 'headset-outline',
-    tone: colors.turquoiseDark,
-  },
-  {
-    key: 'management',
-    title: 'Management & Analytics',
-    subtitle: 'The executive view — occupancy, satisfaction, revenue, promotions performance, and reporting.',
-    icon: 'stats-chart-outline',
-    tone: colors.forest,
-  },
+  { key: 'guest', icon: 'person-outline', tone: colors.deepOcean },
+  { key: 'staff', icon: 'headset-outline', tone: colors.turquoiseDark },
+  { key: 'management', icon: 'stats-chart-outline', tone: colors.forest },
 ];
 
 export default function ExperienceSelectScreen({ navigation }) {
+  const { t } = useTranslation();
   const { chooseExperience } = useApp();
 
   const handleChoose = (key) => {
@@ -49,12 +33,9 @@ export default function ExperienceSelectScreen({ navigation }) {
             <Logo size="lg" light />
           </View>
 
-          <Text style={styles.eyebrow}>ONE PLATFORM · THREE EXPERIENCES</Text>
-          <Text style={styles.heading}>Which view would you like to open?</Text>
-          <Text style={styles.sub}>
-            All three run on the same live data — a request submitted as a guest shows up instantly for staff, and
-            every action rolls up into management's analytics.
-          </Text>
+          <Text style={styles.eyebrow}>{t('experience.eyebrow')}</Text>
+          <Text style={styles.heading}>{t('experience.heading')}</Text>
+          <Text style={styles.sub}>{t('experience.sub')}</Text>
 
           <View style={{ gap: spacing.md, marginTop: spacing.lg }}>
             {OPTIONS.map((opt) => (
@@ -63,8 +44,8 @@ export default function ExperienceSelectScreen({ navigation }) {
                   <Ionicons name={opt.icon} size={24} color={colors.white} />
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={styles.cardTitle}>{opt.title}</Text>
-                  <Text style={styles.cardSub}>{opt.subtitle}</Text>
+                  <Text style={styles.cardTitle}>{t(`experience.${opt.key}Title`)}</Text>
+                  <Text style={styles.cardSub}>{t(`experience.${opt.key}Sub`)}</Text>
                 </View>
                 <Ionicons name="chevron-forward" size={20} color={colors.slate} />
               </TouchableOpacity>
@@ -73,9 +54,7 @@ export default function ExperienceSelectScreen({ navigation }) {
 
           <View style={styles.footNote}>
             <MaterialCommunityIcons name="information-outline" size={16} color={colors.sandLight} />
-            <Text style={styles.footNoteText}>
-              Demo build — Staff and Management sign-in uses a simple name/role picker instead of real credentials.
-            </Text>
+            <Text style={styles.footNoteText}>{t('experience.demoNote')}</Text>
           </View>
         </ScrollView>
       </SafeAreaView>

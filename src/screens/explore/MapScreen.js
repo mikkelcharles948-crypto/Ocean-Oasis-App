@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Pill } from '../../components/UI';
 import { colors, spacing, radius, font } from '../../theme/theme';
@@ -22,18 +23,20 @@ const MAP_PINS = [
 ];
 
 const FILTERS = ['All', 'Hotel', 'Attraction', 'Dining'];
+const FILTER_KEY = { All: 'all', Hotel: 'hotel', Attraction: 'attraction', Dining: 'dining' };
 
 export default function MapScreen({ navigation }) {
+  const { t } = useTranslation();
   const [filter, setFilter] = useState('All');
   const [selected, setSelected] = useState(null);
   const pins = filter === 'All' ? MAP_PINS : MAP_PINS.filter((p) => p.type === filter);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-      <ScreenHeader title="Map" onBack={() => navigation.goBack()} />
+      <ScreenHeader title={t('explore.map')} onBack={() => navigation.goBack()} />
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexGrow: 0, marginBottom: spacing.sm }} contentContainerStyle={{ paddingHorizontal: spacing.lg }}>
         {FILTERS.map((f) => (
-          <Pill key={f} label={f} selected={filter === f} onPress={() => setFilter(f)} />
+          <Pill key={f} label={t(`explore.mapFilter.${FILTER_KEY[f]}`)} selected={filter === f} onPress={() => setFilter(f)} />
         ))}
       </ScrollView>
 
@@ -57,14 +60,14 @@ export default function MapScreen({ navigation }) {
             </View>
           </TouchableOpacity>
         ))}
-        <Text style={styles.mapNotice}>Mock map — connect Google Maps / Mapbox for live geolocation.</Text>
+        <Text style={styles.mapNotice}>{t('explore.mapNotice')}</Text>
       </View>
 
       {selected && (
         <View style={styles.calloutCard}>
           <View>
             <Text style={styles.calloutTitle}>{selected.label}</Text>
-            <Text style={styles.calloutType}>{selected.type}</Text>
+            <Text style={styles.calloutType}>{t(`explore.mapFilter.${FILTER_KEY[selected.type]}`)}</Text>
           </View>
           <TouchableOpacity onPress={() => setSelected(null)}>
             <Ionicons name="close" size={20} color={colors.slate} />

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Switch } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Card } from '../../components/UI';
 import { colors, spacing, font } from '../../theme/theme';
@@ -23,42 +24,41 @@ function ToggleRow({ label, description, value, onValueChange }) {
 }
 
 export default function PrivacySettingsScreen({ navigation }) {
+  const { t } = useTranslation();
   const [marketingEmails, setMarketingEmails] = useState(true);
   const [personalization, setPersonalization] = useState(true);
   const [shareStayHistory, setShareStayHistory] = useState(false);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-      <ScreenHeader title="Privacy" onBack={() => navigation.goBack()} />
+      <ScreenHeader title={t('profile.privacy')} onBack={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: spacing.xxl }}>
-        <Text style={styles.intro}>Control how your information is used within the app. These preferences apply to this device.</Text>
+        <Text style={styles.intro}>{t('privacySettings.intro')}</Text>
 
         <Card style={{ paddingVertical: 0 }}>
           <ToggleRow
-            label="Personalized Recommendations"
-            description="Use my interests and activity history to recommend experiences."
+            label={t('privacySettings.personalization.label')}
+            description={t('privacySettings.personalization.desc')}
             value={personalization}
             onValueChange={setPersonalization}
           />
           <View style={styles.divider} />
           <ToggleRow
-            label="Marketing Emails"
-            description="Receive offers, promotions, and stay reminders by email."
+            label={t('privacySettings.marketingEmails.label')}
+            description={t('privacySettings.marketingEmails.desc')}
             value={marketingEmails}
             onValueChange={setMarketingEmails}
           />
           <View style={styles.divider} />
           <ToggleRow
-            label="Share Stay History with Loyalty Partners"
-            description="Allow past-stay data to be shared with partner loyalty programs."
+            label={t('privacySettings.shareStayHistory.label')}
+            description={t('privacySettings.shareStayHistory.desc')}
             value={shareStayHistory}
             onValueChange={setShareStayHistory}
           />
         </Card>
 
-        <Text style={styles.footnote}>
-          For details on what data we collect and how it's used, see our Privacy Policy in Profile → Privacy Policy.
-        </Text>
+        <Text style={styles.footnote}>{t('privacySettings.footnote')}</Text>
       </ScrollView>
     </SafeAreaView>
   );

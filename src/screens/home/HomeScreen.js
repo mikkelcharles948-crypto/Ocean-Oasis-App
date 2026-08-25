@@ -38,7 +38,6 @@ export default function HomeScreen({ navigation }) {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: spacing.xxl }}>
         {/* Header */}
         <View style={styles.header}>
-          <Logo size="sm" />
           <TouchableOpacity onPress={() => navigation.navigate('Notifications')} style={styles.bellWrap}>
             <Ionicons name="notifications-outline" size={24} color={colors.deepOcean} />
             {unreadNotificationCount > 0 && (
@@ -47,6 +46,9 @@ export default function HomeScreen({ navigation }) {
               </View>
             )}
           </TouchableOpacity>
+        </View>
+        <View style={styles.logoWrap}>
+          <Logo size="lg" />
         </View>
 
         <View style={styles.greetingBlock}>
@@ -163,9 +165,10 @@ export default function HomeScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   header: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end',
     paddingHorizontal: spacing.lg, paddingTop: spacing.sm,
   },
+  logoWrap: { alignItems: 'center', marginTop: -8, marginBottom: 4 },
   bellWrap: { padding: 4 },
   bellDot: {
     position: 'absolute', top: 0, right: 0, backgroundColor: colors.error,

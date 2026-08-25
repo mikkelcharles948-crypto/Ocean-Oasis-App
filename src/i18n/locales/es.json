@@ -18,7 +18,8 @@
       "Wellness": "Bienestar",
       "Entertainment": "Entretenimiento",
       "Family": "Familia",
-      "Dining": "Restaurantes"
+      "Dining": "Restaurantes",
+      "Festival": "Festival"
     },
     "difficulty": {
       "Easy": "Fácil",
@@ -102,7 +103,8 @@
     "activityLabel": "Actividad",
     "guestsLabel": "Huéspedes",
     "priceLabel": "Precio",
-    "confirmReservation": "Confirmar reserva"
+    "confirmReservation": "Confirmar reserva",
+    "bookingError": "Esta actividad no se pudo reservar. Inténtalo de nuevo."
   },
   "events": {
     "title": "Eventos",
@@ -132,6 +134,9 @@
     "preferredTime": "Hora preferida",
     "submit": "Enviar",
     "confirmText": "Tu solicitud para {{venue}} ha sido enviada. Confirmaremos en breve.",
+    "menuTitle": "Menú de {{venue}}",
+    "menuComingSoon": "Menú disponible próximamente",
+    "menuComingSoonSub": "Consulta a nuestra conserjería por las opciones de hoy.",
     "type": {
       "signatureRestaurant": "Restaurante insignia",
       "allDayDining": "Restaurante todo el día",
@@ -394,6 +399,111 @@
       "fr": "Français",
       "es": "Español",
       "zh": "中文"
+    }
+  },
+  "accessibility": {
+    "textSize": "Tamaño del texto",
+    "textSizes": {
+      "standard": "Estándar",
+      "large": "Grande",
+      "extraLarge": "Extra grande"
+    },
+    "display": "Pantalla",
+    "boldText": "Texto en negrita",
+    "boldTextDesc": "Aumenta el grosor del texto para facilitar la lectura.",
+    "highContrast": "Alto contraste",
+    "highContrastDesc": "Aumenta el contraste entre el texto y el fondo.",
+    "reduceMotion": "Reducir movimiento",
+    "reduceMotionDesc": "Minimiza las animaciones y transiciones.",
+    "footnote": "Estas preferencias se aplican a este dispositivo y tienen efecto de inmediato."
+  },
+  "privacyPolicy": {
+    "updated": "Última actualización: agosto de 2026",
+    "intro": "Esta Política de Privacidad explica cómo {{name}} recopila, usa y protege tu información cuando utilizas esta aplicación.",
+    "sections": {
+      "collect": {
+        "title": "1. Información que recopilamos",
+        "body": "Recopilamos la información que nos proporcionas directamente — nombre, correo electrónico, número de teléfono, detalles de la reserva, solicitudes de servicio, reservas de actividades y comentarios — así como información básica del dispositivo necesaria para operar la aplicación de forma segura."
+      },
+      "use": {
+        "title": "2. Cómo usamos tu información",
+        "body": "Tu información se utiliza para gestionar tu reserva, atender solicitudes de servicio y actividades, responder a tus comentarios, personalizar recomendaciones (como actividades acordes a tus intereses) y comunicarte novedades importantes sobre tu estancia."
+      },
+      "visibility": {
+        "title": "3. Quién puede ver tu información",
+        "body": "Los detalles de la reserva y las solicitudes son visibles para el personal del hotel y la dirección autorizados que participan en su gestión. No vendemos tu información personal a terceros."
+      },
+      "security": {
+        "title": "4. Almacenamiento de datos y seguridad",
+        "body": "Tus datos se almacenan con controles de seguridad conformes a los estándares del sector, incluido el acceso basado en roles, de modo que solo el personal con una necesidad legítima pueda ver la información de los huéspedes."
+      },
+      "choices": {
+        "title": "5. Tus opciones",
+        "body": "Puedes consultar y actualizar tus datos personales en cualquier momento en Perfil → Datos personales. También puedes ajustar tus preferencias de marketing y personalización en Perfil → Privacidad."
+      },
+      "retention": {
+        "title": "6. Conservación de datos",
+        "body": "Conservamos el historial de reservas y estancias para ofrecerte beneficios de fidelidad y un registro de tus estancias pasadas. Puedes solicitar la eliminación de los datos de tu cuenta contactándonos con los datos indicados a continuación, sujeto a los requisitos legales y contables de conservación."
+      },
+      "contact": {
+        "title": "7. Contacto",
+        "body": "Las preguntas o solicitudes sobre privacidad pueden dirigirse a {{email}} o {{phone}}, {{address}}."
+      }
+    }
+  },
+  "privacySettings": {
+    "intro": "Controla cómo se usa tu información dentro de la aplicación. Estas preferencias se aplican a este dispositivo.",
+    "personalization": {
+      "label": "Recomendaciones personalizadas",
+      "desc": "Usar mis intereses e historial de actividades para recomendar experiencias."
+    },
+    "marketingEmails": {
+      "label": "Correos de marketing",
+      "desc": "Recibir ofertas, promociones y recordatorios de estancia por correo electrónico."
+    },
+    "shareStayHistory": {
+      "label": "Compartir historial de estancias con socios de fidelidad",
+      "desc": "Permitir que los datos de estancias pasadas se compartan con programas de fidelidad asociados."
+    },
+    "footnote": "Para más información sobre los datos que recopilamos y cómo se usan, consulta nuestra Política de Privacidad en Perfil → Política de Privacidad."
+  },
+  "terms": {
+    "title": "Términos de Servicio",
+    "updated": "Última actualización: agosto de 2026",
+    "intro": "Estos Términos de Servicio rigen el uso que hagas de la aplicación de huéspedes de {{name}}. Léelos detenidamente.",
+    "sections": {
+      "acceptance": {
+        "title": "1. Aceptación de los Términos",
+        "body": "Al crear una cuenta o usar la aplicación de {{name}}, aceptas estos Términos de Servicio. Si no estás de acuerdo, no utilices la aplicación."
+      },
+      "reservations": {
+        "title": "2. Reservas y registro de entrada",
+        "body": "Las reservas realizadas a través de esta aplicación están sujetas a disponibilidad y a las políticas de tarifas comunicadas en el momento de la reserva. El registro de entrada digital se ofrece como una comodidad y no sustituye la verificación de identidad en recepción cuando la ley lo exige."
+      },
+      "serviceRequests": {
+        "title": "3. Solicitudes de servicio y actividades",
+        "body": "Las solicitudes de servicio, reservas de actividades y de restaurantes enviadas a través de la aplicación se atienden con el mejor esfuerzo posible y pueden estar sujetas a limitaciones de capacidad, climáticas u operativas. Te notificaremos lo antes posible sobre cualquier cambio."
+      },
+      "conduct": {
+        "title": "4. Conducta del huésped",
+        "body": "Aceptas usar la aplicación únicamente con fines lícitos relacionados con tu estancia, y no enviar contenido falso, abusivo u ofensivo a través de solicitudes de servicio, comentarios o mensajes a la conserjería."
+      },
+      "cancellations": {
+        "title": "5. Cancelaciones",
+        "body": "Las condiciones de cancelación de reservas, actividades y restaurantes siguen la política indicada en el momento de la reserva. Cuando no se indique ninguna política, se aplican las condiciones de cancelación estándar del hotel — consulta a nuestra recepción o conserjería para más información."
+      },
+      "liability": {
+        "title": "6. Limitación de responsabilidad",
+        "body": "{{name}} no se hace responsable de pérdidas indirectas o consecuentes derivadas del uso de esta aplicación, incluidas interrupciones del servicio, proveedores externos de excursiones o imprecisiones en la información de terceros (como listados de eventos locales) presentada por comodidad."
+      },
+      "changes": {
+        "title": "7. Cambios en estos Términos",
+        "body": "Podemos actualizar estos Términos periódicamente. El uso continuado de la aplicación después de que los cambios entren en vigor constituye la aceptación de los Términos revisados."
+      },
+      "contact": {
+        "title": "8. Contacto",
+        "body": "Las preguntas sobre estos Términos pueden dirigirse a {{email}} o {{phone}}."
+      }
     }
   },
   "pastStays": {
