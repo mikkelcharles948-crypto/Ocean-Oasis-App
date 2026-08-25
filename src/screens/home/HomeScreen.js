@@ -246,7 +246,7 @@ export default function HomeScreen({ navigation }) {
           <View style={[styles.section, { marginBottom: 0 }]}>
             <View style={{ paddingHorizontal: spacing.lg }}>
               <EditorialImageCard
-                image={{ uri: 'https://commons.wikimedia.org/wiki/Special:FilePath/Trafalgar%20Falls%2C%20Dominica.jpg' }}
+                image={{ uri: 'https://commons.wikimedia.org/wiki/Special:FilePath/Trafalgar_Falls_at_Morne_Trois_Pitons_National_Park.jpg' }}
                 fallbackIcon="compass-outline"
                 eyebrow={t('nav.explore')}
                 title={t('explore.title')}

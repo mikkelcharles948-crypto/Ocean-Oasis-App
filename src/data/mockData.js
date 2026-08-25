@@ -573,15 +573,23 @@ export const ACTIVITIES = [
   },
 ];
 
+// e_1-e_8 imageUrl values are real photos from oceanoasisdominica.com
+// (the actual hotel), reused thematically across events since the site
+// doesn't have a distinct photo per event — not stock/placeholder imagery.
+const OO_DINING_IMG = 'https://symphony.cdn.tambourine.com/_fusion/ocean-oasis/media/oceanoasishotel-01-homepage-04-experienceoceanoasis-02-dining-686c334f5627b.jpg';
+const OO_EVENTS_IMG = 'https://symphony.cdn.tambourine.com/_fusion/ocean-oasis/media/oceanoasishotel-01-homepage-04-experienceoceanoasis-03-privateevents-686c3389cc3d8.jpg';
+const OO_NATURE_IMG = 'https://symphony.cdn.tambourine.com/_fusion/ocean-oasis/media/oceanoasishotel-01-homepage-04-experienceoceanoasis-04-nature-686c33b7a3f8d.jpg';
+const OO_OCEAN_IMG = 'https://symphony.cdn.tambourine.com/_fusion/ocean-oasis/media/oceanedgedevelopment-homepage-gallery-03-69028ae892712.jpg';
+
 export const EVENTS = [
-  { id: 'e_1', title: 'Breakfast', category: 'Dining', date: '2026-08-15', time: '9:00 AM', location: 'Oasis Terrace', description: 'A full Caribbean and continental breakfast spread.', icon: 'coffee', capacity: 80, status: 'PUBLISHED' },
-  { id: 'e_2', title: 'Rainforest Experience', category: 'Adventure', date: '2026-08-15', time: '11:00 AM', location: 'Meet at Lobby', description: 'Guided rainforest walk with our resident naturalist.', icon: 'nature', capacity: 20, status: 'PUBLISHED' },
-  { id: 'e_3', title: 'Sunset Cocktails', category: 'Entertainment', date: '2026-08-15', time: '5:30 PM', location: 'Horizon Bar', description: 'Handcrafted cocktails as the sun sets over the water.', icon: 'wine', capacity: 60, status: 'PUBLISHED' },
-  { id: 'e_4', title: 'Live Music', category: 'Entertainment', date: '2026-08-15', time: '7:30 PM', location: 'Main Terrace', description: 'Local musicians performing island rhythms.', icon: 'music', capacity: 80, status: 'PUBLISHED' },
-  { id: 'e_5', title: 'Sunrise Yoga', category: 'Wellness', date: '2026-08-16', time: '6:30 AM', location: 'Main Beach', description: 'Gentle guided flow to start the day.', icon: 'yoga', capacity: 15, status: 'PUBLISHED' },
-  { id: 'e_6', title: 'Guided Nature Walk', category: 'Adventure', date: '2026-08-16', time: '10:00 AM', location: 'Garden Trailhead', description: 'A relaxed walk through the property\'s botanical gardens.', icon: 'nature', capacity: 20, status: 'PUBLISHED' },
-  { id: 'e_7', title: 'Cultural Performance', category: 'Culture', date: '2026-08-16', time: '8:00 PM', location: 'Main Terrace', description: 'Traditional Creole dance and drumming performance.', icon: 'culture', capacity: 100, status: 'PUBLISHED' },
-  { id: 'e_8', title: 'Cooking Experience', category: 'Food', date: '2026-08-17', time: '4:00 PM', location: 'Culinary Studio', description: 'Hands-on class exploring Dominican flavours.', icon: 'cooking', capacity: 12, status: 'PUBLISHED' },
+  { id: 'e_1', title: 'Breakfast', category: 'Dining', date: '2026-08-15', time: '9:00 AM', location: 'Oasis Terrace', description: 'A full Caribbean and continental breakfast spread.', icon: 'coffee', capacity: 80, status: 'PUBLISHED', imageUrl: OO_DINING_IMG },
+  { id: 'e_2', title: 'Rainforest Experience', category: 'Adventure', date: '2026-08-15', time: '11:00 AM', location: 'Meet at Lobby', description: 'Guided rainforest walk with our resident naturalist.', icon: 'nature', capacity: 20, status: 'PUBLISHED', imageUrl: OO_NATURE_IMG },
+  { id: 'e_3', title: 'Sunset Cocktails', category: 'Entertainment', date: '2026-08-15', time: '5:30 PM', location: 'Horizon Bar', description: 'Handcrafted cocktails as the sun sets over the water.', icon: 'wine', capacity: 60, status: 'PUBLISHED', imageUrl: OO_OCEAN_IMG },
+  { id: 'e_4', title: 'Live Music', category: 'Entertainment', date: '2026-08-15', time: '7:30 PM', location: 'Main Terrace', description: 'Local musicians performing island rhythms.', icon: 'music', capacity: 80, status: 'PUBLISHED', imageUrl: OO_EVENTS_IMG },
+  { id: 'e_5', title: 'Sunrise Yoga', category: 'Wellness', date: '2026-08-16', time: '6:30 AM', location: 'Main Beach', description: 'Gentle guided flow to start the day.', icon: 'yoga', capacity: 15, status: 'PUBLISHED', imageUrl: OO_NATURE_IMG },
+  { id: 'e_6', title: 'Guided Nature Walk', category: 'Adventure', date: '2026-08-16', time: '10:00 AM', location: 'Garden Trailhead', description: 'A relaxed walk through the property\'s botanical gardens.', icon: 'nature', capacity: 20, status: 'PUBLISHED', imageUrl: OO_NATURE_IMG },
+  { id: 'e_7', title: 'Cultural Performance', category: 'Culture', date: '2026-08-16', time: '8:00 PM', location: 'Main Terrace', description: 'Traditional Creole dance and drumming performance.', icon: 'culture', capacity: 100, status: 'PUBLISHED', imageUrl: OO_EVENTS_IMG },
+  { id: 'e_8', title: 'Cooking Experience', category: 'Food', date: '2026-08-17', time: '4:00 PM', location: 'Culinary Studio', description: 'Hands-on class exploring Dominican flavours.', icon: 'cooking', capacity: 12, status: 'PUBLISHED', imageUrl: OO_DINING_IMG },
 
   // Island-wide festivals (not hotel-run) — sourced from discoverdominica.com's
   // 2026 festivals & events calendar, so guests can plan trips around them.
