@@ -19,6 +19,7 @@ import ManagementSettingsScreen from '../screens/management/ManagementSettingsSc
 import ManagementEmergencyScreen from '../screens/management/ManagementEmergencyScreen';
 import { colors } from '../theme/theme';
 import GlassSurface from '../components/GlassSurface';
+import Logo from '../components/Logo';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -67,7 +68,11 @@ export default function ManagementTabs() {
         tabBarLabelStyle: styles.tabLabel,
         tabBarLabel: labelMap[route.name],
         tabBarBackground: () => (
-          <GlassSurface style={styles.tabBarGlass} borderRadius={0} intensity={46} tint="light" />
+          <GlassSurface style={styles.tabBarGlass} borderRadius={0} intensity={46} tint="light">
+            <View style={styles.tabBarLogoWrap} pointerEvents="none">
+              <Logo size="md" />
+            </View>
+          </GlassSurface>
         ),
         tabBarIcon: ({ focused }) => {
           const map = {
@@ -92,10 +97,14 @@ export default function ManagementTabs() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    backgroundColor: 'transparent', borderTopWidth: 0, height: 84, paddingTop: 8, paddingBottom: 24,
+    backgroundColor: 'transparent', borderTopWidth: 0, height: 144, paddingTop: 72, paddingBottom: 24,
     elevation: 0,
   },
   tabBarGlass: { flex: 1, borderWidth: 0, borderTopWidth: 1 },
+  tabBarLogoWrap: {
+    position: 'absolute', top: 4, left: 0, right: 0,
+    alignItems: 'center', justifyContent: 'center',
+  },
   tabLabel: { fontSize: 11, fontWeight: '600', marginTop: 2 },
   iconWrap: { alignItems: 'center', justifyContent: 'center' },
 });

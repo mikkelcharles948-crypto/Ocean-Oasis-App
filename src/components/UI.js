@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors, radius, spacing, font, shadow, gradients } from '../theme/theme';
 import GlassSurface from './GlassSurface';
+import Logo from './Logo';
 
 export function Card({ children, style, onPress }) {
   const Wrapper = onPress ? TouchableOpacity : View;
@@ -83,20 +84,24 @@ export function ScreenHeader({ title, onBack, right }) {
     <View style={styles.screenHeaderShadowWrap}>
       <GlassSurface
         style={styles.screenHeaderGlass}
-        contentStyle={styles.screenHeader}
         borderRadius={0}
         intensity={26}
         tint="light"
       >
-        {onBack ? (
-          <TouchableOpacity onPress={onBack} style={styles.backBtn}>
-            <Ionicons name="chevron-back" size={24} color={colors.deepOcean} />
-          </TouchableOpacity>
-        ) : (
-          <View style={styles.backBtn} />
-        )}
-        <Text style={styles.screenHeaderTitle} numberOfLines={1}>{title}</Text>
-        <View style={styles.backBtn}>{right}</View>
+        <View style={styles.screenHeaderLogoBand}>
+          <Logo size="sm" />
+        </View>
+        <View style={styles.screenHeader}>
+          {onBack ? (
+            <TouchableOpacity onPress={onBack} style={styles.backBtn}>
+              <Ionicons name="chevron-back" size={24} color={colors.deepOcean} />
+            </TouchableOpacity>
+          ) : (
+            <View style={styles.backBtn} />
+          )}
+          <Text style={styles.screenHeaderTitle} numberOfLines={1}>{title}</Text>
+          <View style={styles.backBtn}>{right}</View>
+        </View>
       </GlassSurface>
     </View>
   );
@@ -263,6 +268,12 @@ const styles = StyleSheet.create({
   screenHeaderGlass: {
     borderWidth: 0,
     borderBottomWidth: 1,
+  },
+  screenHeaderLogoBand: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: spacing.xs,
+    paddingBottom: 2,
   },
   screenHeader: {
     flexDirection: 'row',

@@ -15,6 +15,7 @@ import { addSharedScreens } from './sharedScreens';
 import { colors } from '../theme/theme';
 import { useApp } from '../context/AppContext';
 import GlassSurface from '../components/GlassSurface';
+import Logo from '../components/Logo';
 
 const Tab = createBottomTabNavigator();
 const screenOptions = { headerShown: false, contentStyle: { backgroundColor: colors.ivory } };
@@ -90,7 +91,11 @@ export default function MainTabs() {
         tabBarStyle: styles.tabBar,
         tabBarLabelStyle: styles.tabLabel,
         tabBarBackground: () => (
-          <GlassSurface style={styles.tabBarGlass} borderRadius={0} intensity={46} tint="light" />
+          <GlassSurface style={styles.tabBarGlass} borderRadius={0} intensity={46} tint="light">
+            <View style={styles.tabBarLogoWrap} pointerEvents="none">
+              <Logo size="md" />
+            </View>
+          </GlassSurface>
         ),
         tabBarIcon: ({ focused }) => {
           const map = {
@@ -117,8 +122,8 @@ const styles = StyleSheet.create({
   tabBar: {
     backgroundColor: 'transparent',
     borderTopWidth: 0,
-    height: 84,
-    paddingTop: 8,
+    height: 144,
+    paddingTop: 72,
     paddingBottom: 24,
     elevation: 0,
   },
@@ -126,6 +131,10 @@ const styles = StyleSheet.create({
     flex: 1,
     borderWidth: 0,
     borderTopWidth: 1,
+  },
+  tabBarLogoWrap: {
+    position: 'absolute', top: 4, left: 0, right: 0,
+    alignItems: 'center', justifyContent: 'center',
   },
   tabLabel: { fontSize: 11, fontWeight: '600', marginTop: 2 },
   iconWrap: { alignItems: 'center', justifyContent: 'center' },
