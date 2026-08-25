@@ -1,0 +1,14 @@
+appId: com.oceanoasisdominica.app
+---
+- launchApp:
+    clearState: true
+- runFlow: _helpers/guest_sign_in.yaml
+- tapOn: "Request Something"
+- tapOn: "Housekeeping"
+- tapOn:
+    below: "Description"
+- inputText: "Maestro E2E test request — please disregard."
+- tapOn: "Submit Request"
+- assertVisible:
+    text: "Request Sent"
+    timeout: 15000

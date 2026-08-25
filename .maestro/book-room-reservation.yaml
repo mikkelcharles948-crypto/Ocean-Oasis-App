@@ -1,0 +1,21 @@
+appId: com.oceanoasisdominica.app
+---
+- launchApp:
+    clearState: true
+- runFlow: _helpers/guest_sign_in.yaml
+- tapOn: "My Stay"
+- tapOn: "Book a New Stay"
+- tapOn: "In 1 Week"
+- tapOn: "Search Availability"
+# Multiple result cards may each show "Book This Room" — take the first.
+- tapOn:
+    text: "Book This Room"
+    index: 0
+# NOTE: "Confirm Booking" is used for both this screen's header AND its
+# submit button (src/i18n/locales/en.json booking.confirm.title /
+# booking.confirm.confirmButton) — if this taps the header instead of the
+# button when actually run, change to index: 1.
+- tapOn: "Confirm Booking"
+- assertVisible:
+    text: "You're all booked"
+    timeout: 15000

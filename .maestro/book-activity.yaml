@@ -1,0 +1,14 @@
+appId: com.oceanoasisdominica.app
+---
+# Assumes seed data — targets "Champagne Reef Snorkeling" (activity a_1),
+# which should always exist in a freshly seeded database.
+- launchApp:
+    clearState: true
+- runFlow: _helpers/guest_sign_in.yaml
+- tapOn: "Book an Activity"
+- tapOn: "Champagne Reef Snorkeling"
+- tapOn: "Reserve Activity"
+- tapOn: "Confirm Reservation"
+- assertVisible:
+    text: "Activity Reserved"
+    timeout: 15000

@@ -1,0 +1,15 @@
+appId: com.oceanoasisdominica.app
+---
+# Reusable step: not meant to run standalone.
+- tapOn: "Skip"
+- tapOn: "Management & Analytics"
+- tapOn:
+    below: "Email"
+- inputText: "${MANAGEMENT_EMAIL}"
+- tapOn:
+    below: "Password"
+- inputText: "${MANAGEMENT_PASSWORD}"
+- tapOn: "Enter Management Dashboard"
+- assertVisible:
+    text: "OCEAN OASIS · MANAGEMENT"
+    timeout: 15000

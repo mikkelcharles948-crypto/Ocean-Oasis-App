@@ -1,0 +1,16 @@
+appId: com.oceanoasisdominica.app
+---
+# Reusable step: not meant to run standalone. Called via `runFlow` from the
+# real test flows so the sign-in sequence isn't duplicated in every file.
+- tapOn: "Skip"
+- tapOn: "Sign In"
+- tapOn:
+    below: "Email"
+- inputText: "${GUEST_EMAIL}"
+- tapOn:
+    below: "Password"
+- inputText: "${GUEST_PASSWORD}"
+- tapOn: "Sign In"
+- assertVisible:
+    text: "Good morning"
+    timeout: 15000

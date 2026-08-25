@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "expo/AppEntry.js",
   "scripts": {
-    "postinstall": "node scripts/patch-expo-asset.js"
+    "postinstall": "node scripts/patch-expo-asset.js",
+    "test:e2e": "maestro test .maestro/"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
@@ -11,6 +12,7 @@
     "@react-navigation/bottom-tabs": "^6.5.11",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.17",
+    "@sentry/react-native": "~7.2.0",
     "@supabase/supabase-js": "^2.112.3",
     "@types/react": "~19.1.10",
     "chromium-edge-launcher": "^0.2.0",

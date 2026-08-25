@@ -13,12 +13,17 @@
     ],
     "ios": {
       "supportsTablet": true,
+      "bundleIdentifier": "com.oceanoasisdominica.app",
       "infoPlist": {
         "NSFaceIDUsageDescription": "Ocean Oasis uses Face ID to sign you back in securely without re-entering your password."
       }
     },
     "android": {
-      "permissions": ["USE_BIOMETRIC", "USE_FINGERPRINT"]
+      "package": "com.oceanoasisdominica.app",
+      "permissions": [
+        "USE_BIOMETRIC",
+        "USE_FINGERPRINT"
+      ]
     },
     "web": {},
     "plugins": [
@@ -30,7 +35,8 @@
           "icon": "./assets/logo.png",
           "color": "#0B3B45"
         }
-      ]
+      ],
+      "@sentry/react-native"
     ]
   }
 }

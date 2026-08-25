@@ -1,0 +1,17 @@
+appId: com.oceanoasisdominica.app
+---
+# Note: this actually broadcasts a real "Severe Weather Alert" notification
+# to every current guest and staff member on whatever environment it's run
+# against. Only run this against a test/staging Supabase project, never
+# production data.
+- launchApp:
+    clearState: true
+- runFlow: _helpers/management_sign_in.yaml
+- tapOn: "More"
+- tapOn: "Emergency Broadcast"
+- tapOn: "Severe Weather"
+- tapOn: "Send Broadcast"
+- tapOn: "Send Now"
+- assertVisible:
+    text: "Broadcast sent to"
+    timeout: 15000

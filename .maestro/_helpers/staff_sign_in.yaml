@@ -1,0 +1,15 @@
+appId: com.oceanoasisdominica.app
+---
+# Reusable step: not meant to run standalone.
+- tapOn: "Skip"
+- tapOn: "Staff Operations"
+- tapOn:
+    below: "Email"
+- inputText: "${STAFF_EMAIL}"
+- tapOn:
+    below: "Password"
+- inputText: "${STAFF_PASSWORD}"
+- tapOn: "Enter Staff Dashboard"
+- assertVisible:
+    text: "OCEAN OASIS · STAFF OPS"
+    timeout: 15000

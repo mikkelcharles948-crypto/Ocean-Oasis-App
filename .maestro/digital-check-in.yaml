@@ -1,0 +1,24 @@
+appId: com.oceanoasisdominica.app
+---
+# Only passes if the signed-in test guest's reservation is still in the
+# "confirmed" (not yet checked in) state — re-seed or use a fresh test
+# guest between runs.
+- launchApp:
+    clearState: true
+- runFlow: _helpers/guest_sign_in.yaml
+- tapOn: "My Stay"
+- tapOn: "Complete Digital Check-In"
+# Steps: reservation -> guestDetails -> identification -> arrivalInfo ->
+# transportation -> preferences -> specialRequests (6 plain "Continue" taps)
+- repeat:
+    times: 6
+    commands:
+      - tapOn: "Continue"
+# terms step: must agree before continuing
+- tapOn: "I agree to the terms and conditions"
+- tapOn: "Review & Confirm"
+# confirmation step
+- tapOn: "Go to My Stay"
+- assertVisible:
+    text: "Checked In"
+    timeout: 15000

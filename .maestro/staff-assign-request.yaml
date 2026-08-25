@@ -1,0 +1,14 @@
+appId: com.oceanoasisdominica.app
+---
+# Depends on at least one open "Housekeeping" request existing — run
+# submit-service-request.yaml first (as the same test guest) to guarantee
+# one, or point this at any request whose card contains "Housekeeping".
+- launchApp:
+    clearState: true
+- runFlow: _helpers/staff_sign_in.yaml
+- tapOn: "Requests"
+- tapOn:
+    text: ".*Housekeeping.*"
+    index: 0
+- assertVisible: "Update status"
+- tapOn: "In Progress"
