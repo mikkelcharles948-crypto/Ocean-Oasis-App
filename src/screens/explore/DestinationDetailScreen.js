@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     padding: spacing.lg, marginTop: -radius.xl, backgroundColor: colors.ivory,
     borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, ...shadow.soft,
   },
-  eyebrow: { color: colors.gold, marginTop: spacing.sm },
+  eyebrow: { color: colors.goldDark, marginTop: spacing.sm },
   title: { color: colors.charcoal, marginTop: 6 },
   description: { color: colors.slate, marginTop: spacing.sm },
   statsRow: {

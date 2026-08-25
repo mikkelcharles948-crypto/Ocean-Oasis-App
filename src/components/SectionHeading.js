@@ -15,7 +15,7 @@ export default function SectionHeading({ eyebrow, title, subtitle, actionLabel, 
   return (
     <View style={styles.row}>
       <View style={{ flex: 1 }}>
-        {eyebrow ? <Text style={[typography.label, styles.eyebrow, { color: light ? colors.goldSoft : colors.gold }]}>{eyebrow}</Text> : null}
+        {eyebrow ? <Text style={[typography.label, styles.eyebrow, { color: light ? colors.goldSoft : colors.goldDark }]}>{eyebrow}</Text> : null}
         <Text style={[typography.heading, { color: textColor }]}>{title}</Text>
         {subtitle ? <Text style={[typography.body, styles.subtitle, { color: mutedColor }]}>{subtitle}</Text> : null}
       </View>

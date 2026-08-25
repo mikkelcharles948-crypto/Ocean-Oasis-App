@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   avatar: { width: 54, height: 54, borderRadius: 27, backgroundColor: colors.deepOcean, alignItems: 'center', justifyContent: 'center' },
   avatarText: { color: colors.white, fontSize: 18, fontWeight: '700' },
   name: { fontSize: 17, fontWeight: '700', color: colors.charcoal },
-  tier: { fontSize: 12, color: colors.gold, fontWeight: '600', marginTop: 2 },
+  tier: { fontSize: 12, color: colors.goldDark, fontWeight: '600', marginTop: 2 },
   sectionLabel: { ...typography.label, color: colors.slate, marginTop: spacing.lg, marginBottom: spacing.sm },
   row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 13 },
   rowLeft: { flexDirection: 'row', alignItems: 'center', gap: 12 },

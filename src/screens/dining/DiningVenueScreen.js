@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
   hero: { height: 260, overflow: 'hidden' },
   heroFallback: { alignItems: 'center', justifyContent: 'center', backgroundColor: colors.sandLight },
   content: { padding: spacing.lg },
-  type: { color: colors.gold, marginBottom: 4 },
+  type: { color: colors.goldDark, marginBottom: 4 },
   name: { color: colors.charcoal },
   desc: { fontSize: 14, color: colors.slate, marginTop: 8, lineHeight: 21 },
   infoBox: { backgroundColor: colors.white, borderRadius: radius.lg, padding: spacing.md, marginTop: spacing.lg, borderWidth: 1, borderColor: colors.border, gap: 10 },

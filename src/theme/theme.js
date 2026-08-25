@@ -12,6 +12,11 @@ export const colors = {
   ivory: '#FBF8F2',
   gold: '#C6A25D',
   goldSoft: '#DCC48E',
+  // A darker gold for text set directly on ivory/white (colors.gold itself
+  // is ~2.4:1 against white — fails WCAG AA; this reaches ~4.9:1). Use this,
+  // not colors.gold, for gold-toned text/labels that aren't sitting over a
+  // photo with a dark scrim behind them.
+  goldDark: '#8A6C25',
   charcoal: '#22302F',
   slate: '#5C6B6A',
   white: '#FFFFFF',

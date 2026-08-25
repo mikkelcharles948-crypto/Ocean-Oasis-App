@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
   hero: { height: 260, overflow: 'hidden' },
   heroIconWrap: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   content: { padding: spacing.lg },
-  eyebrow: { color: colors.gold, marginBottom: 6 },
+  eyebrow: { color: colors.goldDark, marginBottom: 6 },
   title: { color: colors.charcoal },
   metaRow: { flexDirection: 'row', alignItems: 'center', marginTop: spacing.sm },
   metaText: { fontSize: 13, color: colors.slate, marginLeft: 4 },
