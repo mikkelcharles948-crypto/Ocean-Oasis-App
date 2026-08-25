@@ -2,6 +2,12 @@ import { supabase } from '../lib/supabase';
 
 const first = (rows) => rows?.[0] || null;
 
+// feedback.id has no server-side default (unlike service_requests/activities/
+// events/etc., which all got one in the generated_ids_and_secure_roles
+// migration — feedback was missed), so the client has to supply one on
+// insert, same pattern already used for notifications in supabaseStaffData.js.
+const generateId = (prefix) => `${prefix}_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`;
+
 export function mapGuest(row) {
   if (!row) return null;
   return {
@@ -167,6 +173,7 @@ export async function loadPastStays(guestId) {
 
 export async function createFeedback(guestId, { overall, ratings, comments, resolved }) {
   const { data, error } = await supabase.from('feedback').insert({
+    id: generateId('fb'),
     guest_id: guestId,
     overall,
     ratings: ratings || {},
