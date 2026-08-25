@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Card } from '../../components/UI';
+import AnimatedPressable from '../../components/AnimatedPressable';
 import { colors, spacing, radius, font, shadow } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
@@ -48,7 +49,14 @@ export default function RoomPreferencesScreen({ navigation }) {
         {options.map((opt) => {
           const selected = current === opt.value;
           return (
-            <TouchableOpacity key={opt.value} onPress={() => choose(opt.value)} disabled={saving} activeOpacity={0.85}>
+            <AnimatedPressable
+              key={opt.value}
+              onPress={() => choose(opt.value)}
+              disabled={saving}
+              accessibilityRole="button"
+              accessibilityLabel={opt.title}
+              accessibilityState={{ selected, disabled: saving }}
+            >
               <Card style={[styles.optionCard, selected && styles.optionCardSelected]}>
                 <View style={[styles.iconWrap, selected && styles.iconWrapSelected]}>
                   <Ionicons name={opt.icon} size={22} color={selected ? colors.white : colors.deepOcean} />
@@ -59,7 +67,7 @@ export default function RoomPreferencesScreen({ navigation }) {
                 </View>
                 {selected && <Ionicons name="checkmark-circle" size={22} color={colors.turquoiseDark} />}
               </Card>
-            </TouchableOpacity>
+            </AnimatedPressable>
           );
         })}
 

@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Field, Pill } from '../../components/UI';
 import Button from '../../components/Button';
-import { colors, spacing, radius, font, shadow, gradients } from '../../theme/theme';
+import { colors, spacing, radius, typography, shadow, gradients } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 const STEP_KEYS = [
@@ -171,7 +171,13 @@ export default function DigitalCheckInScreen({ navigation }) {
             <View style={styles.termsBox}>
               <Text style={styles.termsText}>{t('mystay.checkinFlow.termsText')}</Text>
             </View>
-            <TouchableOpacity style={styles.checkboxRow} onPress={() => setForm({ ...form, agreed: !form.agreed })}>
+            <TouchableOpacity
+              style={styles.checkboxRow}
+              onPress={() => setForm({ ...form, agreed: !form.agreed })}
+              accessibilityRole="checkbox"
+              accessibilityState={{ checked: form.agreed }}
+              accessibilityLabel={t('mystay.checkinFlow.agreeTerms')}
+            >
               <Ionicons name={form.agreed ? 'checkbox' : 'square-outline'} size={22} color={colors.deepOcean} />
               <Text style={styles.checkboxLabel}>{t('mystay.checkinFlow.agreeTerms')}</Text>
             </TouchableOpacity>
@@ -227,7 +233,7 @@ const styles = StyleSheet.create({
   progressFill: { height: 5, backgroundColor: colors.turquoise, borderRadius: 3 },
   progressLabel: { fontSize: 11.5, color: colors.slate, marginTop: 6 },
   content: { padding: spacing.lg, paddingBottom: spacing.xl },
-  stepTitle: { fontSize: 20, fontWeight: '700', color: colors.charcoal, marginBottom: spacing.sm, fontFamily: font.display },
+  stepTitle: { ...typography.heading, color: colors.charcoal, marginBottom: spacing.sm },
   stepSub: { fontSize: 13, color: colors.slate, marginBottom: spacing.md, lineHeight: 19 },
   summaryBox: { backgroundColor: colors.white, borderRadius: radius.md, padding: spacing.md, borderWidth: 1, borderColor: colors.border, marginTop: spacing.sm },
   summaryRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 6 },
@@ -238,7 +244,7 @@ const styles = StyleSheet.create({
   checkboxRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: spacing.md },
   checkboxLabel: { fontSize: 13.5, color: colors.charcoal, fontWeight: '600' },
   successCircle: { width: 72, height: 72, borderRadius: 36, alignItems: 'center', justifyContent: 'center', marginBottom: spacing.md, ...shadow.soft },
-  confirmTitle: { fontSize: 22, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
+  confirmTitle: { ...typography.heading, color: colors.charcoal },
   confirmSub: { fontSize: 14, color: colors.slate, marginTop: 4 },
   footer: { padding: spacing.lg },
   finishError: { color: colors.error, fontSize: 13, marginBottom: spacing.sm, textAlign: 'center' },

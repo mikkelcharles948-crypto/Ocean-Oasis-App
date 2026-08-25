@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Card, Pill, EmptyState, SectionHeader } from '../../components/UI';
 import Button from '../../components/Button';
-import { colors, spacing, radius, font } from '../../theme/theme';
+import { colors, spacing, radius, font, typography } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 import { ROOM_TYPES } from '../../data/mockData';
 import { getLocalizedString } from '../../i18n/content';
@@ -32,14 +32,27 @@ function formatDateShort(iso) {
   return new Date(iso + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
-function Stepper({ value, min, max, onChange }) {
+function Stepper({ value, min, max, onChange, label }) {
+  const { t } = useTranslation();
   return (
     <View style={styles.stepper}>
-      <TouchableOpacity style={styles.stepperBtn} onPress={() => onChange(Math.max(min, value - 1))}>
+      <TouchableOpacity
+        style={styles.stepperBtn}
+        onPress={() => onChange(Math.max(min, value - 1))}
+        accessibilityRole="button"
+        accessibilityLabel={label ? `${t('common.decrease')} ${label}` : t('common.decrease')}
+        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+      >
         <Ionicons name="remove" size={18} color={colors.deepOcean} />
       </TouchableOpacity>
       <Text style={styles.stepperValue}>{value}</Text>
-      <TouchableOpacity style={styles.stepperBtn} onPress={() => onChange(Math.min(max, value + 1))}>
+      <TouchableOpacity
+        style={styles.stepperBtn}
+        onPress={() => onChange(Math.min(max, value + 1))}
+        accessibilityRole="button"
+        accessibilityLabel={label ? `${t('common.increase')} ${label}` : t('common.increase')}
+        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+      >
         <Ionicons name="add" size={18} color={colors.deepOcean} />
       </TouchableOpacity>
     </View>
@@ -152,7 +165,7 @@ export default function NewReservationScreen({ navigation }) {
 
         <Text style={styles.label}>{t('booking.lengthOfStay')}</Text>
         <View style={styles.rowBetween}>
-          <Stepper value={nights} min={1} max={14} onChange={setNights} />
+          <Stepper value={nights} min={1} max={14} onChange={setNights} label={t('booking.lengthOfStay')} />
           <Text style={styles.nightsLabel}>{t('booking.nights', { count: nights })}</Text>
         </View>
 
@@ -165,10 +178,10 @@ export default function NewReservationScreen({ navigation }) {
         </View>
 
         <Text style={styles.label}>{t('booking.adultsLabel')}</Text>
-        <Stepper value={adults} min={1} max={4} onChange={setAdults} />
+        <Stepper value={adults} min={1} max={4} onChange={setAdults} label={t('booking.adultsLabel')} />
 
         <Text style={styles.label}>{t('booking.childrenLabel')}</Text>
-        <Stepper value={children} min={0} max={3} onChange={setChildren} />
+        <Stepper value={children} min={0} max={3} onChange={setChildren} label={t('booking.childrenLabel')} />
 
         {searchError ? <Text style={styles.errorText}>{searchError}</Text> : null}
         <Button
@@ -208,7 +221,7 @@ export default function NewReservationScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   subtitle: { fontSize: 13.5, color: colors.slate, marginBottom: spacing.md, lineHeight: 19 },
-  label: { fontSize: 13, fontWeight: '700', color: colors.charcoal, marginTop: spacing.lg, marginBottom: spacing.sm },
+  label: { ...typography.label, color: colors.slate, marginTop: spacing.lg, marginBottom: spacing.sm },
   dateSummary: { flexDirection: 'row', alignItems: 'center', marginTop: spacing.sm },
   dateSummaryText: { fontSize: 14, fontWeight: '700', color: colors.charcoal },
   rowBetween: { flexDirection: 'row', alignItems: 'center', gap: 16 },
@@ -218,8 +231,8 @@ const styles = StyleSheet.create({
     width: 38, height: 38, borderRadius: 19, backgroundColor: colors.white,
     borderWidth: 1, borderColor: colors.border, alignItems: 'center', justifyContent: 'center',
   },
-  stepperValue: { fontSize: 18, fontWeight: '700', color: colors.charcoal, minWidth: 24, textAlign: 'center' },
-  errorText: { fontSize: 12.5, color: colors.error, marginTop: spacing.md, textAlign: 'center' },
+  stepperValue: { ...typography.subheading, color: colors.charcoal, minWidth: 24, textAlign: 'center' },
+  errorText: { ...typography.bodySmall, color: colors.error, marginTop: spacing.md, textAlign: 'center' },
   resultHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
   resultRoom: { fontSize: 16, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
   resultType: { fontSize: 13, color: colors.turquoiseDark, fontWeight: '600', marginTop: 2 },

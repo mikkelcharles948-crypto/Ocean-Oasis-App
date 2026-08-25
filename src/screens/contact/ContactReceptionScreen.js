@@ -1,16 +1,22 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Linking } from 'react-native';
+import { View, Text, StyleSheet, Alert, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader } from '../../components/UI';
+import AnimatedPressable from '../../components/AnimatedPressable';
 import { colors, spacing, radius, font } from '../../theme/theme';
 import { PROPERTY_INFO } from '../../data/mockData';
 
 function Option({ icon, title, subtitle, onPress, tone = 'normal' }) {
   return (
-    <TouchableOpacity style={[styles.option, tone === 'emergency' && styles.optionEmergency]} onPress={onPress}>
+    <AnimatedPressable
+      style={[styles.option, tone === 'emergency' && styles.optionEmergency]}
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={title}
+    >
       <View style={[styles.optionIcon, tone === 'emergency' && styles.optionIconEmergency]}>
         <Ionicons name={icon} size={20} color={colors.white} />
       </View>
@@ -19,7 +25,7 @@ function Option({ icon, title, subtitle, onPress, tone = 'normal' }) {
         <Text style={styles.optionSubtitle}>{subtitle}</Text>
       </View>
       <Ionicons name="chevron-forward" size={18} color={colors.slate} />
-    </TouchableOpacity>
+    </AnimatedPressable>
   );
 }
 

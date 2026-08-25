@@ -1,9 +1,14 @@
 {
   "common": {
+    "back": "返回",
     "cancel": "取消",
     "done": "完成",
     "continue": "继续",
     "submit": "提交",
+    "send": "发送",
+    "close": "关闭",
+    "decrease": "减少",
+    "increase": "增加",
     "tryAgain": "重试",
     "somethingWrong": "出了点问题",
     "pleaseTryAgain": "请重试。",

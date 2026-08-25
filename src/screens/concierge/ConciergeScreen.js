@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader } from '../../components/UI';
+import AnimatedPressable from '../../components/AnimatedPressable';
 import { colors, spacing, radius, font } from '../../theme/theme';
 import { CONCIERGE_FAQ } from '../../data/mockData';
 import { getLocalizedContent } from '../../i18n/content';
@@ -62,10 +63,16 @@ export default function ConciergeScreen({ navigation }) {
           <View style={styles.suggestedWrap}>
             <Text style={styles.suggestedLabel}>{t('concierge.suggestedQuestions')}</Text>
             {localizedFaq.map((f) => (
-              <TouchableOpacity key={f.id} style={styles.suggestedChip} onPress={() => send(f.question)}>
+              <AnimatedPressable
+                key={f.id}
+                style={styles.suggestedChip}
+                onPress={() => send(f.question)}
+                accessibilityRole="button"
+                accessibilityLabel={f.question}
+              >
                 <Text style={styles.suggestedText}>{f.question}</Text>
                 <Ionicons name="arrow-forward" size={13} color={colors.turquoiseDark} />
-              </TouchableOpacity>
+              </AnimatedPressable>
             ))}
           </View>
         )}
@@ -80,7 +87,13 @@ export default function ConciergeScreen({ navigation }) {
           placeholderTextColor={colors.slate}
           onSubmitEditing={() => send(input)}
         />
-        <TouchableOpacity style={styles.sendBtn} onPress={() => send(input)}>
+        <TouchableOpacity
+          style={styles.sendBtn}
+          onPress={() => send(input)}
+          accessibilityRole="button"
+          accessibilityLabel={t('common.send')}
+          hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+        >
           <Ionicons name="send" size={17} color={colors.white} />
         </TouchableOpacity>
       </View>

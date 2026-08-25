@@ -1,9 +1,14 @@
 {
   "common": {
+    "back": "Atrás",
     "cancel": "Cancelar",
     "done": "Listo",
     "continue": "Continuar",
     "submit": "Enviar",
+    "send": "Enviar",
+    "close": "Cerrar",
+    "decrease": "Disminuir",
+    "increase": "Aumentar",
     "tryAgain": "Intentar de nuevo",
     "somethingWrong": "Algo salió mal",
     "pleaseTryAgain": "Inténtalo de nuevo.",

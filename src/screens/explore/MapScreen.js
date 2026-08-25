@@ -54,6 +54,9 @@ export default function MapScreen({ navigation }) {
             key={pin.id}
             style={[styles.pin, { left: pin.x, top: pin.y }]}
             onPress={() => setSelected(pin)}
+            accessibilityRole="button"
+            accessibilityLabel={pin.label}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
             <View style={[styles.pinDot, pin.id === 'hotel' && styles.pinDotHotel]}>
               <MaterialCommunityIcons name={pin.icon} size={14} color={colors.white} />
@@ -69,7 +72,12 @@ export default function MapScreen({ navigation }) {
             <Text style={styles.calloutTitle}>{selected.label}</Text>
             <Text style={styles.calloutType}>{t(`explore.mapFilter.${FILTER_KEY[selected.type]}`)}</Text>
           </View>
-          <TouchableOpacity onPress={() => setSelected(null)}>
+          <TouchableOpacity
+            onPress={() => setSelected(null)}
+            accessibilityRole="button"
+            accessibilityLabel={t('common.close')}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
             <Ionicons name="close" size={20} color={colors.slate} />
           </TouchableOpacity>
         </View>
