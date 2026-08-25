@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { ScreenHeader, ErrorState, Field } from '../../components/UI';
 import ImagePlaceholder from '../../components/ImagePlaceholder';
 import Button from '../../components/Button';
-import { colors, spacing, radius, font } from '../../theme/theme';
+import { colors, spacing, radius, font, shadow } from '../../theme/theme';
 import { DINING_VENUES } from '../../data/mockData';
 
 const TYPE_KEY = {
@@ -47,7 +47,9 @@ export default function DiningVenueScreen({ route, navigation }) {
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
       <ScreenHeader title={venue.name} onBack={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={{ padding: spacing.lg }}>
-        <ImagePlaceholder kind={venue.image} uri={venue.imageUrl} style={{ height: 170 }} iconSize={40} />
+        <View style={styles.heroWrap}>
+          <ImagePlaceholder kind={venue.image} uri={venue.imageUrl} style={{ height: 180 }} iconSize={40} />
+        </View>
         <Text style={styles.type}>{t(`dining.type.${TYPE_KEY[venue.type] || 'roomService'}`)}</Text>
         <Text style={styles.name}>{venue.name}</Text>
         <Text style={styles.desc}>{venue.description}</Text>
@@ -96,6 +98,7 @@ function InfoRow({ icon, label, value }) {
 }
 
 const styles = StyleSheet.create({
+  heroWrap: { borderRadius: radius.lg, ...shadow.float },
   type: { fontSize: 12, fontWeight: '700', color: colors.turquoiseDark, marginTop: spacing.md, letterSpacing: 0.5 },
   name: { fontSize: 24, fontWeight: '700', color: colors.charcoal, fontFamily: font.display, marginTop: 4 },
   desc: { fontSize: 14, color: colors.slate, marginTop: 8, lineHeight: 21 },

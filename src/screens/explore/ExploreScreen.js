@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Card, Badge, Pill } from '../../components/UI';
 import ImagePlaceholder from '../../components/ImagePlaceholder';
-import { colors, spacing, radius, font } from '../../theme/theme';
+import { colors, spacing, radius, font, shadow } from '../../theme/theme';
 import { DESTINATIONS, DESTINATION_CATEGORIES } from '../../data/mockData';
 
 export default function ExploreScreen({ navigation }) {
@@ -40,9 +40,9 @@ export default function ExploreScreen({ navigation }) {
         keyExtractor={(item) => item.id}
         contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.md, gap: spacing.md }}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigation.navigate('DestinationDetail', { destinationId: item.id })}>
-            <Card style={{ padding: 0, overflow: 'hidden', flexDirection: 'row' }}>
-              <ImagePlaceholder kind={item.image} uri={item.imageUrl} style={{ width: 110, height: 130, borderRadius: 0 }} iconSize={28} />
+          <TouchableOpacity onPress={() => navigation.navigate('DestinationDetail', { destinationId: item.id })} activeOpacity={0.92}>
+            <Card style={{ padding: 0, overflow: 'hidden', flexDirection: 'row', ...shadow.float }}>
+              <ImagePlaceholder kind={item.image} uri={item.imageUrl} style={{ width: 112, height: 132, borderRadius: 0 }} iconSize={28} />
               <View style={{ flex: 1, padding: spacing.sm }}>
                 <Badge label={t(`common.category.${item.category}`)} tone="info" />
                 <Text style={styles.cardTitle}>{item.title}</Text>

@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { ScreenHeader, ErrorState } from '../../components/UI';
 import ImagePlaceholder from '../../components/ImagePlaceholder';
 import Button from '../../components/Button';
-import { colors, spacing, font } from '../../theme/theme';
+import { colors, spacing, radius, font, shadow } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 export default function EventDetailScreen({ route, navigation }) {
@@ -35,7 +35,9 @@ export default function EventDetailScreen({ route, navigation }) {
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
       <ScreenHeader title={t('events.eventTitle')} onBack={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={{ padding: spacing.lg }}>
-        <ImagePlaceholder kind={event.icon} uri={event.imageUrl} style={{ height: 160 }} iconSize={40} />
+        <View style={styles.heroWrap}>
+          <ImagePlaceholder kind={event.icon} uri={event.imageUrl} style={{ height: 170 }} iconSize={40} />
+        </View>
         <Text style={styles.title}>{event.title}</Text>
         <View style={styles.metaRow}>
           <Ionicons name="time-outline" size={15} color={colors.slate} />
@@ -64,6 +66,7 @@ export default function EventDetailScreen({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
+  heroWrap: { borderRadius: radius.lg, ...shadow.float },
   title: { fontSize: 22, fontWeight: '700', color: colors.charcoal, marginTop: spacing.md, fontFamily: font.display },
   metaRow: { flexDirection: 'row', alignItems: 'center', marginTop: 8 },
   metaText: { fontSize: 13, color: colors.slate, marginLeft: 4 },

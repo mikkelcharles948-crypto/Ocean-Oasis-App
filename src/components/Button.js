@@ -1,6 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, View } from 'react-native';
-import { colors, radius, font } from '../theme/theme';
+import { colors, radius, font, shadow } from '../theme/theme';
 
 export default function Button({
   label,
@@ -59,12 +59,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   row: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  primary: { backgroundColor: colors.deepOcean },
-  secondary: { backgroundColor: colors.turquoise },
+  primary: { backgroundColor: colors.deepOcean, ...shadow.soft },
+  secondary: { backgroundColor: colors.turquoise, ...shadow.soft },
   outline: { backgroundColor: 'transparent', borderWidth: 1.5, borderColor: colors.deepOcean },
   ghost: { backgroundColor: 'transparent' },
-  disabled: { opacity: 0.5 },
-  text: { fontSize: 15, fontWeight: '600', fontFamily: font.body },
+  disabled: { opacity: 0.5, shadowOpacity: 0, elevation: 0 },
+  text: { fontSize: 15, fontWeight: '700', fontFamily: font.body, letterSpacing: 0.2 },
   textPrimary: { color: colors.white },
   textSecondary: { color: colors.white },
   textOutline: { color: colors.deepOcean },

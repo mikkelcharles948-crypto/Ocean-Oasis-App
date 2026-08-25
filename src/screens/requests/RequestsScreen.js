@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
 import { Card, Badge, EmptyState } from '../../components/UI';
-import { colors, spacing, radius, font } from '../../theme/theme';
+import { colors, spacing, radius, font, shadow } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 const STATUS_TONE = { Received: 'info', Assigned: 'warning', 'In Progress': 'warning', Completed: 'success' };
@@ -32,7 +32,7 @@ export default function RequestsScreen({ navigation }) {
         </View>
       </View>
 
-      <TouchableOpacity onPress={() => navigation.navigate('NewRequest')} style={styles.newBtn}>
+      <TouchableOpacity onPress={() => navigation.navigate('NewRequest')} style={styles.newBtn} activeOpacity={0.9}>
         <View style={styles.newBtnIcon}>
           <Ionicons name="add" size={22} color={colors.white} />
         </View>
@@ -80,9 +80,9 @@ const styles = StyleSheet.create({
   newBtn: {
     flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: colors.white,
     marginHorizontal: spacing.lg, marginTop: spacing.md, padding: spacing.md, borderRadius: radius.lg,
-    borderWidth: 1, borderColor: colors.border, marginBottom: spacing.lg,
+    borderWidth: 1, borderColor: colors.border, marginBottom: spacing.lg, ...shadow.soft,
   },
-  newBtnIcon: { width: 42, height: 42, borderRadius: 21, backgroundColor: colors.deepOcean, alignItems: 'center', justifyContent: 'center' },
+  newBtnIcon: { width: 42, height: 42, borderRadius: 21, backgroundColor: colors.deepOcean, alignItems: 'center', justifyContent: 'center', ...shadow.card },
   newBtnTitle: { fontSize: 15, fontWeight: '700', color: colors.charcoal },
   newBtnSub: { fontSize: 11.5, color: colors.slate, marginTop: 2 },
   historyLabel: { fontSize: 13, fontWeight: '700', color: colors.charcoal, paddingHorizontal: spacing.lg, marginBottom: spacing.sm },

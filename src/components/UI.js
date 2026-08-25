@@ -2,7 +2,8 @@ import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { colors, radius, spacing, font, shadow } from '../theme/theme';
+import { LinearGradient } from 'expo-linear-gradient';
+import { colors, radius, spacing, font, shadow, gradients } from '../theme/theme';
 import GlassSurface from './GlassSurface';
 
 export function Card({ children, style, onPress }) {
@@ -104,13 +105,13 @@ export function ScreenHeader({ title, onBack, right }) {
 export function EmptyState({ icon = 'compass-outline', title, subtitle, actionLabel, onAction }) {
   return (
     <View style={styles.empty}>
-      <View style={styles.emptyIconWrap}>
-        <Ionicons name={icon} size={34} color={colors.turquoise} />
-      </View>
+      <LinearGradient colors={['#E1F2F1', '#F4ECDC']} style={styles.emptyIconWrap}>
+        <Ionicons name={icon} size={32} color={colors.turquoiseDark} />
+      </LinearGradient>
       <Text style={styles.emptyTitle}>{title}</Text>
       {subtitle ? <Text style={styles.emptySubtitle}>{subtitle}</Text> : null}
       {actionLabel ? (
-        <TouchableOpacity style={styles.emptyBtn} onPress={onAction}>
+        <TouchableOpacity style={styles.emptyBtn} onPress={onAction} activeOpacity={0.85}>
           <Text style={styles.emptyBtnText}>{actionLabel}</Text>
         </TouchableOpacity>
       ) : null}
@@ -122,13 +123,13 @@ export function ErrorState({ title, subtitle, onRetry }) {
   const { t } = useTranslation();
   return (
     <View style={styles.empty}>
-      <View style={[styles.emptyIconWrap, { backgroundColor: '#F7E7E1' }]}>
-        <Ionicons name="alert-circle-outline" size={34} color={colors.error} />
-      </View>
+      <LinearGradient colors={['#F7E7E1', '#FBF0EC']} style={styles.emptyIconWrap}>
+        <Ionicons name="alert-circle-outline" size={32} color={colors.error} />
+      </LinearGradient>
       <Text style={styles.emptyTitle}>{title || t('common.somethingWrong')}</Text>
       <Text style={styles.emptySubtitle}>{subtitle || t('common.pleaseTryAgain')}</Text>
       {onRetry ? (
-        <TouchableOpacity style={styles.emptyBtn} onPress={onRetry}>
+        <TouchableOpacity style={styles.emptyBtn} onPress={onRetry} activeOpacity={0.85}>
           <Text style={styles.emptyBtnText}>{t('common.tryAgain')}</Text>
         </TouchableOpacity>
       ) : null}
@@ -241,17 +242,19 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: radius.lg,
     padding: spacing.md,
+    borderWidth: 1,
+    borderColor: 'rgba(228,220,201,0.6)',
     ...shadow.card,
   },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: spacing.sm,
+    marginBottom: spacing.md,
   },
-  sectionTitle: { fontSize: 19, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
-  sectionSubtitle: { fontSize: 12.5, color: colors.slate, marginTop: 2 },
-  sectionAction: { fontSize: 13, fontWeight: '600', color: colors.turquoiseDark },
+  sectionTitle: { fontSize: 19, fontWeight: '700', color: colors.charcoal, fontFamily: font.display, letterSpacing: 0.1 },
+  sectionSubtitle: { fontSize: 12.5, color: colors.slate, marginTop: 3, lineHeight: 17 },
+  sectionAction: { fontSize: 13, fontWeight: '700', color: colors.turquoiseDark },
   badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: radius.pill, alignSelf: 'flex-start' },
   badgeText: { fontSize: 11, fontWeight: '700', letterSpacing: 0.3 },
   screenHeaderShadowWrap: {
@@ -272,22 +275,27 @@ const styles = StyleSheet.create({
   screenHeaderTitle: { flex: 1, textAlign: 'center', fontSize: 17, fontWeight: '700', color: colors.charcoal },
   empty: { alignItems: 'center', justifyContent: 'center', paddingVertical: spacing.xxl, paddingHorizontal: spacing.lg },
   emptyIconWrap: {
-    width: 68, height: 68, borderRadius: 34, backgroundColor: '#E1F2F1',
+    width: 72, height: 72, borderRadius: 36,
     alignItems: 'center', justifyContent: 'center', marginBottom: spacing.md,
+    ...shadow.card,
   },
-  emptyTitle: { fontSize: 17, fontWeight: '700', color: colors.charcoal, textAlign: 'center' },
-  emptySubtitle: { fontSize: 14, color: colors.slate, textAlign: 'center', marginTop: 6, lineHeight: 20 },
-  emptyBtn: { marginTop: spacing.md, backgroundColor: colors.deepOcean, paddingHorizontal: 22, paddingVertical: 12, borderRadius: radius.pill },
-  emptyBtnText: { color: colors.white, fontWeight: '700', fontSize: 13 },
+  emptyTitle: { fontSize: 17, fontWeight: '700', color: colors.charcoal, textAlign: 'center', fontFamily: font.display },
+  emptySubtitle: { fontSize: 14, color: colors.slate, textAlign: 'center', marginTop: 6, lineHeight: 20, maxWidth: 280 },
+  emptyBtn: {
+    marginTop: spacing.lg, backgroundColor: colors.deepOcean, paddingHorizontal: 24, paddingVertical: 13,
+    borderRadius: radius.pill, ...shadow.soft,
+  },
+  emptyBtnText: { color: colors.white, fontWeight: '700', fontSize: 13, letterSpacing: 0.2 },
   offline: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
     backgroundColor: colors.charcoal, paddingVertical: 8,
   },
   offlineText: { color: colors.white, fontSize: 12, fontWeight: '600' },
-  iconTile: { width: '25%', alignItems: 'center', marginBottom: spacing.md, paddingHorizontal: 4 },
+  iconTile: { width: '25%', alignItems: 'center', marginBottom: spacing.lg, paddingHorizontal: 4 },
   iconTileCircle: {
     width: 56, height: 56, borderRadius: 28, backgroundColor: colors.deepOcean,
-    alignItems: 'center', justifyContent: 'center', marginBottom: 6,
+    alignItems: 'center', justifyContent: 'center', marginBottom: 7,
+    ...shadow.card,
   },
   iconTileLabel: { fontSize: 11.5, color: colors.charcoal, textAlign: 'center', fontWeight: '600' },
   fieldLabel: { fontSize: 13, fontWeight: '700', color: colors.charcoal, marginBottom: 6 },

@@ -7,12 +7,12 @@ import { useTranslation } from 'react-i18next';
 
 import Logo from '../../components/Logo';
 import Button from '../../components/Button';
-import { colors, spacing } from '../../theme/theme';
+import { colors, spacing, font, shadow, gradients } from '../../theme/theme';
 
 export default function WelcomeAuthScreen({ navigation }) {
   const { t } = useTranslation();
   return (
-    <LinearGradient colors={[colors.deepOcean2, colors.deepOcean]} style={{ flex: 1 }}>
+    <LinearGradient colors={gradients.deep} style={{ flex: 1 }}>
       <SafeAreaView style={styles.container}>
         {navigation.canGoBack() && (
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
@@ -63,8 +63,8 @@ const styles = StyleSheet.create({
     width: 38, height: 38, borderRadius: 19, backgroundColor: 'rgba(255,255,255,0.15)',
     alignItems: 'center', justifyContent: 'center', marginTop: spacing.sm,
   },
-  card: { backgroundColor: colors.white, borderRadius: 26, padding: spacing.lg, paddingTop: spacing.xl },
-  title: { fontSize: 21, fontWeight: '700', color: colors.charcoal, textAlign: 'center' },
+  card: { backgroundColor: colors.white, borderRadius: 26, padding: spacing.lg, paddingTop: spacing.xl, ...shadow.float },
+  title: { fontSize: 21, fontWeight: '700', color: colors.charcoal, textAlign: 'center', fontFamily: font.display },
   subtitle: { fontSize: 13.5, color: colors.slate, textAlign: 'center', marginTop: 6, lineHeight: 19 },
   divider: { flexDirection: 'row', alignItems: 'center', marginVertical: spacing.lg },
   line: { flex: 1, height: 1, backgroundColor: colors.border },

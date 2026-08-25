@@ -7,7 +7,8 @@ import { useTranslation } from 'react-i18next';
 import ImagePlaceholder from '../../components/ImagePlaceholder';
 import { Badge, ErrorState } from '../../components/UI';
 import Button from '../../components/Button';
-import { colors, spacing, radius, font } from '../../theme/theme';
+import GlassSurface from '../../components/GlassSurface';
+import { colors, spacing, radius, font, shadow } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 const AVAILABILITY_KEY = { Available: 'available', 'Limited spots': 'limitedSpots' };
@@ -32,13 +33,17 @@ export default function ActivityDetailScreen({ route, navigation }) {
     <View style={{ flex: 1, backgroundColor: colors.ivory }}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View>
-          <ImagePlaceholder kind={activity.image} uri={activity.imageUrl} style={{ height: 240, borderRadius: 0 }} iconSize={52} />
+          <ImagePlaceholder kind={activity.image} uri={activity.imageUrl} style={{ height: 250, borderRadius: 0 }} iconSize={52} />
           <SafeAreaView style={styles.overlayRow} edges={['top']}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.circleBtn}>
-              <Ionicons name="chevron-back" size={22} color={colors.white} />
+            <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.8}>
+              <GlassSurface style={styles.circleBtn} tint="dark" intensity={50} borderRadius={19}>
+                <Ionicons name="chevron-back" size={22} color={colors.white} />
+              </GlassSurface>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => toggleSavedActivity(activity.id)} style={styles.circleBtn}>
-              <Ionicons name={isSaved ? 'heart' : 'heart-outline'} size={20} color={colors.white} />
+            <TouchableOpacity onPress={() => toggleSavedActivity(activity.id)} activeOpacity={0.8}>
+              <GlassSurface style={styles.circleBtn} tint="dark" intensity={50} borderRadius={19}>
+                <Ionicons name={isSaved ? 'heart' : 'heart-outline'} size={20} color={isSaved ? colors.gold : colors.white} />
+              </GlassSurface>
             </TouchableOpacity>
           </SafeAreaView>
         </View>
@@ -117,10 +122,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: spacing.sm,
   },
   circleBtn: {
-    width: 38, height: 38, borderRadius: 19, backgroundColor: 'rgba(9,46,55,0.5)',
-    alignItems: 'center', justifyContent: 'center', margin: spacing.sm,
+    width: 38, height: 38, alignItems: 'center', justifyContent: 'center', margin: spacing.sm,
   },
-  content: { padding: spacing.lg, paddingBottom: 110 },
+  content: {
+    padding: spacing.lg, paddingBottom: 110, marginTop: -radius.xl, backgroundColor: colors.ivory,
+    borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, ...shadow.soft,
+  },
   rowBetween: { flexDirection: 'row', justifyContent: 'space-between' },
   title: { fontSize: 25, fontWeight: '700', color: colors.charcoal, marginTop: 10, fontFamily: font.display },
   description: { fontSize: 14, color: colors.slate, marginTop: 8, lineHeight: 21 },

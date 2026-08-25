@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, ErrorState } from '../../components/UI';
 import Button from '../../components/Button';
-import { colors, spacing, radius, font } from '../../theme/theme';
+import { colors, spacing, radius, font, shadow, gradients } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 export default function BookActivityScreen({ route, navigation }) {
@@ -49,9 +50,9 @@ export default function BookActivityScreen({ route, navigation }) {
       <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
         <ScreenHeader title={t('activities.confirmed')} onBack={() => navigation.popToTop?.() || navigation.goBack()} />
         <View style={styles.successWrap}>
-          <View style={styles.successCircle}>
+          <LinearGradient colors={gradients.success} style={styles.successCircle}>
             <Ionicons name="checkmark" size={32} color={colors.white} />
-          </View>
+          </LinearGradient>
           <Text style={styles.successTitle}>{t('activities.activityReserved')}</Text>
           <Text style={styles.successSub}>{t('activities.addedToItinerary', { name: activity.name })}</Text>
           <Button label={t('activities.viewItinerary')} onPress={() => navigation.navigate('Itinerary')} style={{ marginTop: spacing.lg }} />
@@ -120,7 +121,7 @@ const styles = StyleSheet.create({
   summaryLabel: { fontSize: 12.5, color: colors.slate },
   summaryValue: { fontSize: 12.5, fontWeight: '700', color: colors.charcoal },
   successWrap: { alignItems: 'center', padding: spacing.xl, marginTop: spacing.xl },
-  successCircle: { width: 68, height: 68, borderRadius: 34, backgroundColor: colors.success, alignItems: 'center', justifyContent: 'center', marginBottom: spacing.md },
+  successCircle: { width: 68, height: 68, borderRadius: 34, alignItems: 'center', justifyContent: 'center', marginBottom: spacing.md, ...shadow.soft },
   successTitle: { fontSize: 20, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
   successSub: { fontSize: 13.5, color: colors.slate, textAlign: 'center', marginTop: 6 },
   errorText: { fontSize: 12.5, color: colors.error, marginTop: spacing.md, textAlign: 'center' },

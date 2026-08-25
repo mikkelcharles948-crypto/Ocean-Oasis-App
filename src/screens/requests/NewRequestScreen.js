@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Field } from '../../components/UI';
 import Button from '../../components/Button';
-import { colors, spacing, radius, font } from '../../theme/theme';
+import { colors, spacing, radius, font, shadow, gradients } from '../../theme/theme';
 import { SERVICE_REQUEST_CATEGORIES } from '../../data/mockData';
 import { useApp } from '../../context/AppContext';
 
@@ -35,9 +36,9 @@ export default function NewRequestScreen({ navigation, route }) {
       <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
         <ScreenHeader title={t('requests.requestSentTitle')} onBack={() => navigation.goBack()} />
         <View style={styles.successWrap}>
-          <View style={styles.successCircle}>
+          <LinearGradient colors={gradients.success} style={styles.successCircle}>
             <Ionicons name="checkmark" size={32} color={colors.white} />
-          </View>
+          </LinearGradient>
           <Text style={styles.successTitle}>{t('requests.requestReceived')}</Text>
           <Text style={styles.successSub}>{t('requests.requestReceivedSub')}</Text>
           <Button label={t('requests.backToRequests')} onPress={() => navigation.goBack()} style={{ marginTop: spacing.lg }} />
@@ -108,7 +109,7 @@ const styles = StyleSheet.create({
   },
   imageBtnText: { fontSize: 12.5, color: colors.slate },
   successWrap: { alignItems: 'center', padding: spacing.xl, marginTop: spacing.xl },
-  successCircle: { width: 68, height: 68, borderRadius: 34, backgroundColor: colors.success, alignItems: 'center', justifyContent: 'center', marginBottom: spacing.md },
+  successCircle: { width: 68, height: 68, borderRadius: 34, alignItems: 'center', justifyContent: 'center', marginBottom: spacing.md, ...shadow.soft },
   successTitle: { fontSize: 20, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
   successSub: { fontSize: 13.5, color: colors.slate, textAlign: 'center', marginTop: 6, lineHeight: 19 },
 });

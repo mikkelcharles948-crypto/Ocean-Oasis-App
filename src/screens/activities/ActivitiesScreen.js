@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Card, Badge, Pill, EmptyState } from '../../components/UI';
 import ImagePlaceholder from '../../components/ImagePlaceholder';
-import { colors, spacing, font } from '../../theme/theme';
+import { colors, spacing, font, shadow } from '../../theme/theme';
 import { ACTIVITY_CATEGORIES } from '../../data/mockData';
 import { useApp } from '../../context/AppContext';
 
@@ -39,9 +39,9 @@ export default function ActivitiesScreen({ navigation }) {
         contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.sm, gap: spacing.md }}
         ListEmptyComponent={<EmptyState icon="sunny-outline" title={t('activities.noActivities')} />}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigation.navigate('ActivityDetail', { activityId: item.id })}>
-            <Card style={{ padding: 0, overflow: 'hidden' }}>
-              <ImagePlaceholder kind={item.image} uri={item.imageUrl} style={{ height: 130, borderRadius: 0 }} iconSize={32} />
+          <TouchableOpacity onPress={() => navigation.navigate('ActivityDetail', { activityId: item.id })} activeOpacity={0.92}>
+            <Card style={{ padding: 0, overflow: 'hidden', ...shadow.float }}>
+              <ImagePlaceholder kind={item.image} uri={item.imageUrl} style={{ height: 140, borderRadius: 0 }} iconSize={32} />
               <View style={{ padding: spacing.md }}>
                 <View style={styles.rowBetween}>
                   <Badge label={t(`common.category.${item.category}`)} tone="info" />

@@ -7,7 +7,8 @@ import { useTranslation } from 'react-i18next';
 import ImagePlaceholder from '../../components/ImagePlaceholder';
 import Button from '../../components/Button';
 import { Badge, ErrorState } from '../../components/UI';
-import { colors, spacing, radius, font } from '../../theme/theme';
+import GlassSurface from '../../components/GlassSurface';
+import { colors, spacing, radius, font, shadow } from '../../theme/theme';
 import { DESTINATIONS } from '../../data/mockData';
 
 export default function DestinationDetailScreen({ route, navigation }) {
@@ -27,10 +28,12 @@ export default function DestinationDetailScreen({ route, navigation }) {
     <View style={{ flex: 1, backgroundColor: colors.ivory }}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View>
-          <ImagePlaceholder kind={destination.image} uri={destination.imageUrl} style={{ height: 260, borderRadius: 0 }} iconSize={56} />
+          <ImagePlaceholder kind={destination.image} uri={destination.imageUrl} style={{ height: 270, borderRadius: 0 }} iconSize={56} />
           <SafeAreaView style={styles.backOverlay} edges={['top']}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-              <Ionicons name="chevron-back" size={22} color={colors.white} />
+            <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.8}>
+              <GlassSurface style={styles.backBtn} tint="dark" intensity={50} borderRadius={19}>
+                <Ionicons name="chevron-back" size={22} color={colors.white} />
+              </GlassSurface>
             </TouchableOpacity>
           </SafeAreaView>
         </View>
@@ -79,10 +82,12 @@ function Stat({ icon, label, value }) {
 const styles = StyleSheet.create({
   backOverlay: { position: 'absolute', top: 0, left: 0 },
   backBtn: {
-    width: 38, height: 38, borderRadius: 19, backgroundColor: 'rgba(9,46,55,0.5)',
-    alignItems: 'center', justifyContent: 'center', margin: spacing.sm,
+    width: 38, height: 38, alignItems: 'center', justifyContent: 'center', margin: spacing.sm,
   },
-  content: { padding: spacing.lg },
+  content: {
+    padding: spacing.lg, marginTop: -radius.xl, backgroundColor: colors.ivory,
+    borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, ...shadow.soft,
+  },
   title: { fontSize: 26, fontWeight: '700', color: colors.charcoal, marginTop: 8, fontFamily: font.display },
   description: { fontSize: 14.5, color: colors.slate, marginTop: 8, lineHeight: 21 },
   statsRow: {

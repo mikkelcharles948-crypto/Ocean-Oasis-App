@@ -58,4 +58,26 @@ export const shadow = {
     shadowRadius: 10,
     elevation: 3,
   },
+  // A slightly more pronounced lift for hero imagery / photo cards, so they
+  // read as floating above the ivory background rather than flat.
+  float: {
+    shadowColor: '#0B3B45',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.16,
+    shadowRadius: 20,
+    elevation: 7,
+  },
+};
+
+// Named gradient pairs, used with intention rather than reused flatly:
+// `ocean` for primary hero/stay chrome, `gold` for premium & promotional
+// moments, `deep` for darker immersive backdrops, `scrim` to lay a soft
+// legibility wash under text/controls placed over a photo.
+export const gradients = {
+  ocean: [colors.deepOcean, colors.turquoiseDark],
+  deep: [colors.deepOcean2, colors.deepOceanLight],
+  forestTurquoise: [colors.forest, colors.turquoise],
+  gold: [colors.gold, colors.goldSoft],
+  success: [colors.success, '#5AA37E'],
+  scrim: ['rgba(9,46,55,0)', 'rgba(9,46,55,0.55)'],
 };

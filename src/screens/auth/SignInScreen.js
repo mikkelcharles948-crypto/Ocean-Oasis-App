@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Field } from '../../components/UI';
 import Button from '../../components/Button';
-import { colors, spacing } from '../../theme/theme';
+import { colors, spacing, font } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 export default function SignInScreen({ navigation }) {
@@ -61,7 +61,7 @@ export default function SignInScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   content: { padding: spacing.lg },
-  heading: { fontSize: 24, fontWeight: '700', color: colors.charcoal, marginBottom: 4 },
+  heading: { fontSize: 24, fontWeight: '700', color: colors.charcoal, marginBottom: 4, fontFamily: font.display },
   sub: { fontSize: 13.5, color: colors.slate, marginBottom: spacing.lg },
   link: { color: colors.turquoiseDark, fontWeight: '600', fontSize: 13.5 },
   footerRow: { flexDirection: 'row', justifyContent: 'center', marginTop: spacing.lg },

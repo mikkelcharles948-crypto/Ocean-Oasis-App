@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Card, Badge } from '../../components/UI';
 import ImagePlaceholder from '../../components/ImagePlaceholder';
-import { colors, spacing, font } from '../../theme/theme';
+import { colors, spacing, font, shadow } from '../../theme/theme';
 import { DINING_VENUES } from '../../data/mockData';
 
 const TYPE_KEY = {
@@ -26,9 +26,9 @@ export default function DiningScreen({ navigation }) {
         keyExtractor={(v) => v.id}
         contentContainerStyle={{ padding: spacing.lg, gap: spacing.md }}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigation.navigate('DiningVenue', { venueId: item.id })}>
-            <Card style={{ padding: 0, overflow: 'hidden' }}>
-              <ImagePlaceholder kind={item.image} uri={item.imageUrl} style={{ height: 130, borderRadius: 0 }} iconSize={32} />
+          <TouchableOpacity onPress={() => navigation.navigate('DiningVenue', { venueId: item.id })} activeOpacity={0.92}>
+            <Card style={{ padding: 0, overflow: 'hidden', ...shadow.float }}>
+              <ImagePlaceholder kind={item.image} uri={item.imageUrl} style={{ height: 140, borderRadius: 0 }} iconSize={32} />
               <View style={{ padding: spacing.md }}>
                 <Badge label={t(`dining.type.${TYPE_KEY[item.type] || 'roomService'}`)} tone="info" />
                 <Text style={styles.name}>{item.name}</Text>

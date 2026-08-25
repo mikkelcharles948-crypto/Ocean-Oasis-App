@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Field, Pill } from '../../components/UI';
 import Button from '../../components/Button';
-import { colors, spacing, radius, font } from '../../theme/theme';
+import { colors, spacing, radius, font, shadow, gradients } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 const STEP_KEYS = [
@@ -179,9 +180,9 @@ export default function DigitalCheckInScreen({ navigation }) {
 
         {step === 8 && (
           <View style={{ alignItems: 'center', paddingTop: spacing.lg }}>
-            <View style={styles.successCircle}>
+            <LinearGradient colors={gradients.success} style={styles.successCircle}>
               <Ionicons name="checkmark" size={34} color={colors.white} />
-            </View>
+            </LinearGradient>
             <Text style={styles.confirmTitle}>{t('mystay.checkinFlow.allSet')}</Text>
             <Text style={styles.confirmSub}>{t('mystay.checkinFlow.welcomeToOceanOasis')}</Text>
             <View style={styles.summaryBox}>
@@ -236,7 +237,7 @@ const styles = StyleSheet.create({
   termsText: { fontSize: 12.5, color: colors.slate, lineHeight: 19 },
   checkboxRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: spacing.md },
   checkboxLabel: { fontSize: 13.5, color: colors.charcoal, fontWeight: '600' },
-  successCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: colors.success, alignItems: 'center', justifyContent: 'center', marginBottom: spacing.md },
+  successCircle: { width: 72, height: 72, borderRadius: 36, alignItems: 'center', justifyContent: 'center', marginBottom: spacing.md, ...shadow.soft },
   confirmTitle: { fontSize: 22, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
   confirmSub: { fontSize: 14, color: colors.slate, marginTop: 4 },
   footer: { padding: spacing.lg },

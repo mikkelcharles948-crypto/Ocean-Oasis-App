@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Field } from '../../components/UI';
 import Button from '../../components/Button';
-import { colors, spacing } from '../../theme/theme';
+import { colors, spacing, font } from '../../theme/theme';
 import { supabase } from '../../lib/supabase';
 
 export default function ForgotPasswordScreen({ navigation }) {
@@ -61,7 +61,7 @@ export default function ForgotPasswordScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   content: { padding: spacing.lg },
-  heading: { fontSize: 22, fontWeight: '700', color: colors.charcoal, marginBottom: 4, textAlign: 'center' },
+  heading: { fontSize: 22, fontWeight: '700', color: colors.charcoal, marginBottom: 4, textAlign: 'center', fontFamily: font.display },
   sub: { fontSize: 13.5, color: colors.slate, marginBottom: spacing.lg, textAlign: 'center' },
   error: { color: colors.error, fontSize: 13, marginBottom: spacing.sm, textAlign: 'center' },
   successCircle: {

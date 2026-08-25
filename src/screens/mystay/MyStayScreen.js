@@ -4,9 +4,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
+import { LinearGradient } from 'expo-linear-gradient';
 import { Card, Badge, SectionHeader } from '../../components/UI';
 import Button from '../../components/Button';
-import { colors, spacing, radius, font } from '../../theme/theme';
+import { colors, spacing, radius, font, shadow, gradients } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 import { ROOM_TYPES } from '../../data/mockData';
 
@@ -14,7 +15,7 @@ function fmt(dateStr) {
   return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
-function UpgradeCard({ tier, onRequested }) {
+function UpgradeCard({ tier, featured, onRequested }) {
   const { t } = useTranslation();
   const { submitServiceRequest } = useApp();
   const [requesting, setRequesting] = useState(false);
@@ -34,8 +35,14 @@ function UpgradeCard({ tier, onRequested }) {
   };
 
   return (
-    <Card style={styles.upgradeCard}>
+    <Card style={[styles.upgradeCard, featured && styles.upgradeCardFeatured]}>
+      {featured && (
+        <LinearGradient colors={gradients.gold} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.upgradeRibbon} />
+      )}
       <View style={styles.upgradeHeaderRow}>
+        <View style={styles.upgradeIconWrap}>
+          <Ionicons name="arrow-up-circle" size={18} color={featured ? colors.gold : colors.turquoiseDark} />
+        </View>
         <Text style={styles.upgradeName}>{tier.name}</Text>
         <Text style={styles.upgradePrice}>{t('mystay.upgrades.fromPrice', { price: tier.fromPricePerNight })}</Text>
       </View>
@@ -54,7 +61,7 @@ function UpgradeCard({ tier, onRequested }) {
         disabled={requested}
         loading={requesting}
         onPress={handleRequest}
-        style={{ marginTop: spacing.sm }}
+        style={{ marginTop: spacing.md }}
       />
     </Card>
   );
@@ -78,8 +85,11 @@ export default function MyStayScreen({ navigation }) {
         <Text style={styles.headerTitle}>{t('mystay.title')}</Text>
 
         {reservation.status === 'confirmed' && (
-          <TouchableOpacity onPress={() => navigation.navigate('DigitalCheckIn')}>
+          <TouchableOpacity onPress={() => navigation.navigate('DigitalCheckIn')} activeOpacity={0.9}>
             <Card style={styles.checkinBanner}>
+              <View style={styles.checkinIconWrap}>
+                <Ionicons name="finger-print" size={20} color={colors.deepOcean} />
+              </View>
               <View style={{ flex: 1 }}>
                 <Text style={styles.checkinTitle}>{t('mystay.completeCheckIn')}</Text>
                 <Text style={styles.checkinSub}>{t('mystay.completeCheckInSub')}</Text>
@@ -158,8 +168,8 @@ export default function MyStayScreen({ navigation }) {
         {upgradeOptions.length > 0 && (
           <View style={{ marginTop: spacing.lg }}>
             <SectionHeader title={t('mystay.upgrades.title')} subtitle={t('mystay.upgrades.subtitle')} />
-            {upgradeOptions.map((tier) => (
-              <UpgradeCard key={tier.id} tier={tier} />
+            {upgradeOptions.map((tier, i) => (
+              <UpgradeCard key={tier.id} tier={tier} featured={i === 0} />
             ))}
           </View>
         )}
@@ -186,7 +196,14 @@ function Detail({ label, value }) {
 
 const styles = StyleSheet.create({
   headerTitle: { fontSize: 26, fontWeight: '700', color: colors.charcoal, fontFamily: font.display, marginBottom: spacing.md },
-  checkinBanner: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#FBF1DD', borderWidth: 1, borderColor: colors.goldSoft },
+  checkinBanner: {
+    flexDirection: 'row', alignItems: 'center', gap: spacing.sm,
+    backgroundColor: '#FBF1DD', borderWidth: 1, borderColor: colors.goldSoft, ...shadow.soft,
+  },
+  checkinIconWrap: {
+    width: 40, height: 40, borderRadius: 20, backgroundColor: colors.goldSoft,
+    alignItems: 'center', justifyContent: 'center',
+  },
   checkinTitle: { fontSize: 14.5, fontWeight: '700', color: colors.charcoal },
   checkinSub: { fontSize: 12, color: colors.slate, marginTop: 2 },
   rowBetween: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
@@ -198,7 +215,7 @@ const styles = StyleSheet.create({
   timelineRow: { flexDirection: 'row' },
   timelineLeft: { alignItems: 'center', width: 34 },
   timelineDot: { width: 26, height: 26, borderRadius: 13, backgroundColor: colors.slate, alignItems: 'center', justifyContent: 'center' },
-  timelineDotDone: { backgroundColor: colors.success },
+  timelineDotDone: { backgroundColor: colors.success, ...shadow.card },
   timelineLine: { width: 2, flex: 1, backgroundColor: colors.border, marginTop: 4 },
   timelineLabel: { fontSize: 14.5, fontWeight: '700', color: colors.charcoal },
   timelineDetail: { fontSize: 12, color: colors.slate, marginTop: 4 },
@@ -207,9 +224,12 @@ const styles = StyleSheet.create({
   amenityWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   amenityChip: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: colors.sandLight, paddingHorizontal: 10, paddingVertical: 6, borderRadius: radius.pill },
   amenityText: { fontSize: 11.5, color: colors.charcoal, fontWeight: '600' },
-  upgradeCard: { marginBottom: spacing.sm },
-  upgradeHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  upgradeName: { fontSize: 15.5, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
+  upgradeCard: { marginBottom: spacing.md, overflow: 'hidden', ...shadow.float },
+  upgradeCardFeatured: { borderColor: colors.goldSoft, borderWidth: 1.5 },
+  upgradeRibbon: { position: 'absolute', top: 0, left: 0, right: 0, height: 4 },
+  upgradeHeaderRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 2 },
+  upgradeIconWrap: { width: 26, height: 26, alignItems: 'center', justifyContent: 'center' },
+  upgradeName: { flex: 1, fontSize: 15.5, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
   upgradePrice: { fontSize: 12.5, fontWeight: '700', color: colors.turquoiseDark },
-  upgradeDesc: { fontSize: 12.5, color: colors.slate, marginTop: 4, lineHeight: 18, marginBottom: spacing.sm },
+  upgradeDesc: { fontSize: 12.5, color: colors.slate, marginTop: 6, lineHeight: 18, marginBottom: spacing.sm, marginLeft: 34 },
 });

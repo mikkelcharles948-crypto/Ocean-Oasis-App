@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { Card, SectionHeader, Badge, IconTile } from '../../components/UI';
 import ImagePlaceholder from '../../components/ImagePlaceholder';
 import Logo from '../../components/Logo';
-import { colors, spacing, radius, font, shadow } from '../../theme/theme';
+import { colors, spacing, radius, font, shadow, gradients } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 function daysBetween(a, b) {
@@ -36,6 +36,17 @@ export default function HomeScreen({ navigation }) {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: spacing.xxl }}>
+        {/* Decorative header wash — a soft ocean-tinted backdrop behind the
+            logo/greeting, restrained and fading into the ivory background. */}
+        <View style={styles.headerWash} pointerEvents="none">
+          <LinearGradient
+            colors={['rgba(47,184,176,0.16)', 'rgba(251,248,242,0)']}
+            style={StyleSheet.absoluteFill}
+          />
+          <View style={styles.washBubbleGold} />
+          <View style={styles.washBubbleTurquoise} />
+        </View>
+
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.navigate('Notifications')} style={styles.bellWrap}>
@@ -64,7 +75,7 @@ export default function HomeScreen({ navigation }) {
 
         {/* My Stay Card */}
         <View style={styles.section}>
-          <LinearGradient colors={[colors.deepOcean, colors.turquoiseDark]} style={styles.stayCard}>
+          <LinearGradient colors={gradients.ocean} style={styles.stayCard}>
             <View style={{ flex: 1 }}>
               <Text style={styles.stayRoom}>{t('home.roomLabel', { number: room.number })}</Text>
               <Text style={styles.stayDates}>
@@ -121,9 +132,9 @@ export default function HomeScreen({ navigation }) {
         {recommendation && (
         <View style={styles.section}>
           <SectionHeader title={t('home.recommendedForYou')} />
-          <TouchableOpacity onPress={() => navigation.navigate('ActivityDetail', { activityId: recommendation.id })}>
-            <Card style={{ padding: 0, overflow: 'hidden' }}>
-              <ImagePlaceholder kind={recommendation.image} uri={recommendation.imageUrl} style={{ height: 140, borderRadius: 0 }} iconSize={40} />
+          <TouchableOpacity onPress={() => navigation.navigate('ActivityDetail', { activityId: recommendation.id })} activeOpacity={0.92}>
+            <Card style={[styles.photoCard, { padding: 0, overflow: 'hidden' }]}>
+              <ImagePlaceholder kind={recommendation.image} uri={recommendation.imageUrl} style={{ height: 150, borderRadius: 0 }} iconSize={40} />
               <View style={{ padding: spacing.md }}>
                 <Badge label={primaryInterest ? t('home.becauseYouLove', { interest: primaryInterest }) : t('home.popularWithGuests')} tone="info" />
                 <Text style={styles.recTitle}>{recommendation.name}</Text>
@@ -145,8 +156,8 @@ export default function HomeScreen({ navigation }) {
         {promo && (
         <View style={[styles.section, { marginBottom: spacing.lg }]}>
           <SectionHeader title={t('home.currentPromotion')} actionLabel={t('home.seeAll')} onAction={() => navigation.navigate('Promotions')} />
-          <TouchableOpacity onPress={() => navigation.navigate('Promotions')}>
-            <LinearGradient colors={[colors.gold, colors.goldSoft]} style={styles.promoCard}>
+          <TouchableOpacity onPress={() => navigation.navigate('Promotions')} activeOpacity={0.92}>
+            <LinearGradient colors={gradients.gold} style={styles.promoCard}>
               <Ionicons name="wine" size={28} color={colors.deepOcean} style={{ marginBottom: 8 }} />
               <Text style={styles.promoTitle}>{promo.title}</Text>
               <Text style={styles.promoDesc}>{promo.description}</Text>
@@ -164,6 +175,17 @@ export default function HomeScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  headerWash: {
+    position: 'absolute', top: 0, left: 0, right: 0, height: 250, overflow: 'hidden',
+  },
+  washBubbleGold: {
+    position: 'absolute', top: -60, right: -50, width: 180, height: 180, borderRadius: 90,
+    backgroundColor: 'rgba(198,162,93,0.14)',
+  },
+  washBubbleTurquoise: {
+    position: 'absolute', top: 60, left: -70, width: 200, height: 200, borderRadius: 100,
+    backgroundColor: 'rgba(47,184,176,0.10)',
+  },
   header: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end',
     paddingHorizontal: spacing.lg, paddingTop: spacing.sm,
@@ -176,15 +198,16 @@ const styles = StyleSheet.create({
   },
   bellDotText: { color: colors.white, fontSize: 9, fontWeight: '700' },
   greetingBlock: { paddingHorizontal: spacing.lg, marginTop: spacing.md },
-  greeting: { fontFamily: font.display, fontSize: 24, fontWeight: '700', color: colors.charcoal },
-  greetingSub: { fontSize: 14, color: colors.slate, marginTop: 2 },
-  metaRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 8 },
-  metaText: { fontSize: 12.5, color: colors.slate },
+  greeting: { fontFamily: font.display, fontSize: 25, fontWeight: '700', color: colors.charcoal, letterSpacing: 0.1 },
+  greetingSub: { fontSize: 14, color: colors.slate, marginTop: 3 },
+  metaRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 10 },
+  metaText: { fontSize: 12.5, color: colors.slate, fontWeight: '500' },
   metaDot: { color: colors.slate },
-  section: { paddingHorizontal: spacing.lg, marginTop: spacing.lg },
+  section: { paddingHorizontal: spacing.lg, marginTop: spacing.xl },
+  photoCard: { ...shadow.float },
   stayCard: {
     borderRadius: radius.lg, padding: spacing.lg, flexDirection: 'row',
-    alignItems: 'center', justifyContent: 'space-between', ...shadow.soft,
+    alignItems: 'center', justifyContent: 'space-between', ...shadow.float,
   },
   stayRoom: { color: colors.sandLight, fontSize: 12, fontWeight: '700', letterSpacing: 1.5 },
   stayDates: { color: colors.white, fontSize: 20, fontWeight: '700', marginTop: 6, fontFamily: font.display },
@@ -204,11 +227,18 @@ const styles = StyleSheet.create({
   recDesc: { fontSize: 13, color: colors.slate, marginTop: 3, lineHeight: 18 },
   recFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: spacing.sm },
   recPrice: { fontSize: 13.5, fontWeight: '700', color: colors.charcoal },
-  exploreBtn: { flexDirection: 'row', alignItems: 'center', gap: 3 },
+  exploreBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: 3, backgroundColor: colors.sandLight,
+    paddingHorizontal: 12, paddingVertical: 7, borderRadius: radius.pill,
+  },
   exploreBtnText: { color: colors.deepOcean, fontWeight: '700', fontSize: 12.5 },
-  promoCard: { borderRadius: radius.lg, padding: spacing.lg, ...shadow.soft },
+  promoCard: { borderRadius: radius.lg, padding: spacing.lg, ...shadow.float },
   promoTitle: { fontSize: 18, fontWeight: '700', color: colors.deepOcean, fontFamily: font.display },
   promoDesc: { fontSize: 13, color: colors.deepOcean2, marginTop: 4, lineHeight: 18 },
-  promoCta: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: spacing.sm },
+  promoCta: {
+    flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: spacing.md,
+    alignSelf: 'flex-start', backgroundColor: 'rgba(251,248,242,0.55)',
+    paddingHorizontal: 12, paddingVertical: 7, borderRadius: radius.pill,
+  },
   promoCtaText: { color: colors.deepOcean, fontWeight: '700', fontSize: 12.5 },
 });

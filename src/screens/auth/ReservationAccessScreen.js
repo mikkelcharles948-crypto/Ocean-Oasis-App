@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Field } from '../../components/UI';
 import Button from '../../components/Button';
-import { colors, spacing } from '../../theme/theme';
+import { colors, spacing, font } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 import { supabase } from '../../lib/supabase';
 import { RESERVATION } from '../../data/mockData';
@@ -69,7 +69,7 @@ export default function ReservationAccessScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   content: { padding: spacing.lg },
-  heading: { fontSize: 22, fontWeight: '700', color: colors.charcoal, marginBottom: 4 },
+  heading: { fontSize: 22, fontWeight: '700', color: colors.charcoal, marginBottom: 4, fontFamily: font.display },
   sub: { fontSize: 13.5, color: colors.slate, marginBottom: spacing.lg, lineHeight: 19 },
   error: { color: colors.error, fontSize: 13, marginBottom: spacing.sm },
 });

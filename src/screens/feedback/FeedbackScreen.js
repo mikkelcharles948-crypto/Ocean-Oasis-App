@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, StarRating, Field } from '../../components/UI';
 import Button from '../../components/Button';
-import { colors, spacing, radius, font } from '../../theme/theme';
+import { colors, spacing, radius, font, shadow, gradients } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 const CATEGORIES = ['Room', 'Cleanliness', 'Service', 'Food', 'Activities', 'Overall Experience'];
@@ -47,9 +48,9 @@ export default function FeedbackScreen({ navigation }) {
       <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
         <ScreenHeader title={t('feedback.title')} onBack={() => navigation.goBack()} />
         <View style={styles.successWrap}>
-          <View style={styles.successCircle}>
+          <LinearGradient colors={gradients.gold} style={styles.successCircle}>
             <Ionicons name="heart" size={30} color={colors.white} />
-          </View>
+          </LinearGradient>
           <Text style={styles.successTitle}>{t('feedback.thankYou')}</Text>
           <Text style={styles.successSub}>{t('feedback.thankYouSub')}</Text>
           {overall > 0 && overall <= 3 && (
@@ -94,7 +95,7 @@ const styles = StyleSheet.create({
   },
   ratingLabel: { fontSize: 13.5, fontWeight: '600', color: colors.charcoal },
   successWrap: { alignItems: 'center', padding: spacing.xl, marginTop: spacing.xl },
-  successCircle: { width: 68, height: 68, borderRadius: 34, backgroundColor: colors.gold, alignItems: 'center', justifyContent: 'center', marginBottom: spacing.md },
+  successCircle: { width: 68, height: 68, borderRadius: 34, alignItems: 'center', justifyContent: 'center', marginBottom: spacing.md, ...shadow.soft },
   successTitle: { fontSize: 21, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
   successSub: { fontSize: 13.5, color: colors.slate, textAlign: 'center', marginTop: 6, lineHeight: 19 },
   followUp: { fontSize: 12, color: colors.slate, textAlign: 'center', marginTop: spacing.md, fontStyle: 'italic' },
