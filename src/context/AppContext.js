@@ -76,8 +76,12 @@ export function AppProvider({ children }) {
   // Which top-level experience is active: null (picker), 'guest', 'staff', 'management'.
   const [experience, setExperience] = useState(null);
 
-  // Guest-facing auth
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // Guest-facing auth. Derived from authSession itself (not a separately
+  // tracked flag) so a session Supabase silently restores on cold start —
+  // e.g. behind a biometric lock — counts as authenticated immediately,
+  // instead of forcing the guest back through ExperienceSelect + full
+  // email/password sign-in even though they're already signed in.
+  const isAuthenticated = !!authSession?.user?.id;
 
   // Staff/Management auth — one session shape, gated by role per surface.
   const [opsSession, setOpsSession] = useState(null); // { id, name, role, department }
@@ -140,7 +144,6 @@ export function AppProvider({ children }) {
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setAuthSession(session);
       setAuthLoading(false);
-      if (!session) setIsAuthenticated(false);
     });
     return () => {
       mounted = false;
@@ -215,9 +218,11 @@ export function AppProvider({ children }) {
       if (!mounted) return;
       if (profile?.role) {
         setOpsSession({ id: profile.id, name: `${profile.first_name} ${profile.last_name}`.trim(), role: profile.role, department: profile.department });
+        setExperience((current) => current || ROLE_SURFACES[profile.role]?.[0] || 'staff');
         await refreshStaffData();
       } else {
         setOpsSession(null);
+        setExperience((current) => current || 'guest');
         await refreshGuestData();
       }
     }
@@ -399,7 +404,6 @@ export function AppProvider({ children }) {
   const chooseExperience = useCallback((exp) => setExperience(exp), []);
   const exitToExperiencePicker = useCallback(() => {
     setExperience(null);
-    setIsAuthenticated(false);
     setOpsSession(null);
   }, []);
 
@@ -412,7 +416,6 @@ export function AppProvider({ children }) {
     }
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     if (error) return { ok: false, error: error.message };
-    setIsAuthenticated(true);
     return { ok: true };
   }, []);
   const signUp = useCallback(async ({ email, password, firstName, lastName }) => {
@@ -433,7 +436,6 @@ export function AppProvider({ children }) {
   }, []);
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
-    setIsAuthenticated(false);
     setExperience(null);
   }, []);
 
