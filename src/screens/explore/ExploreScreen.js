@@ -1,15 +1,21 @@
 import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
 import { Card, Badge, Pill } from '../../components/UI';
 import ImagePlaceholder from '../../components/ImagePlaceholder';
-import { colors, spacing, radius, font, shadow } from '../../theme/theme';
+import { colors, spacing, radius, font, shadow, gradients } from '../../theme/theme';
 import { DESTINATIONS, DESTINATION_CATEGORIES } from '../../data/mockData';
 import { getLocalizedContent } from '../../i18n/content';
 import destinationsContent from '../../i18n/content/destinations';
+
+// Real Dominica rainforest swimming hole (Emerald Pool), used as a hero
+// backdrop above the category pills — ambience of the destinations being
+// browsed, not a depiction of the hotel itself. Verified on Wikimedia Commons.
+const EXPLORE_HERO_URL = 'https://commons.wikimedia.org/wiki/Special:FilePath/Emerald_Pool%2C_Dominica.jpg';
 
 export default function ExploreScreen({ navigation }) {
   const { t, i18n } = useTranslation();
@@ -37,6 +43,11 @@ export default function ExploreScreen({ navigation }) {
         </View>
       </View>
       <Text style={styles.headerSub}>{t('explore.subtitle')}</Text>
+
+      <View style={styles.heroBand}>
+        <ImagePlaceholder kind="rainforest" uri={EXPLORE_HERO_URL} style={StyleSheet.absoluteFill} borderRadius={radius.lg} />
+        <LinearGradient colors={gradients.scrim} style={[StyleSheet.absoluteFill, { borderRadius: radius.lg }]} />
+      </View>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.pillScroll} contentContainerStyle={{ paddingHorizontal: spacing.lg }}>
         <Pill label={t('explore.all')} selected={category === 'All'} onPress={() => setCategory('All')} />
@@ -86,6 +97,10 @@ const styles = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: colors.border,
   },
   headerSub: { fontSize: 13, color: colors.slate, paddingHorizontal: spacing.lg, marginTop: 4 },
+  heroBand: {
+    height: 130, marginHorizontal: spacing.lg, marginTop: spacing.md, borderRadius: radius.lg,
+    overflow: 'hidden', ...shadow.float,
+  },
   pillScroll: { marginTop: spacing.md, flexGrow: 0 },
   cardTitle: { fontSize: 15.5, fontWeight: '700', color: colors.charcoal, marginTop: 6 },
   cardDesc: { fontSize: 12, color: colors.slate, marginTop: 3, lineHeight: 16 },

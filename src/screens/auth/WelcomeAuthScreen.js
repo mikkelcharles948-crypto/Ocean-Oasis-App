@@ -7,12 +7,21 @@ import { useTranslation } from 'react-i18next';
 
 import Logo from '../../components/Logo';
 import Button from '../../components/Button';
-import { colors, spacing, font, shadow, gradients } from '../../theme/theme';
+import ImagePlaceholder from '../../components/ImagePlaceholder';
+import { colors, spacing, font, shadow } from '../../theme/theme';
+
+// Real Dominica rainforest waterfall (Middleham Falls), used as the
+// first-impression hero backdrop on this auth "front door" screen —
+// ambience of the destination, not a depiction of the hotel itself.
+// Verified on Wikimedia Commons.
+const AUTH_HERO_URL = 'https://commons.wikimedia.org/wiki/Special:FilePath/Middleham_Falls_at_Morne_Trois_Pitons_National_Park.jpg';
 
 export default function WelcomeAuthScreen({ navigation }) {
   const { t } = useTranslation();
   return (
-    <LinearGradient colors={gradients.deep} style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: colors.deepOcean2 }}>
+      <ImagePlaceholder kind="waterfall" uri={AUTH_HERO_URL} style={StyleSheet.absoluteFill} borderRadius={0} />
+      <LinearGradient colors={['rgba(11,59,69,0.5)', 'rgba(9,46,55,0.82)']} style={StyleSheet.absoluteFill} />
       <SafeAreaView style={styles.container}>
         {navigation.canGoBack() && (
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
@@ -53,7 +62,7 @@ export default function WelcomeAuthScreen({ navigation }) {
           />
         </View>
       </SafeAreaView>
-    </LinearGradient>
+    </View>
   );
 }
 

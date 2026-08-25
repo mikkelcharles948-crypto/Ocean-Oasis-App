@@ -7,12 +7,18 @@ import { useTranslation } from 'react-i18next';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Card, Badge, SectionHeader } from '../../components/UI';
 import Button from '../../components/Button';
+import ImagePlaceholder from '../../components/ImagePlaceholder';
 import { colors, spacing, radius, font, shadow, gradients } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 import { ROOM_TYPES } from '../../data/mockData';
 import { getLocalizedContent, getLocalizedString } from '../../i18n/content';
 import roomTypesContent from '../../i18n/content/roomTypes';
 import roomAmenitiesContent from '../../i18n/content/roomAmenities';
+
+// Real Dominica beach (Mero Beach), used as a hero backdrop behind the
+// screen title — ambience of the destination, not a depiction of the
+// hotel's own grounds. Verified on Wikimedia Commons.
+const MYSTAY_HERO_URL = 'https://commons.wikimedia.org/wiki/Special:FilePath/MERO_BEACH%2C_DOMINICA.jpg';
 
 function fmt(dateStr) {
   return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -85,8 +91,17 @@ export default function MyStayScreen({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: spacing.lg, paddingBottom: spacing.xxl }}>
-        <Text style={styles.headerTitle}>{t('mystay.title')}</Text>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: spacing.xxl }}>
+        {/* Hero band — a real Dominica beach photo behind the screen title,
+            with a bottom-weighted scrim (gradients.scrim) so the white
+            title text stays fully legible over the image. */}
+        <View style={styles.hero}>
+          <ImagePlaceholder kind="ocean" uri={MYSTAY_HERO_URL} style={StyleSheet.absoluteFill} borderRadius={0} />
+          <LinearGradient colors={gradients.scrim} style={StyleSheet.absoluteFill} />
+          <Text style={styles.heroTitle}>{t('mystay.title')}</Text>
+        </View>
+
+        <View style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.lg }}>
 
         {reservation.status === 'confirmed' && (
           <TouchableOpacity onPress={() => navigation.navigate('DigitalCheckIn')} activeOpacity={0.9}>
@@ -184,6 +199,7 @@ export default function MyStayScreen({ navigation }) {
           onPress={() => navigation.navigate('ContactReception')}
           style={{ marginTop: spacing.lg }}
         />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -199,7 +215,8 @@ function Detail({ label, value }) {
 }
 
 const styles = StyleSheet.create({
-  headerTitle: { fontSize: 26, fontWeight: '700', color: colors.charcoal, fontFamily: font.display, marginBottom: spacing.md },
+  hero: { height: 150, justifyContent: 'flex-end', padding: spacing.lg, overflow: 'hidden' },
+  heroTitle: { fontSize: 26, fontWeight: '700', color: colors.white, fontFamily: font.display },
   checkinBanner: {
     flexDirection: 'row', alignItems: 'center', gap: spacing.sm,
     backgroundColor: '#FBF1DD', borderWidth: 1, borderColor: colors.goldSoft, ...shadow.soft,

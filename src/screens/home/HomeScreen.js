@@ -22,6 +22,11 @@ function formatDateLong(dateStr) {
   return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 }
 
+// Real Dominica coastline (Soufrière Bay), used as the hero backdrop behind
+// the logo/greeting — ambience of the destination, not a depiction of the
+// hotel property itself. Verified on Wikimedia Commons.
+const HOME_HERO_URL = 'https://commons.wikimedia.org/wiki/Special:FilePath/Soufri%C3%A8re_Bay%2C_Dominica_008.JPG';
+
 export default function HomeScreen({ navigation }) {
   const { t } = useTranslation();
   const { guest, reservation, room, unreadNotificationCount, events, activities, promotions } = useApp();
@@ -36,21 +41,25 @@ export default function HomeScreen({ navigation }) {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: spacing.xxl }}>
-        {/* Decorative header wash — a soft ocean-tinted backdrop behind the
-            logo/greeting, restrained and fading into the ivory background. */}
-        <View style={styles.headerWash} pointerEvents="none">
+        {/* Hero backdrop — a real Dominica coastline photo behind the
+            logo/greeting, standing in for the flat decorative wash used
+            previously. A gradient scrim keeps the bell icon and logo
+            legible over the image and blends it into the ivory page below
+            before the greeting text begins, so that text is never placed
+            over the photo itself. */}
+        <View style={styles.hero} pointerEvents="none">
+          <ImagePlaceholder kind="ocean" uri={HOME_HERO_URL} style={StyleSheet.absoluteFill} borderRadius={0} />
           <LinearGradient
-            colors={['rgba(47,184,176,0.16)', 'rgba(251,248,242,0)']}
+            colors={['rgba(9,46,55,0.5)', 'rgba(9,46,55,0.18)', colors.ivory]}
+            locations={[0, 0.55, 1]}
             style={StyleSheet.absoluteFill}
           />
-          <View style={styles.washBubbleGold} />
-          <View style={styles.washBubbleTurquoise} />
         </View>
 
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.navigate('Notifications')} style={styles.bellWrap}>
-            <Ionicons name="notifications-outline" size={24} color={colors.deepOcean} />
+            <Ionicons name="notifications-outline" size={22} color={colors.deepOcean} />
             {unreadNotificationCount > 0 && (
               <View style={styles.bellDot}>
                 <Text style={styles.bellDotText}>{unreadNotificationCount}</Text>
@@ -59,7 +68,7 @@ export default function HomeScreen({ navigation }) {
           </TouchableOpacity>
         </View>
         <View style={styles.logoWrap}>
-          <Logo size="lg" />
+          <Logo size="lg" light />
         </View>
 
         <View style={styles.greetingBlock}>
@@ -175,23 +184,17 @@ export default function HomeScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  headerWash: {
-    position: 'absolute', top: 0, left: 0, right: 0, height: 250, overflow: 'hidden',
-  },
-  washBubbleGold: {
-    position: 'absolute', top: -60, right: -50, width: 180, height: 180, borderRadius: 90,
-    backgroundColor: 'rgba(198,162,93,0.14)',
-  },
-  washBubbleTurquoise: {
-    position: 'absolute', top: 60, left: -70, width: 200, height: 200, borderRadius: 100,
-    backgroundColor: 'rgba(47,184,176,0.10)',
+  hero: {
+    position: 'absolute', top: 0, left: 0, right: 0, height: 230, overflow: 'hidden',
   },
   header: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end',
     paddingHorizontal: spacing.lg, paddingTop: spacing.sm,
   },
-  logoWrap: { alignItems: 'center', marginTop: -8, marginBottom: 4 },
-  bellWrap: { padding: 4 },
+  logoWrap: { alignItems: 'center', marginTop: 4, marginBottom: 4 },
+  bellWrap: {
+    padding: 6, backgroundColor: 'rgba(251,248,242,0.9)', borderRadius: radius.pill, ...shadow.soft,
+  },
   bellDot: {
     position: 'absolute', top: 0, right: 0, backgroundColor: colors.error,
     borderRadius: 8, minWidth: 16, height: 16, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 3,

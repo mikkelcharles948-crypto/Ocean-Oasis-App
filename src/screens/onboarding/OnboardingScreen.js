@@ -7,12 +7,18 @@ import { useTranslation } from 'react-i18next';
 
 import Logo from '../../components/Logo';
 import Button from '../../components/Button';
+import ImagePlaceholder from '../../components/ImagePlaceholder';
 import { Pill } from '../../components/UI';
 import { colors, spacing, font } from '../../theme/theme';
 import { INTERESTS } from '../../data/mockData';
 import { useApp } from '../../context/AppContext';
 
 const { width } = Dimensions.get('window');
+
+// Real Dominica coastline (Scotts Head), used as the first-impression hero
+// backdrop on the welcome slide only — ambience of the destination, not a
+// depiction of the hotel itself. Verified on Wikimedia Commons.
+const WELCOME_HERO_URL = 'https://commons.wikimedia.org/wiki/Special:FilePath/Scotts_Head%2C_Dominica_014.jpg';
 
 const SLIDES = [
   { key: 's1', kind: 'welcome' },
@@ -44,13 +50,18 @@ export default function OnboardingScreen() {
   const renderSlide = ({ item }) => {
     if (item.kind === 'welcome') {
       return (
-        <LinearGradient colors={[colors.deepOcean, colors.turquoiseDark]} style={styles.slide}>
+        <View style={styles.slide}>
+          <ImagePlaceholder kind="ocean" uri={WELCOME_HERO_URL} style={StyleSheet.absoluteFill} borderRadius={0} />
+          <LinearGradient
+            colors={['rgba(11,59,69,0.55)', 'rgba(9,46,55,0.8)']}
+            style={StyleSheet.absoluteFill}
+          />
           <SafeAreaView style={styles.centerFill}>
             <Logo size="lg" light />
             <Text style={styles.welcomeTitle}>{t('onboarding.welcomeTitle')}</Text>
             <Text style={styles.welcomeSubtitle}>{t('onboarding.welcomeSubtitle')}</Text>
           </SafeAreaView>
-        </LinearGradient>
+        </View>
       );
     }
     if (item.kind === 'discover') {
@@ -152,7 +163,7 @@ export default function OnboardingScreen() {
 }
 
 const styles = StyleSheet.create({
-  slide: { width, flex: 1 },
+  slide: { width, flex: 1, overflow: 'hidden' },
   centerFill: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: spacing.xl },
   interestsFill: { flex: 1, alignItems: 'center', paddingTop: 90, paddingHorizontal: spacing.xl },
   welcomeTitle: {
