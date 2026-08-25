@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
-import { ScreenHeader, ErrorState, Field } from '../../components/UI';
-import ImagePlaceholder from '../../components/ImagePlaceholder';
+import { ErrorState, Field } from '../../components/UI';
+import FloatingHeader from '../../components/FloatingHeader';
 import Button from '../../components/Button';
-import { colors, spacing, radius, font, shadow } from '../../theme/theme';
+import { colors, spacing, radius, typography } from '../../theme/theme';
 import { DINING_VENUES } from '../../data/mockData';
 import { getLocalizedContent } from '../../i18n/content';
 import diningVenuesContent from '../../i18n/content/diningVenues';
@@ -47,44 +48,53 @@ export default function DiningVenueScreen({ route, navigation }) {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-      <ScreenHeader title={venue.name} onBack={() => navigation.goBack()} />
-      <ScrollView contentContainerStyle={{ padding: spacing.lg }}>
-        <View style={styles.heroWrap}>
-          <ImagePlaceholder kind={venue.image} uri={venue.imageUrl} style={{ height: 180 }} iconSize={40} />
-        </View>
-        <Text style={styles.type}>{t(`dining.type.${TYPE_KEY[venue.type] || 'roomService'}`)}</Text>
-        <Text style={styles.name}>{venue.name}</Text>
-        <Text style={styles.desc}>{venue.description}</Text>
-
-        <View style={styles.infoBox}>
-          <InfoRow icon="time-outline" label={t('dining.hours')} value={venue.hours} />
-          <InfoRow icon="shirt-outline" label={t('dining.dressCode')} value={venue.dressCode} />
-          <InfoRow icon="location-outline" label={t('dining.location')} value={venue.location} />
-        </View>
-
-        <Button label={t('dining.viewMenu')} variant="outline" onPress={() => navigation.navigate('Menu', { venueId: venue.id })} style={{ marginTop: spacing.lg }} />
-
-        {!submitted ? (
-          !showForm ? (
-            <Button
-              label={venue.reservationRequired ? t('dining.reserveTable') : t('dining.requestRoomService')}
-              onPress={() => setShowForm(true)}
-              style={{ marginTop: spacing.sm }}
-            />
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['bottom']}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.hero}>
+          {venue.imageUrl ? (
+            <Image source={{ uri: venue.imageUrl }} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} />
           ) : (
-            <View style={styles.formBox}>
-              <Field label={t('dining.partySize')} value={party} onChangeText={setParty} keyboardType="number-pad" />
-              <Field label={t('dining.preferredTime')} value={time} onChangeText={setTime} />
-              <Button label={t('dining.submit')} onPress={submit} loading={loading} />
+            <View style={[StyleSheet.absoluteFill, styles.heroFallback]}>
+              <Ionicons name="restaurant-outline" size={48} color={colors.turquoiseDark} />
             </View>
-          )
-        ) : (
-          <View style={styles.confirmBox}>
-            <Ionicons name="checkmark-circle" size={22} color={colors.success} />
-            <Text style={styles.confirmText}>{t('dining.confirmText', { venue: venue.name })}</Text>
+          )}
+          <FloatingHeader tone="light" onBack={() => navigation.goBack()} />
+        </View>
+
+        <View style={styles.content}>
+          <Text style={[typography.label, styles.type]}>{t(`dining.type.${TYPE_KEY[venue.type] || 'roomService'}`)}</Text>
+          <Text style={[typography.display, styles.name]}>{venue.name}</Text>
+          <Text style={styles.desc}>{venue.description}</Text>
+
+          <View style={styles.infoBox}>
+            <InfoRow icon="time-outline" label={t('dining.hours')} value={venue.hours} />
+            <InfoRow icon="shirt-outline" label={t('dining.dressCode')} value={venue.dressCode} />
+            <InfoRow icon="location-outline" label={t('dining.location')} value={venue.location} />
           </View>
-        )}
+
+          <Button label={t('dining.viewMenu')} variant="outline" onPress={() => navigation.navigate('Menu', { venueId: venue.id })} style={{ marginTop: spacing.lg }} />
+
+          {!submitted ? (
+            !showForm ? (
+              <Button
+                label={venue.reservationRequired ? t('dining.reserveTable') : t('dining.requestRoomService')}
+                onPress={() => setShowForm(true)}
+                style={{ marginTop: spacing.sm }}
+              />
+            ) : (
+              <View style={styles.formBox}>
+                <Field label={t('dining.partySize')} value={party} onChangeText={setParty} keyboardType="number-pad" />
+                <Field label={t('dining.preferredTime')} value={time} onChangeText={setTime} />
+                <Button label={t('dining.submit')} onPress={submit} loading={loading} />
+              </View>
+            )
+          ) : (
+            <View style={styles.confirmBox}>
+              <Ionicons name="checkmark-circle" size={22} color={colors.success} />
+              <Text style={styles.confirmText}>{t('dining.confirmText', { venue: venue.name })}</Text>
+            </View>
+          )}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -101,9 +111,11 @@ function InfoRow({ icon, label, value }) {
 }
 
 const styles = StyleSheet.create({
-  heroWrap: { borderRadius: radius.lg, ...shadow.float },
-  type: { fontSize: 12, fontWeight: '700', color: colors.turquoiseDark, marginTop: spacing.md, letterSpacing: 0.5 },
-  name: { fontSize: 24, fontWeight: '700', color: colors.charcoal, fontFamily: font.display, marginTop: 4 },
+  hero: { height: 260, overflow: 'hidden' },
+  heroFallback: { alignItems: 'center', justifyContent: 'center', backgroundColor: colors.sandLight },
+  content: { padding: spacing.lg },
+  type: { color: colors.gold, marginBottom: 4 },
+  name: { color: colors.charcoal },
   desc: { fontSize: 14, color: colors.slate, marginTop: 8, lineHeight: 21 },
   infoBox: { backgroundColor: colors.white, borderRadius: radius.lg, padding: spacing.md, marginTop: spacing.lg, borderWidth: 1, borderColor: colors.border, gap: 10 },
   infoRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
