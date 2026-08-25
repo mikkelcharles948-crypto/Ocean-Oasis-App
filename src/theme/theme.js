@@ -43,6 +43,23 @@ export const font = {
   body: Platform.select({ ios: 'System', android: 'sans-serif', default: 'System' }),
 };
 
+// A named type scale, so new screens reach for `typography.heading` instead
+// of picking an arbitrary fontSize/lineHeight pair by eye. Existing screens
+// are untouched — this is additive, for new editorial-pass work to build
+// on — but any of these objects can be spread directly into a Text style:
+//   <Text style={[typography.heading, { color: colors.ivory }]}>
+export const typography = {
+  hero: { fontFamily: font.display, fontSize: 42, lineHeight: 46, fontWeight: '600', letterSpacing: 0.2 },
+  display: { fontFamily: font.display, fontSize: 30, lineHeight: 36, fontWeight: '600', letterSpacing: 0.1 },
+  heading: { fontFamily: font.display, fontSize: 22, lineHeight: 27, fontWeight: '600' },
+  subheading: { fontFamily: font.body, fontSize: 17, lineHeight: 23, fontWeight: '600' },
+  body: { fontFamily: font.body, fontSize: 15, lineHeight: 22, fontWeight: '400' },
+  bodySmall: { fontFamily: font.body, fontSize: 13, lineHeight: 19, fontWeight: '400' },
+  caption: { fontFamily: font.body, fontSize: 12, lineHeight: 16, fontWeight: '500' },
+  // Small uppercase eyebrow/label text — tracked out for an editorial feel.
+  label: { fontFamily: font.body, fontSize: 11, lineHeight: 14, fontWeight: '700', letterSpacing: 1.6, textTransform: 'uppercase' },
+};
+
 export const shadow = {
   soft: {
     shadowColor: '#0B3B45',
