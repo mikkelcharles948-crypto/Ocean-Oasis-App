@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import { mapServiceRequest, mapActivity, mapEvent, mapPromotion, mapBooking, mapNotification } from './supabaseData';
+import { mapServiceRequest, mapActivity, mapEvent, mapPromotion, mapBooking, mapNotification, mapReservation } from './supabaseData';
 
 // notifications.id has no DB-generated default (unlike the other tables), so
 // staff/guest-originated inserts need a client-side id.
@@ -104,6 +104,43 @@ export async function loadStaffData() {
 export async function writeAuditEntry(actorId, actorName, actorRole, action, metadata = {}) {
   const { error } = await supabase.from('audit_log').insert({ actor_id: actorId, actor_name: actorName, actor_role: actorRole, action, metadata });
   if (error) throw error;
+}
+
+export async function searchAvailableRoomsStaff(checkIn, checkOut, roomType, guests) {
+  const { data, error } = await supabase.rpc('search_available_rooms', {
+    p_check_in: checkIn,
+    p_check_out: checkOut,
+    p_room_type: roomType || null,
+    p_guests: guests || 1,
+  });
+  if (error) throw error;
+  return data || [];
+}
+
+export async function createReservationForGuest(guestId, { roomId, checkIn, checkOut, adults, children, specialRequests, arrivalTime }) {
+  const { data, error } = await supabase.rpc('create_reservation', {
+    p_room_id: roomId,
+    p_check_in: checkIn,
+    p_check_out: checkOut,
+    p_adults: adults,
+    p_children: children || 0,
+    p_special_requests: specialRequests || null,
+    p_arrival_time: arrivalTime || null,
+    p_guest_id: guestId,
+  });
+  if (error) throw error;
+  return mapReservation(data);
+}
+
+export async function createGuestProfile({ firstName, lastName, email, phone }) {
+  const { data, error } = await supabase.rpc('create_guest_profile', {
+    p_first_name: firstName,
+    p_last_name: lastName,
+    p_email: email || null,
+    p_phone: phone || null,
+  });
+  if (error) throw error;
+  return data;
 }
 
 export async function assignServiceRequest(requestId, staffId, currentStatus) {

@@ -120,6 +120,31 @@ export async function bookActivity(activityId, guests) {
   return mapBooking(data);
 }
 
+export async function searchAvailableRooms(checkIn, checkOut, roomType, guests) {
+  const { data, error } = await supabase.rpc('search_available_rooms', {
+    p_check_in: checkIn,
+    p_check_out: checkOut,
+    p_room_type: roomType || null,
+    p_guests: guests || 1,
+  });
+  if (error) throw error;
+  return data || [];
+}
+
+export async function createReservation({ roomId, checkIn, checkOut, adults, children, specialRequests, arrivalTime }) {
+  const { data, error } = await supabase.rpc('create_reservation', {
+    p_room_id: roomId,
+    p_check_in: checkIn,
+    p_check_out: checkOut,
+    p_adults: adults,
+    p_children: children || 0,
+    p_special_requests: specialRequests || null,
+    p_arrival_time: arrivalTime || null,
+  });
+  if (error) throw error;
+  return mapReservation(data);
+}
+
 export async function updateServiceRequest(requestId, changes) {
   const { data, error } = await supabase.from('service_requests').update(changes).eq('id', requestId).select().single();
   if (error) throw error;

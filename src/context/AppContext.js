@@ -19,6 +19,8 @@ import {
   completeGuestCheckIn as completeRemoteGuestCheckIn,
   setHousekeepingPreference as setRemoteHousekeepingPreference,
   registerPushToken as registerRemotePushToken,
+  searchAvailableRooms as searchRemoteAvailableRooms,
+  createReservation as createRemoteReservation,
 } from '../services/supabaseData';
 import {
   loadStaffData, loadStaffDirectory, writeAuditEntry,
@@ -39,6 +41,9 @@ import {
   markNotificationRead as markRemoteNotificationRead,
   markAllStaffNotificationsRead as markAllRemoteStaffNotificationsRead,
   sendEmergencyBroadcast as sendRemoteEmergencyBroadcast,
+  searchAvailableRoomsStaff as searchRemoteAvailableRoomsStaff,
+  createReservationForGuest as createRemoteReservationForGuest,
+  createGuestProfile as createRemoteGuestProfile,
 } from '../services/supabaseStaffData';
 
 const BIOMETRIC_PREF_KEY = 'oo_biometric_enabled';
@@ -861,6 +866,55 @@ export function AppProvider({ children }) {
     }
   }, []);
 
+  // Room-booking engine (guest self-service).
+  const searchAvailableRooms = useCallback(async (checkIn, checkOut, roomType, guests) => {
+    try {
+      const rooms = await searchRemoteAvailableRooms(checkIn, checkOut, roomType, guests);
+      return { ok: true, rooms };
+    } catch (error) {
+      return { ok: false, error: error?.message || 'Could not search room availability. Please try again.' };
+    }
+  }, []);
+
+  const createReservation = useCallback(async (payload) => {
+    try {
+      const reservation = await createRemoteReservation(payload);
+      setReservation((r) => (reservation.checkIn <= (r?.checkIn || reservation.checkIn) ? r : reservation));
+      return { ok: true, reservation };
+    } catch (error) {
+      return { ok: false, error: error?.message || 'This room could not be booked. Please try again.' };
+    }
+  }, []);
+
+  // Room-booking engine (staff creating a booking on a guest's behalf).
+  const searchAvailableRoomsStaff = useCallback(async (checkIn, checkOut, roomType, guests) => {
+    try {
+      const rooms = await searchRemoteAvailableRoomsStaff(checkIn, checkOut, roomType, guests);
+      return { ok: true, rooms };
+    } catch (error) {
+      return { ok: false, error: error?.message || 'Could not search room availability. Please try again.' };
+    }
+  }, []);
+
+  const createReservationForGuest = useCallback(async (guestId, payload) => {
+    try {
+      const reservation = await createRemoteReservationForGuest(guestId, payload);
+      return { ok: true, reservation };
+    } catch (error) {
+      return { ok: false, error: error?.message || 'This room could not be booked. Please try again.' };
+    }
+  }, []);
+
+  const createGuestProfile = useCallback(async (payload) => {
+    try {
+      const guest = await createRemoteGuestProfile(payload);
+      setAllGuestsForStaff((prev) => [{ id: guest.id, firstName: guest.first_name, lastName: guest.last_name, roomNumber: null, reservationNumber: null, checkIn: null, checkOut: null, housekeepingPreference: 'DAILY_CLEANING' }, ...prev]);
+      return { ok: true, guest };
+    } catch (error) {
+      return { ok: false, error: error?.message || 'This guest profile could not be created. Please try again.' };
+    }
+  }, []);
+
   const unreadNotificationCount = useMemo(() => notifications.filter((n) => !n.read).length, [notifications]);
   const unreadStaffNotificationCount = useMemo(() => staffNotifications.filter((n) => !n.read).length, [staffNotifications]);
 
@@ -893,6 +947,8 @@ export function AppProvider({ children }) {
       sendEmergencyBroadcast,
       biometricSupported, biometricEnabled, biometricLockActive,
       enableBiometricLogin, disableBiometricLogin, unlockWithBiometrics, unlockWithPasswordFallback,
+      searchAvailableRooms, createReservation,
+      searchAvailableRoomsStaff, createReservationForGuest, createGuestProfile,
     }),
     [
       hasOnboarded, completeOnboarding, experience, chooseExperience, exitToExperiencePicker,
@@ -908,6 +964,7 @@ export function AppProvider({ children }) {
       staffDirectory, allGuestsForStaff, refreshStaffData, propertySettings, sendEmergencyBroadcast,
       biometricSupported, biometricEnabled, biometricLockActive,
       enableBiometricLogin, disableBiometricLogin, unlockWithBiometrics, unlockWithPasswordFallback,
+      searchAvailableRooms, createReservation, searchAvailableRoomsStaff, createReservationForGuest, createGuestProfile,
     ]
   );
 
