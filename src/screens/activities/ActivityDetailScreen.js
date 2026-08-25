@@ -1,20 +1,27 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
-import ImagePlaceholder from '../../components/ImagePlaceholder';
+import AnimatedPressable from '../../components/AnimatedPressable';
+import FloatingHeader from '../../components/FloatingHeader';
 import { Badge, ErrorState } from '../../components/UI';
 import Button from '../../components/Button';
-import GlassSurface from '../../components/GlassSurface';
-import { colors, spacing, radius, font, shadow } from '../../theme/theme';
+import { colors, spacing, radius, typography, shadow, gradients } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 import { getLocalizedContent } from '../../i18n/content';
 import activitiesContent from '../../i18n/content/activities';
 import { formatActivityPrice } from '../../utils/formatActivityPrice';
 
 const AVAILABILITY_KEY = { Available: 'available', 'Limited spots': 'limitedSpots' };
+// Hero is tall enough to feel cinematic (per the brief: "entering the
+// image"); the FloatingHeader flips from light-over-photo to dark-over-ivory
+// once the scroll position clears most of it.
+const HERO_HEIGHT = 440;
+const TOP_SCRIM = [gradients.scrim[1], gradients.scrim[0]];
 
 export default function ActivityDetailScreen({ route, navigation }) {
   const { t, i18n } = useTranslation();
@@ -25,6 +32,8 @@ export default function ActivityDetailScreen({ route, navigation }) {
     ? getLocalizedContent(activitiesContent, rawActivity.id, i18n.language, rawActivity)
     : null;
 
+  const [scrollY, setScrollY] = useState(0);
+
   if (!activity) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
@@ -34,38 +43,46 @@ export default function ActivityDetailScreen({ route, navigation }) {
   }
 
   const isSaved = savedActivityIds.includes(activity.id);
+  const isDark = scrollY > HERO_HEIGHT - 90;
+  const headerTone = isDark ? 'dark' : 'light';
+  const heartColor = isSaved ? colors.gold : (isDark ? colors.deepOcean : colors.white);
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.ivory }}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View>
-          <ImagePlaceholder kind={activity.image} uri={activity.imageUrl} style={{ height: 250, borderRadius: 0 }} iconSize={52} />
-          <SafeAreaView style={styles.overlayRow} edges={['top']}>
-            <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.8}>
-              <GlassSurface style={styles.circleBtn} tint="dark" intensity={50} borderRadius={19}>
-                <Ionicons name="chevron-back" size={22} color={colors.white} />
-              </GlassSurface>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => toggleSavedActivity(activity.id)} activeOpacity={0.8}>
-              <GlassSurface style={styles.circleBtn} tint="dark" intensity={50} borderRadius={19}>
-                <Ionicons name={isSaved ? 'heart' : 'heart-outline'} size={20} color={isSaved ? colors.gold : colors.white} />
-              </GlassSurface>
-            </TouchableOpacity>
-          </SafeAreaView>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        onScroll={(e) => setScrollY(e.nativeEvent.contentOffset.y)}
+        scrollEventThrottle={16}
+      >
+        <View style={styles.hero}>
+          <Image
+            source={{ uri: activity.imageUrl }}
+            style={StyleSheet.absoluteFillObject}
+            contentFit="cover"
+            transition={300}
+          />
+          <LinearGradient colors={TOP_SCRIM} style={styles.heroTopScrim} pointerEvents="none" />
         </View>
 
         <View style={styles.content}>
           <View style={styles.rowBetween}>
-            <Badge label={t(`common.category.${activity.category}`)} tone="info" />
-            <Badge label={t(`common.availability.${AVAILABILITY_KEY[activity.availability] || 'available'}`)} tone={activity.availability === 'Available' ? 'success' : 'warning'} />
+            <Text style={styles.eyebrow}>{t(`common.category.${activity.category}`)}</Text>
+            <Badge
+              label={t(`common.availability.${AVAILABILITY_KEY[activity.availability] || 'available'}`)}
+              tone={activity.availability === 'Available' ? 'success' : 'warning'}
+            />
           </View>
           <Text style={styles.title}>{activity.name}</Text>
           <Text style={styles.description}>{activity.description}</Text>
 
           <View style={styles.statsRow}>
             <Stat icon="calendar-outline" label={t('activities.date')} value={activity.date} />
+            <View style={styles.statDivider} />
             <Stat icon="time-outline" label={t('activities.time')} value={activity.time} />
+            <View style={styles.statDivider} />
             <Stat icon="hourglass-outline" label={t('activities.duration')} value={activity.duration} />
+            <View style={styles.statDivider} />
+            <Stat icon="location-outline" label={t('activities.location')} value={activity.location} />
           </View>
 
           <Section title={t('activities.whatToBring')}>
@@ -87,10 +104,27 @@ export default function ActivityDetailScreen({ route, navigation }) {
         </View>
       </ScrollView>
 
+      <FloatingHeader
+        tone={headerTone}
+        elevated={scrollY > 40}
+        onBack={() => navigation.goBack()}
+        title={isDark ? activity.name : undefined}
+        right={
+          <AnimatedPressable
+            onPress={() => toggleSavedActivity(activity.id)}
+            accessibilityRole="button"
+            accessibilityLabel={t(isSaved ? 'activities.removeFromFavorites' : 'activities.addToFavorites')}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+            <Ionicons name={isSaved ? 'heart' : 'heart-outline'} size={20} color={heartColor} />
+          </AnimatedPressable>
+        }
+      />
+
       <View style={styles.footer}>
-        <View>
+        <View style={{ flexShrink: 1 }}>
           <Text style={styles.footerPrice}>{formatActivityPrice(activity, t)}</Text>
-          <Text style={styles.footerLocation}>{activity.location}</Text>
+          <Text style={styles.footerLocation} numberOfLines={1}>{activity.location}</Text>
         </View>
         <Button
           label={t('activities.reserveActivity')}
@@ -106,8 +140,8 @@ export default function ActivityDetailScreen({ route, navigation }) {
 function Stat({ icon, label, value }) {
   return (
     <View style={styles.stat}>
-      <Ionicons name={icon} size={17} color={colors.deepOcean} />
-      <Text style={styles.statValue}>{value}</Text>
+      <Ionicons name={icon} size={16} color={colors.deepOcean} />
+      <Text style={styles.statValue} numberOfLines={1}>{value}</Text>
       <Text style={styles.statLabel}>{label}</Text>
     </View>
   );
@@ -115,7 +149,7 @@ function Stat({ icon, label, value }) {
 
 function Section({ title, children }) {
   return (
-    <View style={{ marginTop: spacing.lg }}>
+    <View style={styles.section}>
       <Text style={styles.sectionTitle}>{title}</Text>
       {children}
     </View>
@@ -123,36 +157,34 @@ function Section({ title, children }) {
 }
 
 const styles = StyleSheet.create({
-  overlayRow: {
-    position: 'absolute', top: 0, left: 0, right: 0,
-    flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: spacing.sm,
-  },
-  circleBtn: {
-    width: 38, height: 38, alignItems: 'center', justifyContent: 'center', margin: spacing.sm,
-  },
+  hero: { height: HERO_HEIGHT, backgroundColor: colors.deepOcean2, overflow: 'hidden' },
+  heroTopScrim: { position: 'absolute', top: 0, left: 0, right: 0, height: 140 },
   content: {
-    padding: spacing.lg, paddingBottom: 110, marginTop: -radius.xl, backgroundColor: colors.ivory,
+    padding: spacing.lg, paddingBottom: 120, marginTop: -radius.xl, backgroundColor: colors.ivory,
     borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, ...shadow.soft,
   },
-  rowBetween: { flexDirection: 'row', justifyContent: 'space-between' },
-  title: { fontSize: 25, fontWeight: '700', color: colors.charcoal, marginTop: 10, fontFamily: font.display },
-  description: { fontSize: 14, color: colors.slate, marginTop: 8, lineHeight: 21 },
+  rowBetween: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  eyebrow: { ...typography.label, color: colors.turquoiseDark },
+  title: { ...typography.display, color: colors.charcoal, marginTop: spacing.sm },
+  description: { ...typography.body, color: colors.slate, marginTop: spacing.sm },
   statsRow: {
-    flexDirection: 'row', justifyContent: 'space-between', backgroundColor: colors.white,
-    borderRadius: radius.lg, padding: spacing.md, marginTop: spacing.lg, borderWidth: 1, borderColor: colors.border,
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    marginTop: spacing.xl, paddingVertical: spacing.sm,
   },
-  stat: { alignItems: 'center', flex: 1, gap: 4 },
-  statValue: { fontSize: 12.5, fontWeight: '700', color: colors.charcoal },
-  statLabel: { fontSize: 10.5, color: colors.slate },
-  sectionTitle: { fontSize: 15, fontWeight: '700', color: colors.charcoal, marginBottom: spacing.sm },
-  bulletRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 },
-  bulletText: { fontSize: 13.5, color: colors.charcoal },
-  plainText: { fontSize: 13.5, color: colors.slate, lineHeight: 20 },
+  stat: { alignItems: 'center', flex: 1, gap: 5 },
+  statDivider: { width: 1, height: 30, backgroundColor: colors.border },
+  statValue: { ...typography.bodySmall, fontWeight: '700', color: colors.charcoal },
+  statLabel: { ...typography.caption, color: colors.slate },
+  section: { marginTop: spacing.xl },
+  sectionTitle: { ...typography.label, color: colors.slate, marginBottom: spacing.sm },
+  bulletRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 },
+  bulletText: { ...typography.bodySmall, color: colors.charcoal },
+  plainText: { ...typography.bodySmall, color: colors.slate, lineHeight: 21 },
   footer: {
     position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: colors.white,
-    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: spacing.md,
     padding: spacing.lg, borderTopWidth: 1, borderTopColor: colors.border,
   },
-  footerPrice: { fontSize: 16, fontWeight: '700', color: colors.charcoal },
-  footerLocation: { fontSize: 11.5, color: colors.slate, marginTop: 2 },
+  footerPrice: { ...typography.subheading, color: colors.charcoal },
+  footerLocation: { ...typography.caption, color: colors.slate, marginTop: 2 },
 });

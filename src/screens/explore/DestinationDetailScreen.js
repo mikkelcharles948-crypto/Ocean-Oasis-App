@@ -1,18 +1,26 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
-import ImagePlaceholder from '../../components/ImagePlaceholder';
 import Button from '../../components/Button';
-import { Badge, ErrorState } from '../../components/UI';
-import GlassSurface from '../../components/GlassSurface';
-import { colors, spacing, radius, font, shadow } from '../../theme/theme';
+import AnimatedPressable from '../../components/AnimatedPressable';
+import FloatingHeader from '../../components/FloatingHeader';
+import { ErrorState } from '../../components/UI';
+import { colors, spacing, radius, typography, shadow } from '../../theme/theme';
 import { DESTINATIONS } from '../../data/mockData';
 import { getLocalizedContent } from '../../i18n/content';
 import destinationsContent from '../../i18n/content/destinations';
 import { openInGoogleMaps } from '../../utils/openMap';
+
+// Tall enough to read as a cinematic hero rather than a thumbnail; the
+// FloatingHeader stays in "light" tone (icons/text readable over the photo)
+// until the guest has scrolled roughly past it, then switches to "dark"
+// with a frosted backing over the ivory content below.
+const HERO_HEIGHT = 400;
+const HEADER_SWITCH_POINT = HERO_HEIGHT - 120;
 
 export default function DestinationDetailScreen({ route, navigation }) {
   const { t, i18n } = useTranslation();
@@ -21,6 +29,7 @@ export default function DestinationDetailScreen({ route, navigation }) {
   const destination = rawDestination
     ? getLocalizedContent(destinationsContent, rawDestination.id, i18n.language, rawDestination)
     : null;
+  const [scrollY, setScrollY] = useState(0);
 
   if (!destination) {
     return (
@@ -30,24 +39,33 @@ export default function DestinationDetailScreen({ route, navigation }) {
     );
   }
 
+  const scrolledPastHero = scrollY > HEADER_SWITCH_POINT;
+
   return (
     <View style={{ flex: 1, backgroundColor: colors.ivory }}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View>
-          <ImagePlaceholder kind={destination.image} uri={destination.imageUrl} style={{ height: 270, borderRadius: 0 }} iconSize={56} />
-          <SafeAreaView style={styles.backOverlay} edges={['top']}>
-            <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.8}>
-              <GlassSurface style={styles.backBtn} tint="dark" intensity={50} borderRadius={19}>
-                <Ionicons name="chevron-back" size={22} color={colors.white} />
-              </GlassSurface>
-            </TouchableOpacity>
-          </SafeAreaView>
-        </View>
+      <FloatingHeader
+        tone={scrolledPastHero ? 'dark' : 'light'}
+        elevated={scrolledPastHero}
+        title={scrolledPastHero ? destination.title : undefined}
+        onBack={() => navigation.goBack()}
+      />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        onScroll={(e) => setScrollY(e.nativeEvent.contentOffset.y)}
+        scrollEventThrottle={16}
+      >
+        {destination.imageUrl ? (
+          <Image source={{ uri: destination.imageUrl }} style={styles.hero} contentFit="cover" transition={200} />
+        ) : (
+          <View style={[styles.hero, styles.heroFallback]}>
+            <Ionicons name="image-outline" size={56} color={colors.turquoiseDark} />
+          </View>
+        )}
 
         <View style={styles.content}>
-          <Badge label={t(`common.category.${destination.category}`)} tone="info" />
-          <Text style={styles.title}>{destination.title}</Text>
-          <Text style={styles.description}>{destination.description}</Text>
+          <Text style={[typography.label, styles.eyebrow]}>{t(`common.category.${destination.category}`)}</Text>
+          <Text style={[typography.display, styles.title]}>{destination.title}</Text>
+          <Text style={[typography.body, styles.description]}>{destination.description}</Text>
 
           <View style={styles.statsRow}>
             <Stat icon="navigate-outline" label={t('explore.distance')} value={destination.distance} />
@@ -57,24 +75,31 @@ export default function DestinationDetailScreen({ route, navigation }) {
 
           <View style={styles.noticeBox}>
             <Ionicons name="information-circle-outline" size={16} color={colors.turquoiseDark} />
-            <Text style={styles.noticeText}>
-              {t('explore.pricingNotice')}
-            </Text>
+            <Text style={styles.noticeText}>{t('explore.pricingNotice')}</Text>
           </View>
 
-          <Button label={t('explore.askConciergeToArrange')} onPress={() => navigation.navigate('Concierge')} style={{ marginTop: spacing.lg }} />
-          <Button
-            label={t('explore.viewOnMap')}
-            variant="outline"
-            onPress={() => navigation.navigate('MapScreen')}
-            style={{ marginTop: spacing.sm }}
-          />
-          <Button
-            label={t('explore.viewOnGoogleMaps')}
-            variant="outline"
-            onPress={() => openInGoogleMaps(`${destination.title}, Dominica`)}
-            style={{ marginTop: spacing.sm }}
-          />
+          <Button label={t('explore.askConciergeToArrange')} onPress={() => navigation.navigate('Concierge')} style={{ marginTop: spacing.xl }} />
+
+          <View style={styles.secondaryRow}>
+            <AnimatedPressable
+              onPress={() => navigation.navigate('MapScreen')}
+              style={styles.secondaryBtn}
+              accessibilityRole="button"
+              accessibilityLabel={t('explore.viewOnMap')}
+            >
+              <Ionicons name="map-outline" size={16} color={colors.deepOcean} />
+              <Text style={styles.secondaryBtnText} numberOfLines={1}>{t('explore.viewOnMap')}</Text>
+            </AnimatedPressable>
+            <AnimatedPressable
+              onPress={() => openInGoogleMaps(`${destination.title}, Dominica`)}
+              style={styles.secondaryBtn}
+              accessibilityRole="button"
+              accessibilityLabel={t('explore.viewOnGoogleMaps')}
+            >
+              <Ionicons name="navigate-outline" size={16} color={colors.deepOcean} />
+              <Text style={styles.secondaryBtnText} numberOfLines={1}>{t('explore.viewOnGoogleMaps')}</Text>
+            </AnimatedPressable>
+          </View>
         </View>
       </ScrollView>
     </View>
@@ -92,16 +117,15 @@ function Stat({ icon, label, value }) {
 }
 
 const styles = StyleSheet.create({
-  backOverlay: { position: 'absolute', top: 0, left: 0 },
-  backBtn: {
-    width: 38, height: 38, alignItems: 'center', justifyContent: 'center', margin: spacing.sm,
-  },
+  hero: { width: '100%', height: HERO_HEIGHT, backgroundColor: colors.sandLight },
+  heroFallback: { alignItems: 'center', justifyContent: 'center' },
   content: {
     padding: spacing.lg, marginTop: -radius.xl, backgroundColor: colors.ivory,
     borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, ...shadow.soft,
   },
-  title: { fontSize: 26, fontWeight: '700', color: colors.charcoal, marginTop: 8, fontFamily: font.display },
-  description: { fontSize: 14.5, color: colors.slate, marginTop: 8, lineHeight: 21 },
+  eyebrow: { color: colors.gold, marginTop: spacing.sm },
+  title: { color: colors.charcoal, marginTop: 6 },
+  description: { color: colors.slate, marginTop: spacing.sm },
   statsRow: {
     flexDirection: 'row', justifyContent: 'space-between', backgroundColor: colors.white,
     borderRadius: radius.lg, padding: spacing.md, marginTop: spacing.lg, borderWidth: 1, borderColor: colors.border,
@@ -114,4 +138,10 @@ const styles = StyleSheet.create({
     borderRadius: radius.md, marginTop: spacing.md, alignItems: 'flex-start',
   },
   noticeText: { flex: 1, fontSize: 12, color: colors.turquoiseDark, lineHeight: 17 },
+  secondaryRow: { flexDirection: 'row', gap: spacing.sm, marginTop: spacing.sm },
+  secondaryBtn: {
+    flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6,
+    paddingVertical: 12, borderRadius: radius.pill, borderWidth: 1.5, borderColor: colors.deepOcean,
+  },
+  secondaryBtnText: { color: colors.deepOcean, fontWeight: '700', fontSize: 13, flexShrink: 1 },
 });

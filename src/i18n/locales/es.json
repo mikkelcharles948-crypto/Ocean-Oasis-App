@@ -73,7 +73,11 @@
     "popularWithGuests": "Popular entre los huéspedes",
     "explore": "Explorar",
     "currentPromotion": "Promoción actual",
-    "viewOffer": "Ver oferta"
+    "viewOffer": "Ver oferta",
+    "eyebrowExperiences": "Experiencias",
+    "eyebrowToday": "Hoy en el resort",
+    "eyebrowOffer": "Oferta",
+    "eyebrowStay": "Su estancia"
   },
   "explore": {
     "title": "Explorar Dominica",
@@ -121,7 +125,12 @@
     "bookingError": "Esta actividad no se pudo reservar. Inténtalo de nuevo.",
     "perPersonPrice": "${{price}} por persona",
     "complimentaryPrice": "Cortesía",
-    "contactForPricing": "Consulta el precio con la conserjería"
+    "contactForPricing": "Consulta el precio con la conserjería",
+    "location": "Ubicación",
+    "addToFavorites": "Añadir a favoritos",
+    "removeFromFavorites": "Quitar de favoritos",
+    "decreaseGuests": "Disminuir número de huéspedes",
+    "increaseGuests": "Aumentar número de huéspedes"
   },
   "events": {
     "title": "Eventos",
@@ -233,6 +242,7 @@
     "thankYouSub": "Tus comentarios nos ayudan a mejorar tu estancia.",
     "followUp": "Nuestro equipo de relaciones con huéspedes ha sido notificado y podría contactarte próximamente.",
     "done": "Listo",
+    "starRatingLabel": "{{label}}: {{value}} de 5 estrellas",
     "categories": {
       "room": "Habitación",
       "cleanliness": "Limpieza",
@@ -240,6 +250,11 @@
       "food": "Comida",
       "activities": "Actividades",
       "overallExperience": "Experiencia general"
+    },
+    "response": {
+      "low": "Lamentamos escuchar eso. Gracias por contárnoslo — nos gustaría solucionarlo.",
+      "mid": "Gracias por compartirlo. Nos encantaría saber cómo podemos mejorar.",
+      "high": "¡Nos alegra mucho saberlo!"
     }
   },
   "notifications": {
@@ -289,6 +304,8 @@
     "completeCheckIn": "Completar registro digital",
     "completeCheckInSub": "Evita la recepción — toma unos 3 minutos.",
     "checkedIn": "Registrado",
+    "statusReserved": "Reservado",
+    "statusCheckedOut": "Salida realizada",
     "room": "Habitación",
     "reservationNo": "N.º de reserva",
     "checkIn": "Entrada",

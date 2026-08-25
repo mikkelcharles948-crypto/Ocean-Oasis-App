@@ -1,19 +1,23 @@
 import React, { useState, useMemo } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList } from 'react-native';
+import { View, StyleSheet, ScrollView, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
-import { Card, Badge, Pill } from '../../components/UI';
+import { Pill } from '../../components/UI';
 import ImagePlaceholder from '../../components/ImagePlaceholder';
-import { colors, spacing, radius, font, shadow, gradients } from '../../theme/theme';
+import AnimatedPressable from '../../components/AnimatedPressable';
+import GlassSurface from '../../components/GlassSurface';
+import SectionHeading from '../../components/SectionHeading';
+import ExperienceCard from '../../components/ExperienceCard';
+import { colors, spacing } from '../../theme/theme';
 import { DESTINATIONS, DESTINATION_CATEGORIES } from '../../data/mockData';
 import { getLocalizedContent } from '../../i18n/content';
 import destinationsContent from '../../i18n/content/destinations';
 
 // Real Dominica rainforest swimming hole (Emerald Pool), used as a hero
-// backdrop above the category pills — ambience of the destinations being
+// backdrop behind the page title — ambience of the destinations being
 // browsed, not a depiction of the hotel itself. Verified on Wikimedia Commons.
 const EXPLORE_HERO_URL = 'https://commons.wikimedia.org/wiki/Special:FilePath/Emerald_Pool%2C_Dominica.jpg';
 
@@ -28,25 +32,53 @@ export default function ExploreScreen({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>{t('explore.title')}</Text>
-        <View style={{ flexDirection: 'row', gap: 8 }}>
-          <TouchableOpacity onPress={() => navigation.navigate('TrailMaps')} style={styles.mapBtn}>
-            <Ionicons name="trail-sign-outline" size={20} color={colors.deepOcean} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('LocalGuide')} style={styles.mapBtn}>
-            <Ionicons name="compass-outline" size={20} color={colors.deepOcean} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('MapScreen')} style={styles.mapBtn}>
-            <Ionicons name="map-outline" size={20} color={colors.deepOcean} />
-          </TouchableOpacity>
+      {/* Cinematic hero — the page title and subtitle now live directly over
+          a real Dominica landscape photo instead of as plain text above it,
+          with the utility icons (trail maps / local guide / map) floating
+          as small glass controls in the corner rather than a flat toolbar. */}
+      <View style={styles.hero}>
+        <ImagePlaceholder kind="rainforest" uri={EXPLORE_HERO_URL} style={StyleSheet.absoluteFill} borderRadius={0} />
+        <LinearGradient
+          colors={['rgba(9,46,55,0.1)', 'rgba(9,46,55,0.2)', 'rgba(9,46,55,0.88)']}
+          locations={[0, 0.45, 1]}
+          style={StyleSheet.absoluteFill}
+          pointerEvents="none"
+        />
+        <View style={styles.heroActions}>
+          <AnimatedPressable
+            onPress={() => navigation.navigate('TrailMaps')}
+            accessibilityRole="button"
+            accessibilityLabel={t('trailMaps.title')}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+            <GlassSurface style={styles.heroIconBtn} tint="dark" intensity={45} borderRadius={19}>
+              <Ionicons name="trail-sign-outline" size={19} color={colors.white} />
+            </GlassSurface>
+          </AnimatedPressable>
+          <AnimatedPressable
+            onPress={() => navigation.navigate('LocalGuide')}
+            accessibilityRole="button"
+            accessibilityLabel={t('localGuide.title')}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+            <GlassSurface style={styles.heroIconBtn} tint="dark" intensity={45} borderRadius={19}>
+              <Ionicons name="compass-outline" size={19} color={colors.white} />
+            </GlassSurface>
+          </AnimatedPressable>
+          <AnimatedPressable
+            onPress={() => navigation.navigate('MapScreen')}
+            accessibilityRole="button"
+            accessibilityLabel={t('explore.map')}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+            <GlassSurface style={styles.heroIconBtn} tint="dark" intensity={45} borderRadius={19}>
+              <Ionicons name="map-outline" size={19} color={colors.white} />
+            </GlassSurface>
+          </AnimatedPressable>
         </View>
-      </View>
-      <Text style={styles.headerSub}>{t('explore.subtitle')}</Text>
-
-      <View style={styles.heroBand}>
-        <ImagePlaceholder kind="rainforest" uri={EXPLORE_HERO_URL} style={StyleSheet.absoluteFill} borderRadius={radius.lg} />
-        <LinearGradient colors={gradients.scrim} style={[StyleSheet.absoluteFill, { borderRadius: radius.lg }]} />
+        <View style={styles.heroText}>
+          <SectionHeading title={t('explore.title')} subtitle={t('explore.subtitle')} light />
+        </View>
       </View>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.pillScroll} contentContainerStyle={{ paddingHorizontal: spacing.lg }}>
@@ -59,26 +91,23 @@ export default function ExploreScreen({ navigation }) {
       <FlatList
         data={filtered}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.md, gap: spacing.md }}
-        renderItem={({ item }) => {
+        contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.md, gap: spacing.lg }}
+        renderItem={({ item, index }) => {
           const localized = getLocalizedContent(destinationsContent, item.id, i18n.language, item);
+          // ExperienceCard reads `.location` for its meta line; destinations
+          // don't have one, so the (already-short) travel time stands in —
+          // the display-only object below never reaches AppContext/Supabase.
+          const cardData = {
+            ...localized,
+            category: t(`common.category.${item.category}`),
+            location: localized.travelTime,
+          };
           return (
-          <TouchableOpacity onPress={() => navigation.navigate('DestinationDetail', { destinationId: item.id })} activeOpacity={0.92}>
-            <Card style={{ padding: 0, overflow: 'hidden', flexDirection: 'row', ...shadow.float }}>
-              <ImagePlaceholder kind={item.image} uri={item.imageUrl} style={{ width: 112, height: 132, borderRadius: 0 }} iconSize={28} />
-              <View style={{ flex: 1, padding: spacing.sm }}>
-                <Badge label={t(`common.category.${item.category}`)} tone="info" />
-                <Text style={styles.cardTitle} numberOfLines={2}>{item.title}</Text>
-                <Text style={styles.cardDesc} numberOfLines={2}>{localized.description}</Text>
-                <View style={styles.metaRow}>
-                  <Ionicons name="time-outline" size={12} color={colors.slate} />
-                  <Text style={styles.metaText}>{item.travelTime}</Text>
-                  <Ionicons name="trending-up-outline" size={12} color={colors.slate} style={{ marginLeft: 8 }} />
-                  <Text style={styles.metaText}>{t(`common.difficulty.${item.difficulty}`)}</Text>
-                </View>
-              </View>
-            </Card>
-          </TouchableOpacity>
+            <ExperienceCard
+              activity={cardData}
+              size={index === 0 ? 'large' : 'medium'}
+              onPress={() => navigation.navigate('DestinationDetail', { destinationId: item.id })}
+            />
           );
         }}
       />
@@ -87,23 +116,29 @@ export default function ExploreScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-    paddingHorizontal: spacing.lg, paddingTop: spacing.sm,
+  hero: {
+    height: 260,
+    overflow: 'hidden',
   },
-  headerTitle: { fontSize: 24, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
-  mapBtn: {
-    width: 38, height: 38, borderRadius: 19, backgroundColor: colors.white,
-    alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: colors.border,
+  heroActions: {
+    position: 'absolute',
+    top: spacing.sm,
+    right: spacing.md,
+    flexDirection: 'row',
+    gap: spacing.sm,
+    zIndex: 2,
   },
-  headerSub: { fontSize: 13, color: colors.slate, paddingHorizontal: spacing.lg, marginTop: 4 },
-  heroBand: {
-    height: 130, marginHorizontal: spacing.lg, marginTop: spacing.md, borderRadius: radius.lg,
-    overflow: 'hidden', ...shadow.float,
+  heroIconBtn: {
+    width: 38,
+    height: 38,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  heroText: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: spacing.sm,
   },
   pillScroll: { marginTop: spacing.md, flexGrow: 0 },
-  cardTitle: { fontSize: 15.5, fontWeight: '700', color: colors.charcoal, marginTop: 6 },
-  cardDesc: { fontSize: 12, color: colors.slate, marginTop: 3, lineHeight: 16 },
-  metaRow: { flexDirection: 'row', alignItems: 'center', marginTop: 8 },
-  metaText: { fontSize: 11, color: colors.slate, marginLeft: 3 },
 });

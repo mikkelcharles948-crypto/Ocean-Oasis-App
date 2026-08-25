@@ -73,7 +73,11 @@
     "popularWithGuests": "Popular with guests",
     "explore": "Explore",
     "currentPromotion": "Current Promotion",
-    "viewOffer": "View Offer"
+    "viewOffer": "View Offer",
+    "eyebrowExperiences": "Experiences",
+    "eyebrowToday": "Today at the resort",
+    "eyebrowOffer": "Offer",
+    "eyebrowStay": "Your Stay"
   },
   "explore": {
     "title": "Explore Dominica",
@@ -121,7 +125,12 @@
     "bookingError": "This activity could not be booked. Please try again.",
     "perPersonPrice": "${{price}} per person",
     "complimentaryPrice": "Complimentary",
-    "contactForPricing": "Contact concierge for pricing"
+    "contactForPricing": "Contact concierge for pricing",
+    "location": "Location",
+    "addToFavorites": "Add to favorites",
+    "removeFromFavorites": "Remove from favorites",
+    "decreaseGuests": "Decrease number of guests",
+    "increaseGuests": "Increase number of guests"
   },
   "events": {
     "title": "Events",
@@ -233,6 +242,7 @@
     "thankYouSub": "Your feedback helps us make your stay better.",
     "followUp": "Our guest relations team has been notified and may follow up with you shortly.",
     "done": "Done",
+    "starRatingLabel": "{{label}}: {{value}} out of 5 stars",
     "categories": {
       "room": "Room",
       "cleanliness": "Cleanliness",
@@ -240,6 +250,11 @@
       "food": "Food",
       "activities": "Activities",
       "overallExperience": "Overall Experience"
+    },
+    "response": {
+      "low": "We're sorry to hear that. Thank you for telling us — we'd like to make it right.",
+      "mid": "Thanks for sharing. We'd love to know how we can do better.",
+      "high": "We're so glad to hear that!"
     }
   },
   "notifications": {
@@ -289,6 +304,8 @@
     "completeCheckIn": "Complete Digital Check-In",
     "completeCheckInSub": "Skip the front desk — takes about 3 minutes.",
     "checkedIn": "Checked In",
+    "statusReserved": "Reserved",
+    "statusCheckedOut": "Checked Out",
     "room": "Room",
     "reservationNo": "Reservation No.",
     "checkIn": "Check-in",

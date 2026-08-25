@@ -3,12 +3,15 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-nati
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
+import { Image } from 'expo-image';
 
 import { LinearGradient } from 'expo-linear-gradient';
-import { Card, Badge, SectionHeader } from '../../components/UI';
+import { Card } from '../../components/UI';
 import Button from '../../components/Button';
-import ImagePlaceholder from '../../components/ImagePlaceholder';
-import { colors, spacing, radius, font, shadow, gradients } from '../../theme/theme';
+import AnimatedPressable from '../../components/AnimatedPressable';
+import StatusPill from '../../components/StatusPill';
+import SectionHeading from '../../components/SectionHeading';
+import { colors, spacing, radius, font, shadow, gradients, typography } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 import { ROOM_TYPES } from '../../data/mockData';
 import { getLocalizedContent, getLocalizedString } from '../../i18n/content';
@@ -16,9 +19,15 @@ import roomTypesContent from '../../i18n/content/roomTypes';
 import roomAmenitiesContent from '../../i18n/content/roomAmenities';
 
 // Real Dominica beach (Mero Beach), used as a hero backdrop behind the
-// screen title — ambience of the destination, not a depiction of the
-// hotel's own grounds. Verified on Wikimedia Commons.
+// guest's stay identity — ambience of the destination, not a depiction of
+// the hotel's own grounds (no per-room photo exists in the data model).
+// Verified on Wikimedia Commons.
 const MYSTAY_HERO_URL = 'https://commons.wikimedia.org/wiki/Special:FilePath/MERO_BEACH%2C_DOMINICA.jpg';
+
+// The reservation lifecycle as it actually exists on `reservation.status`
+// (see AppContext / mockData: confirmed | checked_in | checked_out) — the
+// stages driving the StatusPill below.
+const STAY_STATUS_STEPS = ['confirmed', 'checked_in', 'checked_out'];
 
 function fmt(dateStr) {
   return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -79,9 +88,16 @@ function UpgradeCard({ tier: rawTier, featured, onRequested }) {
 
 export default function MyStayScreen({ navigation }) {
   const { t, i18n } = useTranslation();
-  const { guest, reservation, room, checkedIn } = useApp();
+  const { guest, reservation, room } = useApp();
   const currentTierIndex = ROOM_TYPES.findIndex((rt) => rt.name === room.type);
   const upgradeOptions = currentTierIndex >= 0 ? ROOM_TYPES.slice(currentTierIndex + 1) : [];
+
+  const stayStatusIndex = Math.max(0, STAY_STATUS_STEPS.indexOf(reservation.status));
+  const stayStatusLabels = {
+    confirmed: t('mystay.statusReserved'),
+    checked_in: t('mystay.checkedIn'),
+    checked_out: t('mystay.statusCheckedOut'),
+  };
 
   const timeline = [
     { key: 'arrival', label: t('mystay.timeline.arrival'), done: true, icon: 'airplane' },
@@ -92,126 +108,141 @@ export default function MyStayScreen({ navigation }) {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: spacing.xxl }}>
-        {/* Hero band — a real Dominica beach photo behind the screen title,
-            with a bottom-weighted scrim (gradients.scrim) so the white
-            title text stays fully legible over the image. */}
+        {/* Hero — the guest's stay identity (name, room, dates) laid over a
+            real Dominica beach photo with a bottom scrim for legibility.
+            This is the primary, most prominent element on the screen; every
+            section below is a calmer secondary layer. */}
         <View style={styles.hero}>
-          <ImagePlaceholder kind="ocean" uri={MYSTAY_HERO_URL} style={StyleSheet.absoluteFill} borderRadius={0} />
-          <LinearGradient colors={gradients.scrim} style={StyleSheet.absoluteFill} />
-          <Text style={styles.heroTitle}>{t('mystay.title')}</Text>
+          <Image source={{ uri: MYSTAY_HERO_URL }} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} />
+          <LinearGradient colors={gradients.scrim} style={StyleSheet.absoluteFill} pointerEvents="none" />
+          <Text style={[typography.label, styles.heroEyebrow]}>{t('mystay.title')}</Text>
+          <Text style={[typography.display, styles.heroName]} numberOfLines={1}>{guest.firstName} {guest.lastName}</Text>
+          <View style={styles.heroMetaRow}>
+            <Ionicons name="bed-outline" size={14} color="rgba(255,255,255,0.88)" />
+            <Text style={styles.heroMetaText} numberOfLines={1}>{t('mystay.room')} {room.number} · {room.type}</Text>
+          </View>
+          <View style={styles.heroMetaRow}>
+            <Ionicons name="calendar-outline" size={14} color="rgba(255,255,255,0.88)" />
+            <Text style={styles.heroMetaText}>{fmt(reservation.checkIn)} – {fmt(reservation.checkOut)}</Text>
+          </View>
         </View>
-
-        <View style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.lg }}>
 
         {reservation.status === 'confirmed' && (
-          <TouchableOpacity onPress={() => navigation.navigate('DigitalCheckIn')} activeOpacity={0.9}>
-            <Card style={styles.checkinBanner}>
-              <View style={styles.checkinIconWrap}>
-                <Ionicons name="finger-print" size={20} color={colors.deepOcean} />
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.checkinTitle}>{t('mystay.completeCheckIn')}</Text>
-                <Text style={styles.checkinSub}>{t('mystay.completeCheckInSub')}</Text>
-              </View>
-              <Ionicons name="chevron-forward" size={20} color={colors.deepOcean} />
-            </Card>
-          </TouchableOpacity>
+          <View style={styles.bannerWrap}>
+            <AnimatedPressable onPress={() => navigation.navigate('DigitalCheckIn')} scaleTo={0.98}>
+              <Card style={styles.checkinBanner}>
+                <View style={styles.checkinIconWrap}>
+                  <Ionicons name="finger-print" size={20} color={colors.deepOcean} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.checkinTitle}>{t('mystay.completeCheckIn')}</Text>
+                  <Text style={styles.checkinSub}>{t('mystay.completeCheckInSub')}</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color={colors.deepOcean} />
+              </Card>
+            </AnimatedPressable>
+          </View>
         )}
 
-        <Card style={{ marginTop: spacing.md }}>
-          <View style={styles.rowBetween}>
-            <Text style={[styles.guestName, { flexShrink: 1, marginRight: spacing.sm }]} numberOfLines={1}>{guest.firstName} {guest.lastName}</Text>
-            <Badge label={checkedIn ? t('mystay.checkedIn') : reservation.status.replace('_', ' ')} tone={checkedIn ? 'success' : 'info'} />
-          </View>
-          <View style={styles.detailGrid}>
-            <Detail label={t('mystay.room')} value={`${room.number} · ${room.type}`} />
-            <Detail label={t('mystay.reservationNo')} value={reservation.reservationNumber} />
-            <Detail label={t('mystay.checkIn')} value={fmt(reservation.checkIn)} />
-            <Detail label={t('mystay.checkOut')} value={fmt(reservation.checkOut)} />
-            <Detail label={t('mystay.nights')} value={String(reservation.nights)} />
-            <Detail label={t('mystay.guestsLabel')} value={t('mystay.guests', { count: reservation.adults })} />
-          </View>
-        </Card>
-
-        <View style={{ marginTop: spacing.lg }}>
-          <SectionHeader title={t('mystay.yourJourney')} />
+        {/* Status + the facts not already carried by the hero. */}
+        <View style={styles.bannerWrap}>
           <Card>
-            {timeline.map((step, i) => (
-              <View key={step.key} style={styles.timelineRow}>
-                <View style={styles.timelineLeft}>
-                  <View style={[styles.timelineDot, step.done && styles.timelineDotDone]}>
-                    <Ionicons name={step.icon} size={14} color={colors.white} />
-                  </View>
-                  {i < timeline.length - 1 && <View style={styles.timelineLine} />}
-                </View>
-                <View style={{ flex: 1, paddingBottom: spacing.lg }}>
-                  <Text style={styles.timelineLabel}>{step.label}</Text>
-                  {step.key === 'arrival' && (
-                    <Text style={styles.timelineDetail}>{t('mystay.arrivalDetail', { time: reservation.arrivalTime })}</Text>
-                  )}
-                  {step.key === 'stay' && (
-                    <View style={styles.timelineLinks}>
-                      <TouchableOpacity onPress={() => navigation.navigate('Activities')}><Text style={styles.timelineLink}>{t('mystay.activitiesLink')}</Text></TouchableOpacity>
-                      <TouchableOpacity onPress={() => navigation.navigate('Dining')}><Text style={styles.timelineLink}>{t('mystay.diningLink')}</Text></TouchableOpacity>
-                      <TouchableOpacity onPress={() => navigation.navigate('Events')}><Text style={styles.timelineLink}>{t('mystay.eventsLink')}</Text></TouchableOpacity>
-                      <TouchableOpacity onPress={() => navigation.getParent()?.navigate('Requests')}><Text style={styles.timelineLink}>{t('mystay.serviceRequestsLink')}</Text></TouchableOpacity>
-                    </View>
-                  )}
-                  {step.key === 'departure' && (
-                    <View style={styles.timelineLinks}>
-                      <Text style={styles.timelineDetail}>{t('mystay.checkoutDetail')}</Text>
-                      <TouchableOpacity onPress={() => navigation.navigate('NewRequest', { category: 'Luggage Assistance' })}><Text style={styles.timelineLink}>{t('mystay.luggageAssistance')}</Text></TouchableOpacity>
-                      <TouchableOpacity onPress={() => navigation.navigate('Feedback')}><Text style={styles.timelineLink}>{t('mystay.leaveFeedback')}</Text></TouchableOpacity>
-                    </View>
-                  )}
-                </View>
-              </View>
-            ))}
+            <StatusPill steps={STAY_STATUS_STEPS} activeIndex={stayStatusIndex} labels={stayStatusLabels} />
+            <View style={styles.detailGrid}>
+              <Detail label={t('mystay.reservationNo')} value={reservation.reservationNumber} />
+              <Detail label={t('mystay.nights')} value={String(reservation.nights)} />
+              <Detail label={t('mystay.guestsLabel')} value={t('mystay.guests', { count: reservation.adults })} />
+            </View>
           </Card>
         </View>
 
-        <View style={{ marginTop: spacing.lg }}>
-          <SectionHeader title={t('mystay.roomAmenities')} />
-          <Card>
-            <View style={styles.amenityWrap}>
-              {(room.amenities || []).map((a) => (
-                <View key={a} style={styles.amenityChip}>
-                  <Ionicons name="checkmark-circle" size={14} color={colors.success} />
-                  <Text style={styles.amenityText}>{getLocalizedString(roomAmenitiesContent, a, i18n.language, a)}</Text>
+        <View style={styles.sectionBlock}>
+          <SectionHeading title={t('mystay.yourJourney')} />
+          <View style={styles.sectionPad}>
+            <Card>
+              {timeline.map((step, i) => (
+                <View key={step.key} style={styles.timelineRow}>
+                  <View style={styles.timelineLeft}>
+                    <View style={[styles.timelineDot, step.done && styles.timelineDotDone]}>
+                      <Ionicons name={step.icon} size={14} color={colors.white} />
+                    </View>
+                    {i < timeline.length - 1 && <View style={styles.timelineLine} />}
+                  </View>
+                  <View style={{ flex: 1, paddingBottom: spacing.lg }}>
+                    <Text style={styles.timelineLabel}>{step.label}</Text>
+                    {step.key === 'arrival' && (
+                      <Text style={styles.timelineDetail}>{t('mystay.arrivalDetail', { time: reservation.arrivalTime })}</Text>
+                    )}
+                    {step.key === 'stay' && (
+                      <View style={styles.timelineLinks}>
+                        <TouchableOpacity onPress={() => navigation.navigate('Activities')}><Text style={styles.timelineLink}>{t('mystay.activitiesLink')}</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={() => navigation.navigate('Dining')}><Text style={styles.timelineLink}>{t('mystay.diningLink')}</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={() => navigation.navigate('Events')}><Text style={styles.timelineLink}>{t('mystay.eventsLink')}</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={() => navigation.getParent()?.navigate('Requests')}><Text style={styles.timelineLink}>{t('mystay.serviceRequestsLink')}</Text></TouchableOpacity>
+                      </View>
+                    )}
+                    {step.key === 'departure' && (
+                      <View style={styles.timelineLinks}>
+                        <Text style={styles.timelineDetail}>{t('mystay.checkoutDetail')}</Text>
+                        <TouchableOpacity onPress={() => navigation.navigate('NewRequest', { category: 'Luggage Assistance' })}><Text style={styles.timelineLink}>{t('mystay.luggageAssistance')}</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={() => navigation.navigate('Feedback')}><Text style={styles.timelineLink}>{t('mystay.leaveFeedback')}</Text></TouchableOpacity>
+                      </View>
+                    )}
+                  </View>
                 </View>
               ))}
-            </View>
-          </Card>
+            </Card>
+          </View>
         </View>
 
-        <TouchableOpacity onPress={() => navigation.navigate('NewReservation')} activeOpacity={0.9} style={{ marginTop: spacing.lg }}>
-          <Card style={styles.newBookingBanner}>
-            <View style={styles.newBookingIconWrap}>
-              <Ionicons name="add-circle" size={20} color={colors.turquoiseDark} />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.newBookingTitle}>{t('mystay.newBooking.title')}</Text>
-              <Text style={styles.newBookingSub}>{t('mystay.newBooking.subtitle')}</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color={colors.turquoiseDark} />
-          </Card>
-        </TouchableOpacity>
+        <View style={styles.sectionBlock}>
+          <SectionHeading title={t('mystay.roomAmenities')} />
+          <View style={styles.sectionPad}>
+            <Card>
+              <View style={styles.amenityWrap}>
+                {(room.amenities || []).map((a) => (
+                  <View key={a} style={styles.amenityChip}>
+                    <Ionicons name="checkmark-circle" size={14} color={colors.success} />
+                    <Text style={styles.amenityText}>{getLocalizedString(roomAmenitiesContent, a, i18n.language, a)}</Text>
+                  </View>
+                ))}
+              </View>
+            </Card>
+          </View>
+        </View>
+
+        <View style={styles.bannerWrap}>
+          <AnimatedPressable onPress={() => navigation.navigate('NewReservation')} scaleTo={0.98}>
+            <Card style={styles.newBookingBanner}>
+              <View style={styles.newBookingIconWrap}>
+                <Ionicons name="add-circle" size={20} color={colors.turquoiseDark} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.newBookingTitle}>{t('mystay.newBooking.title')}</Text>
+                <Text style={styles.newBookingSub}>{t('mystay.newBooking.subtitle')}</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color={colors.turquoiseDark} />
+            </Card>
+          </AnimatedPressable>
+        </View>
 
         {upgradeOptions.length > 0 && (
-          <View style={{ marginTop: spacing.lg }}>
-            <SectionHeader title={t('mystay.upgrades.title')} subtitle={t('mystay.upgrades.subtitle')} />
-            {upgradeOptions.map((tier, i) => (
-              <UpgradeCard key={tier.id} tier={tier} featured={i === 0} />
-            ))}
+          <View style={styles.sectionBlock}>
+            <SectionHeading title={t('mystay.upgrades.title')} subtitle={t('mystay.upgrades.subtitle')} />
+            <View style={styles.sectionPad}>
+              {upgradeOptions.map((tier, i) => (
+                <UpgradeCard key={tier.id} tier={tier} featured={i === 0} />
+              ))}
+            </View>
           </View>
         )}
 
-        <Button
-          label={t('mystay.contactReception')}
-          variant="outline"
-          onPress={() => navigation.navigate('ContactReception')}
-          style={{ marginTop: spacing.lg }}
-        />
+        <View style={styles.bannerWrap}>
+          <Button
+            label={t('mystay.contactReception')}
+            variant="outline"
+            onPress={() => navigation.navigate('ContactReception')}
+          />
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -228,8 +259,24 @@ function Detail({ label, value }) {
 }
 
 const styles = StyleSheet.create({
-  hero: { height: 150, justifyContent: 'flex-end', padding: spacing.lg, overflow: 'hidden' },
-  heroTitle: { fontSize: 26, fontWeight: '700', color: colors.white, fontFamily: font.display },
+  hero: {
+    height: 380,
+    marginHorizontal: spacing.lg,
+    marginTop: spacing.md,
+    borderRadius: radius.lg,
+    overflow: 'hidden',
+    justifyContent: 'flex-end',
+    padding: spacing.lg,
+    backgroundColor: colors.sandLight,
+    ...shadow.float,
+  },
+  heroEyebrow: { color: colors.goldSoft, marginBottom: 6 },
+  heroName: { color: colors.white },
+  heroMetaRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 8 },
+  heroMetaText: { fontSize: 13.5, color: 'rgba(255,255,255,0.9)', fontWeight: '600', flexShrink: 1 },
+  bannerWrap: { paddingHorizontal: spacing.lg, marginTop: spacing.lg },
+  sectionBlock: { marginTop: spacing.xl },
+  sectionPad: { paddingHorizontal: spacing.lg },
   checkinBanner: {
     flexDirection: 'row', alignItems: 'center', gap: spacing.sm,
     backgroundColor: '#FBF1DD', borderWidth: 1, borderColor: colors.goldSoft, ...shadow.soft,
@@ -250,9 +297,7 @@ const styles = StyleSheet.create({
   },
   newBookingTitle: { fontSize: 14.5, fontWeight: '700', color: colors.charcoal },
   newBookingSub: { fontSize: 12, color: colors.slate, marginTop: 2 },
-  rowBetween: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
-  guestName: { fontSize: 18, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
-  detailGrid: { flexDirection: 'row', flexWrap: 'wrap', marginTop: spacing.md },
+  detailGrid: { flexDirection: 'row', flexWrap: 'wrap', marginTop: spacing.lg },
   detailItem: { width: '50%', marginBottom: spacing.sm },
   detailLabel: { fontSize: 11, color: colors.slate },
   detailValue: { fontSize: 13.5, fontWeight: '600', color: colors.charcoal, marginTop: 2 },

@@ -73,7 +73,11 @@
     "popularWithGuests": "深受住客喜爱",
     "explore": "探索",
     "currentPromotion": "当前优惠",
-    "viewOffer": "查看优惠"
+    "viewOffer": "查看优惠",
+    "eyebrowExperiences": "体验",
+    "eyebrowToday": "今日度假村活动",
+    "eyebrowOffer": "优惠",
+    "eyebrowStay": "您的住宿"
   },
   "explore": {
     "title": "探索多米尼克",
@@ -121,7 +125,12 @@
     "bookingError": "该活动预订未能成功，请重试。",
     "perPersonPrice": "每人 ${{price}}",
     "complimentaryPrice": "免费",
-    "contactForPricing": "价格请咨询礼宾部"
+    "contactForPricing": "价格请咨询礼宾部",
+    "location": "地点",
+    "addToFavorites": "添加到收藏",
+    "removeFromFavorites": "取消收藏",
+    "decreaseGuests": "减少人数",
+    "increaseGuests": "增加人数"
   },
   "events": {
     "title": "活动日程",
@@ -233,6 +242,7 @@
     "thankYouSub": "您的反馈将帮助我们提升您的住宿体验。",
     "followUp": "我们的宾客关系团队已收到通知，可能会尽快与您联系。",
     "done": "完成",
+    "starRatingLabel": "{{label}}：{{value}} 星（满分 5 星）",
     "categories": {
       "room": "客房",
       "cleanliness": "清洁度",
@@ -240,6 +250,11 @@
       "food": "餐饮",
       "activities": "活动",
       "overallExperience": "总体体验"
+    },
+    "response": {
+      "low": "很抱歉听到这个消息。感谢您的反馈——我们希望能够改进。",
+      "mid": "感谢您的反馈。我们很想知道如何做得更好。",
+      "high": "很高兴听到这个消息！"
     }
   },
   "notifications": {
@@ -289,6 +304,8 @@
     "completeCheckIn": "完成数字化入住",
     "completeCheckInSub": "无需前往前台 — 约需 3 分钟。",
     "checkedIn": "已入住",
+    "statusReserved": "已预订",
+    "statusCheckedOut": "已退房",
     "room": "房间",
     "reservationNo": "预订编号",
     "checkIn": "入住",

@@ -73,7 +73,11 @@
     "popularWithGuests": "Populaire auprès des clients",
     "explore": "Explorer",
     "currentPromotion": "Promotion en cours",
-    "viewOffer": "Voir l'offre"
+    "viewOffer": "Voir l'offre",
+    "eyebrowExperiences": "Expériences",
+    "eyebrowToday": "Aujourd'hui au complexe",
+    "eyebrowOffer": "Offre",
+    "eyebrowStay": "Votre séjour"
   },
   "explore": {
     "title": "Explorer la Dominique",
@@ -121,7 +125,12 @@
     "bookingError": "Cette activité n'a pas pu être réservée. Veuillez réessayer.",
     "perPersonPrice": "{{price}} $ par personne",
     "complimentaryPrice": "Offert",
-    "contactForPricing": "Tarif sur demande auprès de la conciergerie"
+    "contactForPricing": "Tarif sur demande auprès de la conciergerie",
+    "location": "Lieu",
+    "addToFavorites": "Ajouter aux favoris",
+    "removeFromFavorites": "Retirer des favoris",
+    "decreaseGuests": "Diminuer le nombre de participants",
+    "increaseGuests": "Augmenter le nombre de participants"
   },
   "events": {
     "title": "Événements",
@@ -233,6 +242,7 @@
     "thankYouSub": "Votre avis nous aide à améliorer votre séjour.",
     "followUp": "Notre équipe des relations clients a été informée et pourrait vous recontacter prochainement.",
     "done": "Terminé",
+    "starRatingLabel": "{{label}} : {{value}} sur 5 étoiles",
     "categories": {
       "room": "Chambre",
       "cleanliness": "Propreté",
@@ -240,6 +250,11 @@
       "food": "Restauration",
       "activities": "Activités",
       "overallExperience": "Expérience globale"
+    },
+    "response": {
+      "low": "Nous sommes désolés de l'apprendre. Merci de nous en informer — nous aimerions arranger les choses.",
+      "mid": "Merci de votre retour. Nous aimerions savoir comment nous améliorer.",
+      "high": "Nous sommes ravis de l'entendre !"
     }
   },
   "notifications": {
@@ -289,6 +304,8 @@
     "completeCheckIn": "Terminer l'enregistrement numérique",
     "completeCheckInSub": "Évitez la réception — environ 3 minutes.",
     "checkedIn": "Enregistré",
+    "statusReserved": "Réservé",
+    "statusCheckedOut": "Départ effectué",
     "room": "Chambre",
     "reservationNo": "N° de réservation",
     "checkIn": "Arrivée",

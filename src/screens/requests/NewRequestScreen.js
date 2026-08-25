@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -7,9 +7,16 @@ import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Field } from '../../components/UI';
 import Button from '../../components/Button';
-import { colors, spacing, radius, font, shadow, gradients } from '../../theme/theme';
+import AnimatedPressable from '../../components/AnimatedPressable';
+import { colors, spacing, radius, shadow, gradients, typography } from '../../theme/theme';
 import { SERVICE_REQUEST_CATEGORIES } from '../../data/mockData';
 import { useApp } from '../../context/AppContext';
+
+const ICON_NAME_MAP = {
+  broom: 'broom', towel: 'towel', soap: 'shower-head', laundry: 'washing-machine',
+  roomservice: 'room-service', tools: 'tools', car: 'car', luggage: 'bag-suitcase',
+  alarm: 'alarm', concierge: 'bell-outline', roomupgrade: 'arrow-up-bold-circle-outline', other: 'dots-horizontal',
+};
 
 export default function NewRequestScreen({ navigation, route }) {
   const { t } = useTranslation();
@@ -52,22 +59,35 @@ export default function NewRequestScreen({ navigation, route }) {
       <ScreenHeader title={t('requests.requestSomething')} onBack={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: spacing.xxl }}>
         <Text style={styles.label}>{t('requests.category')}</Text>
+        {/* Visual category tiles, not a form dropdown — picking a category
+            should feel like a single tactile tap. */}
         <View style={styles.grid}>
           {SERVICE_REQUEST_CATEGORIES.map((c) => {
             const selected = category?.id === c.id || category === c.label;
+            const label = t(`requests.categoryOptions.${c.id}`);
             return (
-              <TouchableOpacity key={c.id} style={[styles.catTile, selected && styles.catTileSelected]} onPress={() => setCategory(c)}>
-                <MaterialCommunityIcons
-                  name={{
-                    broom: 'broom', towel: 'towel', soap: 'shower-head', laundry: 'washing-machine',
-                    roomservice: 'room-service', tools: 'tools', car: 'car', luggage: 'bag-suitcase',
-                    alarm: 'alarm', concierge: 'bell-outline', roomupgrade: 'arrow-up-bold-circle-outline', other: 'dots-horizontal',
-                  }[c.icon] || 'dots-horizontal'}
-                  size={20}
-                  color={selected ? colors.white : colors.deepOcean}
-                />
-                <Text style={[styles.catLabel, selected && { color: colors.white }]}>{t(`requests.categoryOptions.${c.id}`)}</Text>
-              </TouchableOpacity>
+              <AnimatedPressable
+                key={c.id}
+                onPress={() => setCategory(c)}
+                style={[styles.catTile, selected && styles.catTileSelected]}
+                accessibilityRole="button"
+                accessibilityLabel={label}
+                accessibilityState={{ selected }}
+              >
+                <View style={[styles.catIconWrap, selected && styles.catIconWrapSelected]}>
+                  <MaterialCommunityIcons
+                    name={ICON_NAME_MAP[c.icon] || 'dots-horizontal'}
+                    size={20}
+                    color={selected ? colors.white : colors.deepOcean}
+                  />
+                </View>
+                <Text style={[styles.catLabel, selected && styles.catLabelSelected]} numberOfLines={2}>{label}</Text>
+                {selected ? (
+                  <View style={styles.catCheck}>
+                    <Ionicons name="checkmark-circle" size={16} color={colors.turquoise} />
+                  </View>
+                ) : null}
+              </AnimatedPressable>
             );
           })}
         </View>
@@ -89,17 +109,21 @@ export default function NewRequestScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  label: { fontSize: 13, fontWeight: '700', color: colors.charcoal, marginBottom: spacing.sm },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: spacing.md },
+  label: { ...typography.label, color: colors.slate, marginBottom: spacing.sm },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: spacing.lg },
   catTile: {
-    width: '30%', backgroundColor: colors.white, borderRadius: radius.md, borderWidth: 1, borderColor: colors.border,
-    paddingVertical: 12, alignItems: 'center', gap: 6,
+    width: '31%', backgroundColor: colors.white, borderRadius: radius.lg, borderWidth: 1.5, borderColor: colors.border,
+    paddingVertical: 14, paddingHorizontal: 6, alignItems: 'center', gap: 8, position: 'relative',
   },
-  catTileSelected: { backgroundColor: colors.deepOcean, borderColor: colors.deepOcean },
-  catLabel: { fontSize: 10.5, fontWeight: '600', color: colors.charcoal, textAlign: 'center' },
+  catTileSelected: { borderColor: colors.deepOcean, backgroundColor: colors.sandLight, ...shadow.soft },
+  catIconWrap: { width: 40, height: 40, borderRadius: 20, backgroundColor: colors.sandLight, alignItems: 'center', justifyContent: 'center' },
+  catIconWrapSelected: { backgroundColor: colors.deepOcean },
+  catLabel: { fontSize: 11, fontWeight: '600', color: colors.slate, textAlign: 'center' },
+  catLabelSelected: { color: colors.deepOcean, fontWeight: '700' },
+  catCheck: { position: 'absolute', top: 6, right: 6, backgroundColor: colors.white, borderRadius: 8 },
   error: { color: colors.error, fontSize: 13, marginTop: spacing.sm },
   successWrap: { alignItems: 'center', padding: spacing.xl, marginTop: spacing.xl },
   successCircle: { width: 68, height: 68, borderRadius: 34, alignItems: 'center', justifyContent: 'center', marginBottom: spacing.md, ...shadow.soft },
-  successTitle: { fontSize: 20, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
-  successSub: { fontSize: 13.5, color: colors.slate, textAlign: 'center', marginTop: 6, lineHeight: 19 },
+  successTitle: { ...typography.heading, color: colors.charcoal },
+  successSub: { ...typography.body, color: colors.slate, textAlign: 'center', marginTop: 6 },
 });
