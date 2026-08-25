@@ -17,6 +17,7 @@ import { ROOM_TYPES } from '../../data/mockData';
 import { getLocalizedContent, getLocalizedString } from '../../i18n/content';
 import roomTypesContent from '../../i18n/content/roomTypes';
 import roomAmenitiesContent from '../../i18n/content/roomAmenities';
+import { optimizeImageUrl } from '../../utils/optimizeImageUrl';
 
 // Real Dominica beach (Mero Beach), used as a hero backdrop behind the
 // guest's stay identity — ambience of the destination, not a depiction of
@@ -113,7 +114,7 @@ export default function MyStayScreen({ navigation }) {
             This is the primary, most prominent element on the screen; every
             section below is a calmer secondary layer. */}
         <View style={styles.hero}>
-          <Image source={{ uri: MYSTAY_HERO_URL }} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} />
+          <Image source={{ uri: optimizeImageUrl(MYSTAY_HERO_URL, 1100) }} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} />
           <LinearGradient colors={gradients.scrim} style={StyleSheet.absoluteFill} pointerEvents="none" />
           <Text style={[typography.label, styles.heroEyebrow]}>{t('mystay.title')}</Text>
           <Text style={[typography.display, styles.heroName]} numberOfLines={1}>{guest.firstName} {guest.lastName}</Text>

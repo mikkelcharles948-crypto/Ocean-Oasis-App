@@ -5,6 +5,7 @@ import { useVideoPlayer, VideoView } from 'expo-video';
 import { LinearGradient } from 'expo-linear-gradient';
 import { gradients } from '../theme/theme';
 import { useReducedMotion } from '../theme/motion';
+import { optimizeImageUrl } from '../utils/optimizeImageUrl';
 
 // The one centralized hero-media component the brief asks for, so no
 // screen hardcodes a video URL or hand-rolls its own fallback logic.
@@ -19,11 +20,14 @@ import { useReducedMotion } from '../theme/motion';
 //   >
 //     <Text style={typography.hero}>Ocean Oasis</Text>
 //   </HeroMedia>
-export default function HeroMedia({ video, fallbackImage, scrim = false, scrimColors, scrimLocations, style, contentStyle, children }) {
+export default function HeroMedia({ video, fallbackImage, imageWidth = 1200, scrim = false, scrimColors, scrimLocations, style, contentStyle, children }) {
   const reducedMotion = useReducedMotion();
   const [videoFailed, setVideoFailed] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
   const showVideo = !!video && !reducedMotion && !videoFailed;
+  const optimizedFallback = fallbackImage?.uri
+    ? { ...fallbackImage, uri: optimizeImageUrl(fallbackImage.uri, imageWidth) }
+    : fallbackImage;
 
   const player = useVideoPlayer(showVideo ? video : null, (p) => {
     p.loop = true;
@@ -45,7 +49,7 @@ export default function HeroMedia({ video, fallbackImage, scrim = false, scrimCo
 
   return (
     <View style={[styles.wrap, style]}>
-      <Image source={fallbackImage} style={StyleSheet.absoluteFill} contentFit="cover" transition={250} />
+      <Image source={optimizedFallback} style={StyleSheet.absoluteFill} contentFit="cover" transition={250} />
       {showVideo ? (
         <VideoView
           player={player}

@@ -13,6 +13,7 @@ import { colors, spacing, radius, typography, shadow, gradients } from '../../th
 import { useApp } from '../../context/AppContext';
 import { getLocalizedContent } from '../../i18n/content';
 import eventsContent from '../../i18n/content/events';
+import { optimizeImageUrl } from '../../utils/optimizeImageUrl';
 
 // No hero photography exists for hotel events yet (see docs/UI_UX_AUDIT.md
 // on asset organization) — a graceful icon-on-gradient treatment stands in
@@ -55,7 +56,7 @@ export default function EventDetailScreen({ route, navigation }) {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.hero}>
           {event.imageUrl ? (
-            <Image source={{ uri: event.imageUrl }} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} />
+            <Image source={{ uri: optimizeImageUrl(event.imageUrl, 900) }} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} />
           ) : (
             <LinearGradient colors={gradients.ocean} style={StyleSheet.absoluteFill}>
               <View style={styles.heroIconWrap}>

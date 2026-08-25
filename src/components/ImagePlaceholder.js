@@ -4,6 +4,7 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { colors, radius } from '../theme/theme';
+import { optimizeImageUrl } from '../utils/optimizeImageUrl';
 
 // Renders a real photo when `uri` is supplied (falling back to the gradient
 // placeholder below if the remote image fails to load), otherwise the
@@ -31,7 +32,7 @@ function hashStr(s = '') {
   return h;
 }
 
-export default function ImagePlaceholder({ kind = 'ocean', uri, style, iconSize = 34, borderRadius = radius.lg }) {
+export default function ImagePlaceholder({ kind = 'ocean', uri, width = 900, style, iconSize = 34, borderRadius = radius.lg }) {
   const [failed, setFailed] = useState(false);
   const gradient = GRADIENTS[hashStr(kind) % GRADIENTS.length];
   const iconName = ICONS[kind] || 'island';
@@ -39,7 +40,7 @@ export default function ImagePlaceholder({ kind = 'ocean', uri, style, iconSize 
   if (uri && !failed) {
     return (
       <Image
-        source={{ uri }}
+        source={{ uri: optimizeImageUrl(uri, width) }}
         style={[styles.wrap, { borderRadius }, style]}
         contentFit="cover"
         onError={() => setFailed(true)}

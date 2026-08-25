@@ -5,11 +5,12 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import AnimatedPressable from './AnimatedPressable';
 import { colors, radius, spacing, typography, shadow } from '../theme/theme';
+import { optimizeImageUrl } from '../utils/optimizeImageUrl';
 
 const SIZES = {
-  large: { height: 320, titleStyle: typography.display },
-  medium: { height: 220, titleStyle: typography.heading },
-  small: { height: 150, titleStyle: typography.subheading },
+  large: { height: 320, imageWidth: 900, titleStyle: typography.display },
+  medium: { height: 220, imageWidth: 700, titleStyle: typography.heading },
+  small: { height: 150, imageWidth: 500, titleStyle: typography.subheading },
 };
 
 // The shared visual pattern behind ExperienceCard / EventCard / PromotionCard:
@@ -38,12 +39,13 @@ export default function EditorialImageCard({
   onPress,
   style,
 }) {
-  const { height, titleStyle } = SIZES[size] || SIZES.medium;
+  const { height, imageWidth, titleStyle } = SIZES[size] || SIZES.medium;
+  const optimizedImage = image?.uri ? { ...image, uri: optimizeImageUrl(image.uri, imageWidth) } : image;
 
   return (
     <AnimatedPressable onPress={onPress} style={[styles.wrap, { height }, style]} scaleTo={0.97}>
-      {image ? (
-        <Image source={image} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} />
+      {optimizedImage ? (
+        <Image source={optimizedImage} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} />
       ) : (
         <View style={[StyleSheet.absoluteFill, styles.fallback]}>
           <Ionicons name={fallbackIcon} size={36} color={colors.turquoiseDark} />

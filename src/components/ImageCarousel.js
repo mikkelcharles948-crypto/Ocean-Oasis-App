@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, ScrollView, StyleSheet, useWindowDimensions } from 'react-native';
 import { Image } from 'expo-image';
 import { colors, radius } from '../theme/theme';
+import { optimizeImageUrl } from '../utils/optimizeImageUrl';
 
 // A simple horizontal, paged image gallery with dot indicators — for a
 // room, activity, or destination with more than one photo. Deliberately
@@ -30,9 +31,10 @@ export default function ImageCarousel({ images = [], height = 260, width, border
         onScroll={handleScroll}
         scrollEventThrottle={16}
       >
-        {images.map((source, i) => (
-          <Image key={i} source={source} style={{ width: resolvedWidth, height }} contentFit="cover" transition={200} />
-        ))}
+        {images.map((source, i) => {
+          const optimized = source?.uri ? { ...source, uri: optimizeImageUrl(source.uri, Math.round(resolvedWidth)) } : source;
+          return <Image key={i} source={optimized} style={{ width: resolvedWidth, height }} contentFit="cover" transition={200} />;
+        })}
       </ScrollView>
       {images.length > 1 ? (
         <View style={styles.dots} pointerEvents="none">

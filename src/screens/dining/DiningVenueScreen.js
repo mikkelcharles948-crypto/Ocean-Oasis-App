@@ -12,6 +12,7 @@ import { colors, spacing, radius, typography } from '../../theme/theme';
 import { DINING_VENUES } from '../../data/mockData';
 import { getLocalizedContent } from '../../i18n/content';
 import diningVenuesContent from '../../i18n/content/diningVenues';
+import { optimizeImageUrl } from '../../utils/optimizeImageUrl';
 
 const TYPE_KEY = {
   'Signature Restaurant': 'signatureRestaurant',
@@ -52,7 +53,7 @@ export default function DiningVenueScreen({ route, navigation }) {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.hero}>
           {venue.imageUrl ? (
-            <Image source={{ uri: venue.imageUrl }} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} />
+            <Image source={{ uri: optimizeImageUrl(venue.imageUrl, 900) }} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} />
           ) : (
             <View style={[StyleSheet.absoluteFill, styles.heroFallback]}>
               <Ionicons name="restaurant-outline" size={48} color={colors.turquoiseDark} />

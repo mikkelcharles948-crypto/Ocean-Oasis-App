@@ -15,6 +15,7 @@ import { useApp } from '../../context/AppContext';
 import { getLocalizedContent } from '../../i18n/content';
 import activitiesContent from '../../i18n/content/activities';
 import { formatActivityPrice } from '../../utils/formatActivityPrice';
+import { optimizeImageUrl } from '../../utils/optimizeImageUrl';
 
 const AVAILABILITY_KEY = { Available: 'available', 'Limited spots': 'limitedSpots' };
 // Hero is tall enough to feel cinematic (per the brief: "entering the
@@ -56,7 +57,7 @@ export default function ActivityDetailScreen({ route, navigation }) {
       >
         <View style={styles.hero}>
           <Image
-            source={{ uri: activity.imageUrl }}
+            source={{ uri: optimizeImageUrl(activity.imageUrl, 1100) }}
             style={StyleSheet.absoluteFillObject}
             contentFit="cover"
             transition={300}

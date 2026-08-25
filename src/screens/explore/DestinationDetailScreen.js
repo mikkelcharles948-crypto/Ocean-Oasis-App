@@ -14,6 +14,7 @@ import { DESTINATIONS } from '../../data/mockData';
 import { getLocalizedContent } from '../../i18n/content';
 import destinationsContent from '../../i18n/content/destinations';
 import { openInGoogleMaps } from '../../utils/openMap';
+import { optimizeImageUrl } from '../../utils/optimizeImageUrl';
 
 // Tall enough to read as a cinematic hero rather than a thumbnail; the
 // FloatingHeader stays in "light" tone (icons/text readable over the photo)
@@ -55,7 +56,7 @@ export default function DestinationDetailScreen({ route, navigation }) {
         scrollEventThrottle={16}
       >
         {destination.imageUrl ? (
-          <Image source={{ uri: destination.imageUrl }} style={styles.hero} contentFit="cover" transition={200} />
+          <Image source={{ uri: optimizeImageUrl(destination.imageUrl, 1100) }} style={styles.hero} contentFit="cover" transition={200} />
         ) : (
           <View style={[styles.hero, styles.heroFallback]}>
             <Ionicons name="image-outline" size={56} color={colors.turquoiseDark} />
