@@ -740,7 +740,7 @@ export function AppProvider({ children }) {
         }
         return entry;
       } catch (error) {
-        return null;
+        return { error: error?.message || 'Your feedback could not be submitted. Please try again.' };
       }
     }
 

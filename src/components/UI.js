@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
@@ -49,9 +49,13 @@ export function Badge({ label, tone = 'neutral' }) {
   );
 }
 
+// Fully controlled by `value` — no internal state to desync from it. An
+// earlier version mirrored `value` into local state on mount and then
+// rendered only that local copy whenever `onChange` was provided, which
+// meant the displayed rating could visually show a selection while the
+// value actually being submitted by the parent (e.g. FeedbackScreen) had
+// silently reverted to unset.
 export function StarRating({ value, onChange, size = 26, readOnly = false }) {
-  const [temp, setTemp] = useState(value || 0);
-  const current = onChange ? temp : value;
   return (
     <View style={{ flexDirection: 'row', gap: 6 }}>
       {[1, 2, 3, 4, 5].map((i) => (
@@ -59,13 +63,10 @@ export function StarRating({ value, onChange, size = 26, readOnly = false }) {
           key={i}
           disabled={readOnly}
           activeOpacity={0.7}
-          onPress={() => {
-            setTemp(i);
-            onChange && onChange(i);
-          }}
+          onPress={() => onChange && onChange(i)}
         >
           <Ionicons
-            name={i <= current ? 'star' : 'star-outline'}
+            name={i <= (value || 0) ? 'star' : 'star-outline'}
             size={size}
             color={colors.gold}
           />

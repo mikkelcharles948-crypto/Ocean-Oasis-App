@@ -93,7 +93,7 @@ export default function MainTabs() {
         tabBarBackground: () => (
           <GlassSurface style={styles.tabBarGlass} borderRadius={0} intensity={46} tint="light">
             <View style={styles.tabBarLogoWrap} pointerEvents="none">
-              <Logo size="md" />
+              <Logo size={66} variant="mark" />
             </View>
           </GlassSurface>
         ),

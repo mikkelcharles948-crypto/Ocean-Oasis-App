@@ -36,8 +36,8 @@ export default function FeedbackScreen({ navigation }) {
     setError('');
     const result = await submitFeedback({ ratings, comments });
     setSubmitting(false);
-    if (!result) {
-      setError(t('feedback.submitError'));
+    if (!result || result.error) {
+      setError(result?.error || t('feedback.submitError'));
       return;
     }
     setSubmitted(true);
