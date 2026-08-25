@@ -876,10 +876,14 @@ export function AppProvider({ children }) {
     }
   }, []);
 
+  // Creates a new, separate reservation — this deliberately does NOT
+  // overwrite `reservation` (the guest's current/active stay shown on My
+  // Stay). A newly booked future stay is a distinct upcoming reservation;
+  // screens that want to list it alongside past stays should re-fetch via
+  // loadPastStays-style queries, not read it off context state.
   const createReservation = useCallback(async (payload) => {
     try {
       const reservation = await createRemoteReservation(payload);
-      setReservation((r) => (reservation.checkIn <= (r?.checkIn || reservation.checkIn) ? r : reservation));
       return { ok: true, reservation };
     } catch (error) {
       return { ok: false, error: error?.message || 'This room could not be booked. Please try again.' };
