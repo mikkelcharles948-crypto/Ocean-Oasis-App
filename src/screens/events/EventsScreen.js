@@ -67,7 +67,6 @@ export default function EventsScreen({ navigation }) {
         contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.sm, gap: spacing.md }}
         ListEmptyComponent={<EmptyState icon="calendar-outline" title={t('events.noEvents')} />}
         renderItem={renderEvent}
-        removeClippedSubviews
         initialNumToRender={6}
         maxToRenderPerBatch={6}
         windowSize={5}

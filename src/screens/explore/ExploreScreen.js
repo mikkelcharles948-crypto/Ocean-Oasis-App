@@ -115,7 +115,6 @@ export default function ExploreScreen({ navigation }) {
         keyExtractor={(item) => item.id}
         contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.md, gap: spacing.lg }}
         renderItem={renderItem}
-        removeClippedSubviews
         initialNumToRender={4}
         maxToRenderPerBatch={4}
         windowSize={5}

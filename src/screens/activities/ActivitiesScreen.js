@@ -55,7 +55,6 @@ export default function ActivitiesScreen({ navigation }) {
         contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.sm, gap: spacing.lg }}
         ListEmptyComponent={<EmptyState icon="sunny-outline" title={t('activities.noActivities')} />}
         renderItem={renderActivity}
-        removeClippedSubviews
         initialNumToRender={4}
         maxToRenderPerBatch={4}
         windowSize={5}

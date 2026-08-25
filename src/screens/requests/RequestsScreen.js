@@ -102,7 +102,6 @@ export default function RequestsScreen({ navigation }) {
             />
           }
           renderItem={renderRequest}
-          removeClippedSubviews
           initialNumToRender={10}
           maxToRenderPerBatch={8}
           windowSize={7}
