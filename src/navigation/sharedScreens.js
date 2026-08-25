@@ -18,6 +18,8 @@ import ContactReceptionScreen from '../screens/contact/ContactReceptionScreen';
 import NewRequestScreen from '../screens/requests/NewRequestScreen';
 import RequestDetailScreen from '../screens/requests/RequestDetailScreen';
 import DigitalCheckInScreen from '../screens/mystay/DigitalCheckInScreen';
+import NewReservationScreen from '../screens/mystay/NewReservationScreen';
+import BookRoomScreen from '../screens/mystay/BookRoomScreen';
 import MapScreen from '../screens/explore/MapScreen';
 import PastStaysScreen from '../screens/profile/PastStaysScreen';
 import TermsScreen from '../screens/profile/TermsScreen';
@@ -56,6 +58,8 @@ export function addSharedScreens(Stack) {
       <Stack.Screen name="NewRequest" component={NewRequestScreen} />
       <Stack.Screen name="RequestDetail" component={RequestDetailScreen} />
       <Stack.Screen name="DigitalCheckIn" component={DigitalCheckInScreen} />
+      <Stack.Screen name="NewReservation" component={NewReservationScreen} />
+      <Stack.Screen name="BookRoom" component={BookRoomScreen} />
       <Stack.Screen name="MapScreen" component={MapScreen} />
       <Stack.Screen name="PastStays" component={PastStaysScreen} />
       <Stack.Screen name="Terms" component={TermsScreen} />

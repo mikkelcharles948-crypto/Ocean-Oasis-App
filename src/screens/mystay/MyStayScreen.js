@@ -184,6 +184,19 @@ export default function MyStayScreen({ navigation }) {
           </Card>
         </View>
 
+        <TouchableOpacity onPress={() => navigation.navigate('NewReservation')} activeOpacity={0.9} style={{ marginTop: spacing.lg }}>
+          <Card style={styles.newBookingBanner}>
+            <View style={styles.newBookingIconWrap}>
+              <Ionicons name="add-circle" size={20} color={colors.turquoiseDark} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.newBookingTitle}>{t('mystay.newBooking.title')}</Text>
+              <Text style={styles.newBookingSub}>{t('mystay.newBooking.subtitle')}</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color={colors.turquoiseDark} />
+          </Card>
+        </TouchableOpacity>
+
         {upgradeOptions.length > 0 && (
           <View style={{ marginTop: spacing.lg }}>
             <SectionHeader title={t('mystay.upgrades.title')} subtitle={t('mystay.upgrades.subtitle')} />
@@ -227,6 +240,16 @@ const styles = StyleSheet.create({
   },
   checkinTitle: { fontSize: 14.5, fontWeight: '700', color: colors.charcoal },
   checkinSub: { fontSize: 12, color: colors.slate, marginTop: 2 },
+  newBookingBanner: {
+    flexDirection: 'row', alignItems: 'center', gap: spacing.sm,
+    backgroundColor: '#E1F2F1', borderWidth: 1, borderColor: colors.turquoise, ...shadow.soft,
+  },
+  newBookingIconWrap: {
+    width: 40, height: 40, borderRadius: 20, backgroundColor: colors.white,
+    alignItems: 'center', justifyContent: 'center',
+  },
+  newBookingTitle: { fontSize: 14.5, fontWeight: '700', color: colors.charcoal },
+  newBookingSub: { fontSize: 12, color: colors.slate, marginTop: 2 },
   rowBetween: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
   guestName: { fontSize: 18, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
   detailGrid: { flexDirection: 'row', flexWrap: 'wrap', marginTop: spacing.md },

@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-nat
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
-import { ScreenHeader, Card, EmptyState } from '../../components/UI';
+import { ScreenHeader, Card, EmptyState, SectionHeader } from '../../components/UI';
 import { colors, spacing, font } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 import { loadPastStays } from '../../services/supabaseData';
@@ -39,6 +39,31 @@ export default function PastStaysScreen({ navigation }) {
     return () => { mounted = false; };
   }, [guest?.id, authSession?.user?.id]);
 
+  const todayIso = new Date().toISOString().slice(0, 10);
+  const upcomingStays = (stays || [])
+    .filter((s) => s.checkOut >= todayIso)
+    .sort((a, b) => (a.checkIn < b.checkIn ? -1 : a.checkIn > b.checkIn ? 1 : 0));
+  const pastStaysList = (stays || []).filter((s) => s.checkOut < todayIso);
+
+  const renderStay = (stay) => (
+    <Card key={stay.id} style={{ marginBottom: spacing.sm }}>
+      <View style={styles.row}>
+        <Text style={styles.reservation}>{stay.reservationNumber}</Text>
+        <Text style={styles.status}>{STATUS_LABELS[stay.status] || stay.status}</Text>
+      </View>
+      <Text style={styles.dates}>{formatDate(stay.checkIn)} – {formatDate(stay.checkOut)}</Text>
+      {stay.roomType ? (
+        <Text style={styles.room}>
+          {stay.roomNumber ? t('pastStays.roomWithNumber', { type: stay.roomType, number: stay.roomNumber }) : stay.roomType}
+        </Text>
+      ) : null}
+      <Text style={styles.meta}>
+        {t('pastStays.nights', { count: stay.nights })} · {t('pastStays.adults', { count: stay.adults })}
+        {stay.children ? t('pastStays.children', { count: stay.children }) : ''}
+      </Text>
+    </Card>
+  );
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
       <ScreenHeader title={t('profile.pastStays')} onBack={() => navigation.goBack()} />
@@ -52,24 +77,18 @@ export default function PastStaysScreen({ navigation }) {
         {stays && stays.length === 0 && (
           <EmptyState icon="time-outline" title={t('pastStays.emptyTitle')} subtitle={t('pastStays.emptySub')} />
         )}
-        {stays?.map((stay) => (
-          <Card key={stay.id} style={{ marginBottom: spacing.sm }}>
-            <View style={styles.row}>
-              <Text style={styles.reservation}>{stay.reservationNumber}</Text>
-              <Text style={styles.status}>{STATUS_LABELS[stay.status] || stay.status}</Text>
-            </View>
-            <Text style={styles.dates}>{formatDate(stay.checkIn)} – {formatDate(stay.checkOut)}</Text>
-            {stay.roomType ? (
-              <Text style={styles.room}>
-                {stay.roomNumber ? t('pastStays.roomWithNumber', { type: stay.roomType, number: stay.roomNumber }) : stay.roomType}
-              </Text>
-            ) : null}
-            <Text style={styles.meta}>
-              {t('pastStays.nights', { count: stay.nights })} · {t('pastStays.adults', { count: stay.adults })}
-              {stay.children ? t('pastStays.children', { count: stay.children }) : ''}
-            </Text>
-          </Card>
-        ))}
+        {upcomingStays.length > 0 && (
+          <View style={{ marginBottom: spacing.lg }}>
+            <SectionHeader title={t('pastStays.upcomingTitle')} />
+            {upcomingStays.map(renderStay)}
+          </View>
+        )}
+        {pastStaysList.length > 0 && (
+          <View>
+            <SectionHeader title={t('pastStays.pastTitle')} />
+            {pastStaysList.map(renderStay)}
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

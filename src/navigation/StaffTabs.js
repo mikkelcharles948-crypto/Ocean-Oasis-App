@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import StaffHomeScreen from '../screens/staff/StaffHomeScreen';
 import StaffRequestsScreen from '../screens/staff/StaffRequestsScreen';
 import StaffRoomsScreen from '../screens/staff/StaffRoomsScreen';
+import StaffNewBookingScreen from '../screens/staff/StaffNewBookingScreen';
 import StaffActivitiesScreen from '../screens/staff/StaffActivitiesScreen';
 import StaffMoreScreen from '../screens/staff/StaffMoreScreen';
 import StaffGuestsScreen from '../screens/staff/StaffGuestsScreen';
@@ -35,6 +36,15 @@ function MoreStackNav() {
       <Stack.Screen name="StaffFeedback" component={StaffFeedbackScreen} />
       <Stack.Screen name="StaffNotifications" component={StaffNotificationsScreen} />
       <Stack.Screen name="StaffProfile" component={StaffProfileScreen} />
+    </Stack.Navigator>
+  );
+}
+
+function RoomsStackNav() {
+  return (
+    <Stack.Navigator screenOptions={screenOptions}>
+      <Stack.Screen name="StaffRoomsMain" component={StaffRoomsScreen} />
+      <Stack.Screen name="StaffNewBooking" component={StaffNewBookingScreen} />
     </Stack.Navigator>
   );
 }
@@ -89,7 +99,7 @@ export default function StaffTabs() {
     >
       <Tab.Screen name="Dashboard" component={StaffHomeScreen} />
       <Tab.Screen name="Requests" component={StaffRequestsScreen} />
-      <Tab.Screen name="Rooms" component={StaffRoomsScreen} />
+      <Tab.Screen name="Rooms" component={RoomsStackNav} />
       <Tab.Screen name="Activities" component={StaffActivitiesScreen} />
       <Tab.Screen name="More" component={MoreStackNav} />
     </Tab.Navigator>

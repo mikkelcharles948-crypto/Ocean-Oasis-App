@@ -16,7 +16,7 @@ const STATUS_TONE = {
   OCCUPIED_SERVICE_REQUIRED: 'error', INSPECTION_REQUIRED: 'warning', OUT_OF_ORDER: 'neutral',
 };
 
-export default function StaffRoomsScreen() {
+export default function StaffRoomsScreen({ navigation }) {
   const { t } = useTranslation();
   const { rooms, updateRoomStatus, allGuestsForStaff } = useApp();
   const [filter, setFilter] = useState('ALL');
@@ -37,8 +37,14 @@ export default function StaffRoomsScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>{t('staff.rooms.title')}</Text>
-        <Text style={styles.headerSub}>{t('staff.rooms.subtitle', { count: rooms.length })}</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.headerTitle}>{t('staff.rooms.title')}</Text>
+          <Text style={styles.headerSub}>{t('staff.rooms.subtitle', { count: rooms.length })}</Text>
+        </View>
+        <TouchableOpacity style={styles.newBookingBtn} onPress={() => navigation.navigate('StaffNewBooking')} activeOpacity={0.85}>
+          <Ionicons name="add" size={16} color={colors.white} />
+          <Text style={styles.newBookingBtnText}>{t('staff.newBooking.entryButton')}</Text>
+        </TouchableOpacity>
       </View>
 
       <FlatList
@@ -117,9 +123,14 @@ function dotColor(status) {
 }
 
 const styles = StyleSheet.create({
-  header: { paddingHorizontal: spacing.lg, paddingTop: spacing.sm, paddingBottom: spacing.xs },
+  header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.lg, paddingTop: spacing.sm, paddingBottom: spacing.xs, gap: spacing.sm },
   headerTitle: { fontSize: 22, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
   headerSub: { fontSize: 12.5, color: colors.slate, marginTop: 2 },
+  newBookingBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: colors.deepOcean,
+    paddingHorizontal: 12, paddingVertical: 9, borderRadius: radius.pill,
+  },
+  newBookingBtnText: { color: colors.white, fontSize: 12, fontWeight: '700' },
   summaryWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: spacing.md },
   summaryChip: { paddingHorizontal: 10, paddingVertical: 8, borderRadius: radius.md, backgroundColor: colors.white, borderWidth: 1, borderColor: colors.border, minWidth: '31%' },
   summaryChipActive: { backgroundColor: colors.deepOcean, borderColor: colors.deepOcean },
