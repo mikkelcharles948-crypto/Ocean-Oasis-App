@@ -17,21 +17,28 @@ import { openInGoogleMaps } from '../../utils/openMap';
 // work with the phone in airplane mode or with no signal on the trail
 // itself — only the "View on Google Maps" buttons need connectivity, which
 // is expected since they hand off to an external app.
+// mapQuery names the trail + segment number explicitly, not just the
+// nearest village — a bare village name (what this used to be) always
+// resolves to that village's own map pin, never the trail itself. Each
+// place referenced is still the real trailhead/landmark for that segment
+// (cross-checked against the segment routes below), just phrased so
+// Google Maps' search has an actual shot at surfacing the trail/trailhead
+// rather than only the town.
 const TRAIL_SEGMENTS = [
-  { key: 's1', difficulty: 'VeryDifficult', mapQuery: 'Scotts Head Village, Dominica' },
-  { key: 's2', difficulty: 'Moderate', mapQuery: 'Soufriere, Dominica' },
-  { key: 's3', difficulty: 'Moderate', mapQuery: 'Bellevue Chopin, Dominica' },
-  { key: 's4', difficulty: 'Moderate', mapQuery: 'Wotten Waven, Dominica' },
-  { key: 's5', difficulty: 'Moderate', mapQuery: 'Pont Casse, Dominica' },
-  { key: 's6', difficulty: 'Moderate', mapQuery: 'Castle Bruce, Dominica' },
-  { key: 's7', difficulty: 'Moderate', mapQuery: 'Marigot, Dominica' },
-  { key: 's8', difficulty: 'VeryDifficult', mapQuery: 'Melville Hall, Dominica' },
-  { key: 's9', difficulty: 'VeryDifficult', mapQuery: 'Petite Macoucherie, Dominica' },
-  { key: 's10', difficulty: 'Easy', mapQuery: 'Colihaut, Dominica' },
-  { key: 's11', difficulty: 'Challenging', mapQuery: 'Syndicate, Dominica' },
-  { key: 's12', difficulty: 'Challenging', mapQuery: 'Vieille Case, Dominica' },
-  { key: 's13', difficulty: 'Moderate', mapQuery: 'Penville, Dominica' },
-  { key: 's14', difficulty: 'Moderate', mapQuery: 'Cabrits National Park, Dominica' },
+  { key: 's1', difficulty: 'VeryDifficult', mapQuery: 'Waitukubuli National Trail Segment 1, Scotts Head, Dominica' },
+  { key: 's2', difficulty: 'Moderate', mapQuery: 'Waitukubuli National Trail Segment 2, Soufriere Estate, Dominica' },
+  { key: 's3', difficulty: 'Moderate', mapQuery: 'Waitukubuli National Trail Segment 3, Bellevue Chopin, Dominica' },
+  { key: 's4', difficulty: 'Moderate', mapQuery: 'Waitukubuli National Trail Segment 4, Wotten Waven, Dominica' },
+  { key: 's5', difficulty: 'Moderate', mapQuery: 'Waitukubuli National Trail Segment 5, Pont Casse, Dominica' },
+  { key: 's6', difficulty: 'Moderate', mapQuery: 'Waitukubuli National Trail Segment 6, Castle Bruce, Dominica' },
+  { key: 's7', difficulty: 'Moderate', mapQuery: 'Waitukubuli National Trail Segment 7, Hatton Garden, Dominica' },
+  { key: 's8', difficulty: 'VeryDifficult', mapQuery: 'Waitukubuli National Trail Segment 8, Melville Hall Estate, Dominica' },
+  { key: 's9', difficulty: 'VeryDifficult', mapQuery: 'Waitukubuli National Trail Segment 9, Petite Macoucherie, Dominica' },
+  { key: 's10', difficulty: 'Easy', mapQuery: 'Waitukubuli National Trail Segment 10, Colihaut, Dominica' },
+  { key: 's11', difficulty: 'Challenging', mapQuery: 'Waitukubuli National Trail Segment 11, Syndicate, Dominica' },
+  { key: 's12', difficulty: 'Challenging', mapQuery: 'Waitukubuli National Trail Segment 12, Borne, Dominica' },
+  { key: 's13', difficulty: 'Moderate', mapQuery: 'Waitukubuli National Trail Segment 13, Penville, Dominica' },
+  { key: 's14', difficulty: 'Moderate', mapQuery: 'Waitukubuli National Trail Segment 14, Cabrits National Park, Dominica' },
 ];
 
 const DIFFICULTY_TONE = { Easy: 'success', Moderate: 'info', Challenging: 'warning', VeryDifficult: 'error' };

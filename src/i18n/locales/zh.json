@@ -1289,10 +1289,10 @@
     "diningFootnote": "营业时间及供应情况可能变动——建议提前致电预订。",
     "tipsTitle": "实用小贴士",
     "restaurants": {
-      "gouteDominik": {
-        "name": "Goûte Dominik",
-        "location": "雨林用餐体验",
-        "desc": "“您的美食之旅从雨林开始”——以雨林食材打造的克里奥尔美食体验。"
+      "papillote": {
+        "name": "Papillote Rainforest Restaurant",
+        "location": "特拉法加，靠近特拉法加瀑布",
+        "desc": "在雨林植物园中露天用餐，自1969年营业至今——克里奥尔菜肴选用庄园内种植的食材。"
       },
       "laRobeCreole": {
         "name": "La Robe Creole",
@@ -1311,8 +1311,28 @@
       },
       "kozysNiche": {
         "name": "Kozy's Niche",
-        "location": "罗索",
+        "location": "罗索，Old Street 与 Kennedy Avenue 交界处",
         "desc": "深受游客喜爱，融合意大利与加勒比风味——推荐尝试狮子鱼或炭烤鲯鳅鱼。"
+      },
+      "guiyave": {
+        "name": "Guiyave Restaurant & Patisserie",
+        "location": "罗索，科克街",
+        "desc": "罗索地标餐厅，坐落于一栋法式殖民风格历史建筑内——楼下供应自助式克里奥尔午餐，楼上甜品店提供自制冰淇淋和糕点。"
+      },
+      "palisadesFortYoung": {
+        "name": "The Palisades（约克堡酒店）",
+        "location": "罗索，维多利亚街",
+        "desc": "可俯瞰加勒比海的滨海克里奥尔海鲜餐厅，以狮子鱼「Bon Femme」风味闻名。"
+      },
+      "patosSnackette": {
+        "name": "Pato's Snackette",
+        "location": "罗索市中心，Jr's Bar 内",
+        "desc": "地道的炸饼（bake）与咸鱼小吃——当地人喜爱的休闲小店，适合在行程间快速品尝正宗美食。"
+      },
+      "cornerhouseCafe": {
+        "name": "Cornerhouse Cafe",
+        "location": "罗索，乔治五世国王街",
+        "desc": "市中心一家轻松惬意的咖啡馆，供应地道的克里奥尔午餐。"
       }
     },
     "tips": {
@@ -1390,14 +1410,14 @@
       },
       "s6": {
         "name": "第6段",
-        "route": "Castle Bruce（Richmond） 至 Hatten Garden",
+        "route": "Castle Bruce（Richmond） 至 Hatton Garden",
         "distance": "14.4公里",
         "duration": "未注明",
         "desc": "进入卡利纳戈领地——多米尼克原住民卡利纳戈人的家园，途经卡利纳戈 Barana Aute 文化村、Isulakati 瀑布，以及壮丽的大西洋海岸线景观，还有 L'Escalier Tete Chien 与 Horseback Ridge。"
       },
       "s7": {
         "name": "第7段",
-        "route": "Hatten Garden 至 First Camp（马里戈特高地）",
+        "route": "Hatton Garden 至 First Camp（马里戈特高地）",
         "distance": "8.9公里",
         "duration": "未注明",
         "desc": "带你初探多米尼克的农业腹地，穿越耕地与原始林，沿途河流与海岸风光交织。经过 Congorie Hole 与 Walter Williams 果园——著名的鹦鹉栖息地与观鸟点，还设有专属观鸟塔——并可远眺东北海岸与梅尔维尔霍尔机场。"

@@ -1289,10 +1289,10 @@
     "diningFootnote": "La disponibilidad y los horarios pueden cambiar — llama con antelación para reservar.",
     "tipsTitle": "Consejos prácticos",
     "restaurants": {
-      "gouteDominik": {
-        "name": "Goûte Dominik",
-        "location": "Experiencia gastronómica en la selva tropical",
-        "desc": "\"Tu comida empieza en la selva tropical\" — una experiencia de cocina criolla creada con ingredientes de la selva."
+      "papillote": {
+        "name": "Papillote Rainforest Restaurant",
+        "location": "Trafalgar, cerca de las cataratas Trafalgar",
+        "desc": "Comida al aire libre en un jardín botánico de selva tropical, sirviendo desde 1969 — platos criollos elaborados con ingredientes cultivados en el propio terreno."
       },
       "laRobeCreole": {
         "name": "La Robe Creole",
@@ -1311,8 +1311,28 @@
       },
       "kozysNiche": {
         "name": "Kozy's Niche",
-        "location": "Roseau",
+        "location": "Old Street y Kennedy Avenue, Roseau",
         "desc": "Un favorito de los visitantes que combina sabores italianos y caribeños — pruebe el pez león o el mahi mahi a la parrilla."
+      },
+      "guiyave": {
+        "name": "Guiyave Restaurant & Patisserie",
+        "location": "Cork Street, Roseau",
+        "desc": "Un referente de Roseau en una histórica casa de estilo colonial francés — almuerzos criollos estilo buffet en la planta baja, helados y repostería caseros en la pastelería del piso superior."
+      },
+      "palisadesFortYoung": {
+        "name": "The Palisades, Fort Young Hotel",
+        "location": "Victoria Street, Roseau",
+        "desc": "Cocina criolla de mariscos frente al mar con vistas al Caribe, conocida por su pez león \"Bon Femme\"."
+      },
+      "patosSnackette": {
+        "name": "Pato's Snackette",
+        "location": "Dentro de Jr's Bar, centro de Roseau",
+        "desc": "Lo auténtico para probar bakes y bacalao salado — un favorito local para un bocado rápido y genuino entre excursiones."
+      },
+      "cornerhouseCafe": {
+        "name": "Cornerhouse Cafe",
+        "location": "King George V Street, Roseau",
+        "desc": "Un café relajado para un buen almuerzo criollo en el corazón de la ciudad."
       }
     },
     "tips": {
@@ -1390,14 +1410,14 @@
       },
       "s6": {
         "name": "Tramo 6",
-        "route": "Castle Bruce (Richmond) a Hatten Garden",
+        "route": "Castle Bruce (Richmond) a Hatton Garden",
         "distance": "14.4 km",
         "duration": "No especificada",
         "desc": "Entra en el Territorio Kalinago, hogar del pueblo indígena kalinago de Dominica, pasando por el pueblo cultural Kalinago Barana Aute, la cascada Isulakati y espectaculares vistas de la costa atlántica, además de L'Escalier Tete Chien y Horseback Ridge."
       },
       "s7": {
         "name": "Tramo 7",
-        "route": "Hatten Garden a First Camp (alturas de Marigot)",
+        "route": "Hatton Garden a First Camp (alturas de Marigot)",
         "distance": "8.9 km",
         "duration": "No especificada",
         "desc": "Una introducción al corazón agrícola de Dominica, cruzando tierras cultivadas y bosque primario entre ríos y vistas costeras. Pasa por Congorie Hole y el huerto Walter Williams — un reconocido hábitat de loros y punto de observación de aves con su propia torre — con vistas a la costa noreste y al aeropuerto de Melville Hall."

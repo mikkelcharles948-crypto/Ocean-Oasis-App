@@ -1289,10 +1289,10 @@
     "diningFootnote": "Availability and hours can change — call ahead for reservations.",
     "tipsTitle": "Practical Tips",
     "restaurants": {
-      "gouteDominik": {
-        "name": "Goûte Dominik",
-        "location": "Rainforest dining experience",
-        "desc": "\"Your meal starts in the rainforest\" — a Creole cuisine experience built around rainforest-sourced ingredients."
+      "papillote": {
+        "name": "Papillote Rainforest Restaurant",
+        "location": "Trafalgar, near Trafalgar Falls",
+        "desc": "Open-air dining in a botanical rainforest garden, serving since 1969 — Creole dishes built around ingredients grown right on the property."
       },
       "laRobeCreole": {
         "name": "La Robe Creole",
@@ -1311,8 +1311,28 @@
       },
       "kozysNiche": {
         "name": "Kozy's Niche",
-        "location": "Roseau",
+        "location": "Old Street & Kennedy Avenue, Roseau",
         "desc": "A guest favourite blending Italian and Caribbean flavours — try the lionfish or the grilled mahi mahi."
+      },
+      "guiyave": {
+        "name": "Guiyave Restaurant & Patisserie",
+        "location": "Cork Street, Roseau",
+        "desc": "A Roseau landmark in a historic French-colonial house — buffet-style Creole lunches downstairs, homemade ice cream and pastries in the patisserie upstairs."
+      },
+      "palisadesFortYoung": {
+        "name": "The Palisades, Fort Young Hotel",
+        "location": "Victoria Street, Roseau",
+        "desc": "Waterfront Creole seafood with Caribbean Sea views, known for its Lion Fish Bon Femme."
+      },
+      "patosSnackette": {
+        "name": "Pato's Snackette",
+        "location": "Inside Jr's Bar, central Roseau",
+        "desc": "The real thing for bakes and saltfish — a casual local favourite for a quick, authentic bite between excursions."
+      },
+      "cornerhouseCafe": {
+        "name": "Cornerhouse Cafe",
+        "location": "King George V Street, Roseau",
+        "desc": "A relaxed café for a proper Creole lunch in the heart of town."
       }
     },
     "tips": {
@@ -1390,14 +1410,14 @@
       },
       "s6": {
         "name": "Segment 6",
-        "route": "Castle Bruce (Richmond) to Hatten Garden",
+        "route": "Castle Bruce (Richmond) to Hatton Garden",
         "distance": "14.4 km",
         "duration": "Not specified",
         "desc": "Enters the Kalinago Territory, home to Dominica's Indigenous Kalinago people, passing the Kalinago Barana Aute cultural village, Isulakati Waterfall, and stunning Atlantic coastline views, plus L'Escalier Tete Chien and Horseback Ridge."
       },
       "s7": {
         "name": "Segment 7",
-        "route": "Hatten Garden to First Camp (Heights of Marigot)",
+        "route": "Hatton Garden to First Camp (Heights of Marigot)",
         "distance": "8.9 km",
         "duration": "Not specified",
         "desc": "An introduction to Dominica's agricultural heartland, crossing cultivated farmland and primary forest between rivers and coastal vistas. Passes Congorie Hole and Walter Williams Orchard — a noted parrot habitat and birdwatching spot with its own birding tower — with views over the northeast coast and Melville Hall Airport."

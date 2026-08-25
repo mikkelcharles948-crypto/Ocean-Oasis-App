@@ -8,12 +8,22 @@ import { ScreenHeader, Card, SectionHeader } from '../../components/UI';
 import { colors, spacing, radius, font, shadow } from '../../theme/theme';
 import { openInGoogleMaps } from '../../utils/openMap';
 
+// Verified against current sources (Tripadvisor, Wanderlog, Discover
+// Dominica) rather than carried over unchecked — "Goûte Dominik" was
+// previously (and incorrectly) used as a restaurant name here, but it's
+// actually the name of Dominica's annual restaurant-week festival (see
+// src/i18n/content/events.js, e_11); the real rainforest venue that
+// description was describing is Papillote Rainforest Restaurant.
 const RESTAURANTS = [
-  { key: 'gouteDominik', icon: 'leaf-outline' },
   { key: 'laRobeCreole', icon: 'restaurant-outline' },
   { key: 'pearlsCuisine', icon: 'cafe-outline' },
   { key: 'theGreatOldHouse', icon: 'restaurant-outline' },
   { key: 'kozysNiche', icon: 'restaurant-outline' },
+  { key: 'guiyave', icon: 'cafe-outline' },
+  { key: 'palisadesFortYoung', icon: 'restaurant-outline' },
+  { key: 'patosSnackette', icon: 'fast-food-outline' },
+  { key: 'cornerhouseCafe', icon: 'cafe-outline' },
+  { key: 'papillote', icon: 'leaf-outline' },
 ];
 
 const TIPS = ['currency', 'language', 'driving', 'tipping', 'weather', 'water'];
