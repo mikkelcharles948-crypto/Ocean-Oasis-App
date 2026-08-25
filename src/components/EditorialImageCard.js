@@ -1,9 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import AnimatedPressable from './AnimatedPressable';
 import { colors, radius, spacing, typography, shadow } from '../theme/theme';
 import { optimizeImageUrl } from '../utils/optimizeImageUrl';
 
@@ -43,7 +42,7 @@ export default function EditorialImageCard({
   const optimizedImage = image?.uri ? { ...image, uri: optimizeImageUrl(image.uri, imageWidth) } : image;
 
   return (
-    <AnimatedPressable onPress={onPress} style={[styles.wrap, { height }, style]} scaleTo={0.97}>
+    <TouchableOpacity onPress={onPress} activeOpacity={0.9} style={[styles.wrap, { height }, style]}>
       {optimizedImage ? (
         <Image source={optimizedImage} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} />
       ) : (
@@ -67,7 +66,7 @@ export default function EditorialImageCard({
           {trailing ? <Text style={styles.trailing} numberOfLines={1}>{trailing}</Text> : null}
         </View>
       </View>
-    </AnimatedPressable>
+    </TouchableOpacity>
   );
 }
 
@@ -79,7 +78,13 @@ const styles = StyleSheet.create({
     ...shadow.card,
   },
   fallback: { alignItems: 'center', justifyContent: 'center', backgroundColor: colors.sandLight },
-  content: { flex: 1, justifyContent: 'flex-end', padding: spacing.md },
+  // Absolutely positioned (not flex:1 in normal flow alongside the
+  // absolute-filled image/gradient siblings above) — same overlay pattern
+  // HeroMedia already uses successfully. Mixing an in-flow flex child with
+  // absolute-positioned siblings under an Animated/Pressable parent is the
+  // kind of thing that can render inconsistently on Android; this removes
+  // the ambiguity entirely by making every layer here position:absolute.
+  content: { ...StyleSheet.absoluteFillObject, justifyContent: 'flex-end', padding: spacing.md },
   eyebrow: { color: colors.goldSoft, marginBottom: 6 },
   titleRow: { flexShrink: 1 },
   title: { color: colors.white },
