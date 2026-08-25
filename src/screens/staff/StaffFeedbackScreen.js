@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 import { Card, ScreenHeader, EmptyState, timeAgo } from '../../components/UI';
 import { colors, spacing, radius, font } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 export default function StaffFeedbackScreen({ navigation }) {
+  const { t } = useTranslation();
   const { feedback, propertySettings, resolveFeedback } = useApp();
   const [filter, setFilter] = useState('ALERTS');
   const [notes, setNotes] = useState({});
@@ -14,14 +16,15 @@ export default function StaffFeedbackScreen({ navigation }) {
 
   const sorted = [...feedback].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   const filtered = filter === 'ALERTS' ? sorted.filter((f) => f.overall <= threshold && !f.resolved) : filter === 'ALL' ? sorted : sorted.filter((f) => f.overall >= 4);
+  const filterLabel = (f) => (f === 'ALERTS' ? t('staff.feedback.filters.alerts') : f === 'ALL' ? t('staff.feedback.filters.all') : t('staff.feedback.filters.positive'));
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
-      <ScreenHeader title="Guest Feedback" onBack={() => navigation.goBack()} />
+      <ScreenHeader title={t('staff.feedback.title')} onBack={() => navigation.goBack()} />
       <View style={styles.filterRow}>
         {['ALERTS', 'ALL', 'POSITIVE'].map((f) => (
           <TouchableOpacity key={f} onPress={() => setFilter(f)} style={[styles.filterPill, filter === f && styles.filterPillActive]}>
-            <Text style={[styles.filterPillText, filter === f && styles.filterPillTextActive]}>{f === 'ALERTS' ? 'Needs Attention' : f === 'ALL' ? 'All' : 'Positive'}</Text>
+            <Text style={[styles.filterPillText, filter === f && styles.filterPillTextActive]}>{filterLabel(f)}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -30,14 +33,14 @@ export default function StaffFeedbackScreen({ navigation }) {
         data={filtered}
         keyExtractor={(f) => f.id}
         contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.sm, gap: spacing.sm, paddingBottom: spacing.xxl }}
-        ListEmptyComponent={<EmptyState icon="star-outline" title="All clear" subtitle="No feedback matches this filter." />}
+        ListEmptyComponent={<EmptyState icon="star-outline" title={t('staff.feedback.empty.title')} subtitle={t('staff.feedback.empty.subtitle')} />}
         renderItem={({ item }) => {
           const isAlert = item.overall <= threshold;
           return (
             <Card style={isAlert && !item.resolved ? { backgroundColor: '#FBF0EC', borderWidth: 1, borderColor: '#EAC3B8' } : {}}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <View>
-                  <Text style={styles.guestName}>{item.guestName} — Room {item.roomNumber}</Text>
+                  <Text style={styles.guestName}>{t('staff.feedback.guestRoom', { name: item.guestName, room: item.roomNumber })}</Text>
                   <Text style={styles.time}>{timeAgo(item.createdAt)}</Text>
                 </View>
                 <Text style={[styles.rating, { color: isAlert ? colors.error : colors.success }]}>{item.overall}/5</Text>
@@ -48,16 +51,16 @@ export default function StaffFeedbackScreen({ navigation }) {
                   <TextInput
                     value={notes[item.id] || ''}
                     onChangeText={(v) => setNotes({ ...notes, [item.id]: v })}
-                    placeholder="Resolution note…"
+                    placeholder={t('staff.feedback.notePlaceholder')}
                     placeholderTextColor={colors.slate}
                     style={styles.noteInput}
                   />
-                  <TouchableOpacity onPress={() => resolveFeedback(item.id, notes[item.id] || 'Resolved by staff')} style={styles.resolveBtn}>
-                    <Text style={styles.resolveBtnText}>Resolve</Text>
+                  <TouchableOpacity onPress={() => resolveFeedback(item.id, notes[item.id] || t('staff.feedback.defaultResolutionNote'))} style={styles.resolveBtn}>
+                    <Text style={styles.resolveBtnText}>{t('staff.feedback.resolve')}</Text>
                   </TouchableOpacity>
                 </View>
               )}
-              {item.resolved && item.resolutionNote ? <Text style={styles.resolvedNote}>✓ Resolved: {item.resolutionNote}</Text> : null}
+              {item.resolved && item.resolutionNote ? <Text style={styles.resolvedNote}>{t('staff.feedback.resolvedNote', { note: item.resolutionNote })}</Text> : null}
             </Card>
           );
         }}

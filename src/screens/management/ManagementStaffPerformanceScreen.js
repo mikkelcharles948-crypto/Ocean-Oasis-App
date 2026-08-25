@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 import { Card, ScreenHeader } from '../../components/UI';
 import { colors, spacing, font } from '../../theme/theme';
@@ -11,13 +12,14 @@ function minutesBetween(a, b) {
   if (!a || !b) return null;
   return Math.round((new Date(b).getTime() - new Date(a).getTime()) / 60000);
 }
-function fmtMins(n) {
-  if (n === null || n === undefined) return '—';
-  if (n < 60) return `${n} min`;
-  return `${Math.floor(n / 60)}h ${n % 60}m`;
+function fmtMins(n, t) {
+  if (n === null || n === undefined) return t('management.operations.noData');
+  if (n < 60) return t('management.operations.minutesShort', { count: n });
+  return t('management.operations.hoursMinutesShort', { h: Math.floor(n / 60), m: n % 60 });
 }
 
 export default function ManagementStaffPerformanceScreen({ navigation }) {
+  const { t } = useTranslation();
   const { serviceRequests, staffDirectory } = useApp();
 
   const rows = staffDirectory.map((s) => {
@@ -31,7 +33,7 @@ export default function ManagementStaffPerformanceScreen({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
-      <ScreenHeader title="Staff Performance" onBack={() => navigation.goBack()} />
+      <ScreenHeader title={t('management.staffPerformance.title')} onBack={() => navigation.goBack()} />
       <FlatList
         data={rows}
         keyExtractor={(s) => s.id}
@@ -41,11 +43,11 @@ export default function ManagementStaffPerformanceScreen({ navigation }) {
             <View style={styles.avatar}><Text style={styles.avatarText}>{item.name.split(' ').map((n) => n[0]).join('').slice(0, 2)}</Text></View>
             <View style={{ flex: 1 }}>
               <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.meta}>{ROLE_LABELS[item.role]} · {item.department}</Text>
+              <Text style={styles.meta}>{t(`common.roleLabels.${item.role}`, { defaultValue: ROLE_LABELS[item.role] })} · {item.department}</Text>
             </View>
             <View style={{ alignItems: 'flex-end' }}>
               <Text style={styles.count}>{item.completedCount}/{item.assignedCount}</Text>
-              <Text style={styles.avgTime}>{fmtMins(item.avgResolution)} avg</Text>
+              <Text style={styles.avgTime}>{t('management.operations.avgSuffix', { time: fmtMins(item.avgResolution, t) })}</Text>
             </View>
           </Card>
         )}

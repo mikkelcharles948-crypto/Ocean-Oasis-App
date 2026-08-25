@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, EmptyState, timeAgo } from '../../components/UI';
 import { colors, spacing } from '../../theme/theme';
@@ -8,23 +9,24 @@ import { useApp } from '../../context/AppContext';
 import { ROLE_LABELS } from '../../data/mockData';
 
 export default function ManagementAuditLogScreen({ navigation }) {
+  const { t } = useTranslation();
   const { auditLog } = useApp();
   const sorted = [...auditLog].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
-      <ScreenHeader title="Audit Log" onBack={() => navigation.goBack()} />
+      <ScreenHeader title={t('management.auditLog.title')} onBack={() => navigation.goBack()} />
       <FlatList
         data={sorted}
         keyExtractor={(l) => l.id}
         contentContainerStyle={{ padding: spacing.lg, gap: spacing.sm, paddingBottom: spacing.xxl }}
-        ListEmptyComponent={<EmptyState icon="list-outline" title="No activity yet" />}
+        ListEmptyComponent={<EmptyState icon="list-outline" title={t('management.auditLog.empty')} />}
         renderItem={({ item }) => (
           <View style={styles.row}>
             <View style={styles.dot} />
             <View style={{ flex: 1 }}>
               <Text style={styles.action}>{item.action}</Text>
-              <Text style={styles.meta}>{item.actorName} · {ROLE_LABELS[item.actorRole] || item.actorRole} · {timeAgo(item.timestamp)}</Text>
+              <Text style={styles.meta}>{item.actorName} · {t(`common.roleLabels.${item.actorRole}`, { defaultValue: ROLE_LABELS[item.actorRole] || item.actorRole })} · {timeAgo(item.timestamp)}</Text>
             </View>
           </View>
         )}

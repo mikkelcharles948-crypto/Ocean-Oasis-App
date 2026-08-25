@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 import { Card, ScreenHeader, Badge, timeAgo } from '../../components/UI';
 import { colors, spacing, radius } from '../../theme/theme';
@@ -10,11 +11,12 @@ import { CONTENT_STATUSES } from '../../data/mockData';
 const STATUS_TONE = { DRAFT: 'neutral', SCHEDULED: 'warning', PUBLISHED: 'success', ARCHIVED: 'neutral' };
 
 export default function ManagementContentScreen({ navigation }) {
+  const { t } = useTranslation();
   const { contentItems, setContentStatus } = useApp();
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
-      <ScreenHeader title="Content" onBack={() => navigation.goBack()} />
+      <ScreenHeader title={t('management.content.title')} onBack={() => navigation.goBack()} />
       <FlatList
         data={contentItems}
         keyExtractor={(c) => c.id}
@@ -26,7 +28,7 @@ export default function ManagementContentScreen({ navigation }) {
               <Badge label={item.status} tone={STATUS_TONE[item.status]} />
             </View>
             <Text style={styles.title}>{item.title}</Text>
-            <Text style={styles.meta}>Updated {timeAgo(item.updatedAt)}</Text>
+            <Text style={styles.meta}>{t('management.content.updatedLabel', { time: timeAgo(item.updatedAt) })}</Text>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: spacing.sm }}>
               {CONTENT_STATUSES.map((s) => (
                 <TouchableOpacity key={s} onPress={() => setContentStatus(item.id, s)} style={[styles.chip, item.status === s && styles.chipActive]}>

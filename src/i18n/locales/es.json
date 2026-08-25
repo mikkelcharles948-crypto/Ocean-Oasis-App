@@ -29,6 +29,18 @@
     "availability": {
       "available": "Disponible",
       "limitedSpots": "Cupos limitados"
+    },
+    "roleLabels": {
+      "SUPER_ADMIN": "Superadministrador",
+      "GENERAL_MANAGER": "Director general",
+      "MANAGEMENT": "Dirección",
+      "FRONT_DESK": "Recepción",
+      "CONCIERGE": "Conserjería",
+      "HOUSEKEEPING": "Limpieza",
+      "MAINTENANCE": "Mantenimiento",
+      "FOOD_AND_BEVERAGE": "Alimentos y bebidas",
+      "ACTIVITIES_MANAGER": "Responsable de actividades",
+      "MARKETING": "Marketing"
     }
   },
   "nav": {
@@ -629,5 +641,351 @@
     "enterEmailAndPassword": "Ingresa tu correo electrónico y contraseña.",
     "noAccessToThisDashboard": "Esta cuenta no tiene acceso a este panel.",
     "unableToSignIn": "No se pudo iniciar sesión."
+  },
+  "staff": {
+    "tabs": {
+      "dashboard": "Panel",
+      "rooms": "Habitaciones"
+    },
+    "moreScreen": {
+      "title": "Más",
+      "subtitle": "Todo lo demás en Operaciones de Personal.",
+      "items": {
+        "guests": {
+          "label": "Huéspedes",
+          "sub": "Perfiles de huéspedes unificados"
+        },
+        "maintenance": {
+          "label": "Mantenimiento",
+          "sub": "Órdenes de trabajo y seguimiento de respuesta"
+        },
+        "events": {
+          "label": "Eventos",
+          "sub": "Publicar eventos del hotel"
+        },
+        "feedback": {
+          "label": "Comentarios",
+          "sub": "Alertas de experiencia del huésped"
+        },
+        "notifications": {
+          "label": "Notificaciones",
+          "sub": "Alertas del equipo"
+        },
+        "profile": {
+          "label": "Perfil",
+          "sub": "Tu cuenta"
+        }
+      }
+    },
+    "dashboard": {
+      "eyebrow": "OCEAN OASIS · OPERACIONES",
+      "greetingMorning": "Buenos días, {{name}}",
+      "greetingAfternoon": "Buenas tardes, {{name}}",
+      "greetingEvening": "Buenas noches, {{name}}",
+      "teamFallback": "Equipo",
+      "kpi": {
+        "occupancy": "Ocupación",
+        "roomsSub": "{{count}}/{{total}} habitaciones",
+        "openRequests": "Solicitudes abiertas",
+        "urgentSub": "{{count}} urgentes",
+        "maintenance": "Mantenimiento",
+        "openIssuesSub": "problemas abiertos",
+        "feedbackAlerts": "Alertas de comentarios",
+        "needFollowUpSub": "requieren seguimiento"
+      },
+      "alertBanner": "⚠ Requiere atención inmediata",
+      "alertRequestLine": "Habitación {{room}} — {{category}}: {{description}}",
+      "alertFeedbackLine": "Habitación {{room}} — Alerta de experiencia del huésped, calificada {{rating}}/5",
+      "priorityQueue": "Cola prioritaria",
+      "viewAll": "Ver todo",
+      "noOpenRequests": "No hay solicitudes abiertas en este momento.",
+      "maintenanceWatchlist": "Seguimiento de mantenimiento",
+      "noOpenMaintenance": "No hay problemas de mantenimiento abiertos."
+    },
+    "requests": {
+      "title": "Solicitudes",
+      "subtitle": "Las solicitudes de los huéspedes llegan aquí al instante.",
+      "filters": {
+        "open": "Abiertas",
+        "all": "Todas"
+      },
+      "empty": {
+        "title": "Nada aquí",
+        "subtitle": "Ninguna solicitud coincide con este filtro."
+      },
+      "cardTitle": "Habitación {{number}} — {{category}}",
+      "modalRoomTitle": "Habitación {{number}}",
+      "assignedTo": "Asignada a {{name}}",
+      "guestLabel": "Huésped: ",
+      "categoryLabel": "Categoría: ",
+      "descriptionLabel": "Descripción: ",
+      "preferredTimeLabel": "Hora preferida: ",
+      "assignToStaff": "Asignar a personal",
+      "updateStatus": "Actualizar estado",
+      "internalNotes": "Notas internas",
+      "notePlaceholder": "Añadir una nota interna…",
+      "addNote": "Añadir",
+      "statusCancelled": "Cancelada"
+    },
+    "rooms": {
+      "title": "Habitaciones y limpieza",
+      "subtitle": "{{count}} habitaciones · estado en vivo compartido con las vistas de huéspedes y dirección.",
+      "floorLabel": "{{type}} · Piso {{floor}}",
+      "guestLabel": "Huésped: {{name}}",
+      "updateStatus": "Actualizar estado",
+      "statusLabels": {
+        "VACANT_CLEAN": "Libre · Limpia",
+        "VACANT_DIRTY": "Libre · Sucia",
+        "OCCUPIED_CLEAN": "Ocupada · Limpia",
+        "OCCUPIED_SERVICE_REQUIRED": "Requiere servicio",
+        "INSPECTION_REQUIRED": "Requiere inspección",
+        "OUT_OF_ORDER": "Fuera de servicio"
+      }
+    },
+    "activities": {
+      "title": "Actividades",
+      "subtitle": "Publica actividades que los huéspedes pueden reservar desde la app.",
+      "bookedOf": "{{booked}}/{{capacity}} reservados",
+      "whenLabel": "Cuándo: ",
+      "priceLabel": "Precio: ",
+      "meetingPointLabel": "Punto de encuentro: ",
+      "capacityLabel": "Capacidad: ",
+      "guestList": "Lista de huéspedes ({{count}})",
+      "noBookings": "Aún no hay reservas.",
+      "guestFallback": "Huésped",
+      "guestCountSuffix": "{{count}} persona(s)",
+      "newActivity": "Nueva actividad",
+      "nameLabel": "Nombre",
+      "namePlaceholder": "ej. Kayak en el arrecife de las tortugas",
+      "shortDescLabel": "Descripción breve",
+      "fullDescLabel": "Descripción completa",
+      "dateLabel": "Fecha (AAAA-MM-DD)",
+      "timeLabel": "Hora",
+      "durationLabel": "Duración",
+      "capacityFieldLabel": "Capacidad",
+      "priceFieldLabel": "Precio (mostrado)",
+      "meetingPointFieldLabel": "Punto de encuentro",
+      "publish": "Publicar en la app del huésped"
+    },
+    "events": {
+      "title": "Eventos",
+      "newEvent": "Nuevo evento",
+      "titleLabel": "Título",
+      "descriptionLabel": "Descripción",
+      "dateLabel": "Fecha (AAAA-MM-DD)",
+      "timeLabel": "Hora",
+      "locationLabel": "Ubicación",
+      "capacityLabel": "Capacidad",
+      "saveAsDraft": "Guardar como borrador"
+    },
+    "feedback": {
+      "title": "Comentarios de huéspedes",
+      "filters": {
+        "alerts": "Requiere atención",
+        "all": "Todos",
+        "positive": "Positivos"
+      },
+      "empty": {
+        "title": "Todo en orden",
+        "subtitle": "Ningún comentario coincide con este filtro."
+      },
+      "guestRoom": "{{name}} — Habitación {{room}}",
+      "notePlaceholder": "Nota de resolución…",
+      "resolve": "Resolver",
+      "resolvedNote": "✓ Resuelto: {{note}}",
+      "defaultResolutionNote": "Resuelto por el personal"
+    },
+    "guests": {
+      "title": "Huéspedes",
+      "roomReservation": "Habitación {{room}} · {{reservation}}",
+      "roomLabel": "Habitación: ",
+      "reservationLabel": "Reserva: ",
+      "checkInLabel": "Entrada: ",
+      "checkOutLabel": "Salida: ",
+      "serviceRequests": "Solicitudes de servicio",
+      "activitiesBooked": "Actividades reservadas",
+      "noneOnFile": "Ninguna registrada.",
+      "noneSubmitted": "Ninguno enviado.",
+      "guestsBookedSuffix": "{{count}} persona(s) reservadas"
+    },
+    "maintenance": {
+      "title": "Mantenimiento",
+      "newIssueTitle": "Registrar problema de mantenimiento",
+      "roomNumberLabel": "Número de habitación",
+      "roomNumberPlaceholder": "ej. 204",
+      "categoryLabel": "Categoría",
+      "severityLabel": "Gravedad",
+      "descriptionLabel": "Descripción",
+      "logIssue": "Registrar problema",
+      "startWork": "Iniciar trabajo",
+      "markResolved": "Marcar como resuelto",
+      "emptyTitle": "Sin problemas aquí",
+      "emptySubtitle": "Nada que mostrar para este filtro."
+    },
+    "notifications": {
+      "title": "Notificaciones",
+      "markAll": "Marcar todo",
+      "empty": "Estás al día"
+    },
+    "profile": {
+      "title": "Perfil",
+      "assignedTasks": "Tareas asignadas",
+      "switchExperience": "Cambiar de experiencia",
+      "switchConfirmTitle": "Cambiar de experiencia",
+      "switchConfirmMsg": "Esto cerrará tu sesión en el Panel de Personal.",
+      "switchConfirmBtn": "Cambiar"
+    }
+  },
+  "management": {
+    "tabs": {
+      "overview": "Resumen",
+      "experience": "Experiencia",
+      "operations": "Operaciones"
+    },
+    "more": {
+      "title": "Más",
+      "subtitle": "Todo lo demás en Dirección.",
+      "items": {
+        "revenue": {
+          "label": "Análisis de ingresos",
+          "sub": "Ingresos atribuidos a la plataforma"
+        },
+        "activities": {
+          "label": "Análisis de actividades",
+          "sub": "Utilización e ingresos por actividad"
+        },
+        "content": {
+          "label": "Contenido",
+          "sub": "Destinos, preguntas frecuentes, anuncios"
+        },
+        "staffPerformance": {
+          "label": "Rendimiento del personal",
+          "sub": "Solicitudes asignadas frente a completadas"
+        },
+        "auditLog": {
+          "label": "Registro de auditoría",
+          "sub": "Todas las acciones administrativas"
+        },
+        "settings": {
+          "label": "Configuración",
+          "sub": "Configuración de la propiedad"
+        }
+      }
+    },
+    "overview": {
+      "eyebrow": "OCEAN OASIS · DIRECCIÓN",
+      "heading": "Resumen",
+      "signedInAs": "Sesión iniciada como {{name}} · Datos de prueba",
+      "kpi": {
+        "guestSatisfaction": "Satisfacción del huésped",
+        "responsesSub": "{{count}} respuestas",
+        "totalSub": "{{count}} en total",
+        "platformRevenue": "Ingresos de la plataforma",
+        "revenueSub": "actividades + promociones"
+      },
+      "requestsByDepartment": "Solicitudes por departamento",
+      "completedOfTotal": "{{completed}}/{{total}} completadas",
+      "revenueNoteTitle": "Nota sobre ingresos",
+      "revenueNoteBefore": "Estas cifras reflejan ingresos con una transacción rastreable dentro de esta plataforma — reservas de actividades y promociones canjeadas. ",
+      "revenueNoteBold": "No",
+      "revenueNoteAfter": " son una medida del ingreso total del hotel, que también incluye ingresos por habitaciones y otros canales aún no integrados."
+    },
+    "experience": {
+      "heading": "Experiencia del huésped",
+      "sub": "Tendencias de satisfacción y seguimiento de recuperación de servicio.",
+      "kpi": {
+        "overallSatisfaction": "Satisfacción general",
+        "positive": "Positivos",
+        "positiveSub": "calificados 4–5",
+        "negative": "Negativos",
+        "negativeSub": "calificados 1–2",
+        "openAlerts": "Alertas abiertas",
+        "needRecoverySub": "requieren seguimiento"
+      },
+      "satisfactionByCategory": "Satisfacción por categoría",
+      "openAlertsSection": "Alertas de recuperación de servicio abiertas",
+      "noAlerts": "Sin alertas pendientes — buen trabajo.",
+      "alertRow": "Habitación {{room}} — {{rating}}/5",
+      "alertMeta": "{{name}} · {{time}}"
+    },
+    "operations": {
+      "heading": "Análisis de operaciones",
+      "sub": "Rendimiento de respuesta y resolución por departamento.",
+      "kpi": {
+        "totalRequests": "Solicitudes totales",
+        "avgResolution": "Resolución promedio",
+        "openMaintenance": "Mantenimiento abierto"
+      },
+      "departmentPerformance": "Rendimiento por departamento",
+      "totalSuffix": "{{count}} en total",
+      "completedSuffix": "{{count}} completadas",
+      "avgSuffix": "{{time}} en promedio",
+      "minutesShort": "{{count}} min",
+      "hoursMinutesShort": "{{h}} h {{m}} min",
+      "noData": "—"
+    },
+    "promotions": {
+      "title": "Promociones",
+      "newPromotion": "Nueva promoción",
+      "titleLabel": "Título",
+      "descriptionLabel": "Descripción",
+      "discountLabel": "Descuento",
+      "targetAudienceLabel": "Público objetivo",
+      "startDateLabel": "Fecha de inicio (AAAA-MM-DD)",
+      "endDateLabel": "Fecha de fin (AAAA-MM-DD)",
+      "archive": "Archivar",
+      "stats": {
+        "impressions": "Impresiones",
+        "clicks": "Clics",
+        "bookings": "Reservas",
+        "revenue": "Ingresos"
+      },
+      "conversionLine": "Conversión: {{conversion}}% · Canjes: {{redemptions}}"
+    },
+    "revenue": {
+      "title": "Análisis de ingresos",
+      "sub": "Solo ingresos atribuidos a la plataforma.",
+      "noteBoldTotal": "El ingreso total del hotel",
+      "noteMiddle": " (ingresos por habitaciones, restauración sin reserva, etc.) no es rastreado por esta plataforma. Las cifras a continuación son ",
+      "noteBoldPlatform": "ingresos atribuidos a la plataforma",
+      "noteEnd": " — transacciones con un evento rastreable dentro de Ocean Oasis Ops.",
+      "kpi": {
+        "activityRevenue": "Ingresos por actividades",
+        "bookingsSub": "{{count}} reservas",
+        "promotionRevenue": "Ingresos por promociones",
+        "redemptionsSub": "{{count}} canjes"
+      },
+      "byActivity": "Ingresos por actividad",
+      "byPromotion": "Ingresos por promoción"
+    },
+    "activityAnalytics": {
+      "title": "Análisis de actividades",
+      "metaLine": "{{booked}}/{{capacity}} reservados · {{bookings}} reservas · ${{revenue}} de ingresos",
+      "utilization": "Utilización"
+    },
+    "content": {
+      "title": "Contenido",
+      "updatedLabel": "Actualizado {{time}}"
+    },
+    "staffPerformance": {
+      "title": "Rendimiento del personal"
+    },
+    "auditLog": {
+      "title": "Registro de auditoría",
+      "empty": "Aún no hay actividad"
+    },
+    "settings": {
+      "title": "Configuración",
+      "signedInAs": "Sesión iniciada como",
+      "propertyDetails": "Detalles de la propiedad",
+      "property": "Propiedad",
+      "address": "Dirección",
+      "phone": "Teléfono",
+      "email": "Correo electrónico",
+      "rooms": "Habitaciones",
+      "multiPropertyTitle": "Arquitectura multipropiedad",
+      "multiPropertyNote": "Cada registro de este sistema lleva un identificador de propiedad. Hoy la plataforma está configurada para una sola propiedad; incorporar un segundo hotel solo requiere añadir otro property_id y una fila de configuración, sin cambios en la lógica principal.",
+      "switchConfirmMsg": "Esto cerrará tu sesión en el Panel de Dirección."
+    }
   }
 }

@@ -29,6 +29,18 @@
     "availability": {
       "available": "可预订",
       "limitedSpots": "名额有限"
+    },
+    "roleLabels": {
+      "SUPER_ADMIN": "超级管理员",
+      "GENERAL_MANAGER": "总经理",
+      "MANAGEMENT": "管理层",
+      "FRONT_DESK": "前台",
+      "CONCIERGE": "礼宾部",
+      "HOUSEKEEPING": "客房部",
+      "MAINTENANCE": "维修部",
+      "FOOD_AND_BEVERAGE": "餐饮部",
+      "ACTIVITIES_MANAGER": "活动经理",
+      "MARKETING": "市场部"
     }
   },
   "nav": {
@@ -629,5 +641,351 @@
     "enterEmailAndPassword": "请输入您的邮箱和密码。",
     "noAccessToThisDashboard": "此账户无权访问此仪表板。",
     "unableToSignIn": "无法登录。"
+  },
+  "staff": {
+    "tabs": {
+      "dashboard": "工作台",
+      "rooms": "客房"
+    },
+    "moreScreen": {
+      "title": "更多",
+      "subtitle": "员工运营的其他功能。",
+      "items": {
+        "guests": {
+          "label": "住客",
+          "sub": "统一的住客档案"
+        },
+        "maintenance": {
+          "label": "维修",
+          "sub": "工单与响应跟踪"
+        },
+        "events": {
+          "label": "活动",
+          "sub": "发布酒店活动"
+        },
+        "feedback": {
+          "label": "反馈",
+          "sub": "住客体验提醒"
+        },
+        "notifications": {
+          "label": "通知",
+          "sub": "团队提醒"
+        },
+        "profile": {
+          "label": "个人资料",
+          "sub": "您的账户"
+        }
+      }
+    },
+    "dashboard": {
+      "eyebrow": "OCEAN OASIS · 员工运营",
+      "greetingMorning": "早上好，{{name}}",
+      "greetingAfternoon": "下午好，{{name}}",
+      "greetingEvening": "晚上好，{{name}}",
+      "teamFallback": "团队",
+      "kpi": {
+        "occupancy": "入住率",
+        "roomsSub": "{{count}}/{{total}} 间客房",
+        "openRequests": "待处理请求",
+        "urgentSub": "{{count}} 项紧急",
+        "maintenance": "维修",
+        "openIssuesSub": "待处理问题",
+        "feedbackAlerts": "反馈提醒",
+        "needFollowUpSub": "需跟进"
+      },
+      "alertBanner": "⚠ 需要立即处理",
+      "alertRequestLine": "{{room}} 号房 — {{category}}：{{description}}",
+      "alertFeedbackLine": "{{room}} 号房 — 住客体验提醒，评分 {{rating}}/5",
+      "priorityQueue": "优先处理队列",
+      "viewAll": "查看全部",
+      "noOpenRequests": "目前没有待处理的请求。",
+      "maintenanceWatchlist": "维修关注列表",
+      "noOpenMaintenance": "目前没有待处理的维修问题。"
+    },
+    "requests": {
+      "title": "请求",
+      "subtitle": "住客请求一经提交即同步至此。",
+      "filters": {
+        "open": "待处理",
+        "all": "全部"
+      },
+      "empty": {
+        "title": "暂无内容",
+        "subtitle": "没有符合此筛选条件的请求。"
+      },
+      "cardTitle": "{{number}} 号房 — {{category}}",
+      "modalRoomTitle": "{{number}} 号房",
+      "assignedTo": "已分配给 {{name}}",
+      "guestLabel": "住客：",
+      "categoryLabel": "类别：",
+      "descriptionLabel": "描述：",
+      "preferredTimeLabel": "偏好时间：",
+      "assignToStaff": "分配给员工",
+      "updateStatus": "更新状态",
+      "internalNotes": "内部备注",
+      "notePlaceholder": "添加内部备注…",
+      "addNote": "添加",
+      "statusCancelled": "已取消"
+    },
+    "rooms": {
+      "title": "客房与客房部",
+      "subtitle": "共 {{count}} 间客房 · 实时状态与住客端和管理端共享。",
+      "floorLabel": "{{type}} · {{floor}} 楼",
+      "guestLabel": "住客：{{name}}",
+      "updateStatus": "更新状态",
+      "statusLabels": {
+        "VACANT_CLEAN": "空房 · 已清洁",
+        "VACANT_DIRTY": "空房 · 待清洁",
+        "OCCUPIED_CLEAN": "已入住 · 已清洁",
+        "OCCUPIED_SERVICE_REQUIRED": "需要服务",
+        "INSPECTION_REQUIRED": "需要检查",
+        "OUT_OF_ORDER": "停用中"
+      }
+    },
+    "activities": {
+      "title": "活动",
+      "subtitle": "发布住客可通过住客应用预订的活动。",
+      "bookedOf": "已预订 {{booked}}/{{capacity}}",
+      "whenLabel": "时间：",
+      "priceLabel": "价格：",
+      "meetingPointLabel": "集合地点：",
+      "capacityLabel": "容量：",
+      "guestList": "住客名单（{{count}}）",
+      "noBookings": "暂无预订。",
+      "guestFallback": "住客",
+      "guestCountSuffix": "{{count}} 位客人",
+      "newActivity": "新建活动",
+      "nameLabel": "名称",
+      "namePlaceholder": "例如：海龟礁皮划艇",
+      "shortDescLabel": "简短描述",
+      "fullDescLabel": "完整描述",
+      "dateLabel": "日期（YYYY-MM-DD）",
+      "timeLabel": "时间",
+      "durationLabel": "时长",
+      "capacityFieldLabel": "容量",
+      "priceFieldLabel": "价格（显示用）",
+      "meetingPointFieldLabel": "集合地点",
+      "publish": "发布到住客应用"
+    },
+    "events": {
+      "title": "活动",
+      "newEvent": "新建活动",
+      "titleLabel": "标题",
+      "descriptionLabel": "描述",
+      "dateLabel": "日期（YYYY-MM-DD）",
+      "timeLabel": "时间",
+      "locationLabel": "地点",
+      "capacityLabel": "容量",
+      "saveAsDraft": "保存为草稿"
+    },
+    "feedback": {
+      "title": "住客反馈",
+      "filters": {
+        "alerts": "需关注",
+        "all": "全部",
+        "positive": "正面评价"
+      },
+      "empty": {
+        "title": "一切正常",
+        "subtitle": "没有符合此筛选条件的反馈。"
+      },
+      "guestRoom": "{{name}} — {{room}} 号房",
+      "notePlaceholder": "处理备注…",
+      "resolve": "标记已处理",
+      "resolvedNote": "✓ 已处理：{{note}}",
+      "defaultResolutionNote": "已由员工处理"
+    },
+    "guests": {
+      "title": "住客",
+      "roomReservation": "{{room}} 号房 · {{reservation}}",
+      "roomLabel": "客房：",
+      "reservationLabel": "预订号：",
+      "checkInLabel": "入住：",
+      "checkOutLabel": "退房：",
+      "serviceRequests": "服务请求",
+      "activitiesBooked": "已预订活动",
+      "noneOnFile": "暂无记录。",
+      "noneSubmitted": "暂未提交。",
+      "guestsBookedSuffix": "已预订 {{count}} 位客人"
+    },
+    "maintenance": {
+      "title": "维修",
+      "newIssueTitle": "登记维修问题",
+      "roomNumberLabel": "房间号",
+      "roomNumberPlaceholder": "例如：204",
+      "categoryLabel": "类别",
+      "severityLabel": "严重程度",
+      "descriptionLabel": "描述",
+      "logIssue": "登记问题",
+      "startWork": "开始处理",
+      "markResolved": "标记为已解决",
+      "emptyTitle": "暂无相关问题",
+      "emptySubtitle": "此筛选条件下暂无内容。"
+    },
+    "notifications": {
+      "title": "通知",
+      "markAll": "全部标记已读",
+      "empty": "暂无未读通知"
+    },
+    "profile": {
+      "title": "个人资料",
+      "assignedTasks": "已分配任务",
+      "switchExperience": "切换体验",
+      "switchConfirmTitle": "切换体验",
+      "switchConfirmMsg": "这将退出员工工作台的登录。",
+      "switchConfirmBtn": "切换"
+    }
+  },
+  "management": {
+    "tabs": {
+      "overview": "概览",
+      "experience": "体验",
+      "operations": "运营"
+    },
+    "more": {
+      "title": "更多",
+      "subtitle": "管理层的其他功能。",
+      "items": {
+        "revenue": {
+          "label": "营收分析",
+          "sub": "平台归因营收"
+        },
+        "activities": {
+          "label": "活动分析",
+          "sub": "各活动的利用率与营收"
+        },
+        "content": {
+          "label": "内容",
+          "sub": "目的地、常见问题、公告"
+        },
+        "staffPerformance": {
+          "label": "员工绩效",
+          "sub": "已分配与已完成请求对比"
+        },
+        "auditLog": {
+          "label": "审计日志",
+          "sub": "所有管理操作记录"
+        },
+        "settings": {
+          "label": "设置",
+          "sub": "物业配置"
+        }
+      }
+    },
+    "overview": {
+      "eyebrow": "OCEAN OASIS · 管理层",
+      "heading": "概览",
+      "signedInAs": "当前登录：{{name}} · 示例数据",
+      "kpi": {
+        "guestSatisfaction": "住客满意度",
+        "responsesSub": "{{count}} 条回复",
+        "totalSub": "共 {{count}} 项",
+        "platformRevenue": "平台营收",
+        "revenueSub": "活动 + 促销"
+      },
+      "requestsByDepartment": "按部门划分的请求",
+      "completedOfTotal": "已完成 {{completed}}/{{total}}",
+      "revenueNoteTitle": "营收说明",
+      "revenueNoteBefore": "这些数字反映的是该平台内可追溯交易产生的营收——活动预订与已兑换的促销。它们",
+      "revenueNoteBold": "并不",
+      "revenueNoteAfter": "代表酒店总营收，酒店总营收还包括客房收入及其他尚未整合的渠道。"
+    },
+    "experience": {
+      "heading": "住客体验",
+      "sub": "满意度趋势与服务补救跟踪。",
+      "kpi": {
+        "overallSatisfaction": "总体满意度",
+        "positive": "正面评价",
+        "positiveSub": "评分 4–5",
+        "negative": "负面评价",
+        "negativeSub": "评分 1–2",
+        "openAlerts": "待处理提醒",
+        "needRecoverySub": "需服务补救"
+      },
+      "satisfactionByCategory": "分类满意度",
+      "openAlertsSection": "待处理的服务补救提醒",
+      "noAlerts": "没有未处理的提醒——做得很好。",
+      "alertRow": "{{room}} 号房 — {{rating}}/5",
+      "alertMeta": "{{name}} · {{time}}"
+    },
+    "operations": {
+      "heading": "运营分析",
+      "sub": "各部门的响应与处理绩效。",
+      "kpi": {
+        "totalRequests": "请求总数",
+        "avgResolution": "平均处理时长",
+        "openMaintenance": "待处理维修"
+      },
+      "departmentPerformance": "部门绩效",
+      "totalSuffix": "共 {{count}} 项",
+      "completedSuffix": "已完成 {{count}} 项",
+      "avgSuffix": "平均 {{time}}",
+      "minutesShort": "{{count}} 分钟",
+      "hoursMinutesShort": "{{h}} 小时 {{m}} 分钟",
+      "noData": "—"
+    },
+    "promotions": {
+      "title": "促销活动",
+      "newPromotion": "新建促销",
+      "titleLabel": "标题",
+      "descriptionLabel": "描述",
+      "discountLabel": "折扣",
+      "targetAudienceLabel": "目标客群",
+      "startDateLabel": "开始日期（YYYY-MM-DD）",
+      "endDateLabel": "结束日期（YYYY-MM-DD）",
+      "archive": "归档",
+      "stats": {
+        "impressions": "曝光量",
+        "clicks": "点击量",
+        "bookings": "预订量",
+        "revenue": "营收"
+      },
+      "conversionLine": "转化率：{{conversion}}% · 兑换次数：{{redemptions}}"
+    },
+    "revenue": {
+      "title": "营收分析",
+      "sub": "仅显示平台归因营收。",
+      "noteBoldTotal": "酒店总营收",
+      "noteMiddle": "（客房收入、非预订餐饮等）不在该平台的统计范围内。以下数字为",
+      "noteBoldPlatform": "平台归因营收",
+      "noteEnd": "——即在 Ocean Oasis Ops 内有可追溯记录的交易。",
+      "kpi": {
+        "activityRevenue": "活动营收",
+        "bookingsSub": "{{count}} 笔预订",
+        "promotionRevenue": "促销营收",
+        "redemptionsSub": "{{count}} 次兑换"
+      },
+      "byActivity": "按活动划分的营收",
+      "byPromotion": "按促销划分的营收"
+    },
+    "activityAnalytics": {
+      "title": "活动分析",
+      "metaLine": "已预订 {{booked}}/{{capacity}} · {{bookings}} 笔预订 · ${{revenue}} 营收",
+      "utilization": "利用率"
+    },
+    "content": {
+      "title": "内容",
+      "updatedLabel": "更新于 {{time}}"
+    },
+    "staffPerformance": {
+      "title": "员工绩效"
+    },
+    "auditLog": {
+      "title": "审计日志",
+      "empty": "暂无活动记录"
+    },
+    "settings": {
+      "title": "设置",
+      "signedInAs": "当前登录身份",
+      "propertyDetails": "物业详情",
+      "property": "物业名称",
+      "address": "地址",
+      "phone": "电话",
+      "email": "邮箱",
+      "rooms": "客房数",
+      "multiPropertyTitle": "多物业架构",
+      "multiPropertyNote": "系统中的每条记录都带有物业标识符。目前平台仅配置了一处物业；接入第二家酒店只需添加另一个 property_id 和一行设置——无需更改核心逻辑。",
+      "switchConfirmMsg": "这将退出管理工作台的登录。"
+    }
   }
 }

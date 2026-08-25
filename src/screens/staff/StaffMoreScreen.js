@@ -2,35 +2,37 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { colors, spacing, radius, font } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 const ITEMS = [
-  { key: 'StaffGuests', label: 'Guests', icon: 'people-outline', sub: 'Unified guest profiles' },
-  { key: 'StaffMaintenance', label: 'Maintenance', icon: 'build-outline', sub: 'Work orders & response tracking' },
-  { key: 'StaffEvents', label: 'Events', icon: 'musical-notes-outline', sub: 'Publish hotel events' },
-  { key: 'StaffFeedback', label: 'Feedback', icon: 'star-outline', sub: 'Guest experience alerts' },
-  { key: 'StaffNotifications', label: 'Notifications', icon: 'notifications-outline', sub: 'Team alerts' },
-  { key: 'StaffProfile', label: 'Profile', icon: 'person-circle-outline', sub: 'Your account' },
+  { key: 'StaffGuests', i18nKey: 'guests', icon: 'people-outline' },
+  { key: 'StaffMaintenance', i18nKey: 'maintenance', icon: 'build-outline' },
+  { key: 'StaffEvents', i18nKey: 'events', icon: 'musical-notes-outline' },
+  { key: 'StaffFeedback', i18nKey: 'feedback', icon: 'star-outline' },
+  { key: 'StaffNotifications', i18nKey: 'notifications', icon: 'notifications-outline' },
+  { key: 'StaffProfile', i18nKey: 'profile', icon: 'person-circle-outline' },
 ];
 
 export default function StaffMoreScreen({ navigation }) {
+  const { t } = useTranslation();
   const { unreadStaffNotificationCount } = useApp();
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>More</Text>
-        <Text style={styles.headerSub}>Everything else in Staff Operations.</Text>
+        <Text style={styles.headerTitle}>{t('staff.moreScreen.title')}</Text>
+        <Text style={styles.headerSub}>{t('staff.moreScreen.subtitle')}</Text>
       </View>
       <ScrollView contentContainerStyle={{ padding: spacing.lg, gap: spacing.sm }}>
         {ITEMS.map((item) => (
           <TouchableOpacity key={item.key} style={styles.row} onPress={() => navigation.navigate(item.key)}>
             <View style={styles.iconWrap}><Ionicons name={item.icon} size={20} color={colors.white} /></View>
             <View style={{ flex: 1 }}>
-              <Text style={styles.label}>{item.label}</Text>
-              <Text style={styles.sub}>{item.sub}</Text>
+              <Text style={styles.label}>{t(`staff.moreScreen.items.${item.i18nKey}.label`)}</Text>
+              <Text style={styles.sub}>{t(`staff.moreScreen.items.${item.i18nKey}.sub`)}</Text>
             </View>
             {item.key === 'StaffNotifications' && unreadStaffNotificationCount > 0 && (
               <View style={styles.badge}><Text style={styles.badgeText}>{unreadStaffNotificationCount}</Text></View>

@@ -1,12 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 import { Card, ScreenHeader, SectionHeader, KpiCard } from '../../components/UI';
 import { colors, spacing, font } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 export default function ManagementRevenueScreen({ navigation }) {
+  const { t } = useTranslation();
   const { activities, activityBookings, promotions } = useApp();
 
   const activityRevenue = activityBookings.reduce((s, b) => s + (b.amount || 0), 0);
@@ -19,26 +21,24 @@ export default function ManagementRevenueScreen({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
-      <ScreenHeader title="Revenue Analytics" onBack={() => navigation.goBack()} />
+      <ScreenHeader title={t('management.revenue.title')} onBack={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: spacing.xxl }}>
-        <Text style={styles.sub}>Platform-attributed revenue only.</Text>
+        <Text style={styles.sub}>{t('management.revenue.sub')}</Text>
 
         <Card style={{ backgroundColor: '#E1F2F1', borderWidth: 0, marginBottom: spacing.md }}>
           <Text style={styles.noteText}>
-            <Text style={{ fontWeight: '700' }}>Total Hotel Revenue</Text> (room revenue, walk-in dining, etc.) isn't
-            tracked by this platform. Figures below are <Text style={{ fontWeight: '700' }}>Platform-Attributed
-            Revenue</Text> — transactions with a traceable event inside Ocean Oasis Ops.
+            <Text style={{ fontWeight: '700' }}>{t('management.revenue.noteBoldTotal')}</Text>{t('management.revenue.noteMiddle')}<Text style={{ fontWeight: '700' }}>{t('management.revenue.noteBoldPlatform')}</Text>{t('management.revenue.noteEnd')}
           </Text>
         </Card>
 
         <View style={styles.kpiRow}>
-          <KpiCard label="Platform Revenue" value={`$${(activityRevenue + promotionRevenue).toLocaleString()}`} style={{ flexBasis: '100%' }} />
-          <KpiCard label="Activity Revenue" value={`$${activityRevenue.toLocaleString()}`} sub={`${activityBookings.length} bookings`} />
-          <KpiCard label="Promotion Revenue" value={`$${promotionRevenue.toLocaleString()}`} sub={`${promotions.reduce((s, p) => s + (p.redemptions || 0), 0)} redemptions`} />
+          <KpiCard label={t('management.overview.kpi.platformRevenue')} value={`$${(activityRevenue + promotionRevenue).toLocaleString()}`} style={{ flexBasis: '100%' }} />
+          <KpiCard label={t('management.revenue.kpi.activityRevenue')} value={`$${activityRevenue.toLocaleString()}`} sub={t('management.revenue.kpi.bookingsSub', { count: activityBookings.length })} />
+          <KpiCard label={t('management.revenue.kpi.promotionRevenue')} value={`$${promotionRevenue.toLocaleString()}`} sub={t('management.revenue.kpi.redemptionsSub', { count: promotions.reduce((s, p) => s + (p.redemptions || 0), 0) })} />
         </View>
 
         <View style={{ marginTop: spacing.md }}>
-          <SectionHeader title="Revenue by Activity" />
+          <SectionHeader title={t('management.revenue.byActivity')} />
           <Card style={{ padding: 0 }}>
             {revenueByActivity.map((a, i) => (
               <View key={a.name} style={[styles.row, i > 0 && styles.rowBorder]}>
@@ -50,7 +50,7 @@ export default function ManagementRevenueScreen({ navigation }) {
         </View>
 
         <View style={{ marginTop: spacing.md }}>
-          <SectionHeader title="Revenue by Promotion" />
+          <SectionHeader title={t('management.revenue.byPromotion')} />
           <Card style={{ padding: 0 }}>
             {promotions.map((p, i) => (
               <View key={p.id} style={[styles.row, i > 0 && styles.rowBorder]}>

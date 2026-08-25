@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { Card, ScreenHeader } from '../../components/UI';
 import { colors, spacing, radius, font } from '../../theme/theme';
@@ -9,46 +10,46 @@ import { useApp } from '../../context/AppContext';
 import { PROPERTY_INFO, ROLE_LABELS } from '../../data/mockData';
 
 export default function ManagementSettingsScreen({ navigation }) {
+  const { t } = useTranslation();
   const { opsSession, opsSignOut } = useApp();
+  const roleLabel = t(`common.roleLabels.${opsSession?.role}`, { defaultValue: ROLE_LABELS[opsSession?.role] });
 
   const handleSwitch = () => {
-    Alert.alert('Switch Experience', 'This will sign you out of the Management Dashboard.', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Switch', onPress: opsSignOut },
+    Alert.alert(t('staff.profile.switchConfirmTitle'), t('management.settings.switchConfirmMsg'), [
+      { text: t('common.cancel'), style: 'cancel' },
+      { text: t('staff.profile.switchConfirmBtn'), onPress: opsSignOut },
     ]);
   };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
-      <ScreenHeader title="Settings" onBack={() => navigation.goBack()} />
+      <ScreenHeader title={t('management.settings.title')} onBack={() => navigation.goBack()} />
       <View style={{ padding: spacing.lg, gap: spacing.md }}>
         <Card>
-          <Text style={styles.cardTitle}>Signed in as</Text>
+          <Text style={styles.cardTitle}>{t('management.settings.signedInAs')}</Text>
           <Text style={styles.name}>{opsSession?.name}</Text>
-          <Text style={styles.meta}>{ROLE_LABELS[opsSession?.role]} · {opsSession?.department}</Text>
+          <Text style={styles.meta}>{roleLabel} · {opsSession?.department}</Text>
         </Card>
 
         <Card>
-          <Text style={styles.cardTitle}>Property Details</Text>
-          <Row label="Property" value={PROPERTY_INFO.fullName} />
-          <Row label="Address" value={PROPERTY_INFO.address} />
-          <Row label="Phone" value={PROPERTY_INFO.phone} />
-          <Row label="Email" value={PROPERTY_INFO.email} />
-          <Row label="Rooms" value={String(PROPERTY_INFO.roomCount)} />
+          <Text style={styles.cardTitle}>{t('management.settings.propertyDetails')}</Text>
+          <Row label={t('management.settings.property')} value={PROPERTY_INFO.fullName} />
+          <Row label={t('management.settings.address')} value={PROPERTY_INFO.address} />
+          <Row label={t('management.settings.phone')} value={PROPERTY_INFO.phone} />
+          <Row label={t('management.settings.email')} value={PROPERTY_INFO.email} />
+          <Row label={t('management.settings.rooms')} value={String(PROPERTY_INFO.roomCount)} />
         </Card>
 
         <Card>
-          <Text style={styles.cardTitle}>Multi-Property Architecture</Text>
+          <Text style={styles.cardTitle}>{t('management.settings.multiPropertyTitle')}</Text>
           <Text style={styles.note}>
-            Every record in this system carries a property identifier. Today the platform is configured for one
-            property; onboarding a second hotel means adding another property_id and settings row — no changes to
-            core logic.
+            {t('management.settings.multiPropertyNote')}
           </Text>
         </Card>
 
         <TouchableOpacity style={styles.switchBtn} onPress={handleSwitch}>
           <Ionicons name="swap-horizontal" size={20} color={colors.deepOcean} />
-          <Text style={styles.switchText}>Switch Experience</Text>
+          <Text style={styles.switchText}>{t('staff.profile.switchExperience')}</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

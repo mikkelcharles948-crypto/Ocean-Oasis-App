@@ -1,12 +1,16 @@
 import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 import { Card, SectionHeader, KpiCard, ProgressBar, timeAgo } from '../../components/UI';
 import { colors, spacing, font } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
+const CATEGORY_KEY = { Room: 'room', Cleanliness: 'cleanliness', Service: 'service', Food: 'food', Activities: 'activities' };
+
 export default function ManagementGuestExperienceScreen() {
+  const { t } = useTranslation();
   const { feedback, propertySettings } = useApp();
   const threshold = propertySettings.lowRatingThreshold || 3;
 
@@ -25,23 +29,23 @@ export default function ManagementGuestExperienceScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
       <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: spacing.xxl }}>
-        <Text style={styles.heading}>Guest Experience</Text>
-        <Text style={styles.sub}>Satisfaction trends and service recovery tracking.</Text>
+        <Text style={styles.heading}>{t('management.experience.heading')}</Text>
+        <Text style={styles.sub}>{t('management.experience.sub')}</Text>
 
         <View style={styles.kpiRow}>
-          <KpiCard label="Overall Satisfaction" value={`${avgSatisfaction}/5`} sub={`${feedback.length} responses`} />
-          <KpiCard label="Positive" value={positive} sub="rated 4–5" />
-          <KpiCard label="Negative" value={negative} sub="rated 1–2" />
-          <KpiCard label="Open Alerts" value={alerts.length} sub="need recovery" />
+          <KpiCard label={t('management.experience.kpi.overallSatisfaction')} value={`${avgSatisfaction}/5`} sub={t('management.overview.kpi.responsesSub', { count: feedback.length })} />
+          <KpiCard label={t('management.experience.kpi.positive')} value={positive} sub={t('management.experience.kpi.positiveSub')} />
+          <KpiCard label={t('management.experience.kpi.negative')} value={negative} sub={t('management.experience.kpi.negativeSub')} />
+          <KpiCard label={t('management.experience.kpi.openAlerts')} value={alerts.length} sub={t('management.experience.kpi.needRecoverySub')} />
         </View>
 
         <View style={{ marginTop: spacing.md }}>
-          <SectionHeader title="Satisfaction by Category" />
+          <SectionHeader title={t('management.experience.satisfactionByCategory')} />
           <Card>
             {byCategory.map((c) => (
               <View key={c.cat} style={{ marginBottom: spacing.sm }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <Text style={styles.catLabel}>{c.cat}</Text>
+                  <Text style={styles.catLabel}>{t(`feedback.categories.${CATEGORY_KEY[c.cat]}`)}</Text>
                   <Text style={styles.catValue}>{c.avg}/5</Text>
                 </View>
                 <ProgressBar percent={(c.avg / 5) * 100} tone="info" />
@@ -51,15 +55,15 @@ export default function ManagementGuestExperienceScreen() {
         </View>
 
         <View style={{ marginTop: spacing.md }}>
-          <SectionHeader title="Open Service Recovery Alerts" />
+          <SectionHeader title={t('management.experience.openAlertsSection')} />
           <Card style={{ padding: 0 }}>
             {alerts.length === 0 ? (
-              <Text style={styles.emptyText}>No unresolved alerts — nice work.</Text>
+              <Text style={styles.emptyText}>{t('management.experience.noAlerts')}</Text>
             ) : alerts.map((f, i) => (
               <View key={f.id} style={[styles.row, i > 0 && styles.rowBorder]}>
                 <View style={{ flex: 1 }}>
-                  <Text style={styles.rowTitle}>Room {f.roomNumber} — {f.overall}/5</Text>
-                  <Text style={styles.rowSub}>{f.guestName} · {timeAgo(f.createdAt)}</Text>
+                  <Text style={styles.rowTitle}>{t('management.experience.alertRow', { room: f.roomNumber, rating: f.overall })}</Text>
+                  <Text style={styles.rowSub}>{t('management.experience.alertMeta', { name: f.guestName, time: timeAgo(f.createdAt) })}</Text>
                 </View>
               </View>
             ))}

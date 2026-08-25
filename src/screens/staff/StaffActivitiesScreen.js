@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView }
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
+import { useTranslation } from 'react-i18next';
 
 import { Card, Badge, ProgressBar, Field } from '../../components/UI';
 import GlassSurface from '../../components/GlassSurface';
@@ -11,6 +12,7 @@ import { colors, spacing, radius, font } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 export default function StaffActivitiesScreen() {
+  const { t } = useTranslation();
   const { activities, activityBookings, createActivity } = useApp();
   const [activeId, setActiveId] = useState(null);
   const [showNew, setShowNew] = useState(false);
@@ -30,8 +32,8 @@ export default function StaffActivitiesScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
       <View style={styles.header}>
         <View style={{ flex: 1 }}>
-          <Text style={styles.headerTitle}>Activities</Text>
-          <Text style={styles.headerSub}>Publish activities guests can book from the Guest App.</Text>
+          <Text style={styles.headerTitle}>{t('staff.activities.title')}</Text>
+          <Text style={styles.headerSub}>{t('staff.activities.subtitle')}</Text>
         </View>
         <TouchableOpacity style={styles.addBtn} onPress={() => setShowNew(true)}>
           <Ionicons name="add" size={22} color={colors.white} />
@@ -54,7 +56,7 @@ export default function StaffActivitiesScreen() {
                 <Text style={styles.actMeta}>{item.date} · {item.time} · {item.duration}</Text>
                 <View style={{ marginTop: spacing.sm }}>
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-                    <Text style={styles.utilLabel}>{bookedGuests}/{item.capacity} booked</Text>
+                    <Text style={styles.utilLabel}>{t('staff.activities.bookedOf', { booked: bookedGuests, capacity: item.capacity })}</Text>
                     <Text style={[styles.utilLabel, { fontWeight: '700', color: util > 85 ? colors.error : colors.turquoiseDark }]}>{util}%</Text>
                   </View>
                   <ProgressBar percent={util} tone={util > 85 ? 'error' : 'info'} />
@@ -76,15 +78,15 @@ export default function StaffActivitiesScreen() {
               </View>
               {active && (
                 <>
-                  <Text style={styles.detailLine}><Text style={styles.detailLabel}>When: </Text>{active.date} at {active.time} ({active.duration})</Text>
-                  <Text style={styles.detailLine}><Text style={styles.detailLabel}>Price: </Text>{active.price}</Text>
-                  <Text style={styles.detailLine}><Text style={styles.detailLabel}>Meeting point: </Text>{active.meetingPoint}</Text>
-                  <Text style={styles.detailLine}><Text style={styles.detailLabel}>Capacity: </Text>{active.capacity}</Text>
-                  <Text style={styles.fieldLabel}>Guest List ({bookingsFor(active.id).length})</Text>
+                  <Text style={styles.detailLine}><Text style={styles.detailLabel}>{t('staff.activities.whenLabel')}</Text>{active.date} at {active.time} ({active.duration})</Text>
+                  <Text style={styles.detailLine}><Text style={styles.detailLabel}>{t('staff.activities.priceLabel')}</Text>{active.price}</Text>
+                  <Text style={styles.detailLine}><Text style={styles.detailLabel}>{t('staff.activities.meetingPointLabel')}</Text>{active.meetingPoint}</Text>
+                  <Text style={styles.detailLine}><Text style={styles.detailLabel}>{t('staff.activities.capacityLabel')}</Text>{active.capacity}</Text>
+                  <Text style={styles.fieldLabel}>{t('staff.activities.guestList', { count: bookingsFor(active.id).length })}</Text>
                   {bookingsFor(active.id).length === 0 ? (
-                    <Text style={styles.emptyText}>No bookings yet.</Text>
+                    <Text style={styles.emptyText}>{t('staff.activities.noBookings')}</Text>
                   ) : bookingsFor(active.id).map((b) => (
-                    <Text key={b.id} style={styles.bookingLine}>{b.guestName || 'Guest'} — {b.guests || 0} guest(s)</Text>
+                    <Text key={b.id} style={styles.bookingLine}>{b.guestName || t('staff.activities.guestFallback')} — {t('staff.activities.guestCountSuffix', { count: b.guests || 0 })}</Text>
                   ))}
                 </>
               )}
@@ -99,19 +101,19 @@ export default function StaffActivitiesScreen() {
           <GlassSurface style={styles.modalPanel} borderRadius={0} intensity={38} tint="light">
             <ScrollView keyboardShouldPersistTaps="handled">
               <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>New Activity</Text>
+                <Text style={styles.modalTitle}>{t('staff.activities.newActivity')}</Text>
                 <TouchableOpacity onPress={() => setShowNew(false)}><Ionicons name="close" size={22} color={colors.slate} /></TouchableOpacity>
               </View>
-              <Field label="Name" value={form.name} onChangeText={(v) => setForm({ ...form, name: v })} placeholder="e.g. Turtle Reef Kayaking" />
-              <Field label="Short Description" value={form.shortDescription} onChangeText={(v) => setForm({ ...form, shortDescription: v })} />
-              <Field label="Full Description" value={form.description} onChangeText={(v) => setForm({ ...form, description: v })} multiline />
-              <Field label="Date (YYYY-MM-DD)" value={form.date} onChangeText={(v) => setForm({ ...form, date: v })} />
-              <Field label="Time" value={form.time} onChangeText={(v) => setForm({ ...form, time: v })} />
-              <Field label="Duration" value={form.duration} onChangeText={(v) => setForm({ ...form, duration: v })} />
-              <Field label="Capacity" value={form.capacity} onChangeText={(v) => setForm({ ...form, capacity: v })} keyboardType="number-pad" />
-              <Field label="Price (display)" value={form.price} onChangeText={(v) => setForm({ ...form, price: v })} />
-              <Field label="Meeting Point" value={form.meetingPoint} onChangeText={(v) => setForm({ ...form, meetingPoint: v })} />
-              <Button label="Publish to Guest App" onPress={submit} style={{ marginTop: spacing.md, marginBottom: spacing.lg }} />
+              <Field label={t('staff.activities.nameLabel')} value={form.name} onChangeText={(v) => setForm({ ...form, name: v })} placeholder={t('staff.activities.namePlaceholder')} />
+              <Field label={t('staff.activities.shortDescLabel')} value={form.shortDescription} onChangeText={(v) => setForm({ ...form, shortDescription: v })} />
+              <Field label={t('staff.activities.fullDescLabel')} value={form.description} onChangeText={(v) => setForm({ ...form, description: v })} multiline />
+              <Field label={t('staff.activities.dateLabel')} value={form.date} onChangeText={(v) => setForm({ ...form, date: v })} />
+              <Field label={t('staff.activities.timeLabel')} value={form.time} onChangeText={(v) => setForm({ ...form, time: v })} />
+              <Field label={t('staff.activities.durationLabel')} value={form.duration} onChangeText={(v) => setForm({ ...form, duration: v })} />
+              <Field label={t('staff.activities.capacityFieldLabel')} value={form.capacity} onChangeText={(v) => setForm({ ...form, capacity: v })} keyboardType="number-pad" />
+              <Field label={t('staff.activities.priceFieldLabel')} value={form.price} onChangeText={(v) => setForm({ ...form, price: v })} />
+              <Field label={t('staff.activities.meetingPointFieldLabel')} value={form.meetingPoint} onChangeText={(v) => setForm({ ...form, meetingPoint: v })} />
+              <Button label={t('staff.activities.publish')} onPress={submit} style={{ marginTop: spacing.md, marginBottom: spacing.lg }} />
             </ScrollView>
           </GlassSurface>
         </View>

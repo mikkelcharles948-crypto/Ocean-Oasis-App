@@ -3,13 +3,17 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView }
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
+import { useTranslation } from 'react-i18next';
 
 import { Card, ScreenHeader, Badge, timeAgo } from '../../components/UI';
 import GlassSurface from '../../components/GlassSurface';
 import { colors, spacing, radius, font } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
+const REQUEST_STATUS_KEY = { Received: 'received', Assigned: 'assigned', 'In Progress': 'inProgress', Completed: 'completed' };
+
 export default function StaffGuestsScreen({ navigation }) {
+  const { t } = useTranslation();
   const { allGuestsForStaff, serviceRequests, activityBookings, feedback } = useApp();
   const [activeId, setActiveId] = useState(null);
   const active = activeId ? allGuestsForStaff.find((g) => g.id === activeId) : null;
@@ -17,10 +21,11 @@ export default function StaffGuestsScreen({ navigation }) {
   const requestsFor = (guestId) => serviceRequests.filter((r) => r.guest_id === guestId);
   const bookingsFor = (guestId) => activityBookings.filter((b) => b.guest_id === guestId);
   const feedbackFor = (guestId) => feedback.filter((f) => f.guest_id === guestId);
+  const requestStatusLabel = (s) => (REQUEST_STATUS_KEY[s] ? t(`requests.status.${REQUEST_STATUS_KEY[s]}`) : s === 'Cancelled' ? t('staff.requests.statusCancelled') : s);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
-      <ScreenHeader title="Guests" onBack={() => navigation.goBack()} />
+      <ScreenHeader title={t('staff.guests.title')} onBack={() => navigation.goBack()} />
       <FlatList
         data={allGuestsForStaff}
         keyExtractor={(g) => g.id}
@@ -31,7 +36,7 @@ export default function StaffGuestsScreen({ navigation }) {
               <View style={styles.avatar}><Text style={styles.avatarText}>{item.firstName[0]}{item.lastName[0]}</Text></View>
               <View style={{ flex: 1 }}>
                 <Text style={styles.name}>{item.firstName} {item.lastName}</Text>
-                <Text style={styles.meta}>Room {item.roomNumber} · {item.reservationNumber}</Text>
+                <Text style={styles.meta}>{t('staff.guests.roomReservation', { room: item.roomNumber, reservation: item.reservationNumber })}</Text>
               </View>
               <Ionicons name="chevron-forward" size={18} color={colors.slate} />
             </Card>
@@ -50,31 +55,31 @@ export default function StaffGuestsScreen({ navigation }) {
               </View>
               {active && (
                 <>
-                  <Text style={styles.detailLine}><Text style={styles.detailLabel}>Room: </Text>{active.roomNumber}</Text>
-                  <Text style={styles.detailLine}><Text style={styles.detailLabel}>Reservation: </Text>{active.reservationNumber}</Text>
-                  <Text style={styles.detailLine}><Text style={styles.detailLabel}>Check-in: </Text>{active.checkIn}</Text>
-                  <Text style={styles.detailLine}><Text style={styles.detailLabel}>Check-out: </Text>{active.checkOut}</Text>
+                  <Text style={styles.detailLine}><Text style={styles.detailLabel}>{t('staff.guests.roomLabel')}</Text>{active.roomNumber}</Text>
+                  <Text style={styles.detailLine}><Text style={styles.detailLabel}>{t('staff.guests.reservationLabel')}</Text>{active.reservationNumber}</Text>
+                  <Text style={styles.detailLine}><Text style={styles.detailLabel}>{t('staff.guests.checkInLabel')}</Text>{active.checkIn}</Text>
+                  <Text style={styles.detailLine}><Text style={styles.detailLabel}>{t('staff.guests.checkOutLabel')}</Text>{active.checkOut}</Text>
 
-                  <Text style={styles.fieldLabel}>Service Requests</Text>
+                  <Text style={styles.fieldLabel}>{t('staff.guests.serviceRequests')}</Text>
                   {requestsFor(active.id).length === 0 ? (
-                    <Text style={styles.emptyText}>None on file.</Text>
+                    <Text style={styles.emptyText}>{t('staff.guests.noneOnFile')}</Text>
                   ) : requestsFor(active.id).map((r) => (
                     <View key={r.id} style={styles.rowLine}>
                       <Text style={styles.rowText}>{r.category} — {timeAgo(r.createdAt)}</Text>
-                      <Badge label={r.status} tone="info" />
+                      <Badge label={requestStatusLabel(r.status)} tone="info" />
                     </View>
                   ))}
 
-                  <Text style={styles.fieldLabel}>Activities Booked</Text>
+                  <Text style={styles.fieldLabel}>{t('staff.guests.activitiesBooked')}</Text>
                   {bookingsFor(active.id).length === 0 ? (
-                    <Text style={styles.emptyText}>None on file.</Text>
+                    <Text style={styles.emptyText}>{t('staff.guests.noneOnFile')}</Text>
                   ) : bookingsFor(active.id).map((b) => (
-                    <Text key={b.id} style={styles.rowText}>{b.guests} guest(s) booked</Text>
+                    <Text key={b.id} style={styles.rowText}>{t('staff.guests.guestsBookedSuffix', { count: b.guests })}</Text>
                   ))}
 
-                  <Text style={styles.fieldLabel}>Feedback</Text>
+                  <Text style={styles.fieldLabel}>{t('home.feedback')}</Text>
                   {feedbackFor(active.id).length === 0 ? (
-                    <Text style={styles.emptyText}>None submitted.</Text>
+                    <Text style={styles.emptyText}>{t('staff.guests.noneSubmitted')}</Text>
                   ) : feedbackFor(active.id).map((f) => (
                     <Text key={f.id} style={styles.rowText}>{f.overall}/5 — "{f.comments}"</Text>
                   ))}

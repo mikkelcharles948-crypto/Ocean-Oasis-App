@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView }
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
+import { useTranslation } from 'react-i18next';
 
 import { Card, ScreenHeader, Badge, EmptyState, Field, timeAgo } from '../../components/UI';
 import GlassSurface from '../../components/GlassSurface';
@@ -15,6 +16,7 @@ const SEVERITY_TONE = { LOW: 'neutral', MEDIUM: 'warning', HIGH: 'error', CRITIC
 const STATUS_TONE = { OPEN: 'error', IN_PROGRESS: 'warning', RESOLVED: 'success' };
 
 export default function StaffMaintenanceScreen({ navigation }) {
+  const { t } = useTranslation();
   const { maintenanceIssues, createMaintenanceIssue, updateMaintenanceStatus } = useApp();
   const [filter, setFilter] = useState('OPEN');
   const [showNew, setShowNew] = useState(false);
@@ -31,7 +33,7 @@ export default function StaffMaintenanceScreen({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
-      <ScreenHeader title="Maintenance" onBack={() => navigation.goBack()} right={
+      <ScreenHeader title={t('staff.maintenance.title')} onBack={() => navigation.goBack()} right={
         <TouchableOpacity onPress={() => setShowNew(true)}><Ionicons name="add-circle" size={26} color={colors.deepOcean} /></TouchableOpacity>
       } />
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterRow}>
@@ -46,7 +48,7 @@ export default function StaffMaintenanceScreen({ navigation }) {
         data={filtered}
         keyExtractor={(m) => m.id}
         contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.sm, gap: spacing.sm, paddingBottom: spacing.xxl }}
-        ListEmptyComponent={<EmptyState icon="build-outline" title="No issues here" subtitle="Nothing to show for this filter." />}
+        ListEmptyComponent={<EmptyState icon="build-outline" title={t('staff.maintenance.emptyTitle')} subtitle={t('staff.maintenance.emptySubtitle')} />}
         renderItem={({ item }) => (
           <Card>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 }}>
@@ -60,7 +62,7 @@ export default function StaffMaintenanceScreen({ navigation }) {
             </View>
             {item.status !== 'RESOLVED' && (
               <Button
-                label={item.status === 'OPEN' ? 'Start Work' : 'Mark Resolved'}
+                label={item.status === 'OPEN' ? t('staff.maintenance.startWork') : t('staff.maintenance.markResolved')}
                 variant="outline"
                 onPress={() => updateMaintenanceStatus(item.id, item.status === 'OPEN' ? 'IN_PROGRESS' : 'RESOLVED')}
                 style={{ marginTop: spacing.sm }}
@@ -76,11 +78,11 @@ export default function StaffMaintenanceScreen({ navigation }) {
           <GlassSurface style={styles.modalPanel} borderRadius={0} intensity={38} tint="light">
             <ScrollView keyboardShouldPersistTaps="handled">
               <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>Log Maintenance Issue</Text>
+                <Text style={styles.modalTitle}>{t('staff.maintenance.newIssueTitle')}</Text>
                 <TouchableOpacity onPress={() => setShowNew(false)}><Ionicons name="close" size={22} color={colors.slate} /></TouchableOpacity>
               </View>
-              <Field label="Room Number" value={form.roomNumber} onChangeText={(v) => setForm({ ...form, roomNumber: v })} placeholder="e.g. 204" />
-              <Text style={styles.fieldLabel}>Category</Text>
+              <Field label={t('staff.maintenance.roomNumberLabel')} value={form.roomNumber} onChangeText={(v) => setForm({ ...form, roomNumber: v })} placeholder={t('staff.maintenance.roomNumberPlaceholder')} />
+              <Text style={styles.fieldLabel}>{t('staff.maintenance.categoryLabel')}</Text>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: spacing.md }}>
                 {MAINTENANCE_CATEGORIES.map((c) => (
                   <TouchableOpacity key={c} onPress={() => setForm({ ...form, category: c })} style={[styles.chip, form.category === c && styles.chipActive]}>
@@ -88,7 +90,7 @@ export default function StaffMaintenanceScreen({ navigation }) {
                   </TouchableOpacity>
                 ))}
               </View>
-              <Text style={styles.fieldLabel}>Severity</Text>
+              <Text style={styles.fieldLabel}>{t('staff.maintenance.severityLabel')}</Text>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: spacing.md }}>
                 {MAINTENANCE_SEVERITIES.map((s) => (
                   <TouchableOpacity key={s} onPress={() => setForm({ ...form, severity: s })} style={[styles.chip, form.severity === s && styles.chipActive]}>
@@ -96,8 +98,8 @@ export default function StaffMaintenanceScreen({ navigation }) {
                   </TouchableOpacity>
                 ))}
               </View>
-              <Field label="Description" value={form.description} onChangeText={(v) => setForm({ ...form, description: v })} multiline />
-              <Button label="Log Issue" onPress={submit} style={{ marginTop: spacing.sm, marginBottom: spacing.lg }} />
+              <Field label={t('staff.maintenance.descriptionLabel')} value={form.description} onChangeText={(v) => setForm({ ...form, description: v })} multiline />
+              <Button label={t('staff.maintenance.logIssue')} onPress={submit} style={{ marginTop: spacing.sm, marginBottom: spacing.lg }} />
             </ScrollView>
           </GlassSurface>
         </View>

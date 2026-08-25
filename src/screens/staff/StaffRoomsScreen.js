@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal } from 'react
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
+import { useTranslation } from 'react-i18next';
 
 import { Card, Badge } from '../../components/UI';
 import GlassSurface from '../../components/GlassSurface';
@@ -16,9 +17,11 @@ const STATUS_TONE = {
 };
 
 export default function StaffRoomsScreen() {
+  const { t } = useTranslation();
   const { rooms, updateRoomStatus, allGuestsForStaff } = useApp();
   const [filter, setFilter] = useState('ALL');
   const [activeId, setActiveId] = useState(null);
+  const roomStatusLabel = (s) => t(`staff.rooms.statusLabels.${s}`, { defaultValue: ROOM_STATUS_LABELS[s] });
 
   const counts = useMemo(() => {
     const c = {};
@@ -34,8 +37,8 @@ export default function StaffRoomsScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Rooms & Housekeeping</Text>
-        <Text style={styles.headerSub}>{rooms.length} rooms · live status shared with the guest and management views.</Text>
+        <Text style={styles.headerTitle}>{t('staff.rooms.title')}</Text>
+        <Text style={styles.headerSub}>{t('staff.rooms.subtitle', { count: rooms.length })}</Text>
       </View>
 
       <FlatList
@@ -49,7 +52,7 @@ export default function StaffRoomsScreen() {
             {ROOM_STATUSES.map((s) => (
               <TouchableOpacity key={s} onPress={() => setFilter(filter === s ? 'ALL' : s)} style={[styles.summaryChip, filter === s && styles.summaryChipActive]}>
                 <Text style={[styles.summaryCount, filter === s && { color: colors.white }]}>{counts[s]}</Text>
-                <Text style={[styles.summaryLabel, filter === s && { color: colors.white }]}>{ROOM_STATUS_LABELS[s]}</Text>
+                <Text style={[styles.summaryLabel, filter === s && { color: colors.white }]}>{roomStatusLabel(s)}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -69,21 +72,21 @@ export default function StaffRoomsScreen() {
           <BlurView intensity={20} tint="dark" style={StyleSheet.absoluteFill} />
           <GlassSurface style={styles.modalPanel} borderRadius={radius.lg} intensity={38} tint="light">
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Room {active?.number}</Text>
+              <Text style={styles.modalTitle}>{t('staff.requests.modalRoomTitle', { number: active?.number })}</Text>
               <TouchableOpacity onPress={() => setActiveId(null)}><Ionicons name="close" size={22} color={colors.slate} /></TouchableOpacity>
             </View>
             {active && (
               <>
-                <Text style={styles.modalMeta}>{active.type} · Floor {active.floor}</Text>
-                <Badge label={ROOM_STATUS_LABELS[active.status]} tone={STATUS_TONE[active.status]} />
+                <Text style={styles.modalMeta}>{t('staff.rooms.floorLabel', { type: active.type, floor: active.floor })}</Text>
+                <Badge label={roomStatusLabel(active.status)} tone={STATUS_TONE[active.status]} />
                 {guestInRoom(active.number) && (
-                  <Text style={styles.guestLine}>Guest: {guestInRoom(active.number).firstName} {guestInRoom(active.number).lastName}</Text>
+                  <Text style={styles.guestLine}>{t('staff.rooms.guestLabel', { name: `${guestInRoom(active.number).firstName} ${guestInRoom(active.number).lastName}` })}</Text>
                 )}
-                <Text style={styles.fieldLabel}>Update status</Text>
+                <Text style={styles.fieldLabel}>{t('staff.rooms.updateStatus')}</Text>
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
                   {ROOM_STATUSES.map((s) => (
                     <TouchableOpacity key={s} onPress={() => updateRoomStatus(active.id, s)} style={[styles.chip, active.status === s && styles.chipActive]}>
-                      <Text style={[styles.chipText, active.status === s && styles.chipTextActive]}>{ROOM_STATUS_LABELS[s]}</Text>
+                      <Text style={[styles.chipText, active.status === s && styles.chipTextActive]}>{roomStatusLabel(s)}</Text>
                     </TouchableOpacity>
                   ))}
                 </View>

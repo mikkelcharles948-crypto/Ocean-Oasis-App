@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 import { Card, SectionHeader, KpiCard } from '../../components/UI';
 import { colors, spacing, font } from '../../theme/theme';
@@ -10,18 +11,19 @@ function minutesBetween(a, b) {
   if (!a || !b) return null;
   return Math.round((new Date(b).getTime() - new Date(a).getTime()) / 60000);
 }
-function fmtMins(n) {
-  if (n === null || n === undefined) return '—';
-  if (n < 60) return `${n} min`;
-  return `${Math.floor(n / 60)}h ${n % 60}m`;
+function fmtMins(n, t) {
+  if (n === null || n === undefined) return t('management.operations.noData');
+  if (n < 60) return t('management.operations.minutesShort', { count: n });
+  return t('management.operations.hoursMinutesShort', { h: Math.floor(n / 60), m: n % 60 });
 }
 
 export default function ManagementOperationsScreen() {
+  const { t } = useTranslation();
   const { serviceRequests, maintenanceIssues } = useApp();
 
   const openRequests = serviceRequests.filter((r) => !['Completed', 'Cancelled'].includes(r.status));
   const completed = serviceRequests.filter((r) => r.status === 'Completed' && r.completedAt);
-  const avgResolution = completed.length
+  const avgResolutionMins = completed.length
     ? Math.round(completed.reduce((s, r) => s + minutesBetween(r.createdAt, r.completedAt), 0) / completed.length)
     : null;
   const openMaintenance = maintenanceIssues.filter((m) => m.status !== 'RESOLVED');
@@ -45,26 +47,26 @@ export default function ManagementOperationsScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
       <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: spacing.xxl }}>
-        <Text style={styles.heading}>Operations Analytics</Text>
-        <Text style={styles.sub}>Response and resolution performance across departments.</Text>
+        <Text style={styles.heading}>{t('management.operations.heading')}</Text>
+        <Text style={styles.sub}>{t('management.operations.sub')}</Text>
 
         <View style={styles.kpiRow}>
-          <KpiCard label="Total Requests" value={serviceRequests.length} />
-          <KpiCard label="Open Requests" value={openRequests.length} />
-          <KpiCard label="Avg Resolution" value={fmtMins(avgResolution)} />
-          <KpiCard label="Open Maintenance" value={openMaintenance.length} />
+          <KpiCard label={t('management.operations.kpi.totalRequests')} value={serviceRequests.length} />
+          <KpiCard label={t('staff.dashboard.kpi.openRequests')} value={openRequests.length} />
+          <KpiCard label={t('management.operations.kpi.avgResolution')} value={fmtMins(avgResolutionMins, t)} />
+          <KpiCard label={t('management.operations.kpi.openMaintenance')} value={openMaintenance.length} />
         </View>
 
         <View style={{ marginTop: spacing.md }}>
-          <SectionHeader title="Department Performance" />
+          <SectionHeader title={t('management.operations.departmentPerformance')} />
           <Card style={{ padding: 0 }}>
             {byDepartment.map((d, i) => (
               <View key={d.dept} style={[styles.row, i > 0 && styles.rowBorder]}>
                 <Text style={styles.deptName}>{d.dept}</Text>
                 <View style={{ flexDirection: 'row', gap: spacing.md, marginTop: 4 }}>
-                  <Text style={styles.stat}>{d.total} total</Text>
-                  <Text style={styles.stat}>{d.completed} completed</Text>
-                  <Text style={styles.stat}>{fmtMins(d.avgResolution)} avg</Text>
+                  <Text style={styles.stat}>{t('management.operations.totalSuffix', { count: d.total })}</Text>
+                  <Text style={styles.stat}>{t('management.operations.completedSuffix', { count: d.completed })}</Text>
+                  <Text style={styles.stat}>{t('management.operations.avgSuffix', { time: fmtMins(d.avgResolution, t) })}</Text>
                 </View>
               </View>
             ))}

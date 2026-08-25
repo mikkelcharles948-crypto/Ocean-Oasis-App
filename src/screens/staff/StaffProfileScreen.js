@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { Card, ScreenHeader, KpiCard } from '../../components/UI';
 import { colors, spacing, radius, font } from '../../theme/theme';
@@ -9,37 +10,39 @@ import { useApp } from '../../context/AppContext';
 import { ROLE_LABELS } from '../../data/mockData';
 
 export default function StaffProfileScreen({ navigation }) {
+  const { t } = useTranslation();
   const { opsSession, opsSignOut, serviceRequests } = useApp();
   const myRequests = serviceRequests.filter((r) => r.assignedStaffId === opsSession?.id);
   const completed = myRequests.filter((r) => r.status === 'Completed').length;
+  const roleLabel = t(`common.roleLabels.${opsSession?.role}`, { defaultValue: ROLE_LABELS[opsSession?.role] });
 
   const handleSwitch = () => {
-    Alert.alert('Switch Experience', 'This will sign you out of the Staff Dashboard.', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Switch', onPress: opsSignOut },
+    Alert.alert(t('staff.profile.switchConfirmTitle'), t('staff.profile.switchConfirmMsg'), [
+      { text: t('common.cancel'), style: 'cancel' },
+      { text: t('staff.profile.switchConfirmBtn'), onPress: opsSignOut },
     ]);
   };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
-      <ScreenHeader title="Profile" onBack={() => navigation.goBack()} />
+      <ScreenHeader title={t('staff.profile.title')} onBack={() => navigation.goBack()} />
       <View style={{ padding: spacing.lg }}>
         <Card style={{ alignItems: 'center', paddingVertical: spacing.lg }}>
           <View style={styles.avatar}>
             <Text style={styles.avatarText}>{opsSession?.name?.split(' ').map((n) => n[0]).join('').slice(0, 2)}</Text>
           </View>
           <Text style={styles.name}>{opsSession?.name}</Text>
-          <Text style={styles.meta}>{ROLE_LABELS[opsSession?.role]} · {opsSession?.department}</Text>
+          <Text style={styles.meta}>{roleLabel} · {opsSession?.department}</Text>
         </Card>
 
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginTop: spacing.md }}>
-          <KpiCard label="Assigned Tasks" value={myRequests.length} />
-          <KpiCard label="Completed" value={completed} />
+          <KpiCard label={t('staff.profile.assignedTasks')} value={myRequests.length} />
+          <KpiCard label={t('requests.status.completed')} value={completed} />
         </View>
 
         <TouchableOpacity style={styles.switchBtn} onPress={handleSwitch}>
           <Ionicons name="swap-horizontal" size={20} color={colors.deepOcean} />
-          <Text style={styles.switchText}>Switch Experience</Text>
+          <Text style={styles.switchText}>{t('staff.profile.switchExperience')}</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

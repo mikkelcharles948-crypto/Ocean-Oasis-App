@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView }
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
+import { useTranslation } from 'react-i18next';
 
 import { Card, ScreenHeader, Badge, Field } from '../../components/UI';
 import GlassSurface from '../../components/GlassSurface';
@@ -14,6 +15,7 @@ import { TARGET_AUDIENCES } from '../../data/mockData';
 const STATUS_TONE = { DRAFT: 'neutral', SCHEDULED: 'warning', PUBLISHED: 'success', ARCHIVED: 'neutral' };
 
 export default function ManagementPromotionsScreen({ navigation }) {
+  const { t } = useTranslation();
   const { promotions, createPromotion, publishPromotion, archivePromotion } = useApp();
   const [showNew, setShowNew] = useState(false);
   const [form, setForm] = useState({ title: '', description: '', discount: '10%', startDate: '2026-08-20', endDate: '2026-09-20', targetAudience: 'All guests' });
@@ -27,7 +29,7 @@ export default function ManagementPromotionsScreen({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
-      <ScreenHeader title="Promotions" onBack={() => navigation.goBack()} right={
+      <ScreenHeader title={t('management.promotions.title')} onBack={() => navigation.goBack()} right={
         <TouchableOpacity onPress={() => setShowNew(true)}><Ionicons name="add-circle" size={26} color={colors.deepOcean} /></TouchableOpacity>
       } />
       <FlatList
@@ -45,17 +47,17 @@ export default function ManagementPromotionsScreen({ navigation }) {
               <Text style={styles.desc}>{item.description}</Text>
               <Text style={styles.meta}>{item.validity} · {item.targetAudience}</Text>
               <View style={styles.statsRow}>
-                <MiniStat label="Impressions" value={item.impressions} />
-                <MiniStat label="Clicks" value={item.clicks} />
-                <MiniStat label="Bookings" value={item.bookings} />
-                <MiniStat label="Revenue" value={`$${item.revenue}`} />
+                <MiniStat label={t('management.promotions.stats.impressions')} value={item.impressions} />
+                <MiniStat label={t('management.promotions.stats.clicks')} value={item.clicks} />
+                <MiniStat label={t('management.promotions.stats.bookings')} value={item.bookings} />
+                <MiniStat label={t('management.promotions.stats.revenue')} value={`$${item.revenue}`} />
               </View>
-              <Text style={styles.conversion}>Conversion: {conversion}% · Redemptions: {item.redemptions}</Text>
+              <Text style={styles.conversion}>{t('management.promotions.conversionLine', { conversion, redemptions: item.redemptions })}</Text>
               {(item.status === 'DRAFT' || item.status === 'SCHEDULED') && (
-                <Button label="Publish to Guest App" onPress={() => publishPromotion(item.id)} style={{ marginTop: spacing.sm }} />
+                <Button label={t('staff.activities.publish')} onPress={() => publishPromotion(item.id)} style={{ marginTop: spacing.sm }} />
               )}
               {item.status === 'PUBLISHED' && (
-                <Button label="Archive" variant="outline" onPress={() => archivePromotion(item.id)} style={{ marginTop: spacing.sm }} />
+                <Button label={t('management.promotions.archive')} variant="outline" onPress={() => archivePromotion(item.id)} style={{ marginTop: spacing.sm }} />
               )}
             </Card>
           );
@@ -68,13 +70,13 @@ export default function ManagementPromotionsScreen({ navigation }) {
           <GlassSurface style={styles.modalPanel} borderRadius={0} intensity={38} tint="light">
             <ScrollView keyboardShouldPersistTaps="handled">
               <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>New Promotion</Text>
+                <Text style={styles.modalTitle}>{t('management.promotions.newPromotion')}</Text>
                 <TouchableOpacity onPress={() => setShowNew(false)}><Ionicons name="close" size={22} color={colors.slate} /></TouchableOpacity>
               </View>
-              <Field label="Title" value={form.title} onChangeText={(v) => setForm({ ...form, title: v })} />
-              <Field label="Description" value={form.description} onChangeText={(v) => setForm({ ...form, description: v })} multiline />
-              <Field label="Discount" value={form.discount} onChangeText={(v) => setForm({ ...form, discount: v })} />
-              <Text style={styles.fieldLabel}>Target Audience</Text>
+              <Field label={t('management.promotions.titleLabel')} value={form.title} onChangeText={(v) => setForm({ ...form, title: v })} />
+              <Field label={t('management.promotions.descriptionLabel')} value={form.description} onChangeText={(v) => setForm({ ...form, description: v })} multiline />
+              <Field label={t('management.promotions.discountLabel')} value={form.discount} onChangeText={(v) => setForm({ ...form, discount: v })} />
+              <Text style={styles.fieldLabel}>{t('management.promotions.targetAudienceLabel')}</Text>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: spacing.md }}>
                 {TARGET_AUDIENCES.map((a) => (
                   <TouchableOpacity key={a} onPress={() => setForm({ ...form, targetAudience: a })} style={[styles.chip, form.targetAudience === a && styles.chipActive]}>
@@ -82,9 +84,9 @@ export default function ManagementPromotionsScreen({ navigation }) {
                   </TouchableOpacity>
                 ))}
               </View>
-              <Field label="Start Date (YYYY-MM-DD)" value={form.startDate} onChangeText={(v) => setForm({ ...form, startDate: v })} />
-              <Field label="End Date (YYYY-MM-DD)" value={form.endDate} onChangeText={(v) => setForm({ ...form, endDate: v })} />
-              <Button label="Save as Draft" onPress={submit} style={{ marginTop: spacing.sm, marginBottom: spacing.lg }} />
+              <Field label={t('management.promotions.startDateLabel')} value={form.startDate} onChangeText={(v) => setForm({ ...form, startDate: v })} />
+              <Field label={t('management.promotions.endDateLabel')} value={form.endDate} onChangeText={(v) => setForm({ ...form, endDate: v })} />
+              <Button label={t('staff.events.saveAsDraft')} onPress={submit} style={{ marginTop: spacing.sm, marginBottom: spacing.lg }} />
             </ScrollView>
           </GlassSurface>
         </View>

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView }
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
+import { useTranslation } from 'react-i18next';
 
 import { Card, ScreenHeader, Badge, Field } from '../../components/UI';
 import GlassSurface from '../../components/GlassSurface';
@@ -13,6 +14,7 @@ import { useApp } from '../../context/AppContext';
 const STATUS_TONE = { DRAFT: 'neutral', PUBLISHED: 'success' };
 
 export default function StaffEventsScreen({ navigation }) {
+  const { t } = useTranslation();
   const { events, createEvent, publishEvent } = useApp();
   const [showNew, setShowNew] = useState(false);
   const [form, setForm] = useState({ title: '', category: 'Entertainment', date: '2026-08-20', time: '7:00 PM', location: 'Main Terrace', capacity: '50', description: '' });
@@ -26,7 +28,7 @@ export default function StaffEventsScreen({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
-      <ScreenHeader title="Events" onBack={() => navigation.goBack()} right={
+      <ScreenHeader title={t('staff.events.title')} onBack={() => navigation.goBack()} right={
         <TouchableOpacity onPress={() => setShowNew(true)}><Ionicons name="add-circle" size={26} color={colors.deepOcean} /></TouchableOpacity>
       } />
       <FlatList
@@ -41,7 +43,7 @@ export default function StaffEventsScreen({ navigation }) {
             </View>
             <Text style={styles.meta}>{item.date} · {item.time} · {item.location}</Text>
             {item.status === 'DRAFT' && (
-              <Button label="Publish to Guest App" variant="outline" onPress={() => publishEvent(item.id)} style={{ marginTop: spacing.sm }} />
+              <Button label={t('staff.activities.publish')} variant="outline" onPress={() => publishEvent(item.id)} style={{ marginTop: spacing.sm }} />
             )}
           </Card>
         )}
@@ -53,16 +55,16 @@ export default function StaffEventsScreen({ navigation }) {
           <GlassSurface style={styles.modalPanel} borderRadius={0} intensity={38} tint="light">
             <ScrollView keyboardShouldPersistTaps="handled">
               <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>New Event</Text>
+                <Text style={styles.modalTitle}>{t('staff.events.newEvent')}</Text>
                 <TouchableOpacity onPress={() => setShowNew(false)}><Ionicons name="close" size={22} color={colors.slate} /></TouchableOpacity>
               </View>
-              <Field label="Title" value={form.title} onChangeText={(v) => setForm({ ...form, title: v })} />
-              <Field label="Description" value={form.description} onChangeText={(v) => setForm({ ...form, description: v })} multiline />
-              <Field label="Date (YYYY-MM-DD)" value={form.date} onChangeText={(v) => setForm({ ...form, date: v })} />
-              <Field label="Time" value={form.time} onChangeText={(v) => setForm({ ...form, time: v })} />
-              <Field label="Location" value={form.location} onChangeText={(v) => setForm({ ...form, location: v })} />
-              <Field label="Capacity" value={form.capacity} onChangeText={(v) => setForm({ ...form, capacity: v })} keyboardType="number-pad" />
-              <Button label="Save as Draft" onPress={submit} style={{ marginTop: spacing.sm, marginBottom: spacing.lg }} />
+              <Field label={t('staff.events.titleLabel')} value={form.title} onChangeText={(v) => setForm({ ...form, title: v })} />
+              <Field label={t('staff.events.descriptionLabel')} value={form.description} onChangeText={(v) => setForm({ ...form, description: v })} multiline />
+              <Field label={t('staff.events.dateLabel')} value={form.date} onChangeText={(v) => setForm({ ...form, date: v })} />
+              <Field label={t('staff.events.timeLabel')} value={form.time} onChangeText={(v) => setForm({ ...form, time: v })} />
+              <Field label={t('staff.events.locationLabel')} value={form.location} onChangeText={(v) => setForm({ ...form, location: v })} />
+              <Field label={t('staff.events.capacityLabel')} value={form.capacity} onChangeText={(v) => setForm({ ...form, capacity: v })} keyboardType="number-pad" />
+              <Button label={t('staff.events.saveAsDraft')} onPress={submit} style={{ marginTop: spacing.sm, marginBottom: spacing.lg }} />
             </ScrollView>
           </GlassSurface>
         </View>

@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { View, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import StaffHomeScreen from '../screens/staff/StaffHomeScreen';
 import StaffRequestsScreen from '../screens/staff/StaffRequestsScreen';
@@ -46,7 +47,15 @@ function TabIcon({ name, focused }) {
 }
 
 export default function StaffTabs() {
+  const { t } = useTranslation();
   const { unreadStaffNotificationCount } = useApp();
+  const labelMap = {
+    Dashboard: t('staff.tabs.dashboard'),
+    Requests: t('nav.requests'),
+    Rooms: t('staff.tabs.rooms'),
+    Activities: t('staff.activities.title'),
+    More: t('staff.moreScreen.title'),
+  };
 
   return (
     <Tab.Navigator
@@ -56,6 +65,7 @@ export default function StaffTabs() {
         tabBarInactiveTintColor: colors.slate,
         tabBarStyle: styles.tabBar,
         tabBarLabelStyle: styles.tabLabel,
+        tabBarLabel: labelMap[route.name],
         tabBarBackground: () => (
           <GlassSurface style={styles.tabBarGlass} borderRadius={0} intensity={46} tint="light" />
         ),

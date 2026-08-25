@@ -29,6 +29,18 @@
     "availability": {
       "available": "Available",
       "limitedSpots": "Limited spots"
+    },
+    "roleLabels": {
+      "SUPER_ADMIN": "Super Admin",
+      "GENERAL_MANAGER": "General Manager",
+      "MANAGEMENT": "Management",
+      "FRONT_DESK": "Front Desk",
+      "CONCIERGE": "Concierge",
+      "HOUSEKEEPING": "Housekeeping",
+      "MAINTENANCE": "Maintenance",
+      "FOOD_AND_BEVERAGE": "Food & Beverage",
+      "ACTIVITIES_MANAGER": "Activities Manager",
+      "MARKETING": "Marketing"
     }
   },
   "nav": {
@@ -629,5 +641,351 @@
     "enterEmailAndPassword": "Enter your email and password.",
     "noAccessToThisDashboard": "This account does not have access to this dashboard.",
     "unableToSignIn": "Unable to sign in."
+  },
+  "staff": {
+    "tabs": {
+      "dashboard": "Dashboard",
+      "rooms": "Rooms"
+    },
+    "moreScreen": {
+      "title": "More",
+      "subtitle": "Everything else in Staff Operations.",
+      "items": {
+        "guests": {
+          "label": "Guests",
+          "sub": "Unified guest profiles"
+        },
+        "maintenance": {
+          "label": "Maintenance",
+          "sub": "Work orders & response tracking"
+        },
+        "events": {
+          "label": "Events",
+          "sub": "Publish hotel events"
+        },
+        "feedback": {
+          "label": "Feedback",
+          "sub": "Guest experience alerts"
+        },
+        "notifications": {
+          "label": "Notifications",
+          "sub": "Team alerts"
+        },
+        "profile": {
+          "label": "Profile",
+          "sub": "Your account"
+        }
+      }
+    },
+    "dashboard": {
+      "eyebrow": "OCEAN OASIS · STAFF OPS",
+      "greetingMorning": "Good morning, {{name}}",
+      "greetingAfternoon": "Good afternoon, {{name}}",
+      "greetingEvening": "Good evening, {{name}}",
+      "teamFallback": "Team",
+      "kpi": {
+        "occupancy": "Occupancy",
+        "roomsSub": "{{count}}/{{total}} rooms",
+        "openRequests": "Open Requests",
+        "urgentSub": "{{count}} urgent",
+        "maintenance": "Maintenance",
+        "openIssuesSub": "open issues",
+        "feedbackAlerts": "Feedback Alerts",
+        "needFollowUpSub": "need follow-up"
+      },
+      "alertBanner": "⚠ Needs immediate attention",
+      "alertRequestLine": "Room {{room}} — {{category}}: {{description}}",
+      "alertFeedbackLine": "Room {{room}} — Guest experience alert, rated {{rating}}/5",
+      "priorityQueue": "Priority Queue",
+      "viewAll": "View all",
+      "noOpenRequests": "No open requests right now.",
+      "maintenanceWatchlist": "Maintenance Watchlist",
+      "noOpenMaintenance": "No open maintenance issues."
+    },
+    "requests": {
+      "title": "Requests",
+      "subtitle": "Guest requests sync here the instant they're submitted.",
+      "filters": {
+        "open": "Open",
+        "all": "All"
+      },
+      "empty": {
+        "title": "Nothing here",
+        "subtitle": "No requests match this filter."
+      },
+      "cardTitle": "Room {{number}} — {{category}}",
+      "modalRoomTitle": "Room {{number}}",
+      "assignedTo": "Assigned to {{name}}",
+      "guestLabel": "Guest: ",
+      "categoryLabel": "Category: ",
+      "descriptionLabel": "Description: ",
+      "preferredTimeLabel": "Preferred time: ",
+      "assignToStaff": "Assign to staff",
+      "updateStatus": "Update status",
+      "internalNotes": "Internal notes",
+      "notePlaceholder": "Add an internal note…",
+      "addNote": "Add",
+      "statusCancelled": "Cancelled"
+    },
+    "rooms": {
+      "title": "Rooms & Housekeeping",
+      "subtitle": "{{count}} rooms · live status shared with the guest and management views.",
+      "floorLabel": "{{type}} · Floor {{floor}}",
+      "guestLabel": "Guest: {{name}}",
+      "updateStatus": "Update status",
+      "statusLabels": {
+        "VACANT_CLEAN": "Vacant · Clean",
+        "VACANT_DIRTY": "Vacant · Dirty",
+        "OCCUPIED_CLEAN": "Occupied · Clean",
+        "OCCUPIED_SERVICE_REQUIRED": "Service Required",
+        "INSPECTION_REQUIRED": "Inspection Required",
+        "OUT_OF_ORDER": "Out of Order"
+      }
+    },
+    "activities": {
+      "title": "Activities",
+      "subtitle": "Publish activities guests can book from the Guest App.",
+      "bookedOf": "{{booked}}/{{capacity}} booked",
+      "whenLabel": "When: ",
+      "priceLabel": "Price: ",
+      "meetingPointLabel": "Meeting point: ",
+      "capacityLabel": "Capacity: ",
+      "guestList": "Guest List ({{count}})",
+      "noBookings": "No bookings yet.",
+      "guestFallback": "Guest",
+      "guestCountSuffix": "{{count}} guest(s)",
+      "newActivity": "New Activity",
+      "nameLabel": "Name",
+      "namePlaceholder": "e.g. Turtle Reef Kayaking",
+      "shortDescLabel": "Short Description",
+      "fullDescLabel": "Full Description",
+      "dateLabel": "Date (YYYY-MM-DD)",
+      "timeLabel": "Time",
+      "durationLabel": "Duration",
+      "capacityFieldLabel": "Capacity",
+      "priceFieldLabel": "Price (display)",
+      "meetingPointFieldLabel": "Meeting Point",
+      "publish": "Publish to Guest App"
+    },
+    "events": {
+      "title": "Events",
+      "newEvent": "New Event",
+      "titleLabel": "Title",
+      "descriptionLabel": "Description",
+      "dateLabel": "Date (YYYY-MM-DD)",
+      "timeLabel": "Time",
+      "locationLabel": "Location",
+      "capacityLabel": "Capacity",
+      "saveAsDraft": "Save as Draft"
+    },
+    "feedback": {
+      "title": "Guest Feedback",
+      "filters": {
+        "alerts": "Needs Attention",
+        "all": "All",
+        "positive": "Positive"
+      },
+      "empty": {
+        "title": "All clear",
+        "subtitle": "No feedback matches this filter."
+      },
+      "guestRoom": "{{name}} — Room {{room}}",
+      "notePlaceholder": "Resolution note…",
+      "resolve": "Resolve",
+      "resolvedNote": "✓ Resolved: {{note}}",
+      "defaultResolutionNote": "Resolved by staff"
+    },
+    "guests": {
+      "title": "Guests",
+      "roomReservation": "Room {{room}} · {{reservation}}",
+      "roomLabel": "Room: ",
+      "reservationLabel": "Reservation: ",
+      "checkInLabel": "Check-in: ",
+      "checkOutLabel": "Check-out: ",
+      "serviceRequests": "Service Requests",
+      "activitiesBooked": "Activities Booked",
+      "noneOnFile": "None on file.",
+      "noneSubmitted": "None submitted.",
+      "guestsBookedSuffix": "{{count}} guest(s) booked"
+    },
+    "maintenance": {
+      "title": "Maintenance",
+      "newIssueTitle": "Log Maintenance Issue",
+      "roomNumberLabel": "Room Number",
+      "roomNumberPlaceholder": "e.g. 204",
+      "categoryLabel": "Category",
+      "severityLabel": "Severity",
+      "descriptionLabel": "Description",
+      "logIssue": "Log Issue",
+      "startWork": "Start Work",
+      "markResolved": "Mark Resolved",
+      "emptyTitle": "No issues here",
+      "emptySubtitle": "Nothing to show for this filter."
+    },
+    "notifications": {
+      "title": "Notifications",
+      "markAll": "Mark all",
+      "empty": "You're all caught up"
+    },
+    "profile": {
+      "title": "Profile",
+      "assignedTasks": "Assigned Tasks",
+      "switchExperience": "Switch Experience",
+      "switchConfirmTitle": "Switch Experience",
+      "switchConfirmMsg": "This will sign you out of the Staff Dashboard.",
+      "switchConfirmBtn": "Switch"
+    }
+  },
+  "management": {
+    "tabs": {
+      "overview": "Overview",
+      "experience": "Experience",
+      "operations": "Operations"
+    },
+    "more": {
+      "title": "More",
+      "subtitle": "Everything else in Management.",
+      "items": {
+        "revenue": {
+          "label": "Revenue Analytics",
+          "sub": "Platform-attributed revenue"
+        },
+        "activities": {
+          "label": "Activity Analytics",
+          "sub": "Utilization & revenue per activity"
+        },
+        "content": {
+          "label": "Content",
+          "sub": "Destinations, FAQs, announcements"
+        },
+        "staffPerformance": {
+          "label": "Staff Performance",
+          "sub": "Assigned vs. completed requests"
+        },
+        "auditLog": {
+          "label": "Audit Log",
+          "sub": "Every administrative action"
+        },
+        "settings": {
+          "label": "Settings",
+          "sub": "Property configuration"
+        }
+      }
+    },
+    "overview": {
+      "eyebrow": "OCEAN OASIS · MANAGEMENT",
+      "heading": "Overview",
+      "signedInAs": "Signed in as {{name}} · Sandbox data",
+      "kpi": {
+        "guestSatisfaction": "Guest Satisfaction",
+        "responsesSub": "{{count}} responses",
+        "totalSub": "{{count}} total",
+        "platformRevenue": "Platform Revenue",
+        "revenueSub": "activities + promotions"
+      },
+      "requestsByDepartment": "Requests by Department",
+      "completedOfTotal": "{{completed}}/{{total}} completed",
+      "revenueNoteTitle": "Revenue Note",
+      "revenueNoteBefore": "These figures reflect revenue with a traceable transaction inside this platform — activity bookings and redeemed promotions. They are ",
+      "revenueNoteBold": "not",
+      "revenueNoteAfter": " a measure of total hotel revenue, which also includes room revenue and other channels not yet integrated."
+    },
+    "experience": {
+      "heading": "Guest Experience",
+      "sub": "Satisfaction trends and service recovery tracking.",
+      "kpi": {
+        "overallSatisfaction": "Overall Satisfaction",
+        "positive": "Positive",
+        "positiveSub": "rated 4–5",
+        "negative": "Negative",
+        "negativeSub": "rated 1–2",
+        "openAlerts": "Open Alerts",
+        "needRecoverySub": "need recovery"
+      },
+      "satisfactionByCategory": "Satisfaction by Category",
+      "openAlertsSection": "Open Service Recovery Alerts",
+      "noAlerts": "No unresolved alerts — nice work.",
+      "alertRow": "Room {{room}} — {{rating}}/5",
+      "alertMeta": "{{name}} · {{time}}"
+    },
+    "operations": {
+      "heading": "Operations Analytics",
+      "sub": "Response and resolution performance across departments.",
+      "kpi": {
+        "totalRequests": "Total Requests",
+        "avgResolution": "Avg Resolution",
+        "openMaintenance": "Open Maintenance"
+      },
+      "departmentPerformance": "Department Performance",
+      "totalSuffix": "{{count}} total",
+      "completedSuffix": "{{count}} completed",
+      "avgSuffix": "{{time}} avg",
+      "minutesShort": "{{count}} min",
+      "hoursMinutesShort": "{{h}}h {{m}}m",
+      "noData": "—"
+    },
+    "promotions": {
+      "title": "Promotions",
+      "newPromotion": "New Promotion",
+      "titleLabel": "Title",
+      "descriptionLabel": "Description",
+      "discountLabel": "Discount",
+      "targetAudienceLabel": "Target Audience",
+      "startDateLabel": "Start Date (YYYY-MM-DD)",
+      "endDateLabel": "End Date (YYYY-MM-DD)",
+      "archive": "Archive",
+      "stats": {
+        "impressions": "Impressions",
+        "clicks": "Clicks",
+        "bookings": "Bookings",
+        "revenue": "Revenue"
+      },
+      "conversionLine": "Conversion: {{conversion}}% · Redemptions: {{redemptions}}"
+    },
+    "revenue": {
+      "title": "Revenue Analytics",
+      "sub": "Platform-attributed revenue only.",
+      "noteBoldTotal": "Total Hotel Revenue",
+      "noteMiddle": " (room revenue, walk-in dining, etc.) isn't tracked by this platform. Figures below are ",
+      "noteBoldPlatform": "Platform-Attributed Revenue",
+      "noteEnd": " — transactions with a traceable event inside Ocean Oasis Ops.",
+      "kpi": {
+        "activityRevenue": "Activity Revenue",
+        "bookingsSub": "{{count}} bookings",
+        "promotionRevenue": "Promotion Revenue",
+        "redemptionsSub": "{{count}} redemptions"
+      },
+      "byActivity": "Revenue by Activity",
+      "byPromotion": "Revenue by Promotion"
+    },
+    "activityAnalytics": {
+      "title": "Activity Analytics",
+      "metaLine": "{{booked}}/{{capacity}} booked · {{bookings}} bookings · ${{revenue}} revenue",
+      "utilization": "Utilization"
+    },
+    "content": {
+      "title": "Content",
+      "updatedLabel": "Updated {{time}}"
+    },
+    "staffPerformance": {
+      "title": "Staff Performance"
+    },
+    "auditLog": {
+      "title": "Audit Log",
+      "empty": "No activity yet"
+    },
+    "settings": {
+      "title": "Settings",
+      "signedInAs": "Signed in as",
+      "propertyDetails": "Property Details",
+      "property": "Property",
+      "address": "Address",
+      "phone": "Phone",
+      "email": "Email",
+      "rooms": "Rooms",
+      "multiPropertyTitle": "Multi-Property Architecture",
+      "multiPropertyNote": "Every record in this system carries a property identifier. Today the platform is configured for one property; onboarding a second hotel means adding another property_id and settings row — no changes to core logic.",
+      "switchConfirmMsg": "This will sign you out of the Management Dashboard."
+    }
   }
 }

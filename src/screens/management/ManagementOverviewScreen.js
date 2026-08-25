@@ -1,12 +1,14 @@
 import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 import { Card, SectionHeader, KpiCard, ProgressBar } from '../../components/UI';
 import { colors, spacing, font } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 export default function ManagementOverviewScreen() {
+  const { t } = useTranslation();
   const { opsSession, rooms, serviceRequests, feedback, activityBookings, promotions } = useApp();
 
   const inHouseCount = rooms.filter((r) => r.status.startsWith('OCCUPIED')).length;
@@ -29,25 +31,25 @@ export default function ManagementOverviewScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
       <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: spacing.xxl }}>
-        <Text style={styles.eyebrow}>OCEAN OASIS · MANAGEMENT</Text>
-        <Text style={styles.heading}>Overview</Text>
-        <Text style={styles.sub}>Signed in as {opsSession?.name} · Sandbox data</Text>
+        <Text style={styles.eyebrow}>{t('management.overview.eyebrow')}</Text>
+        <Text style={styles.heading}>{t('management.overview.heading')}</Text>
+        <Text style={styles.sub}>{t('management.overview.signedInAs', { name: opsSession?.name })}</Text>
 
         <View style={styles.kpiRow}>
-          <KpiCard label="Occupancy" value={`${occupancy}%`} sub={`${inHouseCount}/${rooms.length} rooms`} />
-          <KpiCard label="Guest Satisfaction" value={`${avgSatisfaction}/5`} sub={`${feedback.length} responses`} />
-          <KpiCard label="Open Requests" value={openRequests.length} sub={`${serviceRequests.length} total`} />
-          <KpiCard label="Platform Revenue" value={`$${(activityRevenue + promotionRevenue).toLocaleString()}`} sub="activities + promotions" />
+          <KpiCard label={t('staff.dashboard.kpi.occupancy')} value={`${occupancy}%`} sub={t('staff.dashboard.kpi.roomsSub', { count: inHouseCount, total: rooms.length })} />
+          <KpiCard label={t('management.overview.kpi.guestSatisfaction')} value={`${avgSatisfaction}/5`} sub={t('management.overview.kpi.responsesSub', { count: feedback.length })} />
+          <KpiCard label={t('staff.dashboard.kpi.openRequests')} value={openRequests.length} sub={t('management.overview.kpi.totalSub', { count: serviceRequests.length })} />
+          <KpiCard label={t('management.overview.kpi.platformRevenue')} value={`$${(activityRevenue + promotionRevenue).toLocaleString()}`} sub={t('management.overview.kpi.revenueSub')} />
         </View>
 
         <View style={{ marginTop: spacing.md }}>
-          <SectionHeader title="Requests by Department" />
+          <SectionHeader title={t('management.overview.requestsByDepartment')} />
           <Card>
             {byDepartment.map(([dept, d]) => (
               <View key={dept} style={{ marginBottom: spacing.sm }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
                   <Text style={styles.deptLabel}>{dept}</Text>
-                  <Text style={styles.deptValue}>{d.completed}/{d.total} completed</Text>
+                  <Text style={styles.deptValue}>{t('management.overview.completedOfTotal', { completed: d.completed, total: d.total })}</Text>
                 </View>
                 <ProgressBar percent={d.total ? (d.completed / d.total) * 100 : 0} tone="success" />
               </View>
@@ -56,12 +58,10 @@ export default function ManagementOverviewScreen() {
         </View>
 
         <View style={{ marginTop: spacing.md }}>
-          <SectionHeader title="Revenue Note" />
+          <SectionHeader title={t('management.overview.revenueNoteTitle')} />
           <Card>
             <Text style={styles.note}>
-              These figures reflect revenue with a traceable transaction inside this platform — activity bookings and
-              redeemed promotions. They are <Text style={{ fontWeight: '700' }}>not</Text> a measure of total hotel
-              revenue, which also includes room revenue and other channels not yet integrated.
+              {t('management.overview.revenueNoteBefore')}<Text style={{ fontWeight: '700' }}>{t('management.overview.revenueNoteBold')}</Text>{t('management.overview.revenueNoteAfter')}
             </Text>
           </Card>
         </View>

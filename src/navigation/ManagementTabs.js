@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { View, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import ManagementOverviewScreen from '../screens/management/ManagementOverviewScreen';
 import ManagementGuestExperienceScreen from '../screens/management/ManagementGuestExperienceScreen';
@@ -45,6 +46,15 @@ function TabIcon({ name, focused }) {
 }
 
 export default function ManagementTabs() {
+  const { t } = useTranslation();
+  const labelMap = {
+    Overview: t('management.tabs.overview'),
+    Experience: t('management.tabs.experience'),
+    Operations: t('management.tabs.operations'),
+    Promotions: t('management.promotions.title'),
+    More: t('management.more.title'),
+  };
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -53,6 +63,7 @@ export default function ManagementTabs() {
         tabBarInactiveTintColor: colors.slate,
         tabBarStyle: styles.tabBar,
         tabBarLabelStyle: styles.tabLabel,
+        tabBarLabel: labelMap[route.name],
         tabBarBackground: () => (
           <GlassSurface style={styles.tabBarGlass} borderRadius={0} intensity={46} tint="light" />
         ),

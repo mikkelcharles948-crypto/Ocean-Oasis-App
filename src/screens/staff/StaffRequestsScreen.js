@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView, 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
+import { useTranslation } from 'react-i18next';
 
 import { Card, Badge, EmptyState, timeAgo } from '../../components/UI';
 import GlassSurface from '../../components/GlassSurface';
@@ -12,12 +13,17 @@ import { useApp } from '../../context/AppContext';
 const STATUS_TONE = { Received: 'info', Assigned: 'warning', 'In Progress': 'warning', Completed: 'success', Cancelled: 'neutral' };
 const PRIORITY_TONE = { URGENT: 'error', HIGH: 'warning', NORMAL: 'neutral' };
 const FILTERS = ['Open', 'Received', 'Assigned', 'In Progress', 'Completed', 'All'];
+const REQUEST_STATUS_KEY = { Received: 'received', Assigned: 'assigned', 'In Progress': 'inProgress', Completed: 'completed' };
+const STATUSES = ['Received', 'Assigned', 'In Progress', 'Completed', 'Cancelled'];
 
 export default function StaffRequestsScreen() {
+  const { t } = useTranslation();
   const { serviceRequests, assignRequestToStaff, updateRequestStatus, addRequestNote, staffDirectory } = useApp();
   const [filter, setFilter] = useState('Open');
   const [activeId, setActiveId] = useState(null);
   const [noteText, setNoteText] = useState('');
+  const statusLabel = (s) => (REQUEST_STATUS_KEY[s] ? t(`requests.status.${REQUEST_STATUS_KEY[s]}`) : s === 'Cancelled' ? t('staff.requests.statusCancelled') : s);
+  const filterLabel = (f) => (f === 'Open' ? t('staff.requests.filters.open') : f === 'All' ? t('staff.requests.filters.all') : statusLabel(f));
 
   const filtered = useMemo(() => {
     let list = serviceRequests;
@@ -37,14 +43,14 @@ export default function StaffRequestsScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Requests</Text>
-        <Text style={styles.headerSub}>Guest requests sync here the instant they're submitted.</Text>
+        <Text style={styles.headerTitle}>{t('staff.requests.title')}</Text>
+        <Text style={styles.headerSub}>{t('staff.requests.subtitle')}</Text>
       </View>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterRow}>
         {FILTERS.map((f) => (
           <TouchableOpacity key={f} onPress={() => setFilter(f)} style={[styles.filterPill, filter === f && styles.filterPillActive]}>
-            <Text style={[styles.filterPillText, filter === f && styles.filterPillTextActive]}>{f}</Text>
+            <Text style={[styles.filterPillText, filter === f && styles.filterPillTextActive]}>{filterLabel(f)}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -53,20 +59,20 @@ export default function StaffRequestsScreen() {
         data={filtered}
         keyExtractor={(r) => r.id}
         contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.sm, gap: spacing.sm, paddingBottom: spacing.xxl }}
-        ListEmptyComponent={<EmptyState icon="checkmark-done-outline" title="Nothing here" subtitle="No requests match this filter." />}
+        ListEmptyComponent={<EmptyState icon="checkmark-done-outline" title={t('staff.requests.empty.title')} subtitle={t('staff.requests.empty.subtitle')} />}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => setActiveId(item.id)}>
             <Card>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 }}>
-                <Text style={styles.roomTitle}>Room {item.roomNumber} — {item.category}</Text>
+                <Text style={styles.roomTitle}>{t('staff.requests.cardTitle', { number: item.roomNumber, category: item.category })}</Text>
                 <Badge label={item.priority} tone={PRIORITY_TONE[item.priority]} />
               </View>
               <Text style={styles.desc} numberOfLines={2}>{item.description}</Text>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: spacing.sm }}>
                 <Text style={styles.meta}>{item.department} · {timeAgo(item.createdAt)}</Text>
-                <Badge label={item.status} tone={STATUS_TONE[item.status]} />
+                <Badge label={statusLabel(item.status)} tone={STATUS_TONE[item.status]} />
               </View>
-              {item.assignedStaffId && <Text style={styles.assigned}>Assigned to {staffDirectory.find((s) => s.id === item.assignedStaffId)?.name}</Text>}
+              {item.assignedStaffId && <Text style={styles.assigned}>{t('staff.requests.assignedTo', { name: staffDirectory.find((s) => s.id === item.assignedStaffId)?.name })}</Text>}
             </Card>
           </TouchableOpacity>
         )}
@@ -78,21 +84,21 @@ export default function StaffRequestsScreen() {
           <GlassSurface style={styles.modalPanel} borderRadius={0} intensity={38} tint="light">
             <ScrollView keyboardShouldPersistTaps="handled">
               <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>Room {active?.roomNumber}</Text>
+                <Text style={styles.modalTitle}>{t('staff.requests.modalRoomTitle', { number: active?.roomNumber })}</Text>
                 <TouchableOpacity onPress={() => setActiveId(null)}><Ionicons name="close" size={24} color={colors.slate} /></TouchableOpacity>
               </View>
               {active && (
                 <>
                   <View style={{ flexDirection: 'row', gap: 8, marginBottom: spacing.md }}>
                     <Badge label={active.priority} tone={PRIORITY_TONE[active.priority]} />
-                    <Badge label={active.status} tone={STATUS_TONE[active.status]} />
+                    <Badge label={statusLabel(active.status)} tone={STATUS_TONE[active.status]} />
                   </View>
-                  <Text style={styles.detailLine}><Text style={styles.detailLabel}>Guest: </Text>{active.guestName}</Text>
-                  <Text style={styles.detailLine}><Text style={styles.detailLabel}>Category: </Text>{active.category} · {active.department}</Text>
-                  <Text style={styles.detailLine}><Text style={styles.detailLabel}>Description: </Text>{active.description}</Text>
-                  {active.preferredTime && <Text style={styles.detailLine}><Text style={styles.detailLabel}>Preferred time: </Text>{active.preferredTime}</Text>}
+                  <Text style={styles.detailLine}><Text style={styles.detailLabel}>{t('staff.requests.guestLabel')}</Text>{active.guestName}</Text>
+                  <Text style={styles.detailLine}><Text style={styles.detailLabel}>{t('staff.requests.categoryLabel')}</Text>{active.category} · {active.department}</Text>
+                  <Text style={styles.detailLine}><Text style={styles.detailLabel}>{t('staff.requests.descriptionLabel')}</Text>{active.description}</Text>
+                  {active.preferredTime && <Text style={styles.detailLine}><Text style={styles.detailLabel}>{t('staff.requests.preferredTimeLabel')}</Text>{active.preferredTime}</Text>}
 
-                  <Text style={styles.fieldLabel}>Assign to staff</Text>
+                  <Text style={styles.fieldLabel}>{t('staff.requests.assignToStaff')}</Text>
                   <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: spacing.md }}>
                     {staffDirectory.filter((s) => s.department === active.department || s.role === 'GENERAL_MANAGER').map((s) => (
                       <TouchableOpacity key={s.id} onPress={() => assignRequestToStaff(active.id, s.id)} style={[styles.chip, active.assignedStaffId === s.id && styles.chipActive]}>
@@ -101,16 +107,16 @@ export default function StaffRequestsScreen() {
                     ))}
                   </ScrollView>
 
-                  <Text style={styles.fieldLabel}>Update status</Text>
+                  <Text style={styles.fieldLabel}>{t('staff.requests.updateStatus')}</Text>
                   <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: spacing.md }}>
-                    {['Received', 'Assigned', 'In Progress', 'Completed', 'Cancelled'].map((s) => (
+                    {STATUSES.map((s) => (
                       <TouchableOpacity key={s} onPress={() => updateRequestStatus(active.id, s)} style={[styles.chip, active.status === s && styles.chipActive]}>
-                        <Text style={[styles.chipText, active.status === s && styles.chipTextActive]}>{s}</Text>
+                        <Text style={[styles.chipText, active.status === s && styles.chipTextActive]}>{statusLabel(s)}</Text>
                       </TouchableOpacity>
                     ))}
                   </View>
 
-                  <Text style={styles.fieldLabel}>Internal notes</Text>
+                  <Text style={styles.fieldLabel}>{t('staff.requests.internalNotes')}</Text>
                   {(active.notes || []).map((n, i) => (
                     <View key={i} style={styles.noteBubble}>
                       <Text style={styles.noteText}><Text style={{ fontWeight: '700' }}>{n.by}: </Text>{n.text}</Text>
@@ -120,12 +126,12 @@ export default function StaffRequestsScreen() {
                     <TextInput
                       value={noteText}
                       onChangeText={setNoteText}
-                      placeholder="Add an internal note…"
+                      placeholder={t('staff.requests.notePlaceholder')}
                       placeholderTextColor={colors.slate}
                       style={styles.noteInput}
                     />
                     <TouchableOpacity onPress={handleAddNote} style={styles.noteAddBtn}>
-                      <Text style={styles.noteAddBtnText}>Add</Text>
+                      <Text style={styles.noteAddBtnText}>{t('staff.requests.addNote')}</Text>
                     </TouchableOpacity>
                   </View>
                 </>

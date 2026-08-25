@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 import { Card, SectionHeader, Badge, KpiCard, timeAgo } from '../../components/UI';
 import { colors, spacing, radius, font } from '../../theme/theme';
@@ -10,6 +11,7 @@ import { useApp } from '../../context/AppContext';
 const PRIORITY_TONE = { URGENT: 'error', HIGH: 'warning', NORMAL: 'neutral' };
 
 export default function StaffHomeScreen({ navigation }) {
+  const { t } = useTranslation();
   const { opsSession, serviceRequests, rooms, maintenanceIssues, feedback, propertySettings, events, activities, activityBookings } = useApp();
 
   const openRequests = useMemo(
@@ -28,39 +30,39 @@ export default function StaffHomeScreen({ navigation }) {
   const unresolvedFeedback = feedback.filter((f) => f.overall <= (propertySettings.lowRatingThreshold || 3) && !f.resolved);
 
   const greetingHour = new Date().getHours();
-  const greeting = greetingHour < 12 ? 'Good morning' : greetingHour < 18 ? 'Good afternoon' : 'Good evening';
+  const greetingKey = greetingHour < 12 ? 'staff.dashboard.greetingMorning' : greetingHour < 18 ? 'staff.dashboard.greetingAfternoon' : 'staff.dashboard.greetingEvening';
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
       <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: spacing.xxl }}>
-        <Text style={styles.eyebrow}>OCEAN OASIS · STAFF OPS</Text>
-        <Text style={styles.greeting}>{greeting}, {opsSession?.name?.split(' ')[0] || 'Team'}</Text>
+        <Text style={styles.eyebrow}>{t('staff.dashboard.eyebrow')}</Text>
+        <Text style={styles.greeting}>{t(greetingKey, { name: opsSession?.name?.split(' ')[0] || t('staff.dashboard.teamFallback') })}</Text>
         <Text style={styles.dateLine}>{new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}</Text>
 
         <View style={styles.kpiRow}>
-          <KpiCard label="Occupancy" value={`${occupancy}%`} sub={`${inHouseCount}/${rooms.length} rooms`} />
-          <KpiCard label="Open Requests" value={openRequests.length} sub={`${urgent.length} urgent`} />
-          <KpiCard label="Maintenance" value={openMaintenance.length} sub="open issues" />
-          <KpiCard label="Feedback Alerts" value={unresolvedFeedback.length} sub="need follow-up" />
+          <KpiCard label={t('staff.dashboard.kpi.occupancy')} value={`${occupancy}%`} sub={t('staff.dashboard.kpi.roomsSub', { count: inHouseCount, total: rooms.length })} />
+          <KpiCard label={t('staff.dashboard.kpi.openRequests')} value={openRequests.length} sub={t('staff.dashboard.kpi.urgentSub', { count: urgent.length })} />
+          <KpiCard label={t('staff.dashboard.kpi.maintenance')} value={openMaintenance.length} sub={t('staff.dashboard.kpi.openIssuesSub')} />
+          <KpiCard label={t('staff.dashboard.kpi.feedbackAlerts')} value={unresolvedFeedback.length} sub={t('staff.dashboard.kpi.needFollowUpSub')} />
         </View>
 
         {(urgent.length > 0 || unresolvedFeedback.length > 0) && (
           <Card style={{ backgroundColor: '#FBF0EC', borderWidth: 1, borderColor: '#EAC3B8', marginTop: spacing.sm }}>
-            <Text style={styles.alertTitle}>⚠ Needs immediate attention</Text>
+            <Text style={styles.alertTitle}>{t('staff.dashboard.alertBanner')}</Text>
             {urgent.map((r) => (
-              <Text key={r.id} style={styles.alertLine}>Room {r.roomNumber} — {r.category}: {r.description}</Text>
+              <Text key={r.id} style={styles.alertLine}>{t('staff.dashboard.alertRequestLine', { room: r.roomNumber, category: r.category, description: r.description })}</Text>
             ))}
             {unresolvedFeedback.map((f) => (
-              <Text key={f.id} style={styles.alertLine}>Room {f.roomNumber} — Guest experience alert, rated {f.overall}/5</Text>
+              <Text key={f.id} style={styles.alertLine}>{t('staff.dashboard.alertFeedbackLine', { room: f.roomNumber, rating: f.overall })}</Text>
             ))}
           </Card>
         )}
 
         <View style={{ marginTop: spacing.lg }}>
-          <SectionHeader title="Priority Queue" actionLabel="View all" onAction={() => navigation.navigate('Requests')} />
+          <SectionHeader title={t('staff.dashboard.priorityQueue')} actionLabel={t('staff.dashboard.viewAll')} onAction={() => navigation.navigate('Requests')} />
           <Card style={{ padding: 0 }}>
             {openRequests.length === 0 ? (
-              <Text style={styles.emptyText}>No open requests right now.</Text>
+              <Text style={styles.emptyText}>{t('staff.dashboard.noOpenRequests')}</Text>
             ) : openRequests.slice(0, 5).map((r, i) => (
               <TouchableOpacity key={r.id} style={[styles.row, i > 0 && styles.rowBorder]} onPress={() => navigation.navigate('Requests')}>
                 <View style={{ flex: 1 }}>
@@ -74,10 +76,10 @@ export default function StaffHomeScreen({ navigation }) {
         </View>
 
         <View style={{ marginTop: spacing.lg }}>
-          <SectionHeader title="Maintenance Watchlist" actionLabel="View all" onAction={() => navigation.navigate('More', { screen: 'StaffMaintenance' })} />
+          <SectionHeader title={t('staff.dashboard.maintenanceWatchlist')} actionLabel={t('staff.dashboard.viewAll')} onAction={() => navigation.navigate('More', { screen: 'StaffMaintenance' })} />
           <Card style={{ padding: 0 }}>
             {openMaintenance.length === 0 ? (
-              <Text style={styles.emptyText}>No open maintenance issues.</Text>
+              <Text style={styles.emptyText}>{t('staff.dashboard.noOpenMaintenance')}</Text>
             ) : openMaintenance.slice(0, 4).map((m, i) => (
               <View key={m.id} style={[styles.row, i > 0 && styles.rowBorder]}>
                 <View style={{ flex: 1 }}>
@@ -91,7 +93,7 @@ export default function StaffHomeScreen({ navigation }) {
         </View>
 
         <View style={{ marginTop: spacing.lg }}>
-          <SectionHeader title="Today at Ocean Oasis" />
+          <SectionHeader title={t('home.todayAtOceanOasis')} />
           <Card style={{ padding: 0 }}>
             {[...events.filter((e) => e.date === '2026-08-15'), ...activities.filter((a) => a.date === '2026-08-15')].map((item, i) => (
               <View key={item.id} style={[styles.row, i > 0 && styles.rowBorder]}>
