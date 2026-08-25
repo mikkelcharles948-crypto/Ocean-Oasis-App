@@ -34,8 +34,10 @@ export default function WelcomeAuthScreen({ navigation }) {
             <Ionicons name="chevron-back" size={24} color={colors.white} />
           </TouchableOpacity>
         )}
-        <View style={{ alignItems: 'center', marginTop: navigation.canGoBack() ? spacing.md : spacing.xxl }}>
-          <Logo size="lg" light />
+        <View style={[styles.logoWrap, { marginTop: navigation.canGoBack() ? spacing.md : spacing.xxl }]}>
+          <View style={styles.logoGlowOuter} pointerEvents="none" />
+          <View style={styles.logoGlowInner} pointerEvents="none" />
+          <Logo size={140} light />
         </View>
 
         <View style={{ flex: 1 }} />
@@ -74,6 +76,19 @@ export default function WelcomeAuthScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, paddingHorizontal: spacing.lg, paddingBottom: spacing.lg },
+  logoWrap: { alignItems: 'center', justifyContent: 'center' },
+  // A soft double-layer bloom behind the logo so it reads as a considered
+  // arrival moment rather than a mark floating directly on the photo —
+  // two oversized, very low-opacity white circles standing in for a
+  // radial glow (LinearGradient has no true radial mode on this stack).
+  logoGlowOuter: {
+    position: 'absolute', width: 260, height: 260, borderRadius: 130,
+    backgroundColor: 'rgba(255,255,255,0.06)',
+  },
+  logoGlowInner: {
+    position: 'absolute', width: 190, height: 190, borderRadius: 95,
+    backgroundColor: 'rgba(255,255,255,0.09)',
+  },
   backBtn: {
     width: 38, height: 38, borderRadius: 19, backgroundColor: 'rgba(255,255,255,0.15)',
     alignItems: 'center', justifyContent: 'center', marginTop: spacing.sm,
