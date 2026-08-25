@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { colors, radius } from '../theme/theme';
@@ -40,7 +41,7 @@ export default function ImagePlaceholder({ kind = 'ocean', uri, style, iconSize 
       <Image
         source={{ uri }}
         style={[styles.wrap, { borderRadius }, style]}
-        resizeMode="cover"
+        contentFit="cover"
         onError={() => setFailed(true)}
       />
     );

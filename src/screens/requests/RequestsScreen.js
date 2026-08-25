@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -43,6 +43,24 @@ export default function RequestsScreen({ navigation }) {
   const showLoading = dataLoading && serviceRequests.length === 0;
   const showError = !dataLoading && !!dataError && serviceRequests.length === 0;
 
+  const renderRequest = useCallback(
+    ({ item }) => (
+      <AnimatedPressable onPress={() => navigation.navigate('RequestDetail', { requestId: item.id })}>
+        <Card style={styles.reqCard}>
+          <View style={styles.reqIconWrap}>
+            <MaterialCommunityIcons name={categoryIcon(item.category)} size={18} color={colors.deepOcean} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.reqCategory} numberOfLines={1}>{item.category}</Text>
+            <Text style={styles.reqTime}>{timeAgo(item.createdAt, t)}</Text>
+          </View>
+          <Badge label={t(`requests.status.${STATUS_KEY[item.status] || item.status}`)} tone={STATUS_TONE[item.status]} />
+        </Card>
+      </AnimatedPressable>
+    ),
+    [navigation, t]
+  );
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
       <View style={styles.header}>
@@ -83,20 +101,11 @@ export default function RequestsScreen({ navigation }) {
               subtitle={t('requests.noRequestsSub')}
             />
           }
-          renderItem={({ item }) => (
-            <AnimatedPressable onPress={() => navigation.navigate('RequestDetail', { requestId: item.id })}>
-              <Card style={styles.reqCard}>
-                <View style={styles.reqIconWrap}>
-                  <MaterialCommunityIcons name={categoryIcon(item.category)} size={18} color={colors.deepOcean} />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.reqCategory} numberOfLines={1}>{item.category}</Text>
-                  <Text style={styles.reqTime}>{timeAgo(item.createdAt, t)}</Text>
-                </View>
-                <Badge label={t(`requests.status.${STATUS_KEY[item.status] || item.status}`)} tone={STATUS_TONE[item.status]} />
-              </Card>
-            </AnimatedPressable>
-          )}
+          renderItem={renderRequest}
+          removeClippedSubviews
+          initialNumToRender={10}
+          maxToRenderPerBatch={8}
+          windowSize={7}
         />
       )}
     </SafeAreaView>

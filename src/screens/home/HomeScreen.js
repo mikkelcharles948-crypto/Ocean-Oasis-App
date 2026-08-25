@@ -82,11 +82,15 @@ export default function HomeScreen({ navigation }) {
   const nightsRemaining = daysBetween(today, reservation.checkOut);
   const todaysEvents = useMemo(() => events.filter((e) => e.date === today && e.status !== 'DRAFT'), [events]);
   const rawRecommendation = activities[0];
-  const recommendation = rawRecommendation
-    ? getLocalizedContent(activitiesContent, rawRecommendation.id, i18n.language, rawRecommendation)
-    : null;
-  const rawPromo = promotions.find((p) => p.status === 'PUBLISHED');
-  const promo = rawPromo ? getLocalizedContent(promotionsContent, rawPromo.id, i18n.language, rawPromo) : null;
+  const recommendation = useMemo(
+    () => (rawRecommendation ? getLocalizedContent(activitiesContent, rawRecommendation.id, i18n.language, rawRecommendation) : null),
+    [rawRecommendation, i18n.language]
+  );
+  const rawPromo = useMemo(() => promotions.find((p) => p.status === 'PUBLISHED'), [promotions]);
+  const promo = useMemo(
+    () => (rawPromo ? getLocalizedContent(promotionsContent, rawPromo.id, i18n.language, rawPromo) : null),
+    [rawPromo, i18n.language]
+  );
   const primaryInterest = guest.interests?.[0];
 
   return (

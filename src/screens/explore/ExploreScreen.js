@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { View, StyleSheet, ScrollView, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -28,6 +28,28 @@ export default function ExploreScreen({ navigation }) {
   const filtered = useMemo(
     () => (category === 'All' ? DESTINATIONS : DESTINATIONS.filter((d) => d.category === category)),
     [category]
+  );
+
+  const renderItem = useCallback(
+    ({ item, index }) => {
+      const localized = getLocalizedContent(destinationsContent, item.id, i18n.language, item);
+      // ExperienceCard reads `.location` for its meta line; destinations
+      // don't have one, so the (already-short) travel time stands in —
+      // the display-only object below never reaches AppContext/Supabase.
+      const cardData = {
+        ...localized,
+        category: t(`common.category.${item.category}`),
+        location: localized.travelTime,
+      };
+      return (
+        <ExperienceCard
+          activity={cardData}
+          size={index === 0 ? 'large' : 'medium'}
+          onPress={() => navigation.navigate('DestinationDetail', { destinationId: item.id })}
+        />
+      );
+    },
+    [i18n.language, t, navigation]
   );
 
   return (
@@ -92,24 +114,11 @@ export default function ExploreScreen({ navigation }) {
         data={filtered}
         keyExtractor={(item) => item.id}
         contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.md, gap: spacing.lg }}
-        renderItem={({ item, index }) => {
-          const localized = getLocalizedContent(destinationsContent, item.id, i18n.language, item);
-          // ExperienceCard reads `.location` for its meta line; destinations
-          // don't have one, so the (already-short) travel time stands in —
-          // the display-only object below never reaches AppContext/Supabase.
-          const cardData = {
-            ...localized,
-            category: t(`common.category.${item.category}`),
-            location: localized.travelTime,
-          };
-          return (
-            <ExperienceCard
-              activity={cardData}
-              size={index === 0 ? 'large' : 'medium'}
-              onPress={() => navigation.navigate('DestinationDetail', { destinationId: item.id })}
-            />
-          );
-        }}
+        renderItem={renderItem}
+        removeClippedSubviews
+        initialNumToRender={4}
+        maxToRenderPerBatch={4}
+        windowSize={5}
       />
     </SafeAreaView>
   );

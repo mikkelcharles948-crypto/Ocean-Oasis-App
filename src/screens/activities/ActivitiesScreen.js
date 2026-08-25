@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
@@ -21,6 +21,22 @@ export default function ActivitiesScreen({ navigation }) {
     [category, activities]
   );
 
+  const renderActivity = useCallback(
+    ({ item, index }) => {
+      const localized = getLocalizedContent(activitiesContent, item.id, i18n.language, item);
+      const cardData = { ...localized, category: t(`common.category.${item.category}`) };
+      return (
+        <ExperienceCard
+          activity={cardData}
+          priceLabel={formatActivityPrice(item, t)}
+          size={index === 0 ? 'large' : 'medium'}
+          onPress={() => navigation.navigate('ActivityDetail', { activityId: item.id })}
+        />
+      );
+    },
+    [i18n.language, t, navigation]
+  );
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
       <ScreenHeader title={t('activities.title')} onBack={() => navigation.goBack()} />
@@ -38,18 +54,11 @@ export default function ActivitiesScreen({ navigation }) {
         keyExtractor={(a) => a.id}
         contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.sm, gap: spacing.lg }}
         ListEmptyComponent={<EmptyState icon="sunny-outline" title={t('activities.noActivities')} />}
-        renderItem={({ item, index }) => {
-          const localized = getLocalizedContent(activitiesContent, item.id, i18n.language, item);
-          const cardData = { ...localized, category: t(`common.category.${item.category}`) };
-          return (
-            <ExperienceCard
-              activity={cardData}
-              priceLabel={formatActivityPrice(item, t)}
-              size={index === 0 ? 'large' : 'medium'}
-              onPress={() => navigation.navigate('ActivityDetail', { activityId: item.id })}
-            />
-          );
-        }}
+        renderItem={renderActivity}
+        removeClippedSubviews
+        initialNumToRender={4}
+        maxToRenderPerBatch={4}
+        windowSize={5}
       />
     </SafeAreaView>
   );

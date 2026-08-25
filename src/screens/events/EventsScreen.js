@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -27,7 +27,31 @@ export default function EventsScreen({ navigation }) {
     return publishedEvents;
   }, [filter, publishedEvents]);
 
-  const savedIds = itinerary.filter((i) => i.type === 'event').map((i) => i.refId);
+  const savedEventIds = useMemo(
+    () => new Set(itinerary.filter((i) => i.type === 'event').map((i) => i.refId)),
+    [itinerary]
+  );
+
+  const renderEvent = useCallback(
+    ({ item }) => {
+      const localizedEvent = getLocalizedContent(eventsContent, item.id, i18n.language, item);
+      return (
+        <View>
+          <EventCard
+            event={localizedEvent}
+            size="medium"
+            onPress={() => navigation.navigate('EventDetail', { eventId: item.id })}
+          />
+          {savedEventIds.has(item.id) && (
+            <View style={styles.savedBadge}>
+              <Ionicons name="bookmark" size={13} color={colors.deepOcean} />
+            </View>
+          )}
+        </View>
+      );
+    },
+    [i18n.language, navigation, savedEventIds]
+  );
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
@@ -42,23 +66,11 @@ export default function EventsScreen({ navigation }) {
         keyExtractor={(e) => e.id}
         contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.sm, gap: spacing.md }}
         ListEmptyComponent={<EmptyState icon="calendar-outline" title={t('events.noEvents')} />}
-        renderItem={({ item }) => {
-          const localizedEvent = getLocalizedContent(eventsContent, item.id, i18n.language, item);
-          return (
-            <View>
-              <EventCard
-                event={localizedEvent}
-                size="medium"
-                onPress={() => navigation.navigate('EventDetail', { eventId: item.id })}
-              />
-              {savedIds.includes(item.id) && (
-                <View style={styles.savedBadge}>
-                  <Ionicons name="bookmark" size={13} color={colors.deepOcean} />
-                </View>
-              )}
-            </View>
-          );
-        }}
+        renderItem={renderEvent}
+        removeClippedSubviews
+        initialNumToRender={6}
+        maxToRenderPerBatch={6}
+        windowSize={5}
       />
     </SafeAreaView>
   );
