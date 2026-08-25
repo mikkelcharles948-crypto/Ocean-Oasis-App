@@ -5,7 +5,10 @@ import { mapServiceRequest, mapActivity, mapEvent, mapPromotion, mapBooking, map
 // staff/guest-originated inserts need a client-side id.
 const generateId = (prefix) => `${prefix}_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`;
 
-const guestName = (row) => `${row.guests?.first_name || ''} ${row.guests?.last_name || ''}`.trim();
+const guestName = (row) => {
+  const g = row.guest_profile || row.guests;
+  return `${g?.first_name || ''} ${g?.last_name || ''}`.trim();
+};
 const guestRoomNumber = (row) => (row.guests?.reservations || [])[0]?.rooms?.number || null;
 
 export function mapProfile(row) {
@@ -64,7 +67,10 @@ export async function loadStaffData() {
     supabase.from('activities').select('*').order('activity_date', { ascending: false }),
     supabase.from('events').select('*').order('event_date', { ascending: false }),
     supabase.from('promotions').select('*').order('created_at', { ascending: false }),
-    supabase.from('activity_bookings').select('*, guests(first_name, last_name)').order('created_at', { ascending: false }),
+    // Aliased to `guest_profile` — `activity_bookings` already has its own
+    // `guests` integer column (headcount), which collides with and gets
+    // silently overwritten by an embed named `guests` for the guest_id FK.
+    supabase.from('activity_bookings').select('*, guest_profile:guests(first_name, last_name)').order('created_at', { ascending: false }),
     supabase.from('maintenance_issues').select('*').order('created_at', { ascending: false }),
     supabase.from('feedback').select('*, guests(first_name, last_name, reservations(check_in, rooms(number)))').order('created_at', { ascending: false }),
     supabase.from('content_items').select('*').order('updated_at', { ascending: false }),

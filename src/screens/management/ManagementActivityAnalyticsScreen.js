@@ -13,7 +13,7 @@ export default function ManagementActivityAnalyticsScreen({ navigation }) {
 
   const stats = activities.map((a) => {
     const bookings = activityBookings.filter((b) => b.activityId === a.id);
-    const bookedGuests = bookings.reduce((s, b) => s + b.guests, 0);
+    const bookedGuests = bookings.reduce((s, b) => s + (b.guests || 0), 0);
     const revenue = bookings.reduce((s, b) => s + (b.amount || 0), 0);
     const utilization = a.capacity ? Math.min(100, Math.round((bookedGuests / a.capacity) * 100)) : 0;
     return { id: a.id, name: a.name, capacity: a.capacity, bookedGuests, revenue, utilization, bookingsCount: bookings.length };
