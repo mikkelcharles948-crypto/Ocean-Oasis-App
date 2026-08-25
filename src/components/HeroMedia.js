@@ -19,7 +19,7 @@ import { useReducedMotion } from '../theme/motion';
 //   >
 //     <Text style={typography.hero}>Ocean Oasis</Text>
 //   </HeroMedia>
-export default function HeroMedia({ video, fallbackImage, scrim = false, scrimColors, style, contentStyle, children }) {
+export default function HeroMedia({ video, fallbackImage, scrim = false, scrimColors, scrimLocations, style, contentStyle, children }) {
   const reducedMotion = useReducedMotion();
   const [videoFailed, setVideoFailed] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
@@ -58,6 +58,7 @@ export default function HeroMedia({ video, fallbackImage, scrim = false, scrimCo
       {scrim ? (
         <LinearGradient
           colors={scrimColors || gradients.scrim}
+          locations={scrimLocations}
           style={StyleSheet.absoluteFill}
           pointerEvents="none"
         />
