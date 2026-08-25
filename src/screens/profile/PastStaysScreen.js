@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Card, EmptyState, SectionHeader } from '../../components/UI';
+import LoadingState from '../../components/LoadingState';
 import { colors, spacing, font } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 import { loadPastStays } from '../../services/supabaseData';
@@ -69,8 +70,8 @@ export default function PastStaysScreen({ navigation }) {
       <ScreenHeader title={t('profile.pastStays')} onBack={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: spacing.xxl }}>
         {stays === null && !error && (
-          <View style={{ paddingTop: spacing.xl, alignItems: 'center' }}>
-            <ActivityIndicator color={colors.deepOcean} />
+          <View style={{ marginHorizontal: -spacing.lg }}>
+            <LoadingState variant="list" count={3} />
           </View>
         )}
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
