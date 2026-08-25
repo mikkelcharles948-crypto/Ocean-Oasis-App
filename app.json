@@ -36,7 +36,8 @@
           "color": "#0B3B45"
         }
       ],
-      "@sentry/react-native"
+      "@sentry/react-native",
+      "expo-video"
     ]
   }
 }
