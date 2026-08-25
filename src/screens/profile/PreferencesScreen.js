@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Pill } from '../../components/UI';
 import Button from '../../components/Button';
-import { colors, spacing, font } from '../../theme/theme';
+import { colors, spacing, typography } from '../../theme/theme';
 import { INTERESTS } from '../../data/mockData';
 import { useApp } from '../../context/AppContext';
 
@@ -47,7 +47,7 @@ export default function PreferencesScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  heading: { fontSize: 19, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
-  sub: { fontSize: 13, color: colors.slate, marginTop: 4, marginBottom: spacing.md },
+  heading: { ...typography.subheading, color: colors.charcoal },
+  sub: { ...typography.bodySmall, color: colors.slate, marginTop: 4, marginBottom: spacing.md },
   pillWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 4 },
 });

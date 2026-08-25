@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader } from '../../components/UI';
-import { colors, spacing, font } from '../../theme/theme';
+import { colors, spacing, font, typography } from '../../theme/theme';
 import { PROPERTY_INFO } from '../../data/mockData';
 
 const SECTION_KEYS = ['acceptance', 'reservations', 'serviceRequests', 'conduct', 'cancellations', 'liability', 'changes', 'contact'];
@@ -40,5 +40,5 @@ const styles = StyleSheet.create({
   updated: { fontSize: 11.5, color: colors.slate, marginBottom: spacing.sm },
   intro: { fontSize: 13.5, color: colors.charcoal, lineHeight: 20, marginBottom: spacing.lg },
   sectionTitle: { fontSize: 14.5, fontWeight: '700', color: colors.charcoal, fontFamily: font.display, marginTop: spacing.md, marginBottom: 6 },
-  body: { fontSize: 13, color: colors.slate, lineHeight: 19 },
+  body: { ...typography.bodySmall, color: colors.slate },
 });

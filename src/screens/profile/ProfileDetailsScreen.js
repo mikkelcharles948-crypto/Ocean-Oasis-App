@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Field } from '../../components/UI';
 import Button from '../../components/Button';
-import { colors, spacing } from '../../theme/theme';
+import { colors, spacing, typography } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 export default function ProfileDetailsScreen({ navigation }) {
@@ -35,7 +35,7 @@ export default function ProfileDetailsScreen({ navigation }) {
         <Field label={t('profile.lastName')} value={lastName} onChangeText={setLastName} />
         <Field label={t('profile.email')} value={email} onChangeText={setEmail} keyboardType="email-address" />
         <Field label={t('profile.phone')} value={phone} onChangeText={setPhone} keyboardType="phone-pad" />
-        {error ? <Text style={{ color: colors.error, fontSize: 13, marginTop: spacing.sm }}>{error}</Text> : null}
+        {error ? <Text style={{ ...typography.bodySmall, color: colors.error, marginTop: spacing.sm }}>{error}</Text> : null}
         <Button label={t('profile.saveChanges')} onPress={save} loading={saving} style={{ marginTop: spacing.sm }} />
       </ScrollView>
     </SafeAreaView>

@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Card } from '../../components/UI';
-import { colors, spacing, font } from '../../theme/theme';
+import { colors, spacing, font, typography } from '../../theme/theme';
 
 function ToggleRow({ label, description, value, onValueChange }) {
   return (
@@ -65,7 +65,7 @@ export default function PrivacySettingsScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  intro: { fontSize: 13, color: colors.slate, lineHeight: 19, marginBottom: spacing.md },
+  intro: { ...typography.bodySmall, color: colors.slate, marginBottom: spacing.md },
   row: { flexDirection: 'row', alignItems: 'center', paddingVertical: spacing.sm },
   rowLabel: { fontSize: 14, fontWeight: '600', color: colors.charcoal, fontFamily: font.display },
   rowDesc: { fontSize: 11.5, color: colors.slate, marginTop: 2, lineHeight: 15 },

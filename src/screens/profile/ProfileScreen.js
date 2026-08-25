@@ -1,22 +1,28 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Switch } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Alert, Switch } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
 import { Card } from '../../components/UI';
-import { colors, spacing, radius, font } from '../../theme/theme';
+import AnimatedPressable from '../../components/AnimatedPressable';
+import { colors, spacing, radius, typography } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 function Row({ icon, label, onPress, danger }) {
   return (
-    <TouchableOpacity style={styles.row} onPress={onPress} activeOpacity={0.7}>
+    <AnimatedPressable
+      style={styles.row}
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+    >
       <View style={styles.rowLeft}>
         <Ionicons name={icon} size={19} color={danger ? colors.error : colors.deepOcean} />
         <Text style={[styles.rowLabel, danger && { color: colors.error }]}>{label}</Text>
       </View>
       {!danger && <Ionicons name="chevron-forward" size={18} color={colors.slate} />}
-    </TouchableOpacity>
+    </AnimatedPressable>
   );
 }
 
@@ -55,9 +61,14 @@ export default function ProfileScreen({ navigation }) {
             <Text style={styles.name}>{guest.firstName} {guest.lastName}</Text>
             <Text style={styles.tier}>{guest.loyaltyTier}</Text>
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate('ProfileDetails')}>
+          <AnimatedPressable
+            onPress={() => navigation.navigate('ProfileDetails')}
+            accessibilityRole="button"
+            accessibilityLabel={t('profile.personalDetails')}
+            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+          >
             <Ionicons name="create-outline" size={20} color={colors.deepOcean} />
-          </TouchableOpacity>
+          </AnimatedPressable>
         </Card>
 
         <SectionLabel text={t('profile.stayAndPreferences')} />
@@ -140,13 +151,13 @@ function Divider() {
 }
 
 const styles = StyleSheet.create({
-  headerTitle: { fontSize: 26, fontWeight: '700', color: colors.charcoal, fontFamily: font.display, marginBottom: spacing.md },
+  headerTitle: { ...typography.display, color: colors.charcoal, marginBottom: spacing.md },
   profileCard: { flexDirection: 'row', alignItems: 'center', gap: 14 },
   avatar: { width: 54, height: 54, borderRadius: 27, backgroundColor: colors.deepOcean, alignItems: 'center', justifyContent: 'center' },
   avatarText: { color: colors.white, fontSize: 18, fontWeight: '700' },
   name: { fontSize: 17, fontWeight: '700', color: colors.charcoal },
   tier: { fontSize: 12, color: colors.gold, fontWeight: '600', marginTop: 2 },
-  sectionLabel: { fontSize: 12, fontWeight: '700', color: colors.slate, marginTop: spacing.lg, marginBottom: spacing.sm, letterSpacing: 0.5 },
+  sectionLabel: { ...typography.label, color: colors.slate, marginTop: spacing.lg, marginBottom: spacing.sm },
   row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 13 },
   rowLeft: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   rowLabel: { fontSize: 14.5, color: colors.charcoal, fontWeight: '500' },

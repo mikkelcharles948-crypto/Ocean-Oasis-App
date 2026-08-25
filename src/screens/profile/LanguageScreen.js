@@ -1,19 +1,25 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Card } from '../../components/UI';
-import { colors, spacing, font } from '../../theme/theme';
+import AnimatedPressable from '../../components/AnimatedPressable';
+import { colors, spacing } from '../../theme/theme';
 import { SUPPORTED_LANGUAGES, changeLanguage } from '../../i18n';
 
 function Row({ label, active, onPress }) {
   return (
-    <TouchableOpacity style={styles.row} onPress={onPress} activeOpacity={0.7}>
+    <AnimatedPressable
+      style={styles.row}
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+    >
       <Text style={styles.rowLabel}>{label}</Text>
       {active && <Ionicons name="checkmark-circle" size={20} color={colors.turquoiseDark} />}
-    </TouchableOpacity>
+    </AnimatedPressable>
   );
 }
 function Divider() {

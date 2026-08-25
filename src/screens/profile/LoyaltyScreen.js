@@ -6,7 +6,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Card, SectionHeader, ProgressBar } from '../../components/UI';
-import { colors, spacing, radius, font, shadow, gradients } from '../../theme/theme';
+import StatusPill from '../../components/StatusPill';
+import { colors, spacing, radius, font, shadow, gradients, typography } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 const TIERS = [
@@ -41,6 +42,9 @@ export default function LoyaltyScreen({ navigation }) {
 
         <View style={{ marginTop: spacing.lg }}>
           <SectionHeader title={t('loyalty.perksTitle')} />
+          <Card style={{ marginBottom: spacing.md }}>
+            <StatusPill steps={TIERS.map((tier) => tier.name)} activeIndex={currentIndex} />
+          </Card>
           {TIERS.map((tier, i) => (
             <Card key={tier.key} style={[styles.tierCard, i === currentIndex && styles.tierCardActive]}>
               <View style={styles.tierRow}>
@@ -73,14 +77,14 @@ export default function LoyaltyScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   statusCard: { borderRadius: radius.lg, padding: spacing.lg, ...shadow.float },
-  programName: { color: colors.deepOcean2, fontSize: 12, fontWeight: '700', letterSpacing: 1 },
-  tierName: { color: colors.deepOcean, fontSize: 26, fontWeight: '700', fontFamily: font.display, marginTop: 2, marginBottom: spacing.sm },
+  programName: { ...typography.label, color: colors.deepOcean2 },
+  tierName: { ...typography.display, color: colors.deepOcean, marginTop: 2, marginBottom: spacing.sm },
   progressLabel: { color: colors.deepOcean2, fontSize: 12, marginTop: 6 },
   tierCard: { marginBottom: spacing.sm },
   tierCardActive: { borderWidth: 1.5, borderColor: colors.gold },
   tierRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   tierCardName: { fontSize: 14.5, fontWeight: '700', color: colors.charcoal, fontFamily: font.display, flex: 1 },
-  currentLabel: { fontSize: 10.5, fontWeight: '700', color: colors.gold, textTransform: 'uppercase', letterSpacing: 0.5 },
+  currentLabel: { ...typography.label, color: colors.gold },
   perkText: { fontSize: 12.5, color: colors.slate, marginTop: 6, lineHeight: 18 },
   promoTitle: { fontSize: 14, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
   promoDesc: { fontSize: 12, color: colors.slate, marginTop: 3, lineHeight: 17 },
