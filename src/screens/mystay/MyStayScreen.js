@@ -19,11 +19,11 @@ import roomTypesContent from '../../i18n/content/roomTypes';
 import roomAmenitiesContent from '../../i18n/content/roomAmenities';
 import { optimizeImageUrl } from '../../utils/optimizeImageUrl';
 
-// Real Dominica beach (Mero Beach), used as a hero backdrop behind the
-// guest's stay identity — ambience of the destination, not a depiction of
-// the hotel's own grounds (no per-room photo exists in the data model).
-// Verified on Wikimedia Commons.
-const MYSTAY_HERO_URL = 'https://commons.wikimedia.org/wiki/Special:FilePath/MERO_BEACH%2C_DOMINICA.jpg';
+// A real guest-room photo from oceanoasisdominica.com (the actual hotel
+// this app represents — Ocean Oasis, Castle Comfort, Roseau), not a
+// generic destination photo, so this reads as the guest's own room rather
+// than ambient scenery. Verified live on the hotel's own site/CDN.
+const MYSTAY_HERO_URL = 'https://symphony.cdn.tambourine.com/_fusion/ocean-oasis/media/oceanedgedevelopment-homepage-gallery-06-69028aecd33e8.jpg';
 
 // The reservation lifecycle as it actually exists on `reservation.status`
 // (see AppContext / mockData: confirmed | checked_in | checked_out) — the
@@ -172,7 +172,14 @@ export default function MyStayScreen({ navigation }) {
                   <View style={{ flex: 1, paddingBottom: spacing.lg }}>
                     <Text style={styles.timelineLabel}>{step.label}</Text>
                     {step.key === 'arrival' && (
-                      <Text style={styles.timelineDetail}>{t('mystay.arrivalDetail', { time: reservation.arrivalTime })}</Text>
+                      <Text style={styles.timelineDetail}>
+                        {reservation.arrivalTransport
+                          ? t('mystay.arrivalDetailWithTransport', {
+                              time: reservation.arrivalTime,
+                              transport: t(`mystay.checkinFlow.transportOptions.${reservation.arrivalTransport}`),
+                            })
+                          : t('mystay.arrivalDetail', { time: reservation.arrivalTime })}
+                      </Text>
                     )}
                     {step.key === 'stay' && (
                       <View style={styles.timelineLinks}>

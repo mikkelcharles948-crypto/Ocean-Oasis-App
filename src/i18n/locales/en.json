@@ -325,6 +325,7 @@
       "departure": "Departure"
     },
     "arrivalDetail": "Arrival {{time}} · Airport transfer arranged",
+    "arrivalDetailWithTransport": "Arrival {{time}} · {{transport}}",
     "activitiesLink": "Activities",
     "diningLink": "Dining",
     "eventsLink": "Events",
@@ -1320,7 +1321,7 @@
         "desc": "A Roseau landmark in a historic French-colonial house — buffet-style Creole lunches downstairs, homemade ice cream and pastries in the patisserie upstairs."
       },
       "palisadesFortYoung": {
-        "name": "The Palisades, Fort Young Hotel",
+        "name": "Palisades Restaurant, Fort Young Hotel",
         "location": "Victoria Street, Roseau",
         "desc": "Waterfront Creole seafood with Caribbean Sea views, known for its Lion Fish Bon Femme."
       },

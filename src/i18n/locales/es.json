@@ -325,6 +325,7 @@
       "departure": "Salida"
     },
     "arrivalDetail": "Llegada {{time}} · Traslado desde el aeropuerto organizado",
+    "arrivalDetailWithTransport": "Llegada {{time}} · {{transport}}",
     "activitiesLink": "Actividades",
     "diningLink": "Restaurantes",
     "eventsLink": "Eventos",
@@ -1320,7 +1321,7 @@
         "desc": "Un referente de Roseau en una histórica casa de estilo colonial francés — almuerzos criollos estilo buffet en la planta baja, helados y repostería caseros en la pastelería del piso superior."
       },
       "palisadesFortYoung": {
-        "name": "The Palisades, Fort Young Hotel",
+        "name": "Palisades Restaurant, Fort Young Hotel",
         "location": "Victoria Street, Roseau",
         "desc": "Cocina criolla de mariscos frente al mar con vistas al Caribe, conocida por su pez león \"Bon Femme\"."
       },

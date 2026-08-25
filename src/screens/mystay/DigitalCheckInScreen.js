@@ -49,7 +49,11 @@ export default function DigitalCheckInScreen({ navigation }) {
   const handleFinish = async () => {
     setFinishing(true);
     setFinishError('');
-    const result = await completeDigitalCheckIn();
+    const result = await completeDigitalCheckIn({
+      arrivalTime: form.arrivalTime,
+      arrivalTransport: form.transport,
+      specialRequests: form.specialRequests,
+    });
     setFinishing(false);
     if (!result?.ok) {
       setFinishError(result?.error || t('mystay.checkinFlow.finishError'));

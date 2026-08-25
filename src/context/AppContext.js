@@ -831,17 +831,23 @@ export function AppProvider({ children }) {
     }
   }, [staffNotifications]);
 
-  const completeDigitalCheckIn = useCallback(async () => {
+  // `details` (arrivalTime/transport/specialRequests from the check-in
+  // form) has no backing column on reservations yet — complete_guest_checkin
+  // only ever flips status — so it's merged into local reservation state
+  // client-side after the status flip, same as the local-only branch below.
+  // Real persistence (surviving a reinstall/re-auth) needs a migration to
+  // add those columns and pass them through the RPC.
+  const completeDigitalCheckIn = useCallback(async (details) => {
     if (authSession?.user?.id && guest.id !== GUEST.id && reservation?.id) {
       try {
         const updated = await completeRemoteGuestCheckIn(reservation.id);
-        setReservation((r) => ({ ...r, ...updated }));
+        setReservation((r) => ({ ...r, ...updated, ...(details || {}) }));
         return { ok: true };
       } catch (error) {
         return { ok: false, error: 'Check-in could not be completed. Please try again.' };
       }
     }
-    setReservation((r) => ({ ...r, status: 'checked_in' }));
+    setReservation((r) => ({ ...r, status: 'checked_in', ...(details || {}) }));
     return { ok: true };
   }, [authSession?.user?.id, guest?.id, reservation?.id]);
 

@@ -325,6 +325,7 @@
       "departure": "离店"
     },
     "arrivalDetail": "抵达时间 {{time}} · 已安排机场接送",
+    "arrivalDetailWithTransport": "抵达时间 {{time}} · {{transport}}",
     "activitiesLink": "活动",
     "diningLink": "餐饮",
     "eventsLink": "活动日程",
@@ -1320,7 +1321,7 @@
         "desc": "罗索地标餐厅，坐落于一栋法式殖民风格历史建筑内——楼下供应自助式克里奥尔午餐，楼上甜品店提供自制冰淇淋和糕点。"
       },
       "palisadesFortYoung": {
-        "name": "The Palisades（约克堡酒店）",
+        "name": "Palisades Restaurant（约克堡酒店）",
         "location": "罗索，维多利亚街",
         "desc": "可俯瞰加勒比海的滨海克里奥尔海鲜餐厅，以狮子鱼「Bon Femme」风味闻名。"
       },
