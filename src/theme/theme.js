@@ -53,10 +53,17 @@ export const font = {
 // are untouched — this is additive, for new editorial-pass work to build
 // on — but any of these objects can be spread directly into a Text style:
 //   <Text style={[typography.heading, { color: colors.ivory }]}>
+// lineHeight is deliberately generous relative to fontSize (~1.25-1.3x)
+// on these three, not just for looks: a tight ratio on a serif fontFamily
+// at fontWeight 600 is a known way for Android to silently clip an entire
+// wrapped line to nothing (not just crop it) inside a numberOfLines-bound
+// Text — it showed up as destination/activity titles rendering blank
+// whenever they wrapped to 2 lines, while short single-line titles were
+// unaffected. Keep this headroom rather than tightening it back up.
 export const typography = {
-  hero: { fontFamily: font.display, fontSize: 42, lineHeight: 46, fontWeight: '600', letterSpacing: 0.2 },
-  display: { fontFamily: font.display, fontSize: 30, lineHeight: 36, fontWeight: '600', letterSpacing: 0.1 },
-  heading: { fontFamily: font.display, fontSize: 22, lineHeight: 27, fontWeight: '600' },
+  hero: { fontFamily: font.display, fontSize: 42, lineHeight: 52, fontWeight: '600', letterSpacing: 0.2 },
+  display: { fontFamily: font.display, fontSize: 30, lineHeight: 38, fontWeight: '600', letterSpacing: 0.1 },
+  heading: { fontFamily: font.display, fontSize: 22, lineHeight: 29, fontWeight: '600' },
   subheading: { fontFamily: font.body, fontSize: 17, lineHeight: 23, fontWeight: '600' },
   body: { fontFamily: font.body, fontSize: 15, lineHeight: 22, fontWeight: '400' },
   bodySmall: { fontFamily: font.body, fontSize: 13, lineHeight: 19, fontWeight: '400' },
