@@ -76,11 +76,6 @@ export default function NewRequestScreen({ navigation, route }) {
         <Field label={t('requests.preferredTimeOptional')} value={preferredTime} onChangeText={setPreferredTime} placeholder={t('requests.preferredTimePlaceholder')} />
         {error ? <Text style={styles.error}>{error}</Text> : null}
 
-        <TouchableOpacity style={styles.imageBtn}>
-          <Ionicons name="camera-outline" size={18} color={colors.slate} />
-          <Text style={styles.imageBtnText}>{t('requests.attachPhoto')}</Text>
-        </TouchableOpacity>
-
         <Button
           label={t('requests.submitRequest')}
           onPress={handleSubmit}
@@ -103,11 +98,6 @@ const styles = StyleSheet.create({
   catTileSelected: { backgroundColor: colors.deepOcean, borderColor: colors.deepOcean },
   catLabel: { fontSize: 10.5, fontWeight: '600', color: colors.charcoal, textAlign: 'center' },
   error: { color: colors.error, fontSize: 13, marginTop: spacing.sm },
-  imageBtn: {
-    flexDirection: 'row', alignItems: 'center', gap: 8, borderWidth: 1, borderColor: colors.border,
-    borderStyle: 'dashed', borderRadius: radius.md, padding: spacing.sm, justifyContent: 'center', marginBottom: spacing.sm,
-  },
-  imageBtnText: { fontSize: 12.5, color: colors.slate },
   successWrap: { alignItems: 'center', padding: spacing.xl, marginTop: spacing.xl },
   successCircle: { width: 68, height: 68, borderRadius: 34, alignItems: 'center', justifyContent: 'center', marginBottom: spacing.md, ...shadow.soft },
   successTitle: { fontSize: 20, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
