@@ -118,7 +118,10 @@
     "guestsLabel": "Huéspedes",
     "priceLabel": "Precio",
     "confirmReservation": "Confirmar reserva",
-    "bookingError": "Esta actividad no se pudo reservar. Inténtalo de nuevo."
+    "bookingError": "Esta actividad no se pudo reservar. Inténtalo de nuevo.",
+    "perPersonPrice": "${{price}} por persona",
+    "complimentaryPrice": "Cortesía",
+    "contactForPricing": "Consulta el precio con la conserjería"
   },
   "events": {
     "title": "Eventos",

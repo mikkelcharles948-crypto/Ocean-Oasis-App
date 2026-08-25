@@ -9,6 +9,7 @@ import { ScreenHeader, ErrorState } from '../../components/UI';
 import Button from '../../components/Button';
 import { colors, spacing, radius, font, shadow, gradients } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
+import { formatActivityPrice } from '../../utils/formatActivityPrice';
 
 export default function BookActivityScreen({ route, navigation }) {
   const { t } = useTranslation();
@@ -86,7 +87,7 @@ export default function BookActivityScreen({ route, navigation }) {
           <SummaryRow label={t('activities.date')} value={activity.date} />
           <SummaryRow label={t('activities.time')} value={activity.time} />
           <SummaryRow label={t('activities.guestsLabel')} value={String(guests)} />
-          <SummaryRow label={t('activities.priceLabel')} value={activity.price} />
+          <SummaryRow label={t('activities.priceLabel')} value={formatActivityPrice(activity, t)} />
         </View>
 
         {error ? <Text style={styles.errorText}>{error}</Text> : null}

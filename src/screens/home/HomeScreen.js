@@ -10,6 +10,11 @@ import ImagePlaceholder from '../../components/ImagePlaceholder';
 import Logo from '../../components/Logo';
 import { colors, spacing, radius, font, shadow, gradients } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
+import { getLocalizedContent } from '../../i18n/content';
+import activitiesContent from '../../i18n/content/activities';
+import eventsContent from '../../i18n/content/events';
+import promotionsContent from '../../i18n/content/promotions';
+import { formatActivityPrice } from '../../utils/formatActivityPrice';
 
 function daysBetween(a, b) {
   const d1 = new Date(a);
@@ -28,14 +33,18 @@ function formatDateLong(dateStr) {
 const HOME_HERO_URL = 'https://commons.wikimedia.org/wiki/Special:FilePath/Soufri%C3%A8re_Bay%2C_Dominica_008.JPG';
 
 export default function HomeScreen({ navigation }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { guest, reservation, room, unreadNotificationCount, events, activities, promotions } = useApp();
 
   const today = '2026-08-15';
   const nightsRemaining = daysBetween(today, reservation.checkOut);
   const todaysEvents = useMemo(() => events.filter((e) => e.date === today && e.status !== 'DRAFT'), [events]);
-  const recommendation = activities[0];
-  const promo = promotions.find((p) => p.status === 'PUBLISHED');
+  const rawRecommendation = activities[0];
+  const recommendation = rawRecommendation
+    ? getLocalizedContent(activitiesContent, rawRecommendation.id, i18n.language, rawRecommendation)
+    : null;
+  const rawPromo = promotions.find((p) => p.status === 'PUBLISHED');
+  const promo = rawPromo ? getLocalizedContent(promotionsContent, rawPromo.id, i18n.language, rawPromo) : null;
   const primaryInterest = guest.interests?.[0];
 
   return (
@@ -125,15 +134,18 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.section}>
           <SectionHeader title={t('home.todayAtOceanOasis')} actionLabel={t('home.seeAll')} onAction={() => navigation.navigate('Events')} />
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: spacing.sm }}>
-            {todaysEvents.map((event) => (
-              <TouchableOpacity key={event.id} onPress={() => navigation.navigate('EventDetail', { eventId: event.id })}>
-                <Card style={styles.eventCard}>
-                  <Text style={styles.eventTime}>{event.time}</Text>
-                  <Text style={styles.eventTitle}>{event.title}</Text>
-                  <Text style={styles.eventLocation} numberOfLines={1}>{event.location}</Text>
-                </Card>
-              </TouchableOpacity>
-            ))}
+            {todaysEvents.map((event) => {
+              const localizedEvent = getLocalizedContent(eventsContent, event.id, i18n.language, event);
+              return (
+                <TouchableOpacity key={event.id} onPress={() => navigation.navigate('EventDetail', { eventId: event.id })}>
+                  <Card style={styles.eventCard}>
+                    <Text style={styles.eventTime}>{event.time}</Text>
+                    <Text style={styles.eventTitle}>{localizedEvent.title}</Text>
+                    <Text style={styles.eventLocation} numberOfLines={1}>{localizedEvent.location}</Text>
+                  </Card>
+                </TouchableOpacity>
+              );
+            })}
           </ScrollView>
         </View>
 
@@ -149,7 +161,7 @@ export default function HomeScreen({ navigation }) {
                 <Text style={styles.recTitle}>{recommendation.name}</Text>
                 <Text style={styles.recDesc} numberOfLines={2}>{recommendation.shortDescription}</Text>
                 <View style={styles.recFooter}>
-                  <Text style={styles.recPrice}>{recommendation.price}</Text>
+                  <Text style={styles.recPrice}>{formatActivityPrice(recommendation, t)}</Text>
                   <View style={styles.exploreBtn}>
                     <Text style={styles.exploreBtnText}>{t('home.explore')}</Text>
                     <Ionicons name="chevron-forward" size={14} color={colors.deepOcean} />

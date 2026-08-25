@@ -12,6 +12,7 @@ import { colors, spacing, radius, font, shadow } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 import { getLocalizedContent } from '../../i18n/content';
 import activitiesContent from '../../i18n/content/activities';
+import { formatActivityPrice } from '../../utils/formatActivityPrice';
 
 const AVAILABILITY_KEY = { Available: 'available', 'Limited spots': 'limitedSpots' };
 
@@ -88,7 +89,7 @@ export default function ActivityDetailScreen({ route, navigation }) {
 
       <View style={styles.footer}>
         <View>
-          <Text style={styles.footerPrice}>{activity.price}</Text>
+          <Text style={styles.footerPrice}>{formatActivityPrice(activity, t)}</Text>
           <Text style={styles.footerLocation}>{activity.location}</Text>
         </View>
         <Button

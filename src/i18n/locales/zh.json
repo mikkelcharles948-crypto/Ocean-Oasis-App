@@ -118,7 +118,10 @@
     "guestsLabel": "人数",
     "priceLabel": "价格",
     "confirmReservation": "确认预订",
-    "bookingError": "该活动预订未能成功，请重试。"
+    "bookingError": "该活动预订未能成功，请重试。",
+    "perPersonPrice": "每人 ${{price}}",
+    "complimentaryPrice": "免费",
+    "contactForPricing": "价格请咨询礼宾部"
   },
   "events": {
     "title": "活动日程",

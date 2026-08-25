@@ -11,6 +11,7 @@ import { ACTIVITY_CATEGORIES } from '../../data/mockData';
 import { useApp } from '../../context/AppContext';
 import { getLocalizedContent } from '../../i18n/content';
 import activitiesContent from '../../i18n/content/activities';
+import { formatActivityPrice } from '../../utils/formatActivityPrice';
 
 const AVAILABILITY_KEY = { Available: 'available', 'Limited spots': 'limitedSpots' };
 
@@ -58,7 +59,7 @@ export default function ActivitiesScreen({ navigation }) {
                   <Text style={styles.metaText}>{item.time} · {item.duration}</Text>
                 </View>
                 <View style={styles.footerRow}>
-                  <Text style={styles.price}>{item.price}</Text>
+                  <Text style={styles.price}>{formatActivityPrice(item, t)}</Text>
                   <Text style={styles.location} numberOfLines={1}>{item.location}</Text>
                 </View>
               </View>

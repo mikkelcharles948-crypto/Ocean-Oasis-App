@@ -118,7 +118,10 @@
     "guestsLabel": "Guests",
     "priceLabel": "Price",
     "confirmReservation": "Confirm Reservation",
-    "bookingError": "This activity could not be booked. Please try again."
+    "bookingError": "This activity could not be booked. Please try again.",
+    "perPersonPrice": "${{price}} per person",
+    "complimentaryPrice": "Complimentary",
+    "contactForPricing": "Contact concierge for pricing"
   },
   "events": {
     "title": "Events",

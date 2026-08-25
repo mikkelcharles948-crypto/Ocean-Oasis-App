@@ -118,7 +118,10 @@
     "guestsLabel": "Participants",
     "priceLabel": "Prix",
     "confirmReservation": "Confirmer la réservation",
-    "bookingError": "Cette activité n'a pas pu être réservée. Veuillez réessayer."
+    "bookingError": "Cette activité n'a pas pu être réservée. Veuillez réessayer.",
+    "perPersonPrice": "{{price}} $ par personne",
+    "complimentaryPrice": "Offert",
+    "contactForPricing": "Tarif sur demande auprès de la conciergerie"
   },
   "events": {
     "title": "Événements",
