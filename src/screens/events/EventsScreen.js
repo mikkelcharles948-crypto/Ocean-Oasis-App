@@ -63,7 +63,7 @@ export default function EventsScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  pillRow: { flexDirection: 'row', paddingHorizontal: spacing.lg, marginTop: spacing.sm, marginBottom: spacing.sm },
+  pillRow: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: spacing.lg, marginTop: spacing.sm, marginBottom: spacing.sm },
   card: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   timeBlock: { backgroundColor: colors.sandLight, borderRadius: radius.md, paddingVertical: 8, paddingHorizontal: 10, minWidth: 78, alignItems: 'center' },
   timeText: { fontSize: 12, fontWeight: '700', color: colors.deepOcean },

@@ -120,7 +120,7 @@ export default function MyStayScreen({ navigation }) {
 
         <Card style={{ marginTop: spacing.md }}>
           <View style={styles.rowBetween}>
-            <Text style={styles.guestName}>{guest.firstName} {guest.lastName}</Text>
+            <Text style={[styles.guestName, { flexShrink: 1, marginRight: spacing.sm }]} numberOfLines={1}>{guest.firstName} {guest.lastName}</Text>
             <Badge label={checkedIn ? t('mystay.checkedIn') : reservation.status.replace('_', ' ')} tone={checkedIn ? 'success' : 'info'} />
           </View>
           <View style={styles.detailGrid}>

@@ -21,7 +21,7 @@ export default function AccessibilityScreen({ navigation }) {
       <ScreenHeader title={t('profile.accessibility')} onBack={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: spacing.xxl }}>
         <Text style={styles.sectionLabel}>{t('accessibility.textSize')}</Text>
-        <View style={{ flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.lg }}>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginBottom: spacing.lg }}>
           {TEXT_SIZES.map((size) => (
             <Pill key={size} label={t(`accessibility.textSizes.${TEXT_SIZE_KEY[size]}`)} selected={textSize === size} onPress={() => setTextSize(size)} />
           ))}

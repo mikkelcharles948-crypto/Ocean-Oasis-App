@@ -85,8 +85,8 @@ function Stat({ icon, label, value }) {
   return (
     <View style={styles.stat}>
       <Ionicons name={icon} size={18} color={colors.deepOcean} />
-      <Text style={styles.statValue}>{value}</Text>
-      <Text style={styles.statLabel}>{label}</Text>
+      <Text style={styles.statValue} numberOfLines={2}>{value}</Text>
+      <Text style={styles.statLabel} numberOfLines={1}>{label}</Text>
     </View>
   );
 }
@@ -107,8 +107,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg, padding: spacing.md, marginTop: spacing.lg, borderWidth: 1, borderColor: colors.border,
   },
   stat: { alignItems: 'center', flex: 1, gap: 4 },
-  statValue: { fontSize: 13, fontWeight: '700', color: colors.charcoal },
-  statLabel: { fontSize: 10.5, color: colors.slate },
+  statValue: { fontSize: 13, fontWeight: '700', color: colors.charcoal, textAlign: 'center' },
+  statLabel: { fontSize: 10.5, color: colors.slate, textAlign: 'center' },
   noticeBox: {
     flexDirection: 'row', gap: 8, backgroundColor: '#E1F2F1', padding: spacing.sm,
     borderRadius: radius.md, marginTop: spacing.md, alignItems: 'flex-start',

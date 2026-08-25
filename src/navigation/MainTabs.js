@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { View, Text, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import HomeScreen from '../screens/home/HomeScreen';
 import ExploreScreen from '../screens/explore/ExploreScreen';
@@ -82,6 +83,24 @@ function TabIcon({ name, focused }) {
 
 export default function MainTabs() {
   const { unreadNotificationCount } = useApp();
+  const { t } = useTranslation();
+  // Translated tab labels (previously hardcoded to the English route name,
+  // which meant this tab bar silently stayed in English no matter which
+  // language was selected). adjustsFontSizeToFit lets a longer translation
+  // (e.g. "Mon séjour", "我的住宿") shrink slightly rather than truncate
+  // with an ellipsis on the narrow per-tab width.
+  const labelMap = {
+    Home: t('nav.home'),
+    Explore: t('nav.explore'),
+    'My Stay': t('nav.myStay'),
+    Requests: t('nav.requests'),
+    Profile: t('nav.profile'),
+  };
+  const renderTabLabel = (routeName) => ({ color }) => (
+    <Text style={[styles.tabLabel, { color }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
+      {labelMap[routeName]}
+    </Text>
+  );
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -90,6 +109,7 @@ export default function MainTabs() {
         tabBarInactiveTintColor: colors.slate,
         tabBarStyle: styles.tabBar,
         tabBarLabelStyle: styles.tabLabel,
+        tabBarLabel: renderTabLabel(route.name),
         tabBarBackground: () => (
           <GlassSurface style={styles.tabBarGlass} borderRadius={0} intensity={46} tint="light">
             <View style={styles.tabBarLogoWrap} pointerEvents="none">

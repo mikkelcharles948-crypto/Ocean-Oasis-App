@@ -68,7 +68,7 @@ export default function ExploreScreen({ navigation }) {
               <ImagePlaceholder kind={item.image} uri={item.imageUrl} style={{ width: 112, height: 132, borderRadius: 0 }} iconSize={28} />
               <View style={{ flex: 1, padding: spacing.sm }}>
                 <Badge label={t(`common.category.${item.category}`)} tone="info" />
-                <Text style={styles.cardTitle}>{item.title}</Text>
+                <Text style={styles.cardTitle} numberOfLines={2}>{item.title}</Text>
                 <Text style={styles.cardDesc} numberOfLines={2}>{localized.description}</Text>
                 <View style={styles.metaRow}>
                   <Ionicons name="time-outline" size={12} color={colors.slate} />

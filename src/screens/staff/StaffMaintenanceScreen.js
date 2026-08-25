@@ -52,7 +52,7 @@ export default function StaffMaintenanceScreen({ navigation }) {
         renderItem={({ item }) => (
           <Card>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 }}>
-              <Text style={styles.roomTitle}>Room {item.roomNumber} — {item.category}</Text>
+              <Text style={[styles.roomTitle, { flexShrink: 1, marginRight: spacing.sm }]} numberOfLines={1}>Room {item.roomNumber} — {item.category}</Text>
               <Badge label={item.severity} tone={SEVERITY_TONE[item.severity]} />
             </View>
             <Text style={styles.desc}>{item.description}</Text>

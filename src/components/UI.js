@@ -44,7 +44,7 @@ export function Badge({ label, tone = 'neutral' }) {
   const toneStyle = toneStyles[tone] || toneStyles.neutral;
   return (
     <View style={[styles.badge, { backgroundColor: toneStyle.bg }]}>
-      <Text style={[styles.badgeText, { color: toneStyle.fg }]}>{label}</Text>
+      <Text style={[styles.badgeText, { color: toneStyle.fg }]} numberOfLines={1}>{label}</Text>
     </View>
   );
 }
@@ -195,7 +195,7 @@ export function Pill({ label, selected, onPress }) {
       style={[styles.pill, selected && styles.pillSelected]}
       activeOpacity={0.85}
     >
-      <Text style={[styles.pillText, selected && styles.pillTextSelected]}>{label}</Text>
+      <Text style={[styles.pillText, selected && styles.pillTextSelected]} numberOfLines={1}>{label}</Text>
     </TouchableOpacity>
   );
 }
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
   sectionSubtitle: { fontSize: 12.5, color: colors.slate, marginTop: 3, lineHeight: 17 },
   sectionAction: { fontSize: 13, fontWeight: '700', color: colors.turquoiseDark },
   badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: radius.pill, alignSelf: 'flex-start' },
-  badgeText: { fontSize: 11, fontWeight: '700', letterSpacing: 0.3 },
+  badgeText: { fontSize: 11, fontWeight: '700', letterSpacing: 0.3, flexShrink: 1 },
   screenHeaderShadowWrap: {
     ...shadow.card,
   },
@@ -321,6 +321,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white, borderWidth: 1, borderColor: colors.border, marginRight: 8,
   },
   pillSelected: { backgroundColor: colors.deepOcean, borderColor: colors.deepOcean },
-  pillText: { fontSize: 13, fontWeight: '600', color: colors.charcoal },
+  pillText: { fontSize: 13, fontWeight: '600', color: colors.charcoal, flexShrink: 1 },
   pillTextSelected: { color: colors.white },
 });

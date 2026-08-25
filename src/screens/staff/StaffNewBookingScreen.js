@@ -518,7 +518,7 @@ const styles = StyleSheet.create({
   stepTitle: { fontSize: 19, fontWeight: '700', color: colors.charcoal, fontFamily: font.display, marginBottom: 4 },
   stepSubtitle: { fontSize: 12.5, color: colors.slate, marginBottom: spacing.md, lineHeight: 18 },
   fieldLabel: { fontSize: 12.5, fontWeight: '700', color: colors.charcoal, marginBottom: 8 },
-  tabRow: { flexDirection: 'row', marginBottom: spacing.md },
+  tabRow: { flexDirection: 'row', flexWrap: 'wrap', marginBottom: spacing.md },
   searchBox: {
     flexDirection: 'row', alignItems: 'center', gap: 8, borderWidth: 1, borderColor: colors.border,
     borderRadius: radius.md, paddingHorizontal: 14, paddingVertical: 10, backgroundColor: colors.white, marginBottom: spacing.md,

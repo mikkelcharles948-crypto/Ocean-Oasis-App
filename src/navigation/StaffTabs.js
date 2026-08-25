@@ -2,7 +2,7 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
-import { View, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import StaffHomeScreen from '../screens/staff/StaffHomeScreen';
@@ -67,6 +67,14 @@ export default function StaffTabs() {
     Activities: t('staff.activities.title'),
     More: t('staff.moreScreen.title'),
   };
+  // adjustsFontSizeToFit lets a longer translation (e.g. "Tableau de bord")
+  // shrink slightly to fit the narrow per-tab width rather than truncate
+  // with an ellipsis.
+  const renderTabLabel = (routeName) => ({ color }) => (
+    <Text style={[styles.tabLabel, { color }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
+      {labelMap[routeName]}
+    </Text>
+  );
 
   return (
     <Tab.Navigator
@@ -76,7 +84,7 @@ export default function StaffTabs() {
         tabBarInactiveTintColor: colors.slate,
         tabBarStyle: styles.tabBar,
         tabBarLabelStyle: styles.tabLabel,
-        tabBarLabel: labelMap[route.name],
+        tabBarLabel: renderTabLabel(route.name),
         tabBarBackground: () => (
           <GlassSurface style={styles.tabBarGlass} borderRadius={0} intensity={46} tint="light">
             <View style={styles.tabBarLogoWrap} pointerEvents="none">

@@ -45,7 +45,7 @@ export default function Button({
       ) : (
         <View style={styles.row}>
           {icon}
-          <Text style={textStyle}>{label}</Text>
+          <Text style={textStyle} numberOfLines={2}>{label}</Text>
         </View>
       )}
     </TouchableOpacity>
@@ -60,13 +60,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  row: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  row: { flexDirection: 'row', alignItems: 'center', gap: 8, flexShrink: 1, maxWidth: '100%' },
   primary: { backgroundColor: colors.deepOcean, ...shadow.soft },
   secondary: { backgroundColor: colors.turquoise, ...shadow.soft },
   outline: { backgroundColor: 'transparent', borderWidth: 1.5, borderColor: colors.deepOcean },
   ghost: { backgroundColor: 'transparent' },
   disabled: { opacity: 0.5, shadowOpacity: 0, elevation: 0 },
-  text: { fontSize: 15, fontWeight: '700', fontFamily: font.body, letterSpacing: 0.2 },
+  text: { fontSize: 15, fontWeight: '700', fontFamily: font.body, letterSpacing: 0.2, flexShrink: 1, textAlign: 'center' },
   textPrimary: { color: colors.white },
   textSecondary: { color: colors.white },
   textOutline: { color: colors.deepOcean },

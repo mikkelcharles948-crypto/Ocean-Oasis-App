@@ -38,7 +38,7 @@ export default function StaffEventsScreen({ navigation }) {
         renderItem={({ item }) => (
           <Card>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 }}>
-              <Text style={styles.title}>{item.title}</Text>
+              <Text style={[styles.title, { flexShrink: 1, marginRight: spacing.sm }]} numberOfLines={1}>{item.title}</Text>
               <Badge label={item.status} tone={STATUS_TONE[item.status]} />
             </View>
             <Text style={styles.meta}>{item.date} · {item.time} · {item.location}</Text>

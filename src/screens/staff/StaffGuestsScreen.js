@@ -65,7 +65,7 @@ export default function StaffGuestsScreen({ navigation }) {
                     <Text style={styles.emptyText}>{t('staff.guests.noneOnFile')}</Text>
                   ) : requestsFor(active.id).map((r) => (
                     <View key={r.id} style={styles.rowLine}>
-                      <Text style={styles.rowText}>{r.category} — {timeAgo(r.createdAt)}</Text>
+                      <Text style={[styles.rowText, { flexShrink: 1, marginRight: spacing.sm }]} numberOfLines={1}>{r.category} — {timeAgo(r.createdAt)}</Text>
                       <Badge label={requestStatusLabel(r.status)} tone="info" />
                     </View>
                   ))}

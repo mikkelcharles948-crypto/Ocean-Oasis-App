@@ -64,12 +64,12 @@ export default function StaffRequestsScreen() {
           <TouchableOpacity onPress={() => setActiveId(item.id)}>
             <Card>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 }}>
-                <Text style={styles.roomTitle}>{t('staff.requests.cardTitle', { number: item.roomNumber, category: item.category })}</Text>
+                <Text style={[styles.roomTitle, { flexShrink: 1, marginRight: spacing.sm }]} numberOfLines={1}>{t('staff.requests.cardTitle', { number: item.roomNumber, category: item.category })}</Text>
                 <Badge label={item.priority} tone={PRIORITY_TONE[item.priority]} />
               </View>
               <Text style={styles.desc} numberOfLines={2}>{item.description}</Text>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: spacing.sm }}>
-                <Text style={styles.meta}>{item.department} · {timeAgo(item.createdAt)}</Text>
+                <Text style={[styles.meta, { flexShrink: 1, marginRight: spacing.sm }]} numberOfLines={1}>{item.department} · {timeAgo(item.createdAt)}</Text>
                 <Badge label={statusLabel(item.status)} tone={STATUS_TONE[item.status]} />
               </View>
               {item.assignedStaffId && <Text style={styles.assigned}>{t('staff.requests.assignedTo', { name: staffDirectory.find((s) => s.id === item.assignedStaffId)?.name })}</Text>}
