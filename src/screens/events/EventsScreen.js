@@ -1,19 +1,22 @@
 import React, { useState, useMemo } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
-import { ScreenHeader, Card, Pill, EmptyState } from '../../components/UI';
-import { colors, spacing, radius, font } from '../../theme/theme';
+import { ScreenHeader, Pill, EmptyState } from '../../components/UI';
+import EventCard from '../../components/EventCard';
+import { colors, spacing, radius, shadow } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
+import { getLocalizedContent } from '../../i18n/content';
+import eventsContent from '../../i18n/content/events';
 
 const TODAY = '2026-08-15';
 const TOMORROW = '2026-08-16';
 const FILTER_KEY = { Today: 'today', Tomorrow: 'tomorrow', 'This Week': 'thisWeek' };
 
 export default function EventsScreen({ navigation }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [filter, setFilter] = useState('Today');
   const { itinerary, events } = useApp();
   const publishedEvents = useMemo(() => events.filter((e) => e.status !== 'DRAFT'), [events]);
@@ -37,26 +40,25 @@ export default function EventsScreen({ navigation }) {
       <FlatList
         data={filtered}
         keyExtractor={(e) => e.id}
-        contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.sm, gap: spacing.sm }}
+        contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.sm, gap: spacing.md }}
         ListEmptyComponent={<EmptyState icon="calendar-outline" title={t('events.noEvents')} />}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigation.navigate('EventDetail', { eventId: item.id })}>
-            <Card style={styles.card}>
-              <View style={styles.timeBlock}>
-                <Text style={styles.timeText}>{item.time}</Text>
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.eventTitle}>{item.title}</Text>
-                <Text style={styles.eventLocation}>{item.location} · {t(`common.category.${item.category}`, { defaultValue: item.category })}</Text>
-              </View>
-              {savedIds.includes(item.id) ? (
-                <Ionicons name="bookmark" size={18} color={colors.gold} />
-              ) : (
-                <Ionicons name="chevron-forward" size={18} color={colors.slate} />
+        renderItem={({ item }) => {
+          const localizedEvent = getLocalizedContent(eventsContent, item.id, i18n.language, item);
+          return (
+            <View>
+              <EventCard
+                event={localizedEvent}
+                size="medium"
+                onPress={() => navigation.navigate('EventDetail', { eventId: item.id })}
+              />
+              {savedIds.includes(item.id) && (
+                <View style={styles.savedBadge}>
+                  <Ionicons name="bookmark" size={13} color={colors.deepOcean} />
+                </View>
               )}
-            </Card>
-          </TouchableOpacity>
-        )}
+            </View>
+          );
+        }}
       />
     </SafeAreaView>
   );
@@ -64,9 +66,8 @@ export default function EventsScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   pillRow: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: spacing.lg, marginTop: spacing.sm, marginBottom: spacing.sm },
-  card: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
-  timeBlock: { backgroundColor: colors.sandLight, borderRadius: radius.md, paddingVertical: 8, paddingHorizontal: 10, minWidth: 78, alignItems: 'center' },
-  timeText: { fontSize: 12, fontWeight: '700', color: colors.deepOcean },
-  eventTitle: { fontSize: 15, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
-  eventLocation: { fontSize: 12, color: colors.slate, marginTop: 2 },
+  savedBadge: {
+    position: 'absolute', top: 10, right: 10, width: 26, height: 26, borderRadius: radius.pill,
+    backgroundColor: colors.white, alignItems: 'center', justifyContent: 'center', ...shadow.card,
+  },
 });
