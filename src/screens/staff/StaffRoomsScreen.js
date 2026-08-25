@@ -57,14 +57,18 @@ export default function StaffRoomsScreen() {
             ))}
           </View>
         }
-        renderItem={({ item }) => (
-          <TouchableOpacity style={{ flex: 1 / 3, marginBottom: spacing.sm }} onPress={() => setActiveId(item.id)}>
-            <Card style={{ padding: spacing.sm, alignItems: 'center' }}>
-              <Text style={styles.roomNum}>{item.number}</Text>
-              <View style={[styles.dot, { backgroundColor: dotColor(item.status) }]} />
-            </Card>
-          </TouchableOpacity>
-        )}
+        renderItem={({ item }) => {
+          const dnd = guestInRoom(item.number)?.housekeepingPreference === 'DO_NOT_DISTURB';
+          return (
+            <TouchableOpacity style={{ flex: 1 / 3, marginBottom: spacing.sm }} onPress={() => setActiveId(item.id)}>
+              <Card style={{ padding: spacing.sm, alignItems: 'center' }}>
+                {dnd && <Ionicons name="moon" size={12} color={colors.gold} style={styles.dndBadge} />}
+                <Text style={styles.roomNum}>{item.number}</Text>
+                <View style={[styles.dot, { backgroundColor: dotColor(item.status) }]} />
+              </Card>
+            </TouchableOpacity>
+          );
+        }}
       />
 
       <Modal visible={!!active} transparent animationType="fade" onRequestClose={() => setActiveId(null)}>
@@ -81,6 +85,12 @@ export default function StaffRoomsScreen() {
                 <Badge label={roomStatusLabel(active.status)} tone={STATUS_TONE[active.status]} />
                 {guestInRoom(active.number) && (
                   <Text style={styles.guestLine}>{t('staff.rooms.guestLabel', { name: `${guestInRoom(active.number).firstName} ${guestInRoom(active.number).lastName}` })}</Text>
+                )}
+                {guestInRoom(active.number)?.housekeepingPreference === 'DO_NOT_DISTURB' && (
+                  <View style={styles.dndNotice}>
+                    <Ionicons name="moon" size={14} color={colors.gold} />
+                    <Text style={styles.dndNoticeText}>{t('staff.rooms.doNotDisturb')}</Text>
+                  </View>
                 )}
                 <Text style={styles.fieldLabel}>{t('staff.rooms.updateStatus')}</Text>
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
@@ -117,6 +127,12 @@ const styles = StyleSheet.create({
   summaryLabel: { fontSize: 10, color: colors.slate, marginTop: 1 },
   roomNum: { fontSize: 16, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
   dot: { width: 8, height: 8, borderRadius: 4, marginTop: 6 },
+  dndBadge: { position: 'absolute', top: 6, right: 6 },
+  dndNotice: {
+    flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: '#F5EBD3',
+    borderRadius: radius.sm, paddingHorizontal: 10, paddingVertical: 6, marginTop: 8, alignSelf: 'flex-start',
+  },
+  dndNoticeText: { fontSize: 11.5, fontWeight: '700', color: '#8A6C25' },
   modalBackdrop: { flex: 1, backgroundColor: 'rgba(9,46,55,0.5)', justifyContent: 'center', padding: spacing.lg },
   modalPanel: { borderRadius: radius.lg, padding: spacing.lg },
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.sm },

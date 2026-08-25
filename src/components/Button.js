@@ -10,6 +10,7 @@ export default function Button({
   loading = false,
   disabled = false,
   style,
+  textStyle: textStyleOverride,
   fullWidth = true,
 }) {
   const isDisabled = disabled || loading;
@@ -29,6 +30,7 @@ export default function Button({
     variant === 'secondary' && styles.textSecondary,
     variant === 'outline' && styles.textOutline,
     variant === 'ghost' && styles.textGhost,
+    textStyleOverride,
   ];
 
   return (

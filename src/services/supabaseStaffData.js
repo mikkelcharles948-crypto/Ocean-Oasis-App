@@ -47,6 +47,7 @@ function mapStaffGuest(row) {
     reservationNumber: reservation?.reservation_number || null,
     checkIn: reservation?.check_in || null,
     checkOut: reservation?.check_out || null,
+    housekeepingPreference: reservation?.housekeeping_preference || 'DAILY_CLEANING',
   };
 }
 
@@ -76,7 +77,7 @@ export async function loadStaffData() {
     supabase.from('content_items').select('*').order('updated_at', { ascending: false }),
     supabase.from('audit_log').select('*').order('created_at', { ascending: false }).limit(200),
     supabase.from('notifications').select('*').not('recipient_role', 'is', null).order('created_at', { ascending: false }),
-    supabase.from('guests').select('id, first_name, last_name, reservations(id, reservation_number, check_in, check_out, rooms(number))').order('created_at', { ascending: false }),
+    supabase.from('guests').select('id, first_name, last_name, reservations(id, reservation_number, check_in, check_out, housekeeping_preference, rooms(number))').order('created_at', { ascending: false }),
   ]);
   const failed = [
     requestsResult, roomsResult, activitiesResult, eventsResult, promotionsResult, bookingsResult,
@@ -252,4 +253,21 @@ export async function markAllStaffNotificationsRead(ids) {
   if (!ids?.length) return;
   const { error } = await supabase.from('notifications').update({ read: true }).in('id', ids);
   if (error) throw error;
+}
+
+// Fans out an in-app notification to every currently-staying guest and all
+// staff/management (see the broadcast_emergency_alert migration). Also
+// invokes the send-push-broadcast Edge Function so anyone with the app
+// backgrounded gets a real OS push, not just an in-app banner; push delivery
+// failing (e.g. the function isn't deployed yet) never blocks the in-app
+// broadcast, which is the safety-critical part.
+export async function sendEmergencyBroadcast(title, body) {
+  const { data, error } = await supabase.rpc('broadcast_emergency_alert', { p_title: title, p_body: body });
+  if (error) throw error;
+  try {
+    await supabase.functions.invoke('send-push-broadcast', { body: { title, body } });
+  } catch (pushError) {
+    // Non-fatal — in-app notifications already went out above.
+  }
+  return data;
 }

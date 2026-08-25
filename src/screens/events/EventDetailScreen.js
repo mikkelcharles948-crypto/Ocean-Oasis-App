@@ -9,12 +9,15 @@ import ImagePlaceholder from '../../components/ImagePlaceholder';
 import Button from '../../components/Button';
 import { colors, spacing, radius, font, shadow } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
+import { getLocalizedContent } from '../../i18n/content';
+import eventsContent from '../../i18n/content/events';
 
 export default function EventDetailScreen({ route, navigation }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { eventId } = route.params || {};
   const { events, itinerary, addToItinerary } = useApp();
-  const event = events.find((e) => e.id === eventId);
+  const rawEvent = events.find((e) => e.id === eventId);
+  const event = rawEvent ? getLocalizedContent(eventsContent, rawEvent.id, i18n.language, rawEvent) : null;
   const [reminderSet, setReminderSet] = useState(false);
 
   if (!event) {

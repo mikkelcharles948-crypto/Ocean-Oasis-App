@@ -12,12 +12,25 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "Ocean Oasis uses Face ID to sign you back in securely without re-entering your password."
+      }
     },
-    "android": {},
+    "android": {
+      "permissions": ["USE_BIOMETRIC", "USE_FINGERPRINT"]
+    },
     "web": {},
     "plugins": [
-      "expo-localization"
+      "expo-localization",
+      "expo-secure-store",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/logo.png",
+          "color": "#0B3B45"
+        }
+      ]
     ]
   }
 }

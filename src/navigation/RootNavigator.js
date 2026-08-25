@@ -11,6 +11,7 @@ import CreateAccountScreen from '../screens/auth/CreateAccountScreen';
 import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
 import MagicLinkScreen from '../screens/auth/MagicLinkScreen';
 import ReservationAccessScreen from '../screens/auth/ReservationAccessScreen';
+import BiometricLockScreen from '../screens/auth/BiometricLockScreen';
 import MainTabs from './MainTabs';
 import StaffTabs from './StaffTabs';
 import ManagementTabs from './ManagementTabs';
@@ -40,7 +41,7 @@ const navTheme = {
 // separate apps bolted together.
 // -----------------------------------------------------------------------
 export default function RootNavigator() {
-  const { hasOnboarded, experience, isAuthenticated, opsSession } = useApp();
+  const { hasOnboarded, experience, isAuthenticated, opsSession, biometricLockActive } = useApp();
 
   const staffReady = experience === 'staff' && !!opsSession;
   const managementReady = experience === 'management' && !!opsSession;
@@ -51,6 +52,8 @@ export default function RootNavigator() {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {!hasOnboarded ? (
           <Stack.Screen name="Onboarding" component={OnboardingScreen} />
+        ) : biometricLockActive ? (
+          <Stack.Screen name="BiometricLock" component={BiometricLockScreen} />
         ) : staffReady ? (
           <Stack.Screen name="StaffMain" component={StaffTabs} />
         ) : managementReady ? (

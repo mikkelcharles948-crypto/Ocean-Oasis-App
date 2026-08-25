@@ -12,6 +12,7 @@ const ITEMS = [
   { key: 'ManagementContent', i18nKey: 'content', icon: 'reader-outline' },
   { key: 'ManagementStaffPerformance', i18nKey: 'staffPerformance', icon: 'people-outline' },
   { key: 'ManagementAuditLog', i18nKey: 'auditLog', icon: 'list-outline' },
+  { key: 'ManagementEmergency', i18nKey: 'emergency', icon: 'warning-outline' },
   { key: 'ManagementSettings', i18nKey: 'settings', icon: 'settings-outline' },
 ];
 

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -7,29 +7,39 @@ import { useTranslation } from 'react-i18next';
 import { ScreenHeader } from '../../components/UI';
 import { colors, spacing, radius, font } from '../../theme/theme';
 import { CONCIERGE_FAQ } from '../../data/mockData';
+import { getLocalizedContent } from '../../i18n/content';
+import conciergeFaqContent from '../../i18n/content/conciergeFaq';
 
-function findAnswer(question, fallback) {
+function findAnswer(localizedFaq, question, fallback) {
   const lower = question.toLowerCase();
-  const match = CONCIERGE_FAQ.find((f) => f.question.toLowerCase() === lower);
+  const match = localizedFaq.find((f) => f.question.toLowerCase() === lower);
   if (match) return match.answer;
-  const partial = CONCIERGE_FAQ.find((f) =>
+  const partial = localizedFaq.find((f) =>
     lower.split(' ').some((word) => word.length > 3 && f.question.toLowerCase().includes(word))
   );
   return partial ? partial.answer : fallback;
 }
 
 export default function ConciergeScreen({ navigation }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [messages, setMessages] = useState([
     { id: 'm0', role: 'concierge', text: t('concierge.greeting') },
   ]);
   const [input, setInput] = useState('');
   const scrollRef = useRef(null);
 
+  const localizedFaq = useMemo(
+    () => CONCIERGE_FAQ.map((f) => ({
+      id: f.id,
+      ...getLocalizedContent(conciergeFaqContent, f.id, i18n.language, f),
+    })),
+    [i18n.language]
+  );
+
   const send = (text) => {
     if (!text.trim()) return;
     const userMsg = { id: `u_${Date.now()}`, role: 'user', text };
-    const answer = findAnswer(text, t('concierge.fallbackAnswer'));
+    const answer = findAnswer(localizedFaq, text, t('concierge.fallbackAnswer'));
     const botMsg = { id: `b_${Date.now()}`, role: 'concierge', text: answer };
     setMessages((prev) => [...prev, userMsg, botMsg]);
     setInput('');
@@ -51,8 +61,8 @@ export default function ConciergeScreen({ navigation }) {
         {messages.length === 1 && (
           <View style={styles.suggestedWrap}>
             <Text style={styles.suggestedLabel}>{t('concierge.suggestedQuestions')}</Text>
-            {CONCIERGE_FAQ.map((f) => (
-              <TouchableOpacity key={f.question} style={styles.suggestedChip} onPress={() => send(f.question)}>
+            {localizedFaq.map((f) => (
+              <TouchableOpacity key={f.id} style={styles.suggestedChip} onPress={() => send(f.question)}>
                 <Text style={styles.suggestedText}>{f.question}</Text>
                 <Ionicons name="arrow-forward" size={13} color={colors.turquoiseDark} />
               </TouchableOpacity>

@@ -8,9 +8,11 @@ import { Card, Badge, Pill } from '../../components/UI';
 import ImagePlaceholder from '../../components/ImagePlaceholder';
 import { colors, spacing, radius, font, shadow } from '../../theme/theme';
 import { DESTINATIONS, DESTINATION_CATEGORIES } from '../../data/mockData';
+import { getLocalizedContent } from '../../i18n/content';
+import destinationsContent from '../../i18n/content/destinations';
 
 export default function ExploreScreen({ navigation }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [category, setCategory] = useState('All');
 
   const filtered = useMemo(
@@ -22,9 +24,17 @@ export default function ExploreScreen({ navigation }) {
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>{t('explore.title')}</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('MapScreen')} style={styles.mapBtn}>
-          <Ionicons name="map-outline" size={20} color={colors.deepOcean} />
-        </TouchableOpacity>
+        <View style={{ flexDirection: 'row', gap: 8 }}>
+          <TouchableOpacity onPress={() => navigation.navigate('TrailMaps')} style={styles.mapBtn}>
+            <Ionicons name="trail-sign-outline" size={20} color={colors.deepOcean} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('LocalGuide')} style={styles.mapBtn}>
+            <Ionicons name="compass-outline" size={20} color={colors.deepOcean} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('MapScreen')} style={styles.mapBtn}>
+            <Ionicons name="map-outline" size={20} color={colors.deepOcean} />
+          </TouchableOpacity>
+        </View>
       </View>
       <Text style={styles.headerSub}>{t('explore.subtitle')}</Text>
 
@@ -39,14 +49,16 @@ export default function ExploreScreen({ navigation }) {
         data={filtered}
         keyExtractor={(item) => item.id}
         contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.md, gap: spacing.md }}
-        renderItem={({ item }) => (
+        renderItem={({ item }) => {
+          const localized = getLocalizedContent(destinationsContent, item.id, i18n.language, item);
+          return (
           <TouchableOpacity onPress={() => navigation.navigate('DestinationDetail', { destinationId: item.id })} activeOpacity={0.92}>
             <Card style={{ padding: 0, overflow: 'hidden', flexDirection: 'row', ...shadow.float }}>
               <ImagePlaceholder kind={item.image} uri={item.imageUrl} style={{ width: 112, height: 132, borderRadius: 0 }} iconSize={28} />
               <View style={{ flex: 1, padding: spacing.sm }}>
                 <Badge label={t(`common.category.${item.category}`)} tone="info" />
                 <Text style={styles.cardTitle}>{item.title}</Text>
-                <Text style={styles.cardDesc} numberOfLines={2}>{item.description}</Text>
+                <Text style={styles.cardDesc} numberOfLines={2}>{localized.description}</Text>
                 <View style={styles.metaRow}>
                   <Ionicons name="time-outline" size={12} color={colors.slate} />
                   <Text style={styles.metaText}>{item.travelTime}</Text>
@@ -56,7 +68,8 @@ export default function ExploreScreen({ navigation }) {
               </View>
             </Card>
           </TouchableOpacity>
-        )}
+          );
+        }}
       />
     </SafeAreaView>
   );

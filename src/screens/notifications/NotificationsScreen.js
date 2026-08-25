@@ -11,7 +11,7 @@ import { useApp } from '../../context/AppContext';
 const CATEGORY_ICON = {
   Reservation: 'bed', 'Activity Reminder': 'sunny', 'Hotel Announcement': 'megaphone',
   Promotion: 'pricetag', 'Service Request': 'chatbox-ellipses', Event: 'calendar',
-  Transportation: 'car', 'Important Alert': 'alert-circle',
+  Transportation: 'car', 'Important Alert': 'alert-circle', Emergency: 'warning',
 };
 
 export default function NotificationsScreen({ navigation }) {
@@ -34,10 +34,12 @@ export default function NotificationsScreen({ navigation }) {
         keyExtractor={(n) => n.id}
         contentContainerStyle={{ padding: spacing.lg, gap: spacing.sm }}
         ListEmptyComponent={<EmptyState icon="notifications-off-outline" title={t('notifications.empty')} subtitle={t('notifications.emptySub')} />}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => markNotificationRead(item.id)} style={[styles.row, !item.read && styles.rowUnread]}>
-            <View style={styles.iconWrap}>
-              <Ionicons name={CATEGORY_ICON[item.category] || 'notifications'} size={18} color={colors.deepOcean} />
+        renderItem={({ item }) => {
+          const isEmergency = item.category === 'Emergency';
+          return (
+          <TouchableOpacity onPress={() => markNotificationRead(item.id)} style={[styles.row, !item.read && styles.rowUnread, isEmergency && styles.rowEmergency]}>
+            <View style={[styles.iconWrap, isEmergency && styles.iconWrapEmergency]}>
+              <Ionicons name={CATEGORY_ICON[item.category] || 'notifications'} size={18} color={isEmergency ? colors.white : colors.deepOcean} />
             </View>
             <View style={{ flex: 1 }}>
               <View style={styles.rowTop}>
@@ -49,7 +51,8 @@ export default function NotificationsScreen({ navigation }) {
             </View>
             {!item.read && <View style={styles.unreadDot} />}
           </TouchableOpacity>
-        )}
+          );
+        }}
       />
     </SafeAreaView>
   );
@@ -62,7 +65,9 @@ const styles = StyleSheet.create({
     padding: spacing.md, borderWidth: 1, borderColor: colors.border, alignItems: 'flex-start',
   },
   rowUnread: { backgroundColor: '#F3FAF9', borderColor: colors.turquoise },
+  rowEmergency: { backgroundColor: '#FBEDEA', borderColor: colors.error, borderWidth: 1.5 },
   iconWrap: { width: 34, height: 34, borderRadius: 17, backgroundColor: colors.sandLight, alignItems: 'center', justifyContent: 'center' },
+  iconWrapEmergency: { backgroundColor: colors.error },
   rowTop: { flexDirection: 'row', justifyContent: 'space-between' },
   category: { fontSize: 10.5, fontWeight: '700', color: colors.turquoiseDark, letterSpacing: 0.4 },
   time: { fontSize: 10.5, color: colors.slate },

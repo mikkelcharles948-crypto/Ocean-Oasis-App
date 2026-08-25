@@ -10,14 +10,19 @@ import Button from '../../components/Button';
 import GlassSurface from '../../components/GlassSurface';
 import { colors, spacing, radius, font, shadow } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
+import { getLocalizedContent } from '../../i18n/content';
+import activitiesContent from '../../i18n/content/activities';
 
 const AVAILABILITY_KEY = { Available: 'available', 'Limited spots': 'limitedSpots' };
 
 export default function ActivityDetailScreen({ route, navigation }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { activityId } = route.params || {};
   const { activities, savedActivityIds, toggleSavedActivity } = useApp();
-  const activity = activities.find((a) => a.id === activityId);
+  const rawActivity = activities.find((a) => a.id === activityId);
+  const activity = rawActivity
+    ? getLocalizedContent(activitiesContent, rawActivity.id, i18n.language, rawActivity)
+    : null;
 
   if (!activity) {
     return (

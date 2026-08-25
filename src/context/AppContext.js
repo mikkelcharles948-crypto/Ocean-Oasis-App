@@ -1,4 +1,9 @@
 import React, { createContext, useContext, useMemo, useState, useCallback, useEffect } from 'react';
+import { Platform } from 'react-native';
+import * as LocalAuthentication from 'expo-local-authentication';
+import * as SecureStore from 'expo-secure-store';
+import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
 import {
   GUEST, RESERVATION, ROOM, INITIAL_SERVICE_REQUESTS, INITIAL_NOTIFICATIONS,
   ACTIVITIES, EVENTS, PROMOTIONS, ROOMS, REQUEST_CATEGORY_TO_DEPARTMENT, REQUEST_CATEGORY_TO_ROLE, ROLE_SURFACES,
@@ -12,6 +17,8 @@ import {
   updateGuestProfile as updateRemoteGuestProfile,
   createFeedback as createRemoteFeedback,
   completeGuestCheckIn as completeRemoteGuestCheckIn,
+  setHousekeepingPreference as setRemoteHousekeepingPreference,
+  registerPushToken as registerRemotePushToken,
 } from '../services/supabaseData';
 import {
   loadStaffData, loadStaffDirectory, writeAuditEntry,
@@ -31,7 +38,10 @@ import {
   notifyStaffRole,
   markNotificationRead as markRemoteNotificationRead,
   markAllStaffNotificationsRead as markAllRemoteStaffNotificationsRead,
+  sendEmergencyBroadcast as sendRemoteEmergencyBroadcast,
 } from '../services/supabaseStaffData';
+
+const BIOMETRIC_PREF_KEY = 'oo_biometric_enabled';
 
 const AppContext = createContext(null);
 
@@ -66,6 +76,16 @@ export function AppProvider({ children }) {
 
   // Staff/Management auth — one session shape, gated by role per surface.
   const [opsSession, setOpsSession] = useState(null); // { id, name, role, department }
+
+  // Biometric app-lock. Supabase already persists the auth session across
+  // restarts (see src/lib/supabase.js) — biometrics here don't replace
+  // password login, they gate re-*revealing* an already-valid persisted
+  // session behind Face ID / fingerprint / iris, the same pattern banking
+  // apps use. biometricLockActive starts false and is only ever flipped to
+  // true by the startup effect below, once, if the preference is on.
+  const [biometricSupported, setBiometricSupported] = useState(false);
+  const [biometricEnabled, setBiometricEnabled] = useState(false);
+  const [biometricLockActive, setBiometricLockActive] = useState(false);
 
   const [guest, setGuest] = useState(GUEST);
   const [reservation, setReservation] = useState(RESERVATION);
@@ -201,6 +221,93 @@ export function AppProvider({ children }) {
       mounted = false;
     };
   }, [authSession?.user?.id, refreshGuestData, refreshStaffData]);
+
+  // Register this device's Expo push token once signed in, so emergency
+  // broadcasts (and, in future, other alerts) reach this device even when
+  // the app is backgrounded. Best-effort: a denied permission or a device
+  // without push support (e.g. a simulator) should never block anything
+  // else in the app.
+  useEffect(() => {
+    if (!authSession?.user?.id) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const { status: existingStatus } = await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
+        if (existingStatus !== 'granted') {
+          const { status } = await Notifications.requestPermissionsAsync();
+          finalStatus = status;
+        }
+        if (finalStatus !== 'granted') return;
+        if (Platform.OS === 'android') {
+          await Notifications.setNotificationChannelAsync('emergency', {
+            name: 'Emergency Alerts',
+            importance: Notifications.AndroidImportance.MAX,
+            sound: 'default',
+          });
+        }
+        const projectId = Constants.expoConfig?.extra?.eas?.projectId;
+        const { data: token } = await Notifications.getExpoPushTokenAsync(projectId ? { projectId } : undefined);
+        if (!cancelled && token) {
+          await registerRemotePushToken(authSession.user.id, token, Platform.OS);
+        }
+      } catch (error) {
+        // No push hardware/support (e.g. some emulators) — non-fatal.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [authSession?.user?.id]);
+
+  // On cold start, if the guest previously opted into Face ID/fingerprint
+  // unlock, lock the app until they clear that prompt — even though
+  // Supabase already silently restored their session from storage.
+  useEffect(() => {
+    (async () => {
+      const pref = await SecureStore.getItemAsync(BIOMETRIC_PREF_KEY).catch(() => null);
+      const hasHardware = await LocalAuthentication.hasHardwareAsync().catch(() => false);
+      const isEnrolled = hasHardware ? await LocalAuthentication.isEnrolledAsync().catch(() => false) : false;
+      setBiometricSupported(hasHardware && isEnrolled);
+      if (pref === 'true' && hasHardware && isEnrolled) {
+        setBiometricEnabled(true);
+        setBiometricLockActive(true);
+      }
+    })();
+  }, []);
+
+  const enableBiometricLogin = useCallback(async () => {
+    const hasHardware = await LocalAuthentication.hasHardwareAsync();
+    const isEnrolled = hasHardware ? await LocalAuthentication.isEnrolledAsync() : false;
+    if (!hasHardware || !isEnrolled) {
+      return { ok: false, error: 'Face ID / fingerprint is not set up on this device.' };
+    }
+    const result = await LocalAuthentication.authenticateAsync({ promptMessage: 'Confirm to enable Face ID sign-in' });
+    if (!result.success) return { ok: false, error: 'Could not verify your identity.' };
+    await SecureStore.setItemAsync(BIOMETRIC_PREF_KEY, 'true');
+    setBiometricEnabled(true);
+    return { ok: true };
+  }, []);
+
+  const disableBiometricLogin = useCallback(async () => {
+    await SecureStore.deleteItemAsync(BIOMETRIC_PREF_KEY).catch(() => {});
+    setBiometricEnabled(false);
+  }, []);
+
+  const unlockWithBiometrics = useCallback(async () => {
+    const result = await LocalAuthentication.authenticateAsync({ promptMessage: 'Sign in to Ocean Oasis' });
+    if (result.success) {
+      setBiometricLockActive(false);
+      return { ok: true };
+    }
+    return { ok: false, error: 'Could not verify your identity.' };
+  }, []);
+
+  const unlockWithPasswordFallback = useCallback(async () => {
+    await disableBiometricLogin();
+    await supabase.auth.signOut();
+    setBiometricLockActive(false);
+  }, [disableBiometricLogin]);
 
   useEffect(() => {
     if (!authSession?.user?.id || !guest?.id || guest.id === GUEST.id) return undefined;
@@ -731,6 +838,29 @@ export function AppProvider({ children }) {
     return { ok: true };
   }, [authSession?.user?.id, guest?.id, reservation?.id]);
 
+  const setHousekeepingPreference = useCallback(async (preference) => {
+    if (authSession?.user?.id && guest.id !== GUEST.id && reservation?.id) {
+      try {
+        const updated = await setRemoteHousekeepingPreference(reservation.id, preference);
+        setReservation((r) => ({ ...r, ...updated }));
+        return { ok: true };
+      } catch (error) {
+        return { ok: false, error: 'Your preference could not be saved. Please try again.' };
+      }
+    }
+    setReservation((r) => ({ ...r, housekeepingPreference: preference }));
+    return { ok: true };
+  }, [authSession?.user?.id, guest?.id, reservation?.id]);
+
+  const sendEmergencyBroadcast = useCallback(async (title, body) => {
+    try {
+      const count = await sendRemoteEmergencyBroadcast(title, body);
+      return { ok: true, count };
+    } catch (error) {
+      return { ok: false, error: 'The broadcast could not be sent. Please try again.' };
+    }
+  }, []);
+
   const unreadNotificationCount = useMemo(() => notifications.filter((n) => !n.read).length, [notifications]);
   const unreadStaffNotificationCount = useMemo(() => staffNotifications.filter((n) => !n.read).length, [staffNotifications]);
 
@@ -747,7 +877,7 @@ export function AppProvider({ children }) {
       savedActivityIds, toggleSavedActivity,
       notifications, markNotificationRead, markAllNotificationsRead, unreadNotificationCount,
       submitFeedback, feedback, resolveFeedback,
-      checkedIn, completeDigitalCheckIn,
+      checkedIn, completeDigitalCheckIn, setHousekeepingPreference,
       activities, createActivity, activityBookings, bookActivity,
       events, createEvent, publishEvent,
       promotions, createPromotion, publishPromotion, archivePromotion,
@@ -760,6 +890,9 @@ export function AppProvider({ children }) {
       allGuestsForStaff,
       refreshStaffData,
       propertySettings, setPropertySettings,
+      sendEmergencyBroadcast,
+      biometricSupported, biometricEnabled, biometricLockActive,
+      enableBiometricLogin, disableBiometricLogin, unlockWithBiometrics, unlockWithPasswordFallback,
     }),
     [
       hasOnboarded, completeOnboarding, experience, chooseExperience, exitToExperiencePicker,
@@ -767,12 +900,14 @@ export function AppProvider({ children }) {
       guest, reservation, room, itinerary, addToItinerary, removeFromItinerary,
       serviceRequests, submitServiceRequest, assignRequestToStaff, updateRequestStatus, addRequestNote,
       savedActivityIds, toggleSavedActivity, notifications, markNotificationRead, markAllNotificationsRead, unreadNotificationCount,
-      submitFeedback, feedback, resolveFeedback, checkedIn, completeDigitalCheckIn,
+      submitFeedback, feedback, resolveFeedback, checkedIn, completeDigitalCheckIn, setHousekeepingPreference,
       activities, createActivity, activityBookings, bookActivity, events, createEvent, publishEvent,
       promotions, createPromotion, publishPromotion, archivePromotion, rooms, updateRoomStatus,
       maintenanceIssues, createMaintenanceIssue, updateMaintenanceStatus, contentItems, setContentStatus,
       auditLog, staffNotifications, markStaffNotificationRead, markAllStaffNotificationsRead, unreadStaffNotificationCount,
-      staffDirectory, allGuestsForStaff, refreshStaffData, propertySettings,
+      staffDirectory, allGuestsForStaff, refreshStaffData, propertySettings, sendEmergencyBroadcast,
+      biometricSupported, biometricEnabled, biometricLockActive,
+      enableBiometricLogin, disableBiometricLogin, unlockWithBiometrics, unlockWithPasswordFallback,
     ]
   );
 

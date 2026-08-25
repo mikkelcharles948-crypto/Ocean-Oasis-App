@@ -9,11 +9,13 @@ import ImagePlaceholder from '../../components/ImagePlaceholder';
 import { colors, spacing, font, shadow } from '../../theme/theme';
 import { ACTIVITY_CATEGORIES } from '../../data/mockData';
 import { useApp } from '../../context/AppContext';
+import { getLocalizedContent } from '../../i18n/content';
+import activitiesContent from '../../i18n/content/activities';
 
 const AVAILABILITY_KEY = { Available: 'available', 'Limited spots': 'limitedSpots' };
 
 export default function ActivitiesScreen({ navigation }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { activities } = useApp();
   const [category, setCategory] = useState('All');
   const filtered = useMemo(
@@ -38,7 +40,9 @@ export default function ActivitiesScreen({ navigation }) {
         keyExtractor={(a) => a.id}
         contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.sm, gap: spacing.md }}
         ListEmptyComponent={<EmptyState icon="sunny-outline" title={t('activities.noActivities')} />}
-        renderItem={({ item }) => (
+        renderItem={({ item }) => {
+          const localized = getLocalizedContent(activitiesContent, item.id, i18n.language, item);
+          return (
           <TouchableOpacity onPress={() => navigation.navigate('ActivityDetail', { activityId: item.id })} activeOpacity={0.92}>
             <Card style={{ padding: 0, overflow: 'hidden', ...shadow.float }}>
               <ImagePlaceholder kind={item.image} uri={item.imageUrl} style={{ height: 140, borderRadius: 0 }} iconSize={32} />
@@ -48,7 +52,7 @@ export default function ActivitiesScreen({ navigation }) {
                   <Badge label={t(`common.availability.${AVAILABILITY_KEY[item.availability] || 'available'}`)} tone={item.availability === 'Available' ? 'success' : 'warning'} />
                 </View>
                 <Text style={styles.title}>{item.name}</Text>
-                <Text style={styles.desc} numberOfLines={2}>{item.shortDescription}</Text>
+                <Text style={styles.desc} numberOfLines={2}>{localized.shortDescription}</Text>
                 <View style={styles.metaRow}>
                   <Ionicons name="calendar-outline" size={12} color={colors.slate} />
                   <Text style={styles.metaText}>{item.time} · {item.duration}</Text>
@@ -60,7 +64,8 @@ export default function ActivitiesScreen({ navigation }) {
               </View>
             </Card>
           </TouchableOpacity>
-        )}
+          );
+        }}
       />
     </SafeAreaView>
   );

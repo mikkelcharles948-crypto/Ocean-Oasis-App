@@ -250,7 +250,8 @@
       "Service Request": "Demande de service",
       "Event": "Événement",
       "Transportation": "Transport",
-      "Important Alert": "Alerte importante"
+      "Important Alert": "Alerte importante",
+      "Emergency": "Urgence"
     }
   },
   "concierge": {
@@ -411,6 +412,17 @@
       "fr": "Français",
       "es": "Español",
       "zh": "中文"
+    },
+    "oasisAndBilling": "Oasis Circle & facturation",
+    "loyaltyRow": "Récompenses Oasis Circle",
+    "billingRow": "Facturation & note de séjour",
+    "roomPreferencesRow": "Préférences de ménage",
+    "hotelAmenitiesRow": "Services de l'hôtel & horaires",
+    "localGuideRow": "Guide local",
+    "trailMapsRow": "Cartes des sentiers",
+    "biometric": {
+      "title": "Connexion par Face ID / empreinte digitale",
+      "sub": "Déverrouillez l'application instantanément sans mot de passe."
     }
   },
   "accessibility": {
@@ -618,7 +630,14 @@
     "reservationNumberRequired": "Veuillez saisir votre numéro de réservation et votre nom de famille.",
     "enterEmailAddress": "Veuillez saisir votre adresse e-mail.",
     "reservationLookupFailed": "Nous n'avons trouvé aucune réservation correspondant à ces informations.",
-    "unableToSendLinkRetry": "Impossible d'envoyer votre lien de connexion. Veuillez réessayer."
+    "unableToSendLinkRetry": "Impossible d'envoyer votre lien de connexion. Veuillez réessayer.",
+    "biometric": {
+      "locked": "Bon retour",
+      "lockedSub": "Utilisez Face ID ou votre empreinte digitale pour continuer sur Ocean Oasis.",
+      "tryAgain": "Réessayer",
+      "usePassword": "Utiliser le mot de passe à la place",
+      "failed": "Impossible de vérifier votre identité."
+    }
   },
   "experience": {
     "eyebrow": "UNE PLATEFORME · TROIS EXPÉRIENCES",
@@ -740,7 +759,8 @@
         "OCCUPIED_SERVICE_REQUIRED": "Service requis",
         "INSPECTION_REQUIRED": "Inspection requise",
         "OUT_OF_ORDER": "Hors service"
-      }
+      },
+      "doNotDisturb": "Le client a demandé à ne pas être dérangé"
     },
     "activities": {
       "title": "Activités",
@@ -869,6 +889,10 @@
         "settings": {
           "label": "Paramètres",
           "sub": "Configuration de l'établissement"
+        },
+        "emergency": {
+          "label": "Diffusion d'urgence",
+          "sub": "Envoyer une alerte en temps réel à tous les clients et au personnel"
         }
       }
     },
@@ -986,6 +1010,225 @@
       "multiPropertyTitle": "Architecture multi-établissements",
       "multiPropertyNote": "Chaque enregistrement de ce système comporte un identifiant d'établissement. Aujourd'hui, la plateforme est configurée pour un seul établissement ; l'ajout d'un second hôtel ne nécessite qu'un nouvel identifiant et une nouvelle ligne de paramètres — aucun changement à la logique principale.",
       "switchConfirmMsg": "Cela vous déconnectera du tableau de bord de direction."
+    },
+    "emergency": {
+      "title": "Diffusion d'urgence",
+      "warning": "Ceci avertit immédiatement tous les clients actuellement présents ainsi que tout le personnel. À utiliser uniquement en cas d'urgence réelle.",
+      "presetsLabel": "Modèles rapides",
+      "titleLabel": "Titre de l'alerte",
+      "titlePlaceholder": "ex. Évacuation du bâtiment",
+      "messageLabel": "Message",
+      "messagePlaceholder": "Décrivez la situation et ce que les clients doivent faire.",
+      "fieldsRequired": "Saisissez à la fois un titre et un message.",
+      "confirmTitle": "Envoyer la diffusion d'urgence ?",
+      "confirmMsg": "Ceci avertira immédiatement tous les clients actuellement présents ainsi que tout le personnel. Cette action est irréversible.",
+      "sendNow": "Envoyer maintenant",
+      "sentConfirmation": "Diffusion envoyée à {{count}} clients et à tout le personnel.",
+      "sendBroadcast": "Envoyer la diffusion",
+      "presets": {
+        "evacuation": {
+          "chip": "Évacuation",
+          "title": "Évacuation du bâtiment",
+          "body": "Veuillez évacuer le bâtiment immédiatement par la sortie balisée la plus proche et vous rendre au point de rassemblement. N'utilisez pas les ascenseurs."
+        },
+        "weather": {
+          "chip": "Intempéries graves",
+          "title": "Alerte intempéries graves",
+          "body": "De fortes intempéries approchent de l'établissement. Veuillez rester dans votre chambre, loin des fenêtres, jusqu'à nouvel ordre."
+        },
+        "security": {
+          "chip": "Sécurité",
+          "title": "Avis de sécurité",
+          "body": "Pour votre sécurité, veuillez rester dans votre chambre et attendre les instructions du personnel de l'hôtel."
+        }
+      }
+    }
+  },
+  "roomPreferences": {
+    "title": "Préférences de chambre",
+    "intro": "Choisissez comment vous souhaitez que le service d'étage entretienne votre chambre pendant votre séjour.",
+    "daily": {
+      "title": "Nettoyage quotidien",
+      "desc": "Le service d'étage nettoiera votre chambre une fois par jour, comme d'habitude."
+    },
+    "dnd": {
+      "title": "Ne pas déranger",
+      "desc": "Suspendez le ménage quotidien — demandez un service uniquement lorsque vous le souhaitez."
+    },
+    "saveError": "Votre préférence n'a pas pu être enregistrée. Veuillez réessayer.",
+    "footnote": "Vous pouvez modifier ce choix à tout moment. Le service d'étage voit votre préférence actuelle instantanément."
+  },
+  "billing": {
+    "title": "Facturation & note de séjour",
+    "intro": "Un récapitulatif continu des frais de votre séjour. Il s'agit d'une estimation — votre note finale est confirmée au départ.",
+    "room": "Chambre",
+    "roomDetail": "{{type}} · {{nights}} nuits à {{rate}}/nuit",
+    "activities": "Activités & expériences",
+    "noActivityCharges": "Aucun frais d'activité pour le moment.",
+    "activityFallback": "Activité",
+    "total": "Total estimé",
+    "estimateBadge": "Estimation",
+    "contactlessCheckoutTitle": "Départ sans contact",
+    "contactlessCheckoutSub": "Demandez votre départ et notre réception réglera votre note sur la carte enregistrée et vous enverra le reçu par e-mail — inutile de passer à la réception.",
+    "requestCheckout": "Demander un départ sans contact",
+    "checkoutRequested": "Départ demandé",
+    "checkoutRequestDescription": "Le client a demandé un départ sans contact. Total estimé de la note : {{total}}.",
+    "checkoutRequestError": "Votre demande de départ n'a pas pu être envoyée. Veuillez réessayer."
+  },
+  "hotelInfo": {
+    "title": "Services de l'hôtel",
+    "intro": "Tout ce qui se trouve sur le site, et les horaires d'ouverture.",
+    "wifi": {
+      "title": "Wi-Fi pour les clients",
+      "network": "Réseau",
+      "passwordNote": "Le mot de passe figure sur votre carte de bienvenue, ou demandez-le à la réception à tout moment."
+    },
+    "hoursTitle": "Horaires & emplacements",
+    "footnote": "Les horaires peuvent varier selon la saison — confirmez les horaires du jour auprès de la réception ou de la conciergerie.",
+    "amenities": {
+      "tideTable": {
+        "name": "Tide & Table",
+        "hours": "Petit-déjeuner 7h00–10h30 · Dîner 18h00–22h00 · Brunch du samedi 10h00–14h00",
+        "desc": "Le restaurant gastronomique climatisé d'Ocean Oasis — cuisine caribéenne de saison issue des marchés et quais locaux."
+      },
+      "skyye": {
+        "name": "Skyye Rooftop",
+        "hours": "16h00–23h00 tous les jours",
+        "desc": "Bar sur le toit décontracté avec vue sur le coucher de soleil, cocktails et en-cas."
+      },
+      "vista": {
+        "name": "Vista Pool Bar",
+        "hours": "10h00–18h00 tous les jours",
+        "desc": "Bar au bord de la piscine pour boissons et collations."
+      },
+      "inRoomDining": {
+        "name": "Service en chambre",
+        "hours": "7h00–22h00 tous les jours",
+        "desc": "Disponible tous les jours, y compris petit-déjeuner au lit et dîner privé au coucher du soleil sur demande."
+      },
+      "pool": {
+        "name": "Piscine",
+        "hours": "7h00–19h00 tous les jours",
+        "desc": "Ouverte à tous les clients, serviettes fournies au bord de la piscine."
+      },
+      "diveShop": {
+        "name": "Club de plongée Ocean Oasis",
+        "hours": "8h00–16h00 tous les jours",
+        "desc": "Plongées en bateau et depuis la côte, certifications, location de matériel et snorkeling."
+      },
+      "pier": {
+        "name": "Jetée privée & excursions nautiques",
+        "hours": "8h00–17h00 tous les jours",
+        "desc": "Point de départ pour l'observation des baleines, les excursions de snorkeling, les sorties de pêche et les croisières au coucher du soleil."
+      },
+      "frontDesk": {
+        "name": "Réception & conciergerie",
+        "hours": "Ouvert 24h/24",
+        "desc": "Toujours disponible pour les demandes, questions et réservations."
+      }
+    }
+  },
+  "localGuide": {
+    "title": "Guide local",
+    "intro": "Quelques adresses préférées et conseils pratiques à travers la Dominique, en dehors de l'hôtel.",
+    "diningTitle": "Restaurants locaux préférés",
+    "diningFootnote": "La disponibilité et les horaires peuvent changer — réservez par téléphone à l'avance.",
+    "tipsTitle": "Conseils pratiques",
+    "restaurants": {
+      "gouteDominik": {
+        "name": "Goûte Dominik",
+        "location": "Expérience culinaire en forêt tropicale",
+        "desc": "« Votre repas commence dans la forêt tropicale » — une expérience de cuisine créole construite autour d'ingrédients issus de la forêt."
+      },
+      "laRobeCreole": {
+        "name": "La Robe Creole",
+        "location": "Roseau",
+        "desc": "Une institution de longue date à Roseau pour la cuisine créole traditionnelle, dans un bâtiment historique."
+      },
+      "pearlsCuisine": {
+        "name": "Pearl's Cuisine",
+        "location": "Roseau",
+        "desc": "Une adresse locale appréciée pour des plats dominicains copieux et faits maison."
+      }
+    },
+    "tips": {
+      "currency": {
+        "label": "Monnaie",
+        "value": "Le dollar des Caraïbes orientales (XCD) est la monnaie officielle ; le dollar américain est largement accepté."
+      },
+      "language": {
+        "label": "Langue",
+        "value": "L'anglais est la langue officielle ; le créole français dominicain est également très répandu."
+      },
+      "driving": {
+        "label": "Conduite",
+        "value": "La circulation se fait à gauche — prévoyez en conséquence si vous louez une voiture."
+      },
+      "tipping": {
+        "label": "Pourboire",
+        "value": "Un service est souvent inclus dans les restaurants ; arrondissez pour un service exceptionnel."
+      },
+      "weather": {
+        "label": "Météo",
+        "value": "Chaud et tropical toute l'année ; les averses sont brèves et fréquentes, surtout à l'intérieur des terres."
+      },
+      "water": {
+        "label": "Eau du robinet",
+        "value": "L'eau du robinet est généralement potable sur toute l'île."
+      }
+    }
+  },
+  "trailMaps": {
+    "title": "Cartes des sentiers",
+    "offlineNotice": "Fonctionne entièrement hors ligne — aucun signal nécessaire sur le sentier.",
+    "intro": "Des guides intégrés pour explorer à pied, de la capitale au réseau de sentiers longue distance de l'île.",
+    "roseauTitle": "Se promener à Roseau",
+    "roseauDesc": "La capitale compacte de la Dominique se parcourt facilement à pied — architecture coloniale française le long de Old Street et King George V Street, l'Old Market Square, la promenade du Bayfront et la cathédrale de Roseau, le tout à environ 20 minutes de marche les uns des autres.",
+    "waitukubuliTitle": "Sentier national Waitukubuli",
+    "waitukubuliSubtitle": "Le premier sentier longue distance des Caraïbes — 14 segments, environ 184 km au total.",
+    "footnote": "Emportez de l'eau, une protection solaire et des chaussures robustes — le signal mobile est peu fiable sur la plupart des segments.",
+    "segments": {
+      "s1": {
+        "name": "Segment 1",
+        "route": "Scotts Head à Soufrière",
+        "desc": "Un départ côtier de difficulté modérée, passant par le point de rencontre entre l'océan Atlantique et la mer des Caraïbes."
+      },
+      "s4": {
+        "name": "Segment 4",
+        "route": "Wotten Waven à Laudat",
+        "desc": "Un segment plus facile passant près des sources chaudes et de l'accès à la Vallée de la Désolation."
+      },
+      "s6": {
+        "name": "Segment 6",
+        "route": "Petite Savanne à Bagatelle",
+        "desc": "Un tronçon difficile et isolé traversant la forêt tropicale le long de la côte est escarpée."
+      },
+      "s12": {
+        "name": "Segment 12",
+        "route": "Capuchin à Vieille Case",
+        "desc": "Un segment de difficulté modérée sur la côte nord, avec une vue spectaculaire sur l'Atlantique."
+      },
+      "s13": {
+        "name": "Segment 13",
+        "route": "Vieille Case à Bense",
+        "desc": "Une montée difficile à travers les hauts plateaux du nord de la Dominique."
+      }
+    }
+  },
+  "loyalty": {
+    "title": "Oasis Circle",
+    "programName": "PROGRAMME OASIS CIRCLE",
+    "progressToNext": "À mi-chemin du statut {{tier}}",
+    "topTier": "Vous avez atteint notre niveau le plus élevé — merci de votre fidélité.",
+    "perksTitle": "Avantages par niveau",
+    "currentTier": "Actuel",
+    "memberDiningSpecials": "Offres restauration pour les membres",
+    "viewAll": "Tout voir",
+    "footnote": "Les avantages du niveau sont appliqués automatiquement à votre séjour — inutile de les demander.",
+    "perks": {
+      "silver": "Attention de bienvenue à l'arrivée, tarifs membres sur les activités.",
+      "gold": "Tout ce qui est inclus dans Silver, plus un surclassement de chambre gratuit selon disponibilité, et un départ tardif sur demande.",
+      "platinum": "Tout ce qui est inclus dans Gold, plus une ligne de conciergerie dédiée et une bouteille de rhum local offerte."
     }
   }
 }

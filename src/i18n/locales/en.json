@@ -250,7 +250,8 @@
       "Service Request": "Service Request",
       "Event": "Event",
       "Transportation": "Transportation",
-      "Important Alert": "Important Alert"
+      "Important Alert": "Important Alert",
+      "Emergency": "Emergency"
     }
   },
   "concierge": {
@@ -411,6 +412,17 @@
       "fr": "Français",
       "es": "Español",
       "zh": "中文"
+    },
+    "oasisAndBilling": "Oasis Circle & Billing",
+    "loyaltyRow": "Oasis Circle Rewards",
+    "billingRow": "Billing & Folio",
+    "roomPreferencesRow": "Housekeeping Preferences",
+    "hotelAmenitiesRow": "Hotel Amenities & Hours",
+    "localGuideRow": "Local Guide",
+    "trailMapsRow": "Trail Maps",
+    "biometric": {
+      "title": "Face ID / Fingerprint Sign-In",
+      "sub": "Unlock the app instantly without your password."
     }
   },
   "accessibility": {
@@ -567,6 +579,13 @@
     }
   },
   "auth": {
+    "biometric": {
+      "locked": "Welcome back",
+      "lockedSub": "Use Face ID or your fingerprint to continue to Ocean Oasis.",
+      "tryAgain": "Try Again",
+      "usePassword": "Use Password Instead",
+      "failed": "Could not verify your identity."
+    },
     "signInToOceanOasis": "Sign in to Ocean Oasis",
     "accessReservation": "Access your reservation, requests, and personalized recommendations.",
     "signIn": "Sign In",
@@ -740,7 +759,8 @@
         "OCCUPIED_SERVICE_REQUIRED": "Service Required",
         "INSPECTION_REQUIRED": "Inspection Required",
         "OUT_OF_ORDER": "Out of Order"
-      }
+      },
+      "doNotDisturb": "Guest has requested Do Not Disturb"
     },
     "activities": {
       "title": "Activities",
@@ -869,6 +889,10 @@
         "settings": {
           "label": "Settings",
           "sub": "Property configuration"
+        },
+        "emergency": {
+          "label": "Emergency Broadcast",
+          "sub": "Send a real-time alert to all guests and staff"
         }
       }
     },
@@ -986,6 +1010,225 @@
       "multiPropertyTitle": "Multi-Property Architecture",
       "multiPropertyNote": "Every record in this system carries a property identifier. Today the platform is configured for one property; onboarding a second hotel means adding another property_id and settings row — no changes to core logic.",
       "switchConfirmMsg": "This will sign you out of the Management Dashboard."
+    },
+    "emergency": {
+      "title": "Emergency Broadcast",
+      "warning": "This immediately notifies every current guest and all staff. Use only for genuine emergencies.",
+      "presetsLabel": "Quick Presets",
+      "titleLabel": "Alert Title",
+      "titlePlaceholder": "e.g. Building Evacuation",
+      "messageLabel": "Message",
+      "messagePlaceholder": "Describe the situation and what guests should do.",
+      "fieldsRequired": "Enter both a title and a message.",
+      "confirmTitle": "Send Emergency Broadcast?",
+      "confirmMsg": "This will immediately notify every current guest and all staff. This cannot be undone.",
+      "sendNow": "Send Now",
+      "sentConfirmation": "Broadcast sent to {{count}} guests and all staff.",
+      "sendBroadcast": "Send Broadcast",
+      "presets": {
+        "evacuation": {
+          "chip": "Evacuation",
+          "title": "Building Evacuation",
+          "body": "Please evacuate the building immediately via the nearest marked exit and proceed to the assembly point. Do not use elevators."
+        },
+        "weather": {
+          "chip": "Severe Weather",
+          "title": "Severe Weather Alert",
+          "body": "Severe weather is approaching the property. Please remain in your room, away from windows, until further notice."
+        },
+        "security": {
+          "chip": "Security",
+          "title": "Security Notice",
+          "body": "For your safety, please remain in your room and await further instructions from hotel staff."
+        }
+      }
+    }
+  },
+  "roomPreferences": {
+    "title": "Room Preferences",
+    "intro": "Choose how you'd like housekeeping to care for your room during your stay.",
+    "daily": {
+      "title": "Daily Cleaning",
+      "desc": "Housekeeping will service your room once a day as usual."
+    },
+    "dnd": {
+      "title": "Do Not Disturb",
+      "desc": "Skip daily housekeeping — ask for service only when you request it."
+    },
+    "saveError": "Your preference could not be saved. Please try again.",
+    "footnote": "You can change this at any time. Housekeeping sees your current preference instantly."
+  },
+  "billing": {
+    "title": "Billing & Folio",
+    "intro": "A running summary of charges for your stay. This is an estimate — your final folio is confirmed at checkout.",
+    "room": "Room",
+    "roomDetail": "{{type}} · {{nights}} nights at {{rate}}/night",
+    "activities": "Activities & Experiences",
+    "noActivityCharges": "No activity charges yet.",
+    "activityFallback": "Activity",
+    "total": "Estimated Total",
+    "estimateBadge": "Estimate",
+    "contactlessCheckoutTitle": "Contactless Checkout",
+    "contactlessCheckoutSub": "Request checkout and our front desk will settle your folio on the card on file and email your receipt — no need to stop by the desk.",
+    "requestCheckout": "Request Contactless Checkout",
+    "checkoutRequested": "Checkout Requested",
+    "checkoutRequestDescription": "Guest has requested contactless checkout. Estimated folio total: {{total}}.",
+    "checkoutRequestError": "Your checkout request could not be sent. Please try again."
+  },
+  "hotelInfo": {
+    "title": "Hotel Amenities",
+    "intro": "Everything on property, and when to find it open.",
+    "wifi": {
+      "title": "Guest Wi-Fi",
+      "network": "Network",
+      "passwordNote": "Password is on your welcome card, or ask the front desk any time."
+    },
+    "hoursTitle": "Hours & Locations",
+    "footnote": "Hours may shift seasonally — confirm same-day hours with the front desk or concierge.",
+    "amenities": {
+      "tideTable": {
+        "name": "Tide & Table",
+        "hours": "Breakfast 7:00–10:30 AM · Dinner 6:00–10:00 PM · Saturday Brunch 10:00 AM–2:00 PM",
+        "desc": "Ocean Oasis's air-conditioned fine-dining room — seasonal Caribbean cuisine from local markets and docks."
+      },
+      "skyye": {
+        "name": "Skyye Rooftop",
+        "hours": "4:00–11:00 PM daily",
+        "desc": "Casual rooftop bar with sunset views, cocktails, and light bites."
+      },
+      "vista": {
+        "name": "Vista Pool Bar",
+        "hours": "10:00 AM–6:00 PM daily",
+        "desc": "Poolside bar for drinks and snacks."
+      },
+      "inRoomDining": {
+        "name": "In-Room Dining",
+        "hours": "7:00 AM–10:00 PM daily",
+        "desc": "Available daily, including breakfast in bed and private sunset dining on request."
+      },
+      "pool": {
+        "name": "Swimming Pool",
+        "hours": "7:00 AM–7:00 PM daily",
+        "desc": "Open to all guests, towels provided poolside."
+      },
+      "diveShop": {
+        "name": "Ocean Oasis Dive Shop",
+        "hours": "8:00 AM–4:00 PM daily",
+        "desc": "Boat and shore dives, certifications, equipment rental, and snorkeling."
+      },
+      "pier": {
+        "name": "Private Pier & Water Excursions",
+        "hours": "8:00 AM–5:00 PM daily",
+        "desc": "Departure point for whale watching, snorkeling tours, fishing charters, and sunset cruises."
+      },
+      "frontDesk": {
+        "name": "Front Desk & Concierge",
+        "hours": "Open 24 hours",
+        "desc": "Always available for requests, questions, and reservations."
+      }
+    }
+  },
+  "localGuide": {
+    "title": "Local Guide",
+    "intro": "A few favourites and practical tips from around Dominica, beyond the hotel.",
+    "diningTitle": "Local Dining Favourites",
+    "diningFootnote": "Availability and hours can change — call ahead for reservations.",
+    "tipsTitle": "Practical Tips",
+    "restaurants": {
+      "gouteDominik": {
+        "name": "Goûte Dominik",
+        "location": "Rainforest dining experience",
+        "desc": "\"Your meal starts in the rainforest\" — a Creole cuisine experience built around rainforest-sourced ingredients."
+      },
+      "laRobeCreole": {
+        "name": "La Robe Creole",
+        "location": "Roseau",
+        "desc": "A long-standing Roseau institution for traditional Creole cooking in a historic building."
+      },
+      "pearlsCuisine": {
+        "name": "Pearl's Cuisine",
+        "location": "Roseau",
+        "desc": "A local favourite for hearty, home-style Dominican dishes."
+      }
+    },
+    "tips": {
+      "currency": {
+        "label": "Currency",
+        "value": "Eastern Caribbean Dollar (XCD) is official; US dollars are widely accepted."
+      },
+      "language": {
+        "label": "Language",
+        "value": "English is the official language; Dominican Creole French is also widely spoken."
+      },
+      "driving": {
+        "label": "Driving",
+        "value": "Traffic drives on the left — plan accordingly if you rent a car."
+      },
+      "tipping": {
+        "label": "Tipping",
+        "value": "A service charge is often included at restaurants; round up for exceptional service."
+      },
+      "weather": {
+        "label": "Weather",
+        "value": "Warm and tropical year-round; rain showers are brief and frequent, especially inland."
+      },
+      "water": {
+        "label": "Tap Water",
+        "value": "Tap water is generally safe to drink island-wide."
+      }
+    }
+  },
+  "trailMaps": {
+    "title": "Trail Maps",
+    "offlineNotice": "Works fully offline — no signal needed on the trail.",
+    "intro": "Bundled guides for exploring on foot, from the capital to the island's long-distance trail network.",
+    "roseauTitle": "Walking Roseau",
+    "roseauDesc": "Dominica's compact capital is easily walkable — French colonial architecture along Old Street and King George V Street, the Old Market Square, the Bayfront promenade, and the Roseau Cathedral, all within about a 20-minute walk of each other.",
+    "waitukubuliTitle": "Waitukubuli National Trail",
+    "waitukubuliSubtitle": "The Caribbean's first long-distance trail — 14 segments, about 184 km end to end.",
+    "footnote": "Carry water, sun protection, and sturdy footwear — mobile signal is unreliable on most segments.",
+    "segments": {
+      "s1": {
+        "name": "Segment 1",
+        "route": "Scotts Head to Soufrière",
+        "desc": "A moderate coastal start past the point where the Atlantic meets the Caribbean Sea."
+      },
+      "s4": {
+        "name": "Segment 4",
+        "route": "Wotten Waven to Laudat",
+        "desc": "An easier segment passing near hot springs and the Valley of Desolation approach."
+      },
+      "s6": {
+        "name": "Segment 6",
+        "route": "Petite Savanne to Bagatelle",
+        "desc": "A challenging, remote stretch through rainforest along the rugged east coast."
+      },
+      "s12": {
+        "name": "Segment 12",
+        "route": "Capuchin to Vieille Case",
+        "desc": "A moderate north-coast segment with dramatic Atlantic views."
+      },
+      "s13": {
+        "name": "Segment 13",
+        "route": "Vieille Case to Bense",
+        "desc": "A challenging climb through Dominica's northern highlands."
+      }
+    }
+  },
+  "loyalty": {
+    "title": "Oasis Circle",
+    "programName": "OASIS CIRCLE REWARDS",
+    "progressToNext": "Halfway to {{tier}} status",
+    "topTier": "You've reached our top tier — thank you for your loyalty.",
+    "perksTitle": "Tier Benefits",
+    "currentTier": "Current",
+    "memberDiningSpecials": "Member Dining Specials",
+    "viewAll": "View All",
+    "footnote": "Tier benefits are applied automatically to your stay — no need to request them.",
+    "perks": {
+      "silver": "Welcome amenity on arrival, member rates on activities.",
+      "gold": "Everything in Silver, plus complimentary room upgrade when available, late checkout on request.",
+      "platinum": "Everything in Gold, plus a dedicated concierge line and a welcome bottle of local rum."
     }
   }
 }

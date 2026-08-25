@@ -25,6 +25,12 @@ import PrivacyPolicyScreen from '../screens/profile/PrivacyPolicyScreen';
 import PrivacySettingsScreen from '../screens/profile/PrivacySettingsScreen';
 import AccessibilityScreen from '../screens/profile/AccessibilityScreen';
 import LanguageScreen from '../screens/profile/LanguageScreen';
+import RoomPreferencesScreen from '../screens/mystay/RoomPreferencesScreen';
+import FolioScreen from '../screens/billing/FolioScreen';
+import HotelAmenitiesScreen from '../screens/hotel/HotelAmenitiesScreen';
+import LocalGuideScreen from '../screens/explore/LocalGuideScreen';
+import TrailMapsScreen from '../screens/explore/TrailMapsScreen';
+import LoyaltyScreen from '../screens/profile/LoyaltyScreen';
 
 // Registers the full set of cross-tab detail/utility screens onto a given
 // Stack.Navigator so navigation.navigate('ActivityDetail', {...}) works
@@ -57,6 +63,12 @@ export function addSharedScreens(Stack) {
       <Stack.Screen name="PrivacySettings" component={PrivacySettingsScreen} />
       <Stack.Screen name="Accessibility" component={AccessibilityScreen} />
       <Stack.Screen name="Language" component={LanguageScreen} />
+      <Stack.Screen name="RoomPreferences" component={RoomPreferencesScreen} />
+      <Stack.Screen name="Folio" component={FolioScreen} />
+      <Stack.Screen name="HotelAmenities" component={HotelAmenitiesScreen} />
+      <Stack.Screen name="LocalGuide" component={LocalGuideScreen} />
+      <Stack.Screen name="TrailMaps" component={TrailMapsScreen} />
+      <Stack.Screen name="Loyalty" component={LoyaltyScreen} />
     </>
   );
 }

@@ -9,6 +9,8 @@ import ImagePlaceholder from '../../components/ImagePlaceholder';
 import Button from '../../components/Button';
 import { colors, spacing, radius, font, shadow } from '../../theme/theme';
 import { DINING_VENUES } from '../../data/mockData';
+import { getLocalizedContent } from '../../i18n/content';
+import diningVenuesContent from '../../i18n/content/diningVenues';
 
 const TYPE_KEY = {
   'Signature Restaurant': 'signatureRestaurant',
@@ -18,9 +20,10 @@ const TYPE_KEY = {
 };
 
 export default function DiningVenueScreen({ route, navigation }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { venueId } = route.params || {};
-  const venue = DINING_VENUES.find((v) => v.id === venueId);
+  const rawVenue = DINING_VENUES.find((v) => v.id === venueId);
+  const venue = rawVenue ? getLocalizedContent(diningVenuesContent, rawVenue.id, i18n.language, rawVenue) : null;
   const [showForm, setShowForm] = useState(false);
   const [party, setParty] = useState('2');
   const [time, setTime] = useState('7:00 PM');

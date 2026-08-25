@@ -250,7 +250,8 @@
       "Service Request": "服务请求",
       "Event": "活动",
       "Transportation": "交通",
-      "Important Alert": "重要提醒"
+      "Important Alert": "重要提醒",
+      "Emergency": "紧急情况"
     }
   },
   "concierge": {
@@ -411,6 +412,17 @@
       "fr": "Français",
       "es": "Español",
       "zh": "中文"
+    },
+    "oasisAndBilling": "Oasis Circle 与账单",
+    "loyaltyRow": "Oasis Circle 奖励",
+    "billingRow": "账单与账目",
+    "roomPreferencesRow": "客房清洁偏好",
+    "hotelAmenitiesRow": "酒店设施与时间",
+    "localGuideRow": "本地指南",
+    "trailMapsRow": "徒步路线图",
+    "biometric": {
+      "title": "面容 ID / 指纹登录",
+      "sub": "无需密码即可立即解锁应用。"
     }
   },
   "accessibility": {
@@ -618,7 +630,14 @@
     "reservationNumberRequired": "请输入您的预订编号和姓氏。",
     "enterEmailAddress": "请输入您的电子邮箱地址。",
     "reservationLookupFailed": "我们未找到与这些信息匹配的预订。",
-    "unableToSendLinkRetry": "无法发送您的登录链接，请重试。"
+    "unableToSendLinkRetry": "无法发送您的登录链接，请重试。",
+    "biometric": {
+      "locked": "欢迎回来",
+      "lockedSub": "使用面容 ID 或指纹以继续访问 Ocean Oasis。",
+      "tryAgain": "重试",
+      "usePassword": "改用密码",
+      "failed": "无法验证您的身份。"
+    }
   },
   "experience": {
     "eyebrow": "一个平台 · 三种体验",
@@ -740,7 +759,8 @@
         "OCCUPIED_SERVICE_REQUIRED": "需要服务",
         "INSPECTION_REQUIRED": "需要检查",
         "OUT_OF_ORDER": "停用中"
-      }
+      },
+      "doNotDisturb": "客人已要求请勿打扰"
     },
     "activities": {
       "title": "活动",
@@ -869,6 +889,10 @@
         "settings": {
           "label": "设置",
           "sub": "物业配置"
+        },
+        "emergency": {
+          "label": "紧急广播",
+          "sub": "向所有客人及员工发送实时警报"
         }
       }
     },
@@ -986,6 +1010,225 @@
       "multiPropertyTitle": "多物业架构",
       "multiPropertyNote": "系统中的每条记录都带有物业标识符。目前平台仅配置了一处物业；接入第二家酒店只需添加另一个 property_id 和一行设置——无需更改核心逻辑。",
       "switchConfirmMsg": "这将退出管理工作台的登录。"
+    },
+    "emergency": {
+      "title": "紧急广播",
+      "warning": "此操作将立即通知所有在住客人及全体员工，请仅在真正的紧急情况下使用。",
+      "presetsLabel": "快速模板",
+      "titleLabel": "警报标题",
+      "titlePlaceholder": "例如：大楼疏散",
+      "messageLabel": "消息内容",
+      "messagePlaceholder": "描述当前情况以及客人应采取的行动。",
+      "fieldsRequired": "请填写标题和消息内容。",
+      "confirmTitle": "发送紧急广播？",
+      "confirmMsg": "此操作将立即通知所有在住客人及全体员工，且无法撤销。",
+      "sendNow": "立即发送",
+      "sentConfirmation": "广播已发送给 {{count}} 位客人及全体员工。",
+      "sendBroadcast": "发送广播",
+      "presets": {
+        "evacuation": {
+          "chip": "疏散",
+          "title": "大楼疏散",
+          "body": "请立即通过最近的标示出口疏散大楼，并前往集合点。请勿使用电梯。"
+        },
+        "weather": {
+          "chip": "恶劣天气",
+          "title": "恶劣天气警报",
+          "body": "恶劣天气即将影响本酒店。请留在房间内，远离窗户，直至另行通知。"
+        },
+        "security": {
+          "chip": "安全",
+          "title": "安全通知",
+          "body": "为了您的安全，请留在房间内，并等待酒店工作人员的进一步指示。"
+        }
+      }
+    }
+  },
+  "roomPreferences": {
+    "title": "客房清洁偏好",
+    "intro": "选择您希望客房部在入住期间如何为您打扫房间。",
+    "daily": {
+      "title": "每日清洁",
+      "desc": "客房部将照常每天为您打扫一次房间。"
+    },
+    "dnd": {
+      "title": "请勿打扰",
+      "desc": "跳过每日清洁——仅在您需要时才申请打扫服务。"
+    },
+    "saveError": "您的偏好设置未能保存，请重试。",
+    "footnote": "您可以随时更改此设置，客房部会立即看到您当前的偏好。"
+  },
+  "billing": {
+    "title": "账单与账目",
+    "intro": "这是您入住期间费用的实时汇总，仅供参考——最终账单将在退房时确认。",
+    "room": "客房",
+    "roomDetail": "{{type}} · {{nights}} 晚，每晚 {{rate}}",
+    "activities": "活动与体验",
+    "noActivityCharges": "目前暂无活动费用。",
+    "activityFallback": "活动",
+    "total": "预估总额",
+    "estimateBadge": "预估",
+    "contactlessCheckoutTitle": "无接触退房",
+    "contactlessCheckoutSub": "申请退房后，前台会使用您预留的信用卡结算账单，并将收据发送至您的邮箱——无需前往前台办理。",
+    "requestCheckout": "申请无接触退房",
+    "checkoutRequested": "已申请退房",
+    "checkoutRequestDescription": "客人已申请无接触退房。预估账单总额：{{total}}。",
+    "checkoutRequestError": "退房申请发送失败，请重试。"
+  },
+  "hotelInfo": {
+    "title": "酒店设施",
+    "intro": "酒店内的一切设施，以及开放时间。",
+    "wifi": {
+      "title": "客用 Wi-Fi",
+      "network": "网络名称",
+      "passwordNote": "密码印在您的欢迎卡上，您也可以随时向前台索取。"
+    },
+    "hoursTitle": "营业时间与位置",
+    "footnote": "营业时间可能随季节调整——请向前台或礼宾部确认当日时间。",
+    "amenities": {
+      "tideTable": {
+        "name": "Tide & Table",
+        "hours": "早餐 上午7:00–10:30 · 晚餐 下午6:00–10:00 · 周六早午餐 上午10:00–下午2:00",
+        "desc": "Ocean Oasis 的空调高级餐厅——采用本地市场与码头食材烹制的时令加勒比美食。"
+      },
+      "skyye": {
+        "name": "Skyye 屋顶酒吧",
+        "hours": "每日下午4:00–11:00",
+        "desc": "休闲屋顶酒吧，可欣赏日落美景，供应鸡尾酒与轻食。"
+      },
+      "vista": {
+        "name": "Vista 泳池酒吧",
+        "hours": "每日上午10:00–下午6:00",
+        "desc": "泳池畔酒吧，供应饮品与小吃。"
+      },
+      "inRoomDining": {
+        "name": "客房送餐服务",
+        "hours": "每日上午7:00–晚上10:00",
+        "desc": "每日提供，包括床上早餐及可预约的私人日落晚餐。"
+      },
+      "pool": {
+        "name": "游泳池",
+        "hours": "每日上午7:00–晚上7:00",
+        "desc": "对所有客人开放，泳池边提供毛巾。"
+      },
+      "diveShop": {
+        "name": "Ocean Oasis 潜水中心",
+        "hours": "每日上午8:00–下午4:00",
+        "desc": "提供船潜与岸潜、潜水认证课程、装备租赁及浮潜活动。"
+      },
+      "pier": {
+        "name": "私人码头与水上活动",
+        "hours": "每日上午8:00–下午5:00",
+        "desc": "观鲸、浮潜之旅、出海垂钓及日落巡游的出发点。"
+      },
+      "frontDesk": {
+        "name": "前台与礼宾服务",
+        "hours": "24小时开放",
+        "desc": "随时为您提供需求受理、咨询与预订服务。"
+      }
+    }
+  },
+  "localGuide": {
+    "title": "本地指南",
+    "intro": "多米尼克岛上一些值得一试的餐厅和实用小贴士，带您探索酒店之外的世界。",
+    "diningTitle": "当地人气餐厅",
+    "diningFootnote": "营业时间及供应情况可能变动——建议提前致电预订。",
+    "tipsTitle": "实用小贴士",
+    "restaurants": {
+      "gouteDominik": {
+        "name": "Goûte Dominik",
+        "location": "雨林用餐体验",
+        "desc": "“您的美食之旅从雨林开始”——以雨林食材打造的克里奥尔美食体验。"
+      },
+      "laRobeCreole": {
+        "name": "La Robe Creole",
+        "location": "罗索",
+        "desc": "罗索历史悠久的老字号餐厅，坐落于一栋历史建筑内，供应传统克里奥尔菜肴。"
+      },
+      "pearlsCuisine": {
+        "name": "Pearl's Cuisine",
+        "location": "罗索",
+        "desc": "深受当地人喜爱的餐厅，供应丰盛的家常多米尼克菜肴。"
+      }
+    },
+    "tips": {
+      "currency": {
+        "label": "货币",
+        "value": "官方货币为东加勒比元（XCD）；美元也被广泛接受。"
+      },
+      "language": {
+        "label": "语言",
+        "value": "官方语言为英语；多米尼克克里奥尔法语也十分通用。"
+      },
+      "driving": {
+        "label": "驾驶",
+        "value": "当地为靠左行驶——租车自驾时请注意。"
+      },
+      "tipping": {
+        "label": "小费",
+        "value": "餐厅通常已包含服务费；如服务出色可酌情多付。"
+      },
+      "weather": {
+        "label": "天气",
+        "value": "全年温暖湿热，阵雨短暂而频繁，内陆地区尤其如此。"
+      },
+      "water": {
+        "label": "自来水",
+        "value": "全岛自来水通常可以直接饮用。"
+      }
+    }
+  },
+  "trailMaps": {
+    "title": "徒步路线图",
+    "offlineNotice": "完全离线可用——徒步途中无需信号。",
+    "intro": "内置向导，助您步行探索，从首都罗索到全岛的长途徒步网络。",
+    "roseauTitle": "漫步罗索",
+    "roseauDesc": "多米尼克小巧精致的首都非常适合步行游览——沿 Old Street 与 King George V Street 的法式殖民建筑、老市场广场、海滨大道以及罗索大教堂，彼此之间步行仅约20分钟。",
+    "waitukubuliTitle": "Waitukubuli 国家步道",
+    "waitukubuliSubtitle": "加勒比地区首条长途步道——共14段，全程约184公里。",
+    "footnote": "请携带饮用水、防晒用品与结实的鞋子——大多数路段手机信号不稳定。",
+    "segments": {
+      "s1": {
+        "name": "第1段",
+        "route": "Scotts Head 至 Soufrière",
+        "desc": "难度适中的海岸线起点，途经大西洋与加勒比海的交汇处。"
+      },
+      "s4": {
+        "name": "第4段",
+        "route": "Wotten Waven 至 Laudat",
+        "desc": "较为轻松的路段，途经温泉附近及通往“荒凉谷”的入口。"
+      },
+      "s6": {
+        "name": "第6段",
+        "route": "Petite Savanne 至 Bagatelle",
+        "desc": "沿崎岖的东海岸穿越雨林的一段偏远且具有挑战性的路线。"
+      },
+      "s12": {
+        "name": "第12段",
+        "route": "Capuchin 至 Vieille Case",
+        "desc": "难度适中的北海岸路段，可欣赏壮丽的大西洋景色。"
+      },
+      "s13": {
+        "name": "第13段",
+        "route": "Vieille Case 至 Bense",
+        "desc": "穿越多米尼克北部高地的一段具有挑战性的攀登路线。"
+      }
+    }
+  },
+  "loyalty": {
+    "title": "Oasis Circle 尊享圈",
+    "programName": "OASIS CIRCLE 奖励计划",
+    "progressToNext": "再接再厉即可升至 {{tier}} 等级",
+    "topTier": "您已达到我们的最高等级——感谢您的忠诚支持。",
+    "perksTitle": "等级礼遇",
+    "currentTier": "当前等级",
+    "memberDiningSpecials": "会员餐饮优惠",
+    "viewAll": "查看全部",
+    "footnote": "等级礼遇将自动应用于您的入住，无需另行申请。",
+    "perks": {
+      "silver": "入住时享迎宾礼遇，活动享会员价。",
+      "gold": "包含银卡等级所有礼遇，另有客房免费升级（视可用情况而定）及可申请延迟退房。",
+      "platinum": "包含金卡等级所有礼遇，另配专属礼宾专线及迎宾赠送本地朗姆酒一瓶。"
     }
   }
 }

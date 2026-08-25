@@ -9,9 +9,11 @@ import ImagePlaceholder from '../../components/ImagePlaceholder';
 import Button from '../../components/Button';
 import { colors, spacing, font, shadow } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
+import { getLocalizedContent } from '../../i18n/content';
+import promotionsContent from '../../i18n/content/promotions';
 
 export default function PromotionsScreen({ navigation }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { promotions } = useApp();
   const published = promotions.filter((p) => p.status === 'PUBLISHED');
   return (
@@ -21,7 +23,9 @@ export default function PromotionsScreen({ navigation }) {
         data={published}
         keyExtractor={(p) => p.id}
         contentContainerStyle={{ padding: spacing.lg, gap: spacing.md }}
-        renderItem={({ item }) => (
+        renderItem={({ item: rawItem }) => {
+          const item = getLocalizedContent(promotionsContent, rawItem.id, i18n.language, rawItem);
+          return (
           <Card style={{ padding: 0, overflow: 'hidden', ...shadow.float }}>
             <View>
               <ImagePlaceholder kind={item.image} uri={item.imageUrl} style={{ height: 140, borderRadius: 0 }} iconSize={32} />
@@ -45,7 +49,8 @@ export default function PromotionsScreen({ navigation }) {
               />
             </View>
           </Card>
-        )}
+          );
+        }}
       />
     </SafeAreaView>
   );

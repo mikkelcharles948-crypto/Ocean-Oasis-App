@@ -6,12 +6,15 @@ import { useTranslation } from 'react-i18next';
 import { ScreenHeader, ErrorState, EmptyState } from '../../components/UI';
 import { colors, spacing, radius, font } from '../../theme/theme';
 import { DINING_VENUES, DINING_MENUS } from '../../data/mockData';
+import { getLocalizedMenu } from '../../i18n/content';
+import diningMenusContent from '../../i18n/content/diningMenus';
 
 export default function MenuScreen({ route, navigation }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { venueId } = route.params || {};
   const venue = DINING_VENUES.find((v) => v.id === venueId);
-  const menu = DINING_MENUS[venueId];
+  const rawMenu = DINING_MENUS[venueId];
+  const menu = rawMenu ? getLocalizedMenu(diningMenusContent, venueId, i18n.language, rawMenu) : rawMenu;
 
   if (!venue) {
     return (

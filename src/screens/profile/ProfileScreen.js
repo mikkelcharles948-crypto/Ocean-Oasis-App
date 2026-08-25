@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Switch } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
@@ -22,9 +22,18 @@ function Row({ icon, label, onPress, danger }) {
 
 export default function ProfileScreen({ navigation }) {
   const { t, i18n } = useTranslation();
-  const { guest, signOut } = useApp();
+  const { guest, signOut, biometricSupported, biometricEnabled, enableBiometricLogin, disableBiometricLogin } = useApp();
 
   const currentLanguageName = t(`profile.languageNames.${i18n.language}`, { defaultValue: t('profile.languageNames.en') });
+
+  const toggleBiometric = async (value) => {
+    if (value) {
+      const result = await enableBiometricLogin();
+      if (!result.ok) Alert.alert(t('profile.biometric.title'), result.error);
+    } else {
+      await disableBiometricLogin();
+    }
+  };
 
   const confirmSignOut = () => {
     Alert.alert(t('profile.signOutTitle'), t('profile.signOutMsg'), [
@@ -66,7 +75,41 @@ export default function ProfileScreen({ navigation }) {
           <Row icon="star-outline" label={t('profile.feedback')} onPress={() => navigation.navigate('Feedback')} />
         </Card>
 
+        <SectionLabel text={t('profile.oasisAndBilling')} />
+        <Card style={{ paddingVertical: 0 }}>
+          <Row icon="trophy-outline" label={t('profile.loyaltyRow')} onPress={() => navigation.navigate('Loyalty')} />
+          <Divider />
+          <Row icon="receipt-outline" label={t('profile.billingRow')} onPress={() => navigation.navigate('Folio')} />
+          <Divider />
+          <Row icon="bed-outline" label={t('profile.roomPreferencesRow')} onPress={() => navigation.navigate('RoomPreferences')} />
+          <Divider />
+          <Row icon="information-circle-outline" label={t('profile.hotelAmenitiesRow')} onPress={() => navigation.navigate('HotelAmenities')} />
+          <Divider />
+          <Row icon="map-outline" label={t('profile.localGuideRow')} onPress={() => navigation.navigate('LocalGuide')} />
+          <Divider />
+          <Row icon="trail-sign-outline" label={t('profile.trailMapsRow')} onPress={() => navigation.navigate('TrailMaps')} />
+        </Card>
+
         <SectionLabel text={t('profile.app')} />
+        {biometricSupported && (
+          <Card style={{ marginBottom: spacing.md }}>
+            <View style={styles.row}>
+              <View style={styles.rowLeft}>
+                <Ionicons name="finger-print-outline" size={19} color={colors.deepOcean} />
+                <View>
+                  <Text style={styles.rowLabel}>{t('profile.biometric.title')}</Text>
+                  <Text style={styles.rowSub}>{t('profile.biometric.sub')}</Text>
+                </View>
+              </View>
+              <Switch
+                value={biometricEnabled}
+                onValueChange={toggleBiometric}
+                trackColor={{ false: colors.border, true: colors.turquoise }}
+                thumbColor={colors.white}
+              />
+            </View>
+          </Card>
+        )}
         <Card style={{ paddingVertical: 0 }}>
           <Row icon="language-outline" label={t('profile.languageLabel', { language: currentLanguageName })} onPress={() => navigation.navigate('Language')} />
           <Divider />
@@ -107,5 +150,6 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 13 },
   rowLeft: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   rowLabel: { fontSize: 14.5, color: colors.charcoal, fontWeight: '500' },
+  rowSub: { fontSize: 11, color: colors.slate, marginTop: 2, maxWidth: 220 },
   divider: { height: 1, backgroundColor: colors.border },
 });

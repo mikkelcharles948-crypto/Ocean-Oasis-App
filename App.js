@@ -4,9 +4,23 @@ import React from 'react';
 import { KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
+import * as Notifications from 'expo-notifications';
 
 import { AppProvider } from './src/context/AppContext';
 import RootNavigator from './src/navigation/RootNavigator';
+
+// Show alerts/sound even while the app is in the foreground — emergency
+// broadcasts should interrupt whatever the guest is looking at, not sit
+// silently in the notification tray.
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
 
 // NOTE: RootNavigator already renders its own <NavigationContainer> (it needs
 // the custom theme + conditional onboarding/auth/main stacks), so App.js must

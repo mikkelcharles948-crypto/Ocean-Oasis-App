@@ -10,16 +10,20 @@ import Button from '../../components/Button';
 import { colors, spacing, radius, font, shadow, gradients } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 import { ROOM_TYPES } from '../../data/mockData';
+import { getLocalizedContent, getLocalizedString } from '../../i18n/content';
+import roomTypesContent from '../../i18n/content/roomTypes';
+import roomAmenitiesContent from '../../i18n/content/roomAmenities';
 
 function fmt(dateStr) {
   return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
-function UpgradeCard({ tier, featured, onRequested }) {
-  const { t } = useTranslation();
+function UpgradeCard({ tier: rawTier, featured, onRequested }) {
+  const { t, i18n } = useTranslation();
   const { submitServiceRequest } = useApp();
   const [requesting, setRequesting] = useState(false);
   const [requested, setRequested] = useState(false);
+  const tier = getLocalizedContent(roomTypesContent, rawTier.id, i18n.language, rawTier);
 
   const handleRequest = async () => {
     setRequesting(true);
@@ -51,7 +55,7 @@ function UpgradeCard({ tier, featured, onRequested }) {
         {tier.amenities.slice(0, 4).map((a) => (
           <View key={a} style={styles.amenityChip}>
             <Ionicons name="checkmark-circle" size={12} color={colors.success} />
-            <Text style={styles.amenityText}>{a}</Text>
+            <Text style={styles.amenityText}>{getLocalizedString(roomAmenitiesContent, a, i18n.language, a)}</Text>
           </View>
         ))}
       </View>
@@ -68,7 +72,7 @@ function UpgradeCard({ tier, featured, onRequested }) {
 }
 
 export default function MyStayScreen({ navigation }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { guest, reservation, room, checkedIn } = useApp();
   const currentTierIndex = ROOM_TYPES.findIndex((rt) => rt.name === room.type);
   const upgradeOptions = currentTierIndex >= 0 ? ROOM_TYPES.slice(currentTierIndex + 1) : [];
@@ -158,7 +162,7 @@ export default function MyStayScreen({ navigation }) {
               {(room.amenities || []).map((a) => (
                 <View key={a} style={styles.amenityChip}>
                   <Ionicons name="checkmark-circle" size={14} color={colors.success} />
-                  <Text style={styles.amenityText}>{a}</Text>
+                  <Text style={styles.amenityText}>{getLocalizedString(roomAmenitiesContent, a, i18n.language, a)}</Text>
                 </View>
               ))}
             </View>

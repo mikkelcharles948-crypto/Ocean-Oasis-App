@@ -10,11 +10,16 @@ import { Badge, ErrorState } from '../../components/UI';
 import GlassSurface from '../../components/GlassSurface';
 import { colors, spacing, radius, font, shadow } from '../../theme/theme';
 import { DESTINATIONS } from '../../data/mockData';
+import { getLocalizedContent } from '../../i18n/content';
+import destinationsContent from '../../i18n/content/destinations';
 
 export default function DestinationDetailScreen({ route, navigation }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { destinationId } = route.params || {};
-  const destination = DESTINATIONS.find((d) => d.id === destinationId);
+  const rawDestination = DESTINATIONS.find((d) => d.id === destinationId);
+  const destination = rawDestination
+    ? getLocalizedContent(destinationsContent, rawDestination.id, i18n.language, rawDestination)
+    : null;
 
   if (!destination) {
     return (

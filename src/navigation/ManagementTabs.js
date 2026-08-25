@@ -16,6 +16,7 @@ import ManagementContentScreen from '../screens/management/ManagementContentScre
 import ManagementStaffPerformanceScreen from '../screens/management/ManagementStaffPerformanceScreen';
 import ManagementAuditLogScreen from '../screens/management/ManagementAuditLogScreen';
 import ManagementSettingsScreen from '../screens/management/ManagementSettingsScreen';
+import ManagementEmergencyScreen from '../screens/management/ManagementEmergencyScreen';
 import { colors } from '../theme/theme';
 import GlassSurface from '../components/GlassSurface';
 
@@ -33,6 +34,7 @@ function MoreStackNav() {
       <Stack.Screen name="ManagementStaffPerformance" component={ManagementStaffPerformanceScreen} />
       <Stack.Screen name="ManagementAuditLog" component={ManagementAuditLogScreen} />
       <Stack.Screen name="ManagementSettings" component={ManagementSettingsScreen} />
+      <Stack.Screen name="ManagementEmergency" component={ManagementEmergencyScreen} />
     </Stack.Navigator>
   );
 }

@@ -250,7 +250,8 @@
       "Service Request": "Solicitud de servicio",
       "Event": "Evento",
       "Transportation": "Transporte",
-      "Important Alert": "Alerta importante"
+      "Important Alert": "Alerta importante",
+      "Emergency": "Emergencia"
     }
   },
   "concierge": {
@@ -411,6 +412,17 @@
       "fr": "Français",
       "es": "Español",
       "zh": "中文"
+    },
+    "oasisAndBilling": "Oasis Circle y facturación",
+    "loyaltyRow": "Recompensas Oasis Circle",
+    "billingRow": "Facturación y folio",
+    "roomPreferencesRow": "Preferencias de limpieza",
+    "hotelAmenitiesRow": "Servicios y horarios del hotel",
+    "localGuideRow": "Guía local",
+    "trailMapsRow": "Mapas de senderos",
+    "biometric": {
+      "title": "Inicio de sesión con Face ID / huella digital",
+      "sub": "Desbloquea la app al instante sin tu contraseña."
     }
   },
   "accessibility": {
@@ -567,6 +579,13 @@
     }
   },
   "auth": {
+    "biometric": {
+      "locked": "Bienvenido de nuevo",
+      "lockedSub": "Usa Face ID o tu huella digital para continuar en Ocean Oasis.",
+      "tryAgain": "Intentar de nuevo",
+      "usePassword": "Usar contraseña en su lugar",
+      "failed": "No se pudo verificar tu identidad."
+    },
     "signInToOceanOasis": "Inicia sesión en Ocean Oasis",
     "accessReservation": "Accede a tu reserva, solicitudes y recomendaciones personalizadas.",
     "signIn": "Iniciar sesión",
@@ -740,7 +759,8 @@
         "OCCUPIED_SERVICE_REQUIRED": "Requiere servicio",
         "INSPECTION_REQUIRED": "Requiere inspección",
         "OUT_OF_ORDER": "Fuera de servicio"
-      }
+      },
+      "doNotDisturb": "El huésped ha solicitado no ser molestado"
     },
     "activities": {
       "title": "Actividades",
@@ -869,6 +889,10 @@
         "settings": {
           "label": "Configuración",
           "sub": "Configuración de la propiedad"
+        },
+        "emergency": {
+          "label": "Difusión de emergencia",
+          "sub": "Enviar una alerta en tiempo real a todos los huéspedes y al personal"
         }
       }
     },
@@ -986,6 +1010,225 @@
       "multiPropertyTitle": "Arquitectura multipropiedad",
       "multiPropertyNote": "Cada registro de este sistema lleva un identificador de propiedad. Hoy la plataforma está configurada para una sola propiedad; incorporar un segundo hotel solo requiere añadir otro property_id y una fila de configuración, sin cambios en la lógica principal.",
       "switchConfirmMsg": "Esto cerrará tu sesión en el Panel de Dirección."
+    },
+    "emergency": {
+      "title": "Difusión de emergencia",
+      "warning": "Esto notifica inmediatamente a todos los huéspedes actuales y a todo el personal. Úsalo solo para emergencias reales.",
+      "presetsLabel": "Plantillas rápidas",
+      "titleLabel": "Título de la alerta",
+      "titlePlaceholder": "p. ej. Evacuación del edificio",
+      "messageLabel": "Mensaje",
+      "messagePlaceholder": "Describe la situación y qué deben hacer los huéspedes.",
+      "fieldsRequired": "Ingresa un título y un mensaje.",
+      "confirmTitle": "¿Enviar difusión de emergencia?",
+      "confirmMsg": "Esto notificará inmediatamente a todos los huéspedes actuales y a todo el personal. Esta acción no se puede deshacer.",
+      "sendNow": "Enviar ahora",
+      "sentConfirmation": "Difusión enviada a {{count}} huéspedes y a todo el personal.",
+      "sendBroadcast": "Enviar difusión",
+      "presets": {
+        "evacuation": {
+          "chip": "Evacuación",
+          "title": "Evacuación del edificio",
+          "body": "Evacúe el edificio de inmediato por la salida señalizada más cercana y diríjase al punto de encuentro. No use los ascensores."
+        },
+        "weather": {
+          "chip": "Clima severo",
+          "title": "Alerta de clima severo",
+          "body": "Se aproxima clima severo al hotel. Permanezca en su habitación, alejado de las ventanas, hasta nuevo aviso."
+        },
+        "security": {
+          "chip": "Seguridad",
+          "title": "Aviso de seguridad",
+          "body": "Por su seguridad, permanezca en su habitación y espere más instrucciones del personal del hotel."
+        }
+      }
+    }
+  },
+  "roomPreferences": {
+    "title": "Preferencias de habitación",
+    "intro": "Elige cómo te gustaría que el personal de limpieza cuide tu habitación durante tu estancia.",
+    "daily": {
+      "title": "Limpieza diaria",
+      "desc": "El personal de limpieza atenderá tu habitación una vez al día, como de costumbre."
+    },
+    "dnd": {
+      "title": "No molestar",
+      "desc": "Omite la limpieza diaria — solicita el servicio solo cuando lo desees."
+    },
+    "saveError": "No se pudo guardar tu preferencia. Inténtalo de nuevo.",
+    "footnote": "Puedes cambiar esto en cualquier momento. El personal de limpieza ve tu preferencia actual al instante."
+  },
+  "billing": {
+    "title": "Facturación y folio",
+    "intro": "Un resumen actualizado de los cargos de tu estancia. Esto es una estimación — tu folio final se confirma al hacer el check-out.",
+    "room": "Habitación",
+    "roomDetail": "{{type}} · {{nights}} noches a {{rate}}/noche",
+    "activities": "Actividades y experiencias",
+    "noActivityCharges": "Aún no hay cargos de actividades.",
+    "activityFallback": "Actividad",
+    "total": "Total estimado",
+    "estimateBadge": "Estimación",
+    "contactlessCheckoutTitle": "Check-out sin contacto",
+    "contactlessCheckoutSub": "Solicita el check-out y nuestra recepción liquidará tu folio con la tarjeta registrada y te enviará el recibo por correo electrónico — sin necesidad de pasar por recepción.",
+    "requestCheckout": "Solicitar check-out sin contacto",
+    "checkoutRequested": "Check-out solicitado",
+    "checkoutRequestDescription": "El huésped ha solicitado un check-out sin contacto. Total estimado del folio: {{total}}.",
+    "checkoutRequestError": "No se pudo enviar tu solicitud de check-out. Inténtalo de nuevo."
+  },
+  "hotelInfo": {
+    "title": "Servicios del hotel",
+    "intro": "Todo lo que hay en el hotel, y cuándo encontrarlo abierto.",
+    "wifi": {
+      "title": "Wi-Fi para huéspedes",
+      "network": "Red",
+      "passwordNote": "La contraseña está en tu tarjeta de bienvenida, o pregúntala en recepción en cualquier momento."
+    },
+    "hoursTitle": "Horarios y ubicaciones",
+    "footnote": "Los horarios pueden variar según la temporada — confirma los horarios del día con recepción o conserjería.",
+    "amenities": {
+      "tideTable": {
+        "name": "Tide & Table",
+        "hours": "Desayuno 7:00–10:30 a.m. · Cena 6:00–10:00 p.m. · Brunch de sábado 10:00 a.m.–2:00 p.m.",
+        "desc": "El restaurante de alta cocina con aire acondicionado de Ocean Oasis — cocina caribeña de temporada de mercados y muelles locales."
+      },
+      "skyye": {
+        "name": "Skyye Rooftop",
+        "hours": "4:00–11:00 p.m. todos los días",
+        "desc": "Bar informal en la azotea con vistas al atardecer, cócteles y bocadillos."
+      },
+      "vista": {
+        "name": "Vista Pool Bar",
+        "hours": "10:00 a.m.–6:00 p.m. todos los días",
+        "desc": "Bar junto a la piscina para bebidas y aperitivos."
+      },
+      "inRoomDining": {
+        "name": "Servicio a la habitación",
+        "hours": "7:00 a.m.–10:00 p.m. todos los días",
+        "desc": "Disponible todos los días, incluido el desayuno en la cama y cena privada al atardecer bajo petición."
+      },
+      "pool": {
+        "name": "Piscina",
+        "hours": "7:00 a.m.–7:00 p.m. todos los días",
+        "desc": "Abierta a todos los huéspedes, toallas disponibles junto a la piscina."
+      },
+      "diveShop": {
+        "name": "Tienda de buceo Ocean Oasis",
+        "hours": "8:00 a.m.–4:00 p.m. todos los días",
+        "desc": "Inmersiones en barco y desde la costa, certificaciones, alquiler de equipo y esnórquel."
+      },
+      "pier": {
+        "name": "Muelle privado y excursiones acuáticas",
+        "hours": "8:00 a.m.–5:00 p.m. todos los días",
+        "desc": "Punto de salida para avistamiento de ballenas, tours de esnórquel, salidas de pesca y cruceros al atardecer."
+      },
+      "frontDesk": {
+        "name": "Recepción y conserjería",
+        "hours": "Abierto las 24 horas",
+        "desc": "Siempre disponible para solicitudes, preguntas y reservas."
+      }
+    }
+  },
+  "localGuide": {
+    "title": "Guía local",
+    "intro": "Algunos lugares favoritos y consejos prácticos por Dominica, más allá del hotel.",
+    "diningTitle": "Restaurantes locales favoritos",
+    "diningFootnote": "La disponibilidad y los horarios pueden cambiar — llama con antelación para reservar.",
+    "tipsTitle": "Consejos prácticos",
+    "restaurants": {
+      "gouteDominik": {
+        "name": "Goûte Dominik",
+        "location": "Experiencia gastronómica en la selva tropical",
+        "desc": "\"Tu comida empieza en la selva tropical\" — una experiencia de cocina criolla creada con ingredientes de la selva."
+      },
+      "laRobeCreole": {
+        "name": "La Robe Creole",
+        "location": "Roseau",
+        "desc": "Una institución de larga trayectoria en Roseau dedicada a la cocina criolla tradicional, en un edificio histórico."
+      },
+      "pearlsCuisine": {
+        "name": "Pearl's Cuisine",
+        "location": "Roseau",
+        "desc": "Un favorito local por sus platos dominicanos abundantes y caseros."
+      }
+    },
+    "tips": {
+      "currency": {
+        "label": "Moneda",
+        "value": "El dólar del Caribe Oriental (XCD) es la moneda oficial; el dólar estadounidense se acepta ampliamente."
+      },
+      "language": {
+        "label": "Idioma",
+        "value": "El inglés es el idioma oficial; el criollo francés dominiqués también se habla ampliamente."
+      },
+      "driving": {
+        "label": "Conducción",
+        "value": "Se conduce por la izquierda — planifícalo si alquilas un coche."
+      },
+      "tipping": {
+        "label": "Propinas",
+        "value": "A menudo se incluye un cargo por servicio en los restaurantes; redondea la cuenta por un servicio excepcional."
+      },
+      "weather": {
+        "label": "Clima",
+        "value": "Cálido y tropical todo el año; los chubascos son breves y frecuentes, especialmente tierra adentro."
+      },
+      "water": {
+        "label": "Agua del grifo",
+        "value": "El agua del grifo es generalmente segura para beber en toda la isla."
+      }
+    }
+  },
+  "trailMaps": {
+    "title": "Mapas de senderos",
+    "offlineNotice": "Funciona completamente sin conexión — no se necesita señal en el sendero.",
+    "intro": "Guías incluidas para explorar a pie, desde la capital hasta la red de senderos de larga distancia de la isla.",
+    "roseauTitle": "Caminando por Roseau",
+    "roseauDesc": "La compacta capital de Dominica se recorre fácilmente a pie — arquitectura colonial francesa a lo largo de Old Street y King George V Street, la Old Market Square, el paseo de Bayfront y la catedral de Roseau, todo a unos 20 minutos caminando entre sí.",
+    "waitukubuliTitle": "Sendero Nacional Waitukubuli",
+    "waitukubuliSubtitle": "El primer sendero de larga distancia del Caribe — 14 tramos, unos 184 km de principio a fin.",
+    "footnote": "Lleva agua, protección solar y calzado resistente — la señal móvil no es fiable en la mayoría de los tramos.",
+    "segments": {
+      "s1": {
+        "name": "Tramo 1",
+        "route": "Scotts Head a Soufrière",
+        "desc": "Un inicio costero de dificultad moderada, pasando por el punto donde el Atlántico se encuentra con el mar Caribe."
+      },
+      "s4": {
+        "name": "Tramo 4",
+        "route": "Wotten Waven a Laudat",
+        "desc": "Un tramo más fácil que pasa cerca de aguas termales y del acceso al Valle de la Desolación."
+      },
+      "s6": {
+        "name": "Tramo 6",
+        "route": "Petite Savanne a Bagatelle",
+        "desc": "Un tramo exigente y remoto a través de la selva tropical por la accidentada costa este."
+      },
+      "s12": {
+        "name": "Tramo 12",
+        "route": "Capuchin a Vieille Case",
+        "desc": "Un tramo de dificultad moderada en la costa norte con vistas espectaculares al Atlántico."
+      },
+      "s13": {
+        "name": "Tramo 13",
+        "route": "Vieille Case a Bense",
+        "desc": "Un ascenso exigente por las tierras altas del norte de Dominica."
+      }
+    }
+  },
+  "loyalty": {
+    "title": "Oasis Circle",
+    "programName": "PROGRAMA OASIS CIRCLE",
+    "progressToNext": "A mitad de camino del estatus {{tier}}",
+    "topTier": "Has alcanzado nuestro nivel más alto — gracias por tu fidelidad.",
+    "perksTitle": "Beneficios por nivel",
+    "currentTier": "Actual",
+    "memberDiningSpecials": "Ofertas gastronómicas para socios",
+    "viewAll": "Ver todo",
+    "footnote": "Los beneficios de nivel se aplican automáticamente a tu estancia — no es necesario solicitarlos.",
+    "perks": {
+      "silver": "Detalle de bienvenida a la llegada, tarifas de socio en actividades.",
+      "gold": "Todo lo de Silver, además de mejora de habitación gratuita según disponibilidad y check-out tardío bajo petición.",
+      "platinum": "Todo lo de Gold, además de una línea de conserjería dedicada y una botella de ron local de bienvenida."
     }
   }
 }

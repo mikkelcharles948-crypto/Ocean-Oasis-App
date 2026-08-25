@@ -32,6 +32,7 @@ export function mapReservation(row) {
     arrivalTime: row.arrival_time,
     airportTransfer: row.airport_transfer,
     specialRequests: row.special_requests,
+    housekeepingPreference: row.housekeeping_preference || 'DAILY_CLEANING',
   };
 }
 
@@ -155,6 +156,23 @@ export async function completeGuestCheckIn(reservationId) {
   const { data, error } = await supabase.rpc('complete_guest_checkin', { p_reservation_id: reservationId });
   if (error) throw error;
   return mapReservation(data);
+}
+
+export async function setHousekeepingPreference(reservationId, preference) {
+  const { data, error } = await supabase.rpc('set_housekeeping_preference', {
+    p_reservation_id: reservationId,
+    p_preference: preference,
+  });
+  if (error) throw error;
+  return mapReservation(data);
+}
+
+export async function registerPushToken(userId, token, platform) {
+  const { error } = await supabase.from('push_tokens').upsert(
+    { user_id: userId, token, platform },
+    { onConflict: 'token' }
+  );
+  if (error) throw error;
 }
 
 export async function updateGuestProfile(guestId, changes) {
