@@ -227,6 +227,97 @@ export const DESTINATIONS = [
     image: 'culture',
     imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Carib_Territory_(Dominica).jpg',
   },
+  {
+    id: 'd_15',
+    title: 'Syndicate Nature Trail & Parrot Reserve',
+    category: 'Nature',
+    description:
+      "A gentle loop through the Northern Forest Reserve below Morne Diablotin, Dominica's tallest peak — the best place on the island to spot both the Jaco and the rare, endemic Sisserou Parrot in the wild.",
+    distance: '50 min drive',
+    travelTime: '50 min',
+    difficulty: 'Easy',
+    duration: '1.5 hrs',
+    image: 'nature',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Amazona_imperialis_-Roseau_-Dominica_-aviary-6a.jpg',
+  },
+  {
+    id: 'd_16',
+    title: 'Mero Beach',
+    category: 'Beaches',
+    description:
+      "One of Dominica's few sandy beaches, a stretch of fine black volcanic sand on the calm Caribbean coast lined with beach bars — the island's favourite spot for a swim, a rum punch, and an easy afternoon in the sun.",
+    distance: '30 min drive',
+    travelTime: '30 min',
+    difficulty: 'Easy',
+    duration: '2 hrs',
+    image: 'ocean',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/MERO_BEACH%2C_DOMINICA.jpg',
+  },
+  {
+    id: 'd_17',
+    title: 'Soufriere Village & Sulphur Springs',
+    category: 'Culture',
+    description:
+      'A quiet fishing village on the edge of the Soufriere-Scotts Head Marine Reserve, where volcanic vents warm the bay itself and a scatter of sulphur spring bathing spots sit just above the water — a slower, more local counterpart to Wotten Waven.',
+    distance: '20 min drive',
+    travelTime: '20 min',
+    difficulty: 'Easy',
+    duration: '2 hrs',
+    image: 'culture',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Soufri%C3%A8re_Bay%2C_Dominica_008.JPG',
+  },
+  {
+    id: 'd_18',
+    title: 'Bush Rum Tasting',
+    category: 'Food',
+    description:
+      "Dominica's homegrown tradition of rum infused with local herbs, spices, and fruit — from fiery 'strongback' blends to fruitier sips — poured at rustic bush bars and rum shacks across the island.",
+    distance: '20 min drive',
+    travelTime: '20 min',
+    difficulty: 'Easy',
+    duration: '1.5 hrs',
+    image: 'wine',
+    // No verified real photo found for this specific experience yet — falls back to the icon placeholder.
+  },
+  {
+    id: 'd_19',
+    title: "Scotts Head (Cachacrou)",
+    category: 'Ocean',
+    description:
+      "A dramatic sand spit at Dominica's southernmost point, where the calm Caribbean Sea meets the churning Atlantic Ocean — climb to the old French fort ruins for one of the island's best viewpoints.",
+    distance: '25 min drive',
+    travelTime: '25 min',
+    difficulty: 'Easy',
+    duration: '1.5 hrs',
+    image: 'ocean',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Scotts_Head_Dominica_1.jpg',
+  },
+  {
+    id: 'd_20',
+    title: 'Boeri Lake',
+    category: 'Nature',
+    description:
+      'The highest lake in Dominica, an almost perfectly round volcanic crater lake ringed by cloud forest, reached by a well-marked trail from Freshwater Lake — quieter and less-visited than its famous neighbour.',
+    distance: '35 min drive + hike',
+    travelTime: '35 min',
+    difficulty: 'Moderate',
+    duration: '2.5 hrs',
+    image: 'pool',
+    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Boeri_Lake.jpg',
+  },
+  {
+    id: 'd_21',
+    title: 'Wavine Cyrique',
+    category: 'Adventure',
+    description:
+      "A remote waterfall that drops straight onto a black-sand beach where the rainforest meets the Atlantic — reached via a thrilling, rope-and-root scramble down an old fishermen's trail, strictly for experienced, guided hikers.",
+    distance: '50 min drive + hike',
+    travelTime: '50 min',
+    difficulty: 'Challenging',
+    duration: '2 hrs',
+    image: 'waterfall',
+    // No verified real photo found for this specific site yet — falls back to the icon placeholder.
+  },
 ];
 
 export const ACTIVITY_CATEGORIES = ['Ocean', 'Adventure', 'Nature', 'Wellness', 'Food', 'Culture', 'Entertainment', 'Family'];

@@ -12,6 +12,7 @@ import { colors, spacing, radius, font, shadow } from '../../theme/theme';
 import { DESTINATIONS } from '../../data/mockData';
 import { getLocalizedContent } from '../../i18n/content';
 import destinationsContent from '../../i18n/content/destinations';
+import { openInGoogleMaps } from '../../utils/openMap';
 
 export default function DestinationDetailScreen({ route, navigation }) {
   const { t, i18n } = useTranslation();
@@ -66,6 +67,12 @@ export default function DestinationDetailScreen({ route, navigation }) {
             label={t('explore.viewOnMap')}
             variant="outline"
             onPress={() => navigation.navigate('MapScreen')}
+            style={{ marginTop: spacing.sm }}
+          />
+          <Button
+            label={t('explore.viewOnGoogleMaps')}
+            variant="outline"
+            onPress={() => openInGoogleMaps(`${destination.title}, Dominica`)}
             style={{ marginTop: spacing.sm }}
           />
         </View>

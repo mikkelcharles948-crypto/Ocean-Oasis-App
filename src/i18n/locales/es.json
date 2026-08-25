@@ -24,7 +24,8 @@
     "difficulty": {
       "Easy": "Fácil",
       "Moderate": "Moderado",
-      "Challenging": "Difícil"
+      "Challenging": "Difícil",
+      "VeryDifficult": "Muy difícil"
     },
     "availability": {
       "available": "Disponible",
@@ -81,6 +82,7 @@
     "destinationNotFound": "Destino no encontrado",
     "askConciergeToArrange": "Pedir a la conserjería que lo organice",
     "viewOnMap": "Ver en el mapa",
+    "viewOnGoogleMaps": "Ver en Google Maps",
     "distance": "Distancia",
     "duration": "Duración",
     "difficulty": "Dificultad",
@@ -1149,6 +1151,16 @@
         "name": "Pearl's Cuisine",
         "location": "Roseau",
         "desc": "Un favorito local por sus platos dominicanos abundantes y caseros."
+      },
+      "theGreatOldHouse": {
+        "name": "The Great Old House",
+        "location": "Barrio Francés, Roseau",
+        "desc": "Una institución de Roseau dedicada a la auténtica cocina criolla, elaborada con las carnes, pescados y mariscos locales más frescos."
+      },
+      "kozysNiche": {
+        "name": "Kozy's Niche",
+        "location": "Roseau",
+        "desc": "Un favorito de los visitantes que combina sabores italianos y caribeños — pruebe el pez león o el mahi mahi a la parrilla."
       }
     },
     "tips": {
@@ -1186,32 +1198,106 @@
     "roseauDesc": "La compacta capital de Dominica se recorre fácilmente a pie — arquitectura colonial francesa a lo largo de Old Street y King George V Street, la Old Market Square, el paseo de Bayfront y la catedral de Roseau, todo a unos 20 minutos caminando entre sí.",
     "waitukubuliTitle": "Sendero Nacional Waitukubuli",
     "waitukubuliSubtitle": "El primer sendero de larga distancia del Caribe — 14 tramos, unos 184 km de principio a fin.",
+    "passNotice": "Todos los visitantes necesitan un Trail Pass para recorrer cualquier tramo del Sendero Nacional Waitukubuli — disponible en los puertos de entrada, la División Forestal, de Vida Silvestre y Parques, y en vendedores cercanos a los tramos del sendero. Se recomienda a los excursionistas registrarse antes de salir y actuar con precaución, especialmente en los tramos muy difíciles.",
     "footnote": "Lleva agua, protección solar y calzado resistente — la señal móvil no es fiable en la mayoría de los tramos.",
     "segments": {
       "s1": {
         "name": "Tramo 1",
-        "route": "Scotts Head a Soufrière",
-        "desc": "Un inicio costero de dificultad moderada, pasando por el punto donde el Atlántico se encuentra con el mar Caribe."
+        "route": "Scotts Head Village a Soufriere Estate",
+        "distance": "6.6 km",
+        "duration": "4 horas",
+        "desc": "El tramo inicial más duro y emblemático del sendero, que cruza un cráter con depósitos de azufre volcánico con escalada asistida por cuerdas y paso por un desfiladero. Pasa por el valle de Toloulou, la meseta de Crabier, la finca Bois Cotiette, las fuentes sulfurosas, la Reserva Marina de Soufrière-Scotts Head, la meseta de Morne Kwabier y una antigua finca cafetalera."
+      },
+      "s2": {
+        "name": "Tramo 2",
+        "route": "Soufriere Estate a Bellevue Chopin",
+        "distance": "12.1 km",
+        "duration": "~5 horas",
+        "desc": "Sigue la antigua Ruta de los Esclavos pasando por las fuentes sulfurosas de Soufrière y una antigua estación agrícola, a través de pequeñas fincas y pastizales antes de subir a la densa selva tropical. También pasa por Tarish Picnic Park, uniendo las maravillas naturales de Dominica con su historia cimarrona y colonial."
+      },
+      "s3": {
+        "name": "Tramo 3",
+        "route": "Bellevue Chopin a Wotten Waven",
+        "distance": "12.8 km",
+        "duration": "5 horas",
+        "desc": "Entra en el Parque Nacional Morne Trois Pitons, Patrimonio de la Humanidad por la UNESCO, con un bucle lateral hacia el Boiling Lake y una parada en los Jardines Botánicos de Giraudel. Pasa por parcelas de té orgánico, la comunidad de Giraudel, el río Clair y cálidas piscinas sulfurosas, con vistas aéreas de Roseau."
       },
       "s4": {
         "name": "Tramo 4",
-        "route": "Wotten Waven a Laudat",
-        "desc": "Un tramo más fácil que pasa cerca de aguas termales y del acceso al Valle de la Desolación."
+        "route": "Wotten Waven a Pont Casse",
+        "distance": "13.3 km",
+        "duration": "6 horas",
+        "desc": "Atraviesa el corazón del Parque Nacional Morne Trois Pitons con vistas a cinco montañas entre bosque primario y secundario, pasando por los baños termales de Wotten Waven, Morne Jack y el sendero de las cascadas de Middleham, además de vistas al Freshwater Lake y al Valle de la Desolación. Termina en el Centro de Investigación e Interpretación del sendero en Pont Casse."
+      },
+      "s5": {
+        "name": "Tramo 5",
+        "route": "Pont Casse a Castle Bruce (Richmond)",
+        "distance": "17.4 km",
+        "duration": "~6 horas",
+        "desc": "Sigue el histórico Old Carib Trace (sendero de piedra kalinago) pasando por Emerald Pool, la cueva de Jaco y Savanne David, a través de la pequeña comunidad de Fond Melle, hasta la costa atlántica en Castle Bruce. También pasa por el pantano de Castle Bruce, los Jardines Criollos y el río L'Or."
       },
       "s6": {
         "name": "Tramo 6",
-        "route": "Petite Savanne a Bagatelle",
-        "desc": "Un tramo exigente y remoto a través de la selva tropical por la accidentada costa este."
+        "route": "Castle Bruce (Richmond) a Hatten Garden",
+        "distance": "14.4 km",
+        "duration": "No especificada",
+        "desc": "Entra en el Territorio Kalinago, hogar del pueblo indígena kalinago de Dominica, pasando por el pueblo cultural Kalinago Barana Aute, la cascada Isulakati y espectaculares vistas de la costa atlántica, además de L'Escalier Tete Chien y Horseback Ridge."
+      },
+      "s7": {
+        "name": "Tramo 7",
+        "route": "Hatten Garden a First Camp (alturas de Marigot)",
+        "distance": "8.9 km",
+        "duration": "No especificada",
+        "desc": "Una introducción al corazón agrícola de Dominica, cruzando tierras cultivadas y bosque primario entre ríos y vistas costeras. Pasa por Congorie Hole y el huerto Walter Williams — un reconocido hábitat de loros y punto de observación de aves con su propia torre — con vistas a la costa noreste y al aeropuerto de Melville Hall."
+      },
+      "s8": {
+        "name": "Tramo 8",
+        "route": "Melville Hall Estate (First Camp) a Petite Macoucherie",
+        "distance": "14 km",
+        "duration": "9 horas",
+        "desc": "Una de las jornadas más duras y largas del sendero, que cruza la Reserva Forestal del Norte, vadea ríos y sube el Mosquito Mountain antes de descender hacia la finca Carholm — especialmente exigente con tiempo húmedo. Recompensa con vistas costeras tanto al este como al oeste, pozas de río para nadar y la posibilidad de ver al loro Sisserou, el ave nacional de Dominica."
+      },
+      "s9": {
+        "name": "Tramo 9",
+        "route": "Petite Macoucherie a Colihaut Heights",
+        "distance": "12.8 km",
+        "duration": "~8 horas",
+        "desc": "Un camino de acceso a una bananera da paso a la Reserva Forestal del Norte para una implacable montaña rusa de subidas y bajadas a través de tierras de cultivo mixtas y bosque virgen, terminando en las alturas sobre el pueblo de Colihaut. Pasa por el gomero más grande de la isla, el lago Kachibona y el Morne Amery."
+      },
+      "s10": {
+        "name": "Tramo 10",
+        "route": "Colihaut Heights a Syndicate",
+        "distance": "7 km",
+        "duration": "3 horas",
+        "desc": "El tramo más occidental y sencillo del sendero, siguiendo antiguos caminos de fincas y haciendas abandonadas a través de un terreno muy boscoso en la Reserva Forestal del Norte, con buenas posibilidades de ver tanto al loro Jaco como al Sisserou. Pasa por vistas panorámicas de la costa norte y el Morne Diablotin, terminando en el centro de recepción del Sendero Natural de Syndicate."
+      },
+      "s11": {
+        "name": "Tramo 11",
+        "route": "Syndicate a Bourne",
+        "distance": "13.2 km",
+        "duration": "~7 horas",
+        "desc": "Cruza las tierras altas del centro-norte a través del Parque Nacional Morne Diablotin, la mayor área protegida de Dominica, pasando por hábitat de loros, ríos salvajes y la única línea de ferrocarril antigua de la isla. Pasa por las cascadas de Dubam y una reserva de loros, con paseos a caballo y una estación agrícola cerca de Portsmouth, y con posibilidad de acampar en Ross Castle y Syndicate."
       },
       "s12": {
         "name": "Tramo 12",
-        "route": "Capuchin a Vieille Case",
-        "desc": "Un tramo de dificultad moderada en la costa norte con vistas espectaculares al Atlántico."
+        "route": "Bourne a Penville",
+        "distance": "13.5 km",
+        "duration": "7 horas",
+        "desc": "Recorre Vieille Case (Itassi Village) a lo largo de la accidentada costa atlántica, combinando bosque seco, tierras de cultivo y antiguos caminos de fincas. Pasa por vistas de Portsmouth y Cabrits y el Morne Aux Diables — una zona utilizada como locación de rodaje de Piratas del Caribe: El cofre del hombre muerto — dando acceso a comunidades rurales poco visitadas."
       },
       "s13": {
         "name": "Tramo 13",
-        "route": "Vieille Case a Bense",
-        "desc": "Un ascenso exigente por las tierras altas del norte de Dominica."
+        "route": "Penville a Capuchin",
+        "distance": "6.8 km",
+        "duration": "~4 horas",
+        "desc": "El tramo más seco del sendero, que cruza terreno volcánico y bosque seco a lo largo de la costa norte. Pasa por el pueblo perdido de Grand Fond, las cascadas de Tafia y miradores hacia las islas francesas de Marie-Galante, las Saintes y Guadalupe, terminando en el Canna Heritage Park en Capuchin."
+      },
+      "s14": {
+        "name": "Tramo 14",
+        "route": "Capuchin al Parque Nacional Cabrits (Fort Shirley)",
+        "distance": "~10 km",
+        "duration": "4 horas",
+        "desc": "El tramo final del sendero, que pasa por los pueblos costeros de Toucarie, Cottage, Clifton y Tanetane, con paradas en Bell Hall Beach y Toucarie Beach, barcos de pesca tradicionales e instalaciones de procesamiento de aceite de laurel y yuca, antes de terminar en Fort Shirley, dentro del Parque Nacional Cabrits."
       }
     }
   },

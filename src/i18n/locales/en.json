@@ -24,7 +24,8 @@
     "difficulty": {
       "Easy": "Easy",
       "Moderate": "Moderate",
-      "Challenging": "Challenging"
+      "Challenging": "Challenging",
+      "VeryDifficult": "Very Difficult"
     },
     "availability": {
       "available": "Available",
@@ -81,6 +82,7 @@
     "destinationNotFound": "Destination not found",
     "askConciergeToArrange": "Ask Concierge to Arrange",
     "viewOnMap": "View on Map",
+    "viewOnGoogleMaps": "View on Google Maps",
     "distance": "Distance",
     "duration": "Duration",
     "difficulty": "Difficulty",
@@ -1149,6 +1151,16 @@
         "name": "Pearl's Cuisine",
         "location": "Roseau",
         "desc": "A local favourite for hearty, home-style Dominican dishes."
+      },
+      "theGreatOldHouse": {
+        "name": "The Great Old House",
+        "location": "French Quarter, Roseau",
+        "desc": "A Roseau institution for indigenous Creole cuisine, built around the freshest locally sourced meat, fish, and seafood."
+      },
+      "kozysNiche": {
+        "name": "Kozy's Niche",
+        "location": "Roseau",
+        "desc": "A guest favourite blending Italian and Caribbean flavours — try the lionfish or the grilled mahi mahi."
       }
     },
     "tips": {
@@ -1186,32 +1198,106 @@
     "roseauDesc": "Dominica's compact capital is easily walkable — French colonial architecture along Old Street and King George V Street, the Old Market Square, the Bayfront promenade, and the Roseau Cathedral, all within about a 20-minute walk of each other.",
     "waitukubuliTitle": "Waitukubuli National Trail",
     "waitukubuliSubtitle": "The Caribbean's first long-distance trail — 14 segments, about 184 km end to end.",
+    "passNotice": "All visitors need a Trail Pass to hike any segment of the Waitukubuli National Trail — available at ports of entry, the Forestry, Wildlife & Parks Division, and vendors near trail segments. Hikers are urged to register before setting out and to exercise caution, especially on the very difficult segments.",
     "footnote": "Carry water, sun protection, and sturdy footwear — mobile signal is unreliable on most segments.",
     "segments": {
       "s1": {
         "name": "Segment 1",
-        "route": "Scotts Head to Soufrière",
-        "desc": "A moderate coastal start past the point where the Atlantic meets the Caribbean Sea."
+        "route": "Scotts Head Village to Soufriere Estate",
+        "distance": "6.6 km",
+        "duration": "4 hours",
+        "desc": "The trail's toughest and most iconic opening stretch, crossing a volcanic sulphur-deposit crater with rope-assisted climbing and gorge walking. Passes Toloulou Valley, Crabier Plateau, Bois Cotiette Estate, Sulphur Springs, the Soufriere-Scotts Head Marine Reserve, Morne Kwabier Plateau, and a historic coffee estate."
+      },
+      "s2": {
+        "name": "Segment 2",
+        "route": "Soufriere Estate to Bellevue Chopin",
+        "distance": "12.1 km",
+        "duration": "~5 hours",
+        "desc": "Traces the Old Slave Route past the Soufriere Sulphur Springs and an old agricultural station, through small farms and grazing land on the way into thick rainforest. Also passes Tarish Picnic Park, linking Dominica's natural wonders with its Maroon and colonial history."
+      },
+      "s3": {
+        "name": "Segment 3",
+        "route": "Bellevue Chopin to Wotten Waven",
+        "distance": "12.8 km",
+        "duration": "5 hours",
+        "desc": "Enters Morne Trois Pitons National Park, a UNESCO World Heritage Site, with a side loop toward Boiling Lake and a stop at Giraudel Botanic Gardens. Passes organic tea plots, the Giraudel community, River Clair, and warm sulphur pools, with aerial views over Roseau."
       },
       "s4": {
         "name": "Segment 4",
-        "route": "Wotten Waven to Laudat",
-        "desc": "An easier segment passing near hot springs and the Valley of Desolation approach."
+        "route": "Wotten Waven to Pont Casse",
+        "distance": "13.3 km",
+        "duration": "6 hours",
+        "desc": "Cuts through the heart of Morne Trois Pitons National Park with views of five mountains across primary and secondary forest, passing the Wotten Waven hot spas, Morne Jack, and the Middleham Falls trail, plus vistas over Freshwater Lake and the Valley of Desolation. Ends at the trail's Research and Interpretation Facility at Pont Casse."
+      },
+      "s5": {
+        "name": "Segment 5",
+        "route": "Pont Casse to Castle Bruce (Richmond)",
+        "distance": "17.4 km",
+        "duration": "~6 hours",
+        "desc": "Follows the historic Old Carib Trace (Kalinago Stone Pathway) past the Emerald Pool, Jaco Cave, and Savanne David, through the small community of Fond Melle, to the Atlantic coast at Castle Bruce. Also passes Castle Bruce Swamp, Creole Gardens, and the L'Or River."
       },
       "s6": {
         "name": "Segment 6",
-        "route": "Petite Savanne to Bagatelle",
-        "desc": "A challenging, remote stretch through rainforest along the rugged east coast."
+        "route": "Castle Bruce (Richmond) to Hatten Garden",
+        "distance": "14.4 km",
+        "duration": "Not specified",
+        "desc": "Enters the Kalinago Territory, home to Dominica's Indigenous Kalinago people, passing the Kalinago Barana Aute cultural village, Isulakati Waterfall, and stunning Atlantic coastline views, plus L'Escalier Tete Chien and Horseback Ridge."
+      },
+      "s7": {
+        "name": "Segment 7",
+        "route": "Hatten Garden to First Camp (Heights of Marigot)",
+        "distance": "8.9 km",
+        "duration": "Not specified",
+        "desc": "An introduction to Dominica's agricultural heartland, crossing cultivated farmland and primary forest between rivers and coastal vistas. Passes Congorie Hole and Walter Williams Orchard — a noted parrot habitat and birdwatching spot with its own birding tower — with views over the northeast coast and Melville Hall Airport."
+      },
+      "s8": {
+        "name": "Segment 8",
+        "route": "Melville Hall Estate (First Camp) to Petite Macoucherie",
+        "distance": "14 km",
+        "duration": "9 hours",
+        "desc": "One of the trail's hardest and longest days, crossing the Northern Forest Reserve, fording rivers, and climbing over Mosquito Mountain before descending to Carholm Estate — especially demanding in wet weather. Rewards with coastal views both east and west, swimmable river pools, and a chance to spot the Sisserou Parrot, Dominica's national bird."
+      },
+      "s9": {
+        "name": "Segment 9",
+        "route": "Petite Macoucherie to Colihaut Heights",
+        "distance": "12.8 km",
+        "duration": "~8 hours",
+        "desc": "A banana-farm access road gives way to the Northern Forest Reserve for a relentless up-and-down 'roller coaster' through mixed farmland and virgin forest, ending in the highlands above Colihaut Village. Passes the island's largest Gommier tree, Kachibona Lake, and Morne Amery."
+      },
+      "s10": {
+        "name": "Segment 10",
+        "route": "Colihaut Heights to Syndicate",
+        "distance": "7 km",
+        "duration": "3 hours",
+        "desc": "The trail's westernmost and easiest segment, following old and abandoned farm and estate roads through heavily forested terrain in the Northern Forest Reserve, with good odds of spotting both the Jaco and Sisserou Parrots. Passes panoramic views of the north coast and Morne Diablotin, ending at the Syndicate Nature Trail's reception centre."
+      },
+      "s11": {
+        "name": "Segment 11",
+        "route": "Syndicate to Bourne",
+        "distance": "13.2 km",
+        "duration": "~7 hours",
+        "desc": "Crosses the north-central highlands through Morne Diablotin National Park, Dominica's largest protected area, past parrot habitat, wild rivers, and the island's only old railway line. Passes Dubam Falls and a parrot reserve, with horseback riding and an agricultural station near Portsmouth, and camping available at Ross Castle and Syndicate."
       },
       "s12": {
         "name": "Segment 12",
-        "route": "Capuchin to Vieille Case",
-        "desc": "A moderate north-coast segment with dramatic Atlantic views."
+        "route": "Bourne to Penville",
+        "distance": "13.5 km",
+        "duration": "7 hours",
+        "desc": "Runs through Vieille Case (Itassi Village) along the rugged Atlantic coast, mixing dry forest, farmland, and old estate roads. Passes views of Portsmouth and Cabrits and Morne Aux Diables — an area used as a filming location for Pirates of the Caribbean: Dead Man's Chest — opening up rarely visited rural communities."
       },
       "s13": {
         "name": "Segment 13",
-        "route": "Vieille Case to Bense",
-        "desc": "A challenging climb through Dominica's northern highlands."
+        "route": "Penville to Capuchin",
+        "distance": "6.8 km",
+        "duration": "~4 hours",
+        "desc": "Dominica's driest trail section, crossing volcanic terrain and dry forest woodland along the north coast. Passes Lost Grand Fond Village, Tafia Falls, and viewpoints toward the French islands of Marie-Galante, the Saintes, and Guadeloupe, ending at Canna Heritage Park in Capuchin."
+      },
+      "s14": {
+        "name": "Segment 14",
+        "route": "Capuchin to Cabrits National Park (Fort Shirley)",
+        "distance": "~10 km",
+        "duration": "4 hours",
+        "desc": "The trail's final stretch, passing the coastal villages of Toucarie, Cottage, Clifton, and Tanetane, with stops at Bell Hall Beach and Toucarie Beach, traditional fishing boats, and bay-oil and cassava processing sites, before finishing at Fort Shirley within Cabrits National Park."
       }
     }
   },

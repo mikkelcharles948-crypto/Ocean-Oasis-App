@@ -1,16 +1,19 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Card, SectionHeader } from '../../components/UI';
 import { colors, spacing, radius, font, shadow } from '../../theme/theme';
+import { openInGoogleMaps } from '../../utils/openMap';
 
 const RESTAURANTS = [
   { key: 'gouteDominik', icon: 'leaf-outline' },
   { key: 'laRobeCreole', icon: 'restaurant-outline' },
   { key: 'pearlsCuisine', icon: 'cafe-outline' },
+  { key: 'theGreatOldHouse', icon: 'restaurant-outline' },
+  { key: 'kozysNiche', icon: 'restaurant-outline' },
 ];
 
 const TIPS = ['currency', 'language', 'driving', 'tipping', 'weather', 'water'];
@@ -35,6 +38,14 @@ export default function LocalGuideScreen({ navigation }) {
                 <Text style={styles.name}>{t(`localGuide.restaurants.${r.key}.name`)}</Text>
                 <Text style={styles.meta}>{t(`localGuide.restaurants.${r.key}.location`)}</Text>
                 <Text style={styles.desc}>{t(`localGuide.restaurants.${r.key}.desc`)}</Text>
+                <TouchableOpacity
+                  style={styles.mapLink}
+                  activeOpacity={0.7}
+                  onPress={() => openInGoogleMaps(`${t(`localGuide.restaurants.${r.key}.name`)}, Dominica`)}
+                >
+                  <Ionicons name="map-outline" size={13} color={colors.turquoiseDark} />
+                  <Text style={styles.mapLinkText}>{t('explore.viewOnGoogleMaps')}</Text>
+                </TouchableOpacity>
               </View>
             </Card>
           ))}
@@ -68,6 +79,8 @@ const styles = StyleSheet.create({
   name: { fontSize: 14.5, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
   meta: { fontSize: 11.5, color: colors.turquoiseDark, fontWeight: '600', marginTop: 2 },
   desc: { fontSize: 12, color: colors.slate, marginTop: 3, lineHeight: 17 },
+  mapLink: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 6 },
+  mapLinkText: { fontSize: 11.5, color: colors.turquoiseDark, fontWeight: '700' },
   footnote: { fontSize: 11, color: colors.slate, marginTop: 4, fontStyle: 'italic' },
   tipRow: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.md },
   tipLabel: { fontSize: 12.5, fontWeight: '700', color: colors.charcoal },

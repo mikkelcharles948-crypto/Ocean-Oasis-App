@@ -24,7 +24,8 @@
     "difficulty": {
       "Easy": "简单",
       "Moderate": "中等",
-      "Challenging": "有挑战性"
+      "Challenging": "有挑战性",
+      "VeryDifficult": "非常困难"
     },
     "availability": {
       "available": "可预订",
@@ -81,6 +82,7 @@
     "destinationNotFound": "未找到该目的地",
     "askConciergeToArrange": "请礼宾部为您安排",
     "viewOnMap": "在地图上查看",
+    "viewOnGoogleMaps": "在谷歌地图上查看",
     "distance": "距离",
     "duration": "时长",
     "difficulty": "难度",
@@ -1149,6 +1151,16 @@
         "name": "Pearl's Cuisine",
         "location": "罗索",
         "desc": "深受当地人喜爱的餐厅，供应丰盛的家常多米尼克菜肴。"
+      },
+      "theGreatOldHouse": {
+        "name": "The Great Old House",
+        "location": "罗索法国区",
+        "desc": "罗索的老字号餐厅，主打地道克里奥尔菜肴，选用最新鲜的本地肉类、鱼类与海鲜。"
+      },
+      "kozysNiche": {
+        "name": "Kozy's Niche",
+        "location": "罗索",
+        "desc": "深受游客喜爱，融合意大利与加勒比风味——推荐尝试狮子鱼或炭烤鲯鳅鱼。"
       }
     },
     "tips": {
@@ -1186,32 +1198,106 @@
     "roseauDesc": "多米尼克小巧精致的首都非常适合步行游览——沿 Old Street 与 King George V Street 的法式殖民建筑、老市场广场、海滨大道以及罗索大教堂，彼此之间步行仅约20分钟。",
     "waitukubuliTitle": "Waitukubuli 国家步道",
     "waitukubuliSubtitle": "加勒比地区首条长途步道——共14段，全程约184公里。",
+    "passNotice": "所有游客在徒步 Waitukubuli 国家步道的任何路段前均须购买步道通行证（Trail Pass）——可在各入境口岸、林业与野生动植物公园管理局，以及步道沿线的商贩处购买。建议徒步者出发前先行登记，并在难度极高的路段格外谨慎。",
     "footnote": "请携带饮用水、防晒用品与结实的鞋子——大多数路段手机信号不稳定。",
     "segments": {
       "s1": {
         "name": "第1段",
-        "route": "Scotts Head 至 Soufrière",
-        "desc": "难度适中的海岸线起点，途经大西洋与加勒比海的交汇处。"
+        "route": "Scotts Head Village 至 Soufriere Estate",
+        "distance": "6.6公里",
+        "duration": "4小时",
+        "desc": "步道最艰苦也最具代表性的开场路段，穿越一处布满火山硫磺矿床的火山口，需借助绳索攀爬并涉行峡谷。沿途经过 Toloulou 谷地、Crabier 高原、Bois Cotiette 庄园、硫磺温泉、苏弗里耶-斯科茨角海洋保护区、Morne Kwabier 高原，以及一座历史悠久的咖啡种植园。"
+      },
+      "s2": {
+        "name": "第2段",
+        "route": "Soufriere Estate 至 Bellevue Chopin",
+        "distance": "12.1公里",
+        "duration": "约5小时",
+        "desc": "沿古老的奴隶之路前行，途经苏弗里耶硫磺温泉与一处旧农业站，穿过小型农场与牧场后攀入茂密雨林。途中还会经过 Tarish 野餐公园，将多米尼克的自然奇观与其马隆人历史及殖民历史联系在一起。"
+      },
+      "s3": {
+        "name": "第3段",
+        "route": "Bellevue Chopin 至 Wotten Waven",
+        "distance": "12.8公里",
+        "duration": "5小时",
+        "desc": "进入联合国教科文组织世界遗产——莫恩特鲁瓦皮通斯国家公园，并有一条支线通往沸腾湖，途中在 Giraudel 植物园稍作停留。沿途经过有机茶园、Giraudel 社区、Clair 河与温暖的硫磺水潭，还可俯瞰罗索全景。"
       },
       "s4": {
         "name": "第4段",
-        "route": "Wotten Waven 至 Laudat",
-        "desc": "较为轻松的路段，途经温泉附近及通往“荒凉谷”的入口。"
+        "route": "Wotten Waven 至 Pont Casse",
+        "distance": "13.3公里",
+        "duration": "6小时",
+        "desc": "穿越莫恩特鲁瓦皮通斯国家公园的核心地带，原始林与次生林间可远眺五座山峰，沿途经过沃顿韦文温泉、Morne Jack 与米德勒姆瀑布步道，并可眺望淡水湖与荒芜之谷。终点为位于蓬卡塞（Pont Casse）的步道研究与解说中心。"
+      },
+      "s5": {
+        "name": "第5段",
+        "route": "Pont Casse 至 Castle Bruce（Richmond）",
+        "distance": "17.4公里",
+        "duration": "约6小时",
+        "desc": "沿着历史悠久的古加勒比小径（卡利纳戈石径）前行，途经翡翠池、Jaco 洞穴与 Savanne David，穿过 Fond Melle 小社区，最终抵达大西洋沿岸的卡斯尔布鲁斯（Castle Bruce）。沿途还会经过卡斯尔布鲁斯沼泽、克里奥尔花园与 L'Or 河。"
       },
       "s6": {
         "name": "第6段",
-        "route": "Petite Savanne 至 Bagatelle",
-        "desc": "沿崎岖的东海岸穿越雨林的一段偏远且具有挑战性的路线。"
+        "route": "Castle Bruce（Richmond） 至 Hatten Garden",
+        "distance": "14.4公里",
+        "duration": "未注明",
+        "desc": "进入卡利纳戈领地——多米尼克原住民卡利纳戈人的家园，途经卡利纳戈 Barana Aute 文化村、Isulakati 瀑布，以及壮丽的大西洋海岸线景观，还有 L'Escalier Tete Chien 与 Horseback Ridge。"
+      },
+      "s7": {
+        "name": "第7段",
+        "route": "Hatten Garden 至 First Camp（马里戈特高地）",
+        "distance": "8.9公里",
+        "duration": "未注明",
+        "desc": "带你初探多米尼克的农业腹地，穿越耕地与原始林，沿途河流与海岸风光交织。经过 Congorie Hole 与 Walter Williams 果园——著名的鹦鹉栖息地与观鸟点，还设有专属观鸟塔——并可远眺东北海岸与梅尔维尔霍尔机场。"
+      },
+      "s8": {
+        "name": "第8段",
+        "route": "Melville Hall Estate（First Camp） 至 Petite Macoucherie",
+        "distance": "14公里",
+        "duration": "9小时",
+        "desc": "步道中最艰难、耗时最长的一段之一，穿越北部森林保护区、涉过多条河流并翻越蚊子山（Mosquito Mountain），再下降至 Carholm 庄园——雨天尤其艰苦。沿途可饱览东西两侧的海岸美景、可供游泳的河潭，还有机会目睹多米尼克国鸟西塞罗鹦鹉的身影。"
+      },
+      "s9": {
+        "name": "第9段",
+        "route": "Petite Macoucherie 至 Colihaut Heights",
+        "distance": "12.8公里",
+        "duration": "约8小时",
+        "desc": "先经过一段香蕉园便道，随后进入北部森林保护区，在混合农田与原始森林间经历连续起伏的“过山车”式路段，最终抵达科利霍特（Colihaut）村上方的高地。沿途可见全岛最大的 Gommier 树、Kachibona 湖与 Morne Amery。"
+      },
+      "s10": {
+        "name": "第10段",
+        "route": "Colihaut Heights 至 Syndicate",
+        "distance": "7公里",
+        "duration": "3小时",
+        "desc": "步道最西端也是最轻松的一段，沿着北部森林保护区内废弃的农场与庄园旧路前行，林木茂密，途中很有机会同时见到贾科鹦鹉与西塞罗鹦鹉。沿途可远眺北海岸与迪亚布洛丹山全景，终点为 Syndicate 自然步道的接待中心。"
+      },
+      "s11": {
+        "name": "第11段",
+        "route": "Syndicate 至 Bourne",
+        "distance": "13.2公里",
+        "duration": "约7小时",
+        "desc": "穿越中北部高地，途经迪亚布洛丹山国家公园——多米尼克最大的保护区，沿途有鹦鹉栖息地、野生河流，以及全岛唯一的旧铁路线遗迹。经过 Dubam 瀑布与一处鹦鹉保护区，波茨茅斯附近可骑马游览并设有农业站，Ross Castle 与 Syndicate 均可露营。"
       },
       "s12": {
         "name": "第12段",
-        "route": "Capuchin 至 Vieille Case",
-        "desc": "难度适中的北海岸路段，可欣赏壮丽的大西洋景色。"
+        "route": "Bourne 至 Penville",
+        "distance": "13.5公里",
+        "duration": "7小时",
+        "desc": "途经 Vieille Case（Itassi 村），沿崎岖的大西洋海岸线前行，干燥林、农田与庄园旧路交织。沿途可远眺波茨茅斯与卡布利茨，以及曾作为电影《加勒比海盗2：聚魂棺》取景地的 Morne Aux Diables，带你走进鲜有游客到访的乡村社区。"
       },
       "s13": {
         "name": "第13段",
-        "route": "Vieille Case 至 Bense",
-        "desc": "穿越多米尼克北部高地的一段具有挑战性的攀登路线。"
+        "route": "Penville 至 Capuchin",
+        "distance": "6.8公里",
+        "duration": "约4小时",
+        "desc": "步道中最干燥的一段，沿北海岸穿越火山地貌与干燥林地。途经失落的大丰谷村（Lost Grand Fond Village）、Tafia 瀑布，以及可远眺法属玛丽加朗特岛、圣徒群岛与瓜德罗普岛的观景点，终点为 Capuchin 的 Canna 传统文化公园。"
+      },
+      "s14": {
+        "name": "第14段",
+        "route": "Capuchin 至卡布利茨国家公园（希尔利堡）",
+        "distance": "约10公里",
+        "duration": "4小时",
+        "desc": "步道的最后一段，途经 Toucarie、Cottage、Clifton 与 Tanetane 等沿海村庄，沿途可在 Bell Hall 海滩与 Toucarie 海滩停留，欣赏传统渔船，并经过月桂油与木薯加工场，最终抵达卡布利茨国家公园内的希尔利堡（Fort Shirley）。"
       }
     }
   },

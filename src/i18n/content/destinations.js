@@ -85,6 +85,48 @@ export const destinations = {
     es: { description: `Hogar de los descendientes del pueblo kalinago (caribe), la última comunidad precolombina del Caribe — visite el pueblo cultural para ver la construcción tradicional de canoas, el tejido de cestas y la artesanía.` },
     zh: { description: `卡利纳戈(加勒比)人后裔的家园,加勒比地区最后一个前哥伦布时期社区——参观文化村,观赏传统独木舟制作、编篮工艺与手工艺品。` },
   },
+  d_15: {
+    en: { description: `A gentle loop through the Northern Forest Reserve below Morne Diablotin, Dominica's tallest peak — the best place on the island to spot both the Jaco and the rare, endemic Sisserou Parrot in the wild.` },
+    fr: { description: `Une boucle facile à travers la Réserve forestière du Nord, au pied du Morne Diablotin, le plus haut sommet de la Dominique — le meilleur endroit de l'île pour observer à l'état sauvage le perroquet Jaco et le rare perroquet Sisserou, endémique du pays.` },
+    es: { description: `Un sendero circular suave a través de la Reserva Forestal del Norte, al pie del Morne Diablotin, el pico más alto de Dominica — el mejor lugar de la isla para observar en libertad tanto al loro Jaco como al raro loro Sisserou, endémico del país.` },
+    zh: { description: `沿多米尼克最高峰迪亚布洛丹山(Morne Diablotin)山麓、穿越北部森林保护区的一段轻松环形步道——这里是全岛观赏野生贾科鹦鹉(Jaco Parrot)和多米尼克特有的稀有西塞罗鹦鹉(Sisserou Parrot)的最佳地点。` },
+  },
+  d_16: {
+    en: { description: `One of Dominica's few sandy beaches, a stretch of fine black volcanic sand on the calm Caribbean coast lined with beach bars — the island's favourite spot for a swim, a rum punch, and an easy afternoon in the sun.` },
+    fr: { description: `L'une des rares plages de sable de la Dominique, une étendue de sable volcanique noir et fin sur la côte calme des Caraïbes, bordée de bars de plage — l'endroit préféré des habitants pour se baigner, siroter un rum punch et passer un après-midi tranquille au soleil.` },
+    es: { description: `Una de las pocas playas de arena de Dominica, una franja de fina arena volcánica negra en la tranquila costa caribeña, bordeada de bares de playa — el lugar favorito de la isla para nadar, tomar un rum punch y pasar una tarde relajada al sol.` },
+    zh: { description: `多米尼克为数不多的沙滩之一,细腻的黑色火山沙铺展在风平浪静的加勒比海岸,沿岸遍布沙滩酒吧——是岛上人们畅游、小酌朗姆潘趣酒、悠闲度过午后时光的首选去处。` },
+  },
+  d_17: {
+    en: { description: `A quiet fishing village on the edge of the Soufriere-Scotts Head Marine Reserve, where volcanic vents warm the bay itself and a scatter of sulphur spring bathing spots sit just above the water — a slower, more local counterpart to Wotten Waven.` },
+    fr: { description: `Un paisible village de pêcheurs à la lisière de la réserve marine de Soufrière-Scotts Head, où des évents volcaniques réchauffent la baie elle-même et où quelques sources sulfureuses de baignade se nichent juste au-dessus de l'eau — une alternative plus tranquille et plus locale à Wotten Waven.` },
+    es: { description: `Un tranquilo pueblo de pescadores en el borde de la Reserva Marina de Soufrière-Scotts Head, donde los respiraderos volcánicos calientan la propia bahía y varios manantiales de azufre para bañarse se encuentran justo por encima del agua — una alternativa más tranquila y local a Wotten Waven.` },
+    zh: { description: `位于苏弗里耶-斯科茨角海洋保护区(Soufriere-Scotts Head Marine Reserve)边缘的宁静渔村,火山喷气孔为海湾本身加温,岸边还散落着几处硫磺温泉浴场——相比沃顿韦文(Wotten Waven),这里更悠闲、更具本地气息。` },
+  },
+  d_18: {
+    en: { description: `Dominica's homegrown tradition of rum infused with local herbs, spices, and fruit — from fiery 'strongback' blends to fruitier sips — poured at rustic bush bars and rum shacks across the island.` },
+    fr: { description: `La tradition dominicaine du rhum infusé aux herbes, épices et fruits locaux — des mélanges corsés « strongback » aux versions plus fruitées — servi dans des bars rustiques et des cabanes à rhum disséminés à travers l'île.` },
+    es: { description: `La tradición autóctona de Dominica del ron infusionado con hierbas, especias y frutas locales — desde las mezclas fuertes 'strongback' hasta versiones más afrutadas — servido en rústicos bares improvisados y chozas de ron por toda la isla.` },
+    zh: { description: `多米尼克本土的朗姆酒传统——用当地草药、香料与水果浸泡调制而成,从劲道十足的"strongback"烈酒到果味更浓的版本应有尽有,遍布全岛的乡野小酒馆与朗姆酒棚屋皆可品尝。` },
+  },
+  d_19: {
+    en: { description: `A dramatic sand spit at Dominica's southernmost point, where the calm Caribbean Sea meets the churning Atlantic Ocean — climb to the old French fort ruins for one of the island's best viewpoints.` },
+    fr: { description: `Une spectaculaire flèche de sable à la pointe la plus méridionale de la Dominique, où la mer des Caraïbes, calme, rencontre l'océan Atlantique agité — grimpez jusqu'aux ruines de l'ancien fort français pour l'un des plus beaux points de vue de l'île.` },
+    es: { description: `Una espectacular lengua de arena en el punto más meridional de Dominica, donde el tranquilo mar Caribe se encuentra con el agitado océano Atlántico — suba hasta las ruinas del antiguo fuerte francés para disfrutar de uno de los mejores miradores de la isla.` },
+    zh: { description: `位于多米尼克最南端的一条壮观沙嘴,平静的加勒比海在此与汹涌的大西洋交汇——攀上古老的法国堡垒遗址,即可饱览全岛最佳景观之一。` },
+  },
+  d_20: {
+    en: { description: `The highest lake in Dominica, an almost perfectly round volcanic crater lake ringed by cloud forest, reached by a well-marked trail from Freshwater Lake — quieter and less-visited than its famous neighbour.` },
+    fr: { description: `Le lac le plus haut de la Dominique, un lac de cratère volcanique presque parfaitement circulaire, entouré de forêt de nuages, accessible par un sentier bien balisé depuis le Freshwater Lake — plus calme et moins fréquenté que son célèbre voisin.` },
+    es: { description: `El lago más alto de Dominica, un lago de cráter volcánico casi perfectamente circular rodeado de bosque nuboso, al que se llega por un sendero bien señalizado desde Freshwater Lake — más tranquilo y menos visitado que su famoso vecino.` },
+    zh: { description: `多米尼克海拔最高的湖泊,一座近乎浑圆的火山口湖,四周云雾森林环绕,沿着从淡水湖(Freshwater Lake)出发、标识清晰的步道即可抵达——比它那位声名远扬的近邻更为幽静、游人更少。` },
+  },
+  d_21: {
+    en: { description: `A remote waterfall that drops straight onto a black-sand beach where the rainforest meets the Atlantic — reached via a thrilling, rope-and-root scramble down an old fishermen's trail, strictly for experienced, guided hikers.` },
+    fr: { description: `Une cascade isolée qui se jette directement sur une plage de sable noir, là où la forêt tropicale rencontre l'Atlantique — accessible par une descente vertigineuse à l'aide de cordes et de racines sur un ancien sentier de pêcheurs, réservée aux randonneurs expérimentés et accompagnés.` },
+    es: { description: `Una cascada remota que cae directamente sobre una playa de arena negra donde la selva tropical se encuentra con el Atlántico — se llega mediante un emocionante descenso con cuerdas y raíces por un antiguo sendero de pescadores, exclusivo para excursionistas experimentados y con guía.` },
+    zh: { description: `一处偏远的瀑布直泻黑沙滩,雨林在此与大西洋相遇——需沿一条古老的渔民小径,借助绳索与树根惊险攀降而下,仅限有经验且有向导陪同的徒步者前往。` },
+  },
 };
 
 export default destinations;

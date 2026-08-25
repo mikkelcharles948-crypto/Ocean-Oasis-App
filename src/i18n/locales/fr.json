@@ -24,7 +24,8 @@
     "difficulty": {
       "Easy": "Facile",
       "Moderate": "Modéré",
-      "Challenging": "Difficile"
+      "Challenging": "Difficile",
+      "VeryDifficult": "Très difficile"
     },
     "availability": {
       "available": "Disponible",
@@ -81,6 +82,7 @@
     "destinationNotFound": "Destination introuvable",
     "askConciergeToArrange": "Demander à la conciergerie de l'organiser",
     "viewOnMap": "Voir sur la carte",
+    "viewOnGoogleMaps": "Voir sur Google Maps",
     "distance": "Distance",
     "duration": "Durée",
     "difficulty": "Difficulté",
@@ -1149,6 +1151,16 @@
         "name": "Pearl's Cuisine",
         "location": "Roseau",
         "desc": "Une adresse locale appréciée pour des plats dominicains copieux et faits maison."
+      },
+      "theGreatOldHouse": {
+        "name": "The Great Old House",
+        "location": "Quartier français, Roseau",
+        "desc": "Une institution de Roseau pour la cuisine créole authentique, élaborée à partir de viandes, poissons et fruits de mer locaux d'une grande fraîcheur."
+      },
+      "kozysNiche": {
+        "name": "Kozy's Niche",
+        "location": "Roseau",
+        "desc": "Un favori des visiteurs mêlant saveurs italiennes et caribéennes — essayez le poisson-lion ou le mahi-mahi grillé."
       }
     },
     "tips": {
@@ -1186,32 +1198,106 @@
     "roseauDesc": "La capitale compacte de la Dominique se parcourt facilement à pied — architecture coloniale française le long de Old Street et King George V Street, l'Old Market Square, la promenade du Bayfront et la cathédrale de Roseau, le tout à environ 20 minutes de marche les uns des autres.",
     "waitukubuliTitle": "Sentier national Waitukubuli",
     "waitukubuliSubtitle": "Le premier sentier longue distance des Caraïbes — 14 segments, environ 184 km au total.",
+    "passNotice": "Tous les visiteurs doivent se procurer un Trail Pass pour parcourir un tronçon du Sentier national Waitukubuli — disponible aux points d'entrée, à la Division des forêts, de la faune et des parcs, et auprès de vendeurs près des tronçons du sentier. Les randonneurs sont invités à s'inscrire avant de partir et à faire preuve de prudence, en particulier sur les tronçons très difficiles.",
     "footnote": "Emportez de l'eau, une protection solaire et des chaussures robustes — le signal mobile est peu fiable sur la plupart des segments.",
     "segments": {
       "s1": {
         "name": "Segment 1",
-        "route": "Scotts Head à Soufrière",
-        "desc": "Un départ côtier de difficulté modérée, passant par le point de rencontre entre l'océan Atlantique et la mer des Caraïbes."
+        "route": "Scotts Head Village à Soufriere Estate",
+        "distance": "6.6 km",
+        "duration": "4 heures",
+        "desc": "Le tronçon d'ouverture le plus difficile et le plus emblématique du sentier, traversant un cratère aux dépôts de soufre volcanique avec escalade à la corde et marche en gorge. Passe par la vallée de Toloulou, le plateau de Crabier, le domaine de Bois Cotiette, les sources sulfureuses, la réserve marine de Soufrière-Scotts Head, le plateau de Morne Kwabier et une ancienne plantation de café."
+      },
+      "s2": {
+        "name": "Segment 2",
+        "route": "Soufriere Estate à Bellevue Chopin",
+        "distance": "12.1 km",
+        "duration": "~5 heures",
+        "desc": "Suit l'ancienne route des esclaves en passant par les sources sulfureuses de Soufrière et une ancienne station agricole, à travers de petites fermes et des pâturages avant de grimper dans une forêt tropicale dense. Passe également par le Tarish Picnic Park, reliant les merveilles naturelles de la Dominique à son histoire marronne et coloniale."
+      },
+      "s3": {
+        "name": "Segment 3",
+        "route": "Bellevue Chopin à Wotten Waven",
+        "distance": "12.8 km",
+        "duration": "5 heures",
+        "desc": "Entre dans le parc national Morne Trois Pitons, site du patrimoine mondial de l'UNESCO, avec une boucle secondaire vers le lac bouillant et un arrêt aux jardins botaniques de Giraudel. Passe par des parcelles de thé biologique, la communauté de Giraudel, la rivière Clair et des bassins sulfureux chauds, avec des vues aériennes sur Roseau."
       },
       "s4": {
         "name": "Segment 4",
-        "route": "Wotten Waven à Laudat",
-        "desc": "Un segment plus facile passant près des sources chaudes et de l'accès à la Vallée de la Désolation."
+        "route": "Wotten Waven à Pont Casse",
+        "distance": "13.3 km",
+        "duration": "6 heures",
+        "desc": "Traverse le cœur du parc national Morne Trois Pitons avec des vues sur cinq montagnes à travers la forêt primaire et secondaire, passant par les bains chauds de Wotten Waven, Morne Jack et le sentier des chutes de Middleham, avec des vues sur le Freshwater Lake et la Vallée de la Désolation. Se termine au centre de recherche et d'interprétation du sentier à Pont Casse."
+      },
+      "s5": {
+        "name": "Segment 5",
+        "route": "Pont Casse à Castle Bruce (Richmond)",
+        "distance": "17.4 km",
+        "duration": "~6 heures",
+        "desc": "Suit l'ancienne piste caraïbe (le sentier de pierres kalinago) en passant par l'Emerald Pool, la grotte de Jaco et Savanne David, à travers le petit village de Fond Melle, jusqu'à la côte atlantique à Castle Bruce. Passe également par le marais de Castle Bruce, les jardins créoles et la rivière L'Or."
       },
       "s6": {
         "name": "Segment 6",
-        "route": "Petite Savanne à Bagatelle",
-        "desc": "Un tronçon difficile et isolé traversant la forêt tropicale le long de la côte est escarpée."
+        "route": "Castle Bruce (Richmond) à Hatten Garden",
+        "distance": "14.4 km",
+        "duration": "Non précisée",
+        "desc": "Entre dans le territoire kalinago, terre du peuple autochtone kalinago de la Dominique, en passant par le village culturel de Kalinago Barana Aute, la chute d'Isulakati et de superbes vues sur la côte atlantique, ainsi que L'Escalier Tête Chien et Horseback Ridge."
+      },
+      "s7": {
+        "name": "Segment 7",
+        "route": "Hatten Garden à First Camp (hauteurs de Marigot)",
+        "distance": "8.9 km",
+        "duration": "Non précisée",
+        "desc": "Une introduction au cœur agricole de la Dominique, traversant des terres cultivées et une forêt primaire entre rivières et vues côtières. Passe par le Congorie Hole et le verger Walter Williams — un habitat réputé pour les perroquets et l'observation des oiseaux, doté de sa propre tour d'observation — avec des vues sur la côte nord-est et l'aéroport de Melville Hall."
+      },
+      "s8": {
+        "name": "Segment 8",
+        "route": "Melville Hall Estate (First Camp) à Petite Macoucherie",
+        "distance": "14 km",
+        "duration": "9 heures",
+        "desc": "L'une des journées les plus dures et les plus longues du sentier, traversant la réserve forestière du Nord, franchissant des rivières et grimpant le Mosquito Mountain avant de redescendre vers le domaine de Carholm — particulièrement exigeante par temps humide. Récompense avec des vues côtières à l'est comme à l'ouest, des bassins de rivière où l'on peut nager, et une chance d'apercevoir le perroquet Sisserou, l'oiseau national de la Dominique."
+      },
+      "s9": {
+        "name": "Segment 9",
+        "route": "Petite Macoucherie à Colihaut Heights",
+        "distance": "12.8 km",
+        "duration": "~8 heures",
+        "desc": "Une route d'accès à une bananeraie cède la place à la réserve forestière du Nord pour des montagnes russes incessantes à travers des terres agricoles mixtes et une forêt vierge, se terminant dans les hauteurs au-dessus du village de Colihaut. Passe par le plus grand gommier de l'île, le lac Kachibona et le Morne Amery."
+      },
+      "s10": {
+        "name": "Segment 10",
+        "route": "Colihaut Heights à Syndicate",
+        "distance": "7 km",
+        "duration": "3 heures",
+        "desc": "Le tronçon le plus à l'ouest et le plus facile du sentier, suivant d'anciennes routes de fermes et de domaines abandonnés à travers un terrain densément boisé de la réserve forestière du Nord, avec de bonnes chances d'apercevoir les perroquets Jaco et Sisserou. Passe par des vues panoramiques sur la côte nord et le Morne Diablotin, se terminant au centre d'accueil du sentier naturel de Syndicate."
+      },
+      "s11": {
+        "name": "Segment 11",
+        "route": "Syndicate à Bourne",
+        "distance": "13.2 km",
+        "duration": "~7 heures",
+        "desc": "Traverse les hauts plateaux du centre-nord à travers le parc national du Morne Diablotin, la plus grande zone protégée de la Dominique, passant par un habitat de perroquets, des rivières sauvages et l'unique ancienne ligne de chemin de fer de l'île. Passe par les chutes de Dubam et une réserve de perroquets, avec de l'équitation et une station agricole près de Portsmouth, et un camping possible à Ross Castle et Syndicate."
       },
       "s12": {
         "name": "Segment 12",
-        "route": "Capuchin à Vieille Case",
-        "desc": "Un segment de difficulté modérée sur la côte nord, avec une vue spectaculaire sur l'Atlantique."
+        "route": "Bourne à Penville",
+        "distance": "13.5 km",
+        "duration": "7 heures",
+        "desc": "Traverse Vieille Case (village d'Itassi) le long de la côte atlantique accidentée, mêlant forêt sèche, terres agricoles et anciennes routes de domaines. Passe par des vues sur Portsmouth et Cabrits ainsi que le Morne aux Diables — un lieu de tournage de Pirates des Caraïbes : Le Secret du coffre maudit — ouvrant l'accès à des communautés rurales rarement visitées."
       },
       "s13": {
         "name": "Segment 13",
-        "route": "Vieille Case à Bense",
-        "desc": "Une montée difficile à travers les hauts plateaux du nord de la Dominique."
+        "route": "Penville à Capuchin",
+        "distance": "6.8 km",
+        "duration": "~4 heures",
+        "desc": "Le tronçon le plus sec du sentier, traversant un terrain volcanique et une forêt sèche le long de la côte nord. Passe par le village perdu de Grand Fond, les chutes de Tafia et des points de vue sur les îles françaises de Marie-Galante, des Saintes et de la Guadeloupe, se terminant au Canna Heritage Park à Capuchin."
+      },
+      "s14": {
+        "name": "Segment 14",
+        "route": "Capuchin au parc national de Cabrits (Fort Shirley)",
+        "distance": "~10 km",
+        "duration": "4 heures",
+        "desc": "Le dernier tronçon du sentier, passant par les villages côtiers de Toucarie, Cottage, Clifton et Tanetane, avec des arrêts à Bell Hall Beach et Toucarie Beach, des bateaux de pêche traditionnels et des installations de transformation d'huile de baie et de manioc, avant de se terminer à Fort Shirley, dans le parc national de Cabrits."
       }
     }
   },
