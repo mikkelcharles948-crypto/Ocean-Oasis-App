@@ -346,7 +346,8 @@
       "subtitle": "Available room categories above your current tier",
       "fromPrice": "From ${{price}}/night",
       "request": "Request This Upgrade",
-      "requested": "Upgrade Requested"
+      "requested": "Upgrade Requested",
+      "requestError": "Your upgrade request could not be sent. Please try again."
     },
     "contactReception": "Contact Reception",
     "checkinFlow": {

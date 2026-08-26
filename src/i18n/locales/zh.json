@@ -346,7 +346,8 @@
       "subtitle": "高于您当前等级的可选房型",
       "fromPrice": "每晚起价 ${{price}}",
       "request": "申请此升级",
-      "requested": "已申请升级"
+      "requested": "已申请升级",
+      "requestError": "您的升级申请未能发送，请重试。"
     },
     "contactReception": "联系前台",
     "checkinFlow": {

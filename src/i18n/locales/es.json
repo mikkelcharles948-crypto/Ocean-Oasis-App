@@ -346,7 +346,8 @@
       "subtitle": "Categorías de habitación disponibles por encima de tu nivel actual",
       "fromPrice": "Desde ${{price}}/noche",
       "request": "Solicitar esta mejora",
-      "requested": "Mejora solicitada"
+      "requested": "Mejora solicitada",
+      "requestError": "No se pudo enviar tu solicitud de mejora. Por favor, inténtalo de nuevo."
     },
     "contactReception": "Contactar recepción",
     "checkinFlow": {

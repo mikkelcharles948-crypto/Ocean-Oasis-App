@@ -346,7 +346,8 @@
       "subtitle": "Catégories de chambres disponibles au-dessus de votre niveau actuel",
       "fromPrice": "À partir de {{price}} $/nuit",
       "request": "Demander ce surclassement",
-      "requested": "Surclassement demandé"
+      "requested": "Surclassement demandé",
+      "requestError": "Votre demande de surclassement n'a pas pu être envoyée. Veuillez réessayer."
     },
     "contactReception": "Contacter la réception",
     "checkinFlow": {

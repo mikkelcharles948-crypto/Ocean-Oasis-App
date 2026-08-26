@@ -39,19 +39,23 @@ function UpgradeCard({ tier: rawTier, featured, onRequested }) {
   const { submitServiceRequest } = useApp();
   const [requesting, setRequesting] = useState(false);
   const [requested, setRequested] = useState(false);
+  const [error, setError] = useState('');
   const tier = getLocalizedContent(roomTypesContent, rawTier.id, i18n.language, rawTier);
 
   const handleRequest = async () => {
     setRequesting(true);
+    setError('');
     const result = await submitServiceRequest({
       category: 'Room Upgrade',
       description: `Guest is interested in upgrading to a ${tier.name}.`,
     });
     setRequesting(false);
-    if (result?.ok !== false) {
-      setRequested(true);
-      onRequested?.();
+    if (!result?.ok) {
+      setError(result?.error || t('mystay.upgrades.requestError'));
+      return;
     }
+    setRequested(true);
+    onRequested?.();
   };
 
   return (
@@ -75,6 +79,7 @@ function UpgradeCard({ tier: rawTier, featured, onRequested }) {
           </View>
         ))}
       </View>
+      {error ? <Text style={styles.upgradeError}>{error}</Text> : null}
       <Button
         label={requested ? t('mystay.upgrades.requested') : t('mystay.upgrades.request')}
         variant={requested ? 'outline' : 'primary'}
@@ -329,4 +334,5 @@ const styles = StyleSheet.create({
   upgradeName: { flex: 1, fontSize: 15.5, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
   upgradePrice: { fontSize: 12.5, fontWeight: '700', color: colors.turquoiseDark },
   upgradeDesc: { fontSize: 12.5, color: colors.slate, marginTop: 6, lineHeight: 18, marginBottom: spacing.sm, marginLeft: 34 },
+  upgradeError: { fontSize: 12, color: colors.error, marginTop: spacing.sm },
 });
