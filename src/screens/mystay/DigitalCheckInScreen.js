@@ -53,6 +53,8 @@ export default function DigitalCheckInScreen({ navigation }) {
       arrivalTime: form.arrivalTime,
       arrivalTransport: form.transport,
       specialRequests: form.specialRequests,
+      idNumber: form.idNumber,
+      arrivalPreferences: form.preferences,
     });
     setFinishing(false);
     if (!result?.ok) {
@@ -97,10 +99,13 @@ export default function DigitalCheckInScreen({ navigation }) {
         {step === 1 && (
           <View>
             <Text style={styles.stepTitle}>{t('mystay.checkinFlow.guestDetailsTitle')}</Text>
-            <Field label={t('mystay.checkinFlow.firstName')} value={guest.firstName} onChangeText={() => {}} />
-            <Field label={t('mystay.checkinFlow.lastName')} value={guest.lastName} onChangeText={() => {}} />
-            <Field label={t('mystay.checkinFlow.email')} value={guest.email} onChangeText={() => {}} />
-            <Field label={t('mystay.checkinFlow.phone')} value={guest.phone} onChangeText={() => {}} />
+            <Text style={styles.stepSub}>{t('mystay.checkinFlow.guestDetailsSub')}</Text>
+            <View style={styles.summaryBox}>
+              <SummaryRow label={t('mystay.checkinFlow.firstName')} value={guest.firstName} />
+              <SummaryRow label={t('mystay.checkinFlow.lastName')} value={guest.lastName} />
+              <SummaryRow label={t('mystay.checkinFlow.email')} value={guest.email} />
+              <SummaryRow label={t('mystay.checkinFlow.phone')} value={guest.phone} />
+            </View>
           </View>
         )}
 
