@@ -451,6 +451,12 @@ export function AppProvider({ children }) {
         if (changes.lastName !== undefined) remoteChanges.last_name = changes.lastName;
         if (changes.phone !== undefined) remoteChanges.phone = changes.phone;
         if (changes.interests !== undefined) remoteChanges.interests = changes.interests;
+        // guests.email is a contact field, distinct from the Auth login
+        // email — changing the actual sign-in identity needs
+        // supabase.auth.updateUser() plus a confirmation-email flow this
+        // app doesn't have yet, so this intentionally only updates the
+        // contact copy, not the login credential.
+        if (changes.email !== undefined) remoteChanges.email = changes.email;
         const persistedGuest = await updateRemoteGuestProfile(guest.id, remoteChanges);
         setGuest(persistedGuest);
         return { ok: true, data: persistedGuest };
