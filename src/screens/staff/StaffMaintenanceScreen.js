@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
@@ -24,11 +24,20 @@ export default function StaffMaintenanceScreen({ navigation }) {
 
   const filtered = maintenanceIssues.filter((m) => (filter === 'ALL' ? true : filter === 'OPEN' ? m.status !== 'RESOLVED' : m.status === filter));
 
-  const submit = () => {
+  const submit = async () => {
     if (!form.roomNumber || !form.description) return;
-    createMaintenanceIssue(form);
-    setForm({ roomNumber: '', category: 'AC', severity: 'MEDIUM', description: '' });
-    setShowNew(false);
+    const result = await createMaintenanceIssue(form);
+    if (result.ok) {
+      setForm({ roomNumber: '', category: 'AC', severity: 'MEDIUM', description: '' });
+      setShowNew(false);
+    } else {
+      Alert.alert(t('common.somethingWrong'), result.error);
+    }
+  };
+
+  const handleStatusChange = async (issueId, status) => {
+    const result = await updateMaintenanceStatus(issueId, status);
+    if (!result.ok) Alert.alert(t('common.somethingWrong'), result.error);
   };
 
   return (
@@ -64,7 +73,7 @@ export default function StaffMaintenanceScreen({ navigation }) {
               <Button
                 label={item.status === 'OPEN' ? t('staff.maintenance.startWork') : t('staff.maintenance.markResolved')}
                 variant="outline"
-                onPress={() => updateMaintenanceStatus(item.id, item.status === 'OPEN' ? 'IN_PROGRESS' : 'RESOLVED')}
+                onPress={() => handleStatusChange(item.id, item.status === 'OPEN' ? 'IN_PROGRESS' : 'RESOLVED')}
                 style={{ marginTop: spacing.sm }}
               />
             )}

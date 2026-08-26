@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
@@ -19,11 +19,20 @@ export default function StaffEventsScreen({ navigation }) {
   const [showNew, setShowNew] = useState(false);
   const [form, setForm] = useState({ title: '', category: 'Entertainment', date: '2026-08-20', time: '7:00 PM', location: 'Main Terrace', capacity: '50', description: '' });
 
-  const submit = () => {
+  const submit = async () => {
     if (!form.title.trim()) return;
-    createEvent({ ...form, capacity: Number(form.capacity) || 20 });
-    setForm({ title: '', category: 'Entertainment', date: '2026-08-20', time: '7:00 PM', location: 'Main Terrace', capacity: '50', description: '' });
-    setShowNew(false);
+    const result = await createEvent({ ...form, capacity: Number(form.capacity) || 20 });
+    if (result.ok) {
+      setForm({ title: '', category: 'Entertainment', date: '2026-08-20', time: '7:00 PM', location: 'Main Terrace', capacity: '50', description: '' });
+      setShowNew(false);
+    } else {
+      Alert.alert(t('common.somethingWrong'), result.error);
+    }
+  };
+
+  const handlePublish = async (eventId) => {
+    const result = await publishEvent(eventId);
+    if (!result.ok) Alert.alert(t('common.somethingWrong'), result.error);
   };
 
   return (
@@ -43,7 +52,7 @@ export default function StaffEventsScreen({ navigation }) {
             </View>
             <Text style={styles.meta}>{item.date} · {item.time} · {item.location}</Text>
             {item.status === 'DRAFT' && (
-              <Button label={t('staff.activities.publish')} variant="outline" onPress={() => publishEvent(item.id)} style={{ marginTop: spacing.sm }} />
+              <Button label={t('staff.activities.publish')} variant="outline" onPress={() => handlePublish(item.id)} style={{ marginTop: spacing.sm }} />
             )}
           </Card>
         )}

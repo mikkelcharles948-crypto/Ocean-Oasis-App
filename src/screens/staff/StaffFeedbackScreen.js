@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
@@ -17,6 +17,11 @@ export default function StaffFeedbackScreen({ navigation }) {
   const sorted = [...feedback].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   const filtered = filter === 'ALERTS' ? sorted.filter((f) => f.overall <= threshold && !f.resolved) : filter === 'ALL' ? sorted : sorted.filter((f) => f.overall >= 4);
   const filterLabel = (f) => (f === 'ALERTS' ? t('staff.feedback.filters.alerts') : f === 'ALL' ? t('staff.feedback.filters.all') : t('staff.feedback.filters.positive'));
+
+  const handleResolve = async (feedbackId, note) => {
+    const result = await resolveFeedback(feedbackId, note);
+    if (!result.ok) Alert.alert(t('common.somethingWrong'), result.error);
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
@@ -55,7 +60,7 @@ export default function StaffFeedbackScreen({ navigation }) {
                     placeholderTextColor={colors.slate}
                     style={styles.noteInput}
                   />
-                  <TouchableOpacity onPress={() => resolveFeedback(item.id, notes[item.id] || t('staff.feedback.defaultResolutionNote'))} style={styles.resolveBtn}>
+                  <TouchableOpacity onPress={() => handleResolve(item.id, notes[item.id] || t('staff.feedback.defaultResolutionNote'))} style={styles.resolveBtn}>
                     <Text style={styles.resolveBtnText}>{t('staff.feedback.resolve')}</Text>
                   </TouchableOpacity>
                 </View>

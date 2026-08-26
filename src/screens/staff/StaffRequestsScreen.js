@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView, TextInput } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView, TextInput, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
@@ -37,10 +37,24 @@ export default function StaffRequestsScreen() {
 
   const active = activeId ? serviceRequests.find((r) => r.id === activeId) : null;
 
-  const handleAddNote = () => {
+  const handleAddNote = async () => {
     if (!noteText.trim() || !active) return;
-    addRequestNote(active.id, noteText.trim());
-    setNoteText('');
+    const result = await addRequestNote(active.id, noteText.trim());
+    if (result.ok) {
+      setNoteText('');
+    } else {
+      Alert.alert(t('common.somethingWrong'), result.error);
+    }
+  };
+
+  const handleAssign = async (requestId, staffId) => {
+    const result = await assignRequestToStaff(requestId, staffId);
+    if (!result.ok) Alert.alert(t('common.somethingWrong'), result.error);
+  };
+
+  const handleStatusChange = async (requestId, status) => {
+    const result = await updateRequestStatus(requestId, status);
+    if (!result.ok) Alert.alert(t('common.somethingWrong'), result.error);
   };
 
   return (
@@ -118,7 +132,7 @@ export default function StaffRequestsScreen() {
                   <Text style={styles.fieldLabel}>{t('staff.requests.assignToStaff')}</Text>
                   <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: spacing.md }}>
                     {staffDirectory.filter((s) => s.department === active.department || s.role === 'GENERAL_MANAGER').map((s) => (
-                      <TouchableOpacity key={s.id} onPress={() => assignRequestToStaff(active.id, s.id)} style={[styles.chip, active.assignedStaffId === s.id && styles.chipActive]}>
+                      <TouchableOpacity key={s.id} onPress={() => handleAssign(active.id, s.id)} style={[styles.chip, active.assignedStaffId === s.id && styles.chipActive]}>
                         <Text style={[styles.chipText, active.assignedStaffId === s.id && styles.chipTextActive]}>{s.name}</Text>
                       </TouchableOpacity>
                     ))}
@@ -127,7 +141,7 @@ export default function StaffRequestsScreen() {
                   <Text style={styles.fieldLabel}>{t('staff.requests.updateStatus')}</Text>
                   <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: spacing.md }}>
                     {STATUSES.map((s) => (
-                      <TouchableOpacity key={s} onPress={() => updateRequestStatus(active.id, s)} style={[styles.chip, active.status === s && styles.chipActive]}>
+                      <TouchableOpacity key={s} onPress={() => handleStatusChange(active.id, s)} style={[styles.chip, active.status === s && styles.chipActive]}>
                         <Text style={[styles.chipText, active.status === s && styles.chipTextActive]}>{statusLabel(s)}</Text>
                       </TouchableOpacity>
                     ))}

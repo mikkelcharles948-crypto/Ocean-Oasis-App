@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
@@ -34,6 +34,11 @@ export default function StaffRoomsScreen({ navigation }) {
   const sorted = [...filtered].sort((a, b) => a.number.localeCompare(b.number));
   const active = activeId ? rooms.find((r) => r.id === activeId) : null;
   const guestInRoom = (num) => allGuestsForStaff.find((g) => g.roomNumber === num);
+
+  const handleStatusChange = async (roomId, status) => {
+    const result = await updateRoomStatus(roomId, status);
+    if (!result.ok) Alert.alert(t('common.somethingWrong'), result.error);
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
@@ -102,7 +107,7 @@ export default function StaffRoomsScreen({ navigation }) {
                 <Text style={styles.fieldLabel}>{t('staff.rooms.updateStatus')}</Text>
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
                   {ROOM_STATUSES.map((s) => (
-                    <TouchableOpacity key={s} onPress={() => updateRoomStatus(active.id, s)} style={[styles.chip, active.status === s && styles.chipActive]}>
+                    <TouchableOpacity key={s} onPress={() => handleStatusChange(active.id, s)} style={[styles.chip, active.status === s && styles.chipActive]}>
                       <Text style={[styles.chipText, active.status === s && styles.chipTextActive]}>{roomStatusLabel(s)}</Text>
                     </TouchableOpacity>
                   ))}

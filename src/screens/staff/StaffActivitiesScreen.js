@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
@@ -22,11 +22,15 @@ export default function StaffActivitiesScreen() {
   const bookingsFor = (id) => activityBookings.filter((b) => b.activityId === id);
   const active = activeId ? activities.find((a) => a.id === activeId) : null;
 
-  const submit = () => {
+  const submit = async () => {
     if (!form.name.trim()) return;
-    createActivity({ ...form, capacity: Number(form.capacity) || 10, availability: 'Available', image: 'nature' });
-    setShowNew(false);
-    setForm({ name: '', category: 'Ocean', date: '2026-08-20', time: '10:00 AM', duration: '2 hrs', price: '$65 per person', priceValue: 65, capacity: '15', meetingPoint: 'Hotel Lobby', description: '', shortDescription: '', location: 'Ocean Oasis' });
+    const result = await createActivity({ ...form, capacity: Number(form.capacity) || 10, availability: 'Available', image: 'nature' });
+    if (result.ok) {
+      setShowNew(false);
+      setForm({ name: '', category: 'Ocean', date: '2026-08-20', time: '10:00 AM', duration: '2 hrs', price: '$65 per person', priceValue: 65, capacity: '15', meetingPoint: 'Hotel Lobby', description: '', shortDescription: '', location: 'Ocean Oasis' });
+    } else {
+      Alert.alert(t('common.somethingWrong'), result.error);
+    }
   };
 
   return (
