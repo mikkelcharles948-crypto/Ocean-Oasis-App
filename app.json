@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Ocean Oasis Guest Experience",
-    "slug": "ocean-oasis-guest-experience",
+    "slug": "ocean-oasis-dm",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
@@ -38,6 +38,12 @@
       ],
       "@sentry/react-native",
       "expo-video"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "5d08baf9-aab3-49fe-84d6-90dbdbfd78fb"
+      }
+    },
+    "owner": "mcharles767s-team"
   }
 }
