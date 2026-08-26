@@ -56,7 +56,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: '1.5–2 hrs',
     image: 'ocean',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Scotts_Head%2C_Dominica_014.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/40/Scotts_Head%2C_Dominica_014.jpg',
   },
   {
     id: 'd_2',
@@ -69,7 +69,7 @@ export const DESTINATIONS = [
     difficulty: 'Challenging',
     duration: 'Full day',
     image: 'volcano',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Dominica_boiling_lake.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e1/Dominica_boiling_lake.jpg',
   },
   {
     id: 'd_3',
@@ -82,7 +82,7 @@ export const DESTINATIONS = [
     difficulty: 'Moderate',
     duration: '1.5 hrs',
     image: 'waterfall',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Trafalgar_Falls_at_Morne_Trois_Pitons_National_Park.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/86/Trafalgar_Falls_at_Morne_Trois_Pitons_National_Park.jpg',
   },
   {
     id: 'd_4',
@@ -95,7 +95,7 @@ export const DESTINATIONS = [
     difficulty: 'Moderate',
     duration: 'Half day',
     image: 'rainforest',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Morne_Trois_Pitons_National_Park%2C_Dominica_-_jungle.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/3/3f/Morne_Trois_Pitons_National_Park%2C_Dominica_-_jungle.jpg',
   },
   {
     id: 'd_5',
@@ -108,7 +108,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: '1 hr',
     image: 'pool',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Emerald_Pool%2C_Dominica.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a0/Emerald_Pool%2C_Dominica.jpg',
   },
   {
     id: 'd_6',
@@ -121,7 +121,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: '3 hrs',
     image: 'whale',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Baleine_Ile_de_la_Dominique.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/4d/Baleine_Ile_de_la_Dominique.jpg',
   },
   {
     id: 'd_7',
@@ -134,7 +134,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: '2 hrs',
     image: 'market',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Produce_Market%2C_Roseau%2C_Dominica.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/d6/Produce_Market%2C_Roseau%2C_Dominica.jpg',
   },
   {
     id: 'd_8',
@@ -147,7 +147,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: '1.5 hrs',
     image: 'springs',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Dominica%2C_Karibik_-_Laudat_-_Wotten_Waven_%E2%80%93_Fond_Cani_-_panoramio.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Dominica%2C_Karibik_-_Laudat_-_Wotten_Waven_%E2%80%93_Fond_Cani_-_panoramio.jpg',
   },
   {
     id: 'd_9',
@@ -173,7 +173,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: '2 hrs',
     image: 'market',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Fort_Shirley%2C_Dominica%2C_2026.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Fort_Shirley%2C_Dominica%2C_2026.jpg',
   },
   {
     id: 'd_11',
@@ -186,7 +186,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: '1.5 hrs',
     image: 'rainforest',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Indian_River_in_Portsmouth%2C_Dominica.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/0/03/Indian_River_in_Portsmouth%2C_Dominica.jpg',
   },
   {
     id: 'd_12',
@@ -199,7 +199,7 @@ export const DESTINATIONS = [
     difficulty: 'Challenging',
     duration: '3 hrs',
     image: 'waterfall',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Middleham_Falls_at_Morne_Trois_Pitons_National_Park.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/20/Middleham_Falls_at_Morne_Trois_Pitons_National_Park.jpg',
   },
   {
     id: 'd_13',
@@ -212,7 +212,7 @@ export const DESTINATIONS = [
     difficulty: 'Moderate',
     duration: '1.5 hrs',
     image: 'pool',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Freshwater_Lake%2C_Dominica.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a4/Freshwater_Lake%2C_Dominica.jpg',
   },
   {
     id: 'd_14',
@@ -225,7 +225,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: 'Half day',
     image: 'culture',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Carib_Territory_(Dominica).jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/fd/Carib_Territory_%28Dominica%29.jpg',
   },
   {
     id: 'd_15',
@@ -238,7 +238,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: '1.5 hrs',
     image: 'nature',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Amazona_imperialis_-Roseau_-Dominica_-aviary-6a.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/1d/Amazona_imperialis_-Roseau_-Dominica_-aviary-6a.jpg',
   },
   {
     id: 'd_16',
@@ -251,7 +251,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: '2 hrs',
     image: 'ocean',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/MERO_BEACH%2C_DOMINICA.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e7/MERO_BEACH%2C_DOMINICA.jpg',
   },
   {
     id: 'd_17',
@@ -264,7 +264,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: '2 hrs',
     image: 'culture',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Soufri%C3%A8re_Bay%2C_Dominica_008.JPG',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/c/c2/Soufri%C3%A8re_Bay%2C_Dominica_008.JPG',
   },
   {
     id: 'd_18',
@@ -290,7 +290,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: '1.5 hrs',
     image: 'ocean',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Scotts_Head_Dominica_1.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/59/Scotts_Head_Dominica_1.jpg',
   },
   {
     id: 'd_20',
@@ -303,7 +303,7 @@ export const DESTINATIONS = [
     difficulty: 'Moderate',
     duration: '2.5 hrs',
     image: 'pool',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Boeri_Lake.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/df/Boeri_Lake.jpg',
   },
   {
     id: 'd_21',
@@ -342,7 +342,7 @@ export const ACTIVITIES = [
     meetingPoint: 'Ocean Oasis Beach Desk',
     cancellationPolicy: 'Free cancellation up to 24 hours before the activity.',
     image: 'snorkel',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Scotts_Head%2C_Dominica_014.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/40/Scotts_Head%2C_Dominica_014.jpg',
   },
   {
     id: 'a_2',
@@ -363,7 +363,7 @@ export const ACTIVITIES = [
     meetingPoint: 'Hotel Lobby',
     cancellationPolicy: 'Free cancellation up to 24 hours before the activity.',
     image: 'rainforest',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Rainforest_(Dominica).jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/26/Rainforest_%28Dominica%29.jpg',
   },
   {
     id: 'a_3',
@@ -384,7 +384,7 @@ export const ACTIVITIES = [
     meetingPoint: 'Marina Dock',
     cancellationPolicy: 'Free cancellation up to 48 hours before departure.',
     image: 'catamaran',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Sailing_Catamaran_at_sunset.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Sailing_Catamaran_at_sunset.jpg',
   },
   {
     id: 'a_4',
@@ -405,7 +405,7 @@ export const ACTIVITIES = [
     meetingPoint: 'Beach Yoga Deck',
     cancellationPolicy: 'No cancellation fee.',
     image: 'yoga',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Yoga_At_Dawn_on_Bondi_Beach.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/7/77/Yoga_At_Dawn_on_Bondi_Beach.jpg',
   },
   {
     id: 'a_5',
@@ -426,7 +426,7 @@ export const ACTIVITIES = [
     meetingPoint: 'Culinary Studio',
     cancellationPolicy: 'Free cancellation up to 24 hours before class.',
     image: 'cooking',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Chef_prepares_fresh_ingredients_by_chopping_red_vegetables.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/0/02/Chef_prepares_fresh_ingredients_by_chopping_red_vegetables.jpg',
   },
   {
     id: 'a_6',
@@ -467,7 +467,7 @@ export const ACTIVITIES = [
     meetingPoint: 'Hotel Lobby',
     cancellationPolicy: 'Free cancellation up to 24 hours before the activity.',
     image: 'rainforest',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Indian_River_in_Portsmouth%2C_Dominica.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/0/03/Indian_River_in_Portsmouth%2C_Dominica.jpg',
   },
   {
     id: 'a_8',
@@ -488,7 +488,7 @@ export const ACTIVITIES = [
     meetingPoint: 'Hotel Lobby',
     cancellationPolicy: 'Free cancellation up to 48 hours before the activity.',
     image: 'culture',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Carib_Territory_(Dominica).jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/fd/Carib_Territory_%28Dominica%29.jpg',
   },
   {
     id: 'a_9',
@@ -509,7 +509,7 @@ export const ACTIVITIES = [
     meetingPoint: 'Ocean Oasis Private Pier',
     cancellationPolicy: 'Free cancellation up to 48 hours before the activity.',
     image: 'whale',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Baleine_Ile_de_la_Dominique.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/4d/Baleine_Ile_de_la_Dominique.jpg',
   },
   {
     id: 'a_10',
@@ -599,7 +599,7 @@ export const EVENTS = [
   { id: 'e_12', title: 'Bike Fest 2026', category: 'Festival', date: '2026-07-31', time: 'All weekend', location: 'Island-wide', description: 'Four days of drag racing, exhibitions, and an island-wide ride-out, through August 3.', icon: 'adventure', capacity: null, status: 'PUBLISHED' },
   { id: 'e_13', title: 'Dive Fest', category: 'Festival', date: '2026-08-29', time: 'All weekend', location: 'Island-wide dive sites', description: 'Dominica\'s longest-running celebration of the deep — volcanic reef diving and marine reserve exploration.', icon: 'wave', capacity: null, status: 'PUBLISHED' },
   { id: 'e_14', title: 'Flavours of the World Festival', category: 'Festival', date: '2026-10-04', time: 'All day', location: 'Roseau', description: 'A celebration of island cultures through international cuisine, language, and global rhythms.', icon: 'culture', capacity: null, status: 'PUBLISHED' },
-  { id: 'e_15', title: 'World Creole Music Festival', category: 'Festival', date: '2026-10-23', time: 'All weekend', location: 'Windsor Park, Roseau', description: 'The 26th annual WCMF — bouyon, zouk, soca, and Creole music, through October 25.', icon: 'music', capacity: null, status: 'PUBLISHED', imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Le_World_Creole_Music_Festival.jpg' },
+  { id: 'e_15', title: 'World Creole Music Festival', category: 'Festival', date: '2026-10-23', time: 'All weekend', location: 'Windsor Park, Roseau', description: 'The 26th annual WCMF — bouyon, zouk, soca, and Creole music, through October 25.', icon: 'music', capacity: null, status: 'PUBLISHED', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/3/3c/Le_World_Creole_Music_Festival.jpg' },
   { id: 'e_16', title: 'WATO Riverfront Food and Culture Festival', category: 'Festival', date: '2026-10-31', time: 'All day', location: 'Roseau riverfront', description: 'Themed "Ancestors" this year — open-fire cooking by Caribbean chefs.', icon: 'cooking', capacity: null, status: 'PUBLISHED' },
   { id: 'e_17', title: 'Dominica Carnival — Mas Domnik', category: 'Festival', date: '2027-01-09', time: 'All month', location: 'Island-wide', description: '"The Real Mas" — bouyon, calypso, and costumes, running through February 10, 2027.', icon: 'culture', capacity: null, status: 'PUBLISHED' },
 ];
@@ -683,7 +683,7 @@ export const PROMOTIONS = [
     validity: 'Valid through September 15, 2026',
     terms: 'Discount applies to lower-priced activity. Subject to availability.',
     image: 'adventure',
-    imageUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Rainforest_(Dominica).jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/26/Rainforest_%28Dominica%29.jpg',
     status: 'PUBLISHED', targetAudience: 'Adventure interest', impressions: 410, clicks: 96, bookings: 31, redemptions: 26, revenue: 1860,
   },
   {
