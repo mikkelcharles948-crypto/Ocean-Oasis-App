@@ -6,9 +6,10 @@ import { BlurView } from 'expo-blur';
 import { useTranslation } from 'react-i18next';
 
 import { Card, Badge, ProgressBar, Field } from '../../components/UI';
+import AnimatedPressable from '../../components/AnimatedPressable';
 import GlassSurface from '../../components/GlassSurface';
 import Button from '../../components/Button';
-import { colors, spacing, radius, font } from '../../theme/theme';
+import { colors, spacing, radius, font, typography } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 export default function StaffActivitiesScreen() {
@@ -49,7 +50,7 @@ export default function StaffActivitiesScreen() {
           const bookedGuests = bookings.reduce((s, b) => s + (b.guests || 0), 0);
           const util = item.capacity ? Math.min(100, Math.round((bookedGuests / item.capacity) * 100)) : 0;
           return (
-            <TouchableOpacity onPress={() => setActiveId(item.id)}>
+            <AnimatedPressable onPress={() => setActiveId(item.id)}>
               <Card>
                 <Badge label={item.category} tone="info" />
                 <Text style={styles.actName}>{item.name}</Text>
@@ -62,7 +63,7 @@ export default function StaffActivitiesScreen() {
                   <ProgressBar percent={util} tone={util > 85 ? 'error' : 'info'} />
                 </View>
               </Card>
-            </TouchableOpacity>
+            </AnimatedPressable>
           );
         }}
       />
@@ -124,7 +125,7 @@ export default function StaffActivitiesScreen() {
 
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.lg, paddingTop: spacing.sm, paddingBottom: spacing.xs, gap: spacing.sm },
-  headerTitle: { fontSize: 22, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
+  headerTitle: { ...typography.heading, color: colors.charcoal },
   headerSub: { fontSize: 12.5, color: colors.slate, marginTop: 2 },
   addBtn: { width: 40, height: 40, borderRadius: 20, backgroundColor: colors.deepOcean, alignItems: 'center', justifyContent: 'center' },
   actName: { fontSize: 15, fontWeight: '700', color: colors.charcoal, marginTop: 6 },

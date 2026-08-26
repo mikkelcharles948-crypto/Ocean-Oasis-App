@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Card, ScreenHeader, Badge, timeAgo } from '../../components/UI';
 import GlassSurface from '../../components/GlassSurface';
+import AnimatedPressable from '../../components/AnimatedPressable';
 import { colors, spacing, radius, font } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
@@ -31,7 +32,7 @@ export default function StaffGuestsScreen({ navigation }) {
         keyExtractor={(g) => g.id}
         contentContainerStyle={{ padding: spacing.lg, gap: spacing.sm, paddingBottom: spacing.xxl }}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => setActiveId(item.id)}>
+          <AnimatedPressable onPress={() => setActiveId(item.id)}>
             <Card style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
               <View style={styles.avatar}><Text style={styles.avatarText}>{item.firstName[0]}{item.lastName[0]}</Text></View>
               <View style={{ flex: 1 }}>
@@ -40,7 +41,7 @@ export default function StaffGuestsScreen({ navigation }) {
               </View>
               <Ionicons name="chevron-forward" size={18} color={colors.slate} />
             </Card>
-          </TouchableOpacity>
+          </AnimatedPressable>
         )}
       />
 

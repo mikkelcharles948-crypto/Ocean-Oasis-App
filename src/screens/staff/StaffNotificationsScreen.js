@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { Card, ScreenHeader, Badge, EmptyState, timeAgo } from '../../components/UI';
+import AnimatedPressable from '../../components/AnimatedPressable';
 import { colors, spacing } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
@@ -25,7 +26,7 @@ export default function StaffNotificationsScreen({ navigation }) {
         contentContainerStyle={{ padding: spacing.lg, gap: spacing.sm, paddingBottom: spacing.xxl }}
         ListEmptyComponent={<EmptyState icon="notifications-outline" title={t('staff.notifications.empty')} />}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => markStaffNotificationRead(item.id)}>
+          <AnimatedPressable onPress={() => markStaffNotificationRead(item.id)}>
             <Card style={{ opacity: item.read ? 0.6 : 1, flexDirection: 'row', gap: spacing.sm, alignItems: 'flex-start' }}>
               <Badge label={item.category} tone="info" />
               <View style={{ flex: 1 }}>
@@ -34,7 +35,7 @@ export default function StaffNotificationsScreen({ navigation }) {
               </View>
               <Text style={styles.time}>{timeAgo(item.createdAt)}</Text>
             </Card>
-          </TouchableOpacity>
+          </AnimatedPressable>
         )}
       />
     </SafeAreaView>

@@ -6,9 +6,12 @@ import { BlurView } from 'expo-blur';
 import { useTranslation } from 'react-i18next';
 
 import { Card, Badge, EmptyState, timeAgo } from '../../components/UI';
+import StatusPill from '../../components/StatusPill';
+import AnimatedPressable from '../../components/AnimatedPressable';
 import GlassSurface from '../../components/GlassSurface';
-import { colors, spacing, radius, font } from '../../theme/theme';
+import { colors, spacing, radius, font, typography } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
+import { REQUEST_STATUS_STEPS } from '../../data/mockData';
 
 const STATUS_TONE = { Received: 'info', Assigned: 'warning', 'In Progress': 'warning', Completed: 'success', Cancelled: 'neutral' };
 const PRIORITY_TONE = { URGENT: 'error', HIGH: 'warning', NORMAL: 'neutral' };
@@ -61,7 +64,7 @@ export default function StaffRequestsScreen() {
         contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.sm, gap: spacing.sm, paddingBottom: spacing.xxl }}
         ListEmptyComponent={<EmptyState icon="checkmark-done-outline" title={t('staff.requests.empty.title')} subtitle={t('staff.requests.empty.subtitle')} />}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => setActiveId(item.id)}>
+          <AnimatedPressable onPress={() => setActiveId(item.id)}>
             <Card>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 }}>
                 <Text style={[styles.roomTitle, { flexShrink: 1, marginRight: spacing.sm }]} numberOfLines={1}>{t('staff.requests.cardTitle', { number: item.roomNumber, category: item.category })}</Text>
@@ -74,7 +77,7 @@ export default function StaffRequestsScreen() {
               </View>
               {item.assignedStaffId && <Text style={styles.assigned}>{t('staff.requests.assignedTo', { name: staffDirectory.find((s) => s.id === item.assignedStaffId)?.name })}</Text>}
             </Card>
-          </TouchableOpacity>
+          </AnimatedPressable>
         )}
       />
 
@@ -91,8 +94,22 @@ export default function StaffRequestsScreen() {
                 <>
                   <View style={{ flexDirection: 'row', gap: 8, marginBottom: spacing.md }}>
                     <Badge label={active.priority} tone={PRIORITY_TONE[active.priority]} />
-                    <Badge label={statusLabel(active.status)} tone={STATUS_TONE[active.status]} />
+                    {active.status === 'Cancelled' && <Badge label={statusLabel(active.status)} tone={STATUS_TONE[active.status]} />}
                   </View>
+                  {active.status !== 'Cancelled' && (
+                    <View style={styles.statusWrap}>
+                      <StatusPill
+                        steps={REQUEST_STATUS_STEPS}
+                        activeIndex={REQUEST_STATUS_STEPS.indexOf(active.status)}
+                        labels={{
+                          Received: statusLabel('Received'),
+                          Assigned: statusLabel('Assigned'),
+                          'In Progress': statusLabel('In Progress'),
+                          Completed: statusLabel('Completed'),
+                        }}
+                      />
+                    </View>
+                  )}
                   <Text style={styles.detailLine}><Text style={styles.detailLabel}>{t('staff.requests.guestLabel')}</Text>{active.guestName}</Text>
                   <Text style={styles.detailLine}><Text style={styles.detailLabel}>{t('staff.requests.categoryLabel')}</Text>{active.category} · {active.department}</Text>
                   <Text style={styles.detailLine}><Text style={styles.detailLabel}>{t('staff.requests.descriptionLabel')}</Text>{active.description}</Text>
@@ -146,7 +163,7 @@ export default function StaffRequestsScreen() {
 
 const styles = StyleSheet.create({
   header: { paddingHorizontal: spacing.lg, paddingTop: spacing.sm, paddingBottom: spacing.xs },
-  headerTitle: { fontSize: 22, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
+  headerTitle: { ...typography.heading, color: colors.charcoal },
   headerSub: { fontSize: 12.5, color: colors.slate, marginTop: 2 },
   filterRow: { paddingHorizontal: spacing.lg, gap: 8, paddingVertical: spacing.sm },
   filterPill: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: radius.pill, backgroundColor: colors.white, borderWidth: 1, borderColor: colors.border },
@@ -161,6 +178,7 @@ const styles = StyleSheet.create({
   modalPanel: { borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, padding: spacing.lg, maxHeight: '85%' },
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.md },
   modalTitle: { fontSize: 19, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
+  statusWrap: { marginBottom: spacing.md },
   detailLine: { fontSize: 13.5, color: colors.charcoal, marginBottom: 6, lineHeight: 19 },
   detailLabel: { fontWeight: '700' },
   fieldLabel: { fontSize: 12.5, fontWeight: '700', color: colors.charcoal, marginTop: spacing.sm, marginBottom: 8 },

@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
 import { Card, ScreenHeader, KpiCard } from '../../components/UI';
+import AnimatedPressable from '../../components/AnimatedPressable';
 import { colors, spacing, radius, font } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 import { ROLE_LABELS } from '../../data/mockData';
@@ -40,10 +41,10 @@ export default function StaffProfileScreen({ navigation }) {
           <KpiCard label={t('requests.status.completed')} value={completed} />
         </View>
 
-        <TouchableOpacity style={styles.switchBtn} onPress={handleSwitch}>
+        <AnimatedPressable style={styles.switchBtn} onPress={handleSwitch}>
           <Ionicons name="swap-horizontal" size={20} color={colors.deepOcean} />
           <Text style={styles.switchText}>{t('staff.profile.switchExperience')}</Text>
-        </TouchableOpacity>
+        </AnimatedPressable>
       </View>
     </SafeAreaView>
   );

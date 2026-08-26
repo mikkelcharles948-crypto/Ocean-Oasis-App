@@ -5,9 +5,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
 import { Card, ScreenHeader, Badge, EmptyState, Field, Pill } from '../../components/UI';
+import AnimatedPressable from '../../components/AnimatedPressable';
 import GlassSurface from '../../components/GlassSurface';
 import Button from '../../components/Button';
-import { colors, spacing, radius, font } from '../../theme/theme';
+import { colors, spacing, radius, font, typography } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 import { ROOM_TYPES } from '../../data/mockData';
 
@@ -326,7 +327,7 @@ export default function StaffNewBookingScreen({ navigation }) {
                     ) : (
                       <View style={{ gap: spacing.sm }}>
                         {filteredGuests.map((g) => (
-                          <TouchableOpacity key={g.id} onPress={() => setSelectedGuest(g)}>
+                          <AnimatedPressable key={g.id} onPress={() => setSelectedGuest(g)}>
                             <Card style={styles.guestRow}>
                               <View style={styles.avatar}>
                                 <Text style={styles.avatarText}>{g.firstName[0]}{g.lastName[0]}</Text>
@@ -341,7 +342,7 @@ export default function StaffNewBookingScreen({ navigation }) {
                               </View>
                               <Ionicons name="chevron-forward" size={18} color={colors.slate} />
                             </Card>
-                          </TouchableOpacity>
+                          </AnimatedPressable>
                         ))}
                       </View>
                     )}
@@ -432,7 +433,7 @@ export default function StaffNewBookingScreen({ navigation }) {
                     <Text style={styles.resultsTitle}>{t('staff.newBooking.resultsSubtitle', { count: availableRooms.length })}</Text>
                     <View style={{ gap: spacing.sm }}>
                       {availableRooms.map((room) => (
-                        <TouchableOpacity key={room.id} onPress={() => chooseRoom(room)}>
+                        <AnimatedPressable key={room.id} onPress={() => chooseRoom(room)}>
                           <Card style={styles.roomRow}>
                             <View style={{ flex: 1 }}>
                               <Text style={styles.roomNumber}>{t('staff.newBooking.roomLabel', { number: room.number })}</Text>
@@ -443,7 +444,7 @@ export default function StaffNewBookingScreen({ navigation }) {
                               <Text style={styles.selectBtnText}>{t('staff.newBooking.selectRoomButton')}</Text>
                             </View>
                           </Card>
-                        </TouchableOpacity>
+                        </AnimatedPressable>
                       ))}
                     </View>
                   </>
@@ -560,7 +561,7 @@ const styles = StyleSheet.create({
   summaryLabel: { fontWeight: '700' },
   successCard: { alignItems: 'center', padding: spacing.lg, marginTop: spacing.md },
   successIconWrap: { marginBottom: spacing.sm },
-  successTitle: { fontSize: 20, fontWeight: '700', color: colors.charcoal, fontFamily: font.display, textAlign: 'center' },
+  successTitle: { ...typography.heading, color: colors.charcoal, textAlign: 'center' },
   successSubtitle: { fontSize: 13.5, color: colors.slate, textAlign: 'center', marginTop: 4 },
   successDivider: { height: 1, backgroundColor: colors.border, alignSelf: 'stretch', marginVertical: spacing.md },
   successLine: { fontSize: 13.5, color: colors.charcoal, alignSelf: 'flex-start', marginBottom: 6, lineHeight: 19 },

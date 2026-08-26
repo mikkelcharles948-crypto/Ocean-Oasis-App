@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
-import { colors, spacing, radius, font } from '../../theme/theme';
+import AnimatedPressable from '../../components/AnimatedPressable';
+import { colors, spacing, radius, typography } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 const ITEMS = [
@@ -28,7 +29,7 @@ export default function StaffMoreScreen({ navigation }) {
       </View>
       <ScrollView contentContainerStyle={{ padding: spacing.lg, gap: spacing.sm }}>
         {ITEMS.map((item) => (
-          <TouchableOpacity key={item.key} style={styles.row} onPress={() => navigation.navigate(item.key)}>
+          <AnimatedPressable key={item.key} style={styles.row} onPress={() => navigation.navigate(item.key)}>
             <View style={styles.iconWrap}><Ionicons name={item.icon} size={20} color={colors.white} /></View>
             <View style={{ flex: 1 }}>
               <Text style={styles.label}>{t(`staff.moreScreen.items.${item.i18nKey}.label`)}</Text>
@@ -38,7 +39,7 @@ export default function StaffMoreScreen({ navigation }) {
               <View style={styles.badge}><Text style={styles.badgeText}>{unreadStaffNotificationCount}</Text></View>
             )}
             <Ionicons name="chevron-forward" size={18} color={colors.slate} />
-          </TouchableOpacity>
+          </AnimatedPressable>
         ))}
       </ScrollView>
     </SafeAreaView>
@@ -47,8 +48,8 @@ export default function StaffMoreScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   header: { paddingHorizontal: spacing.lg, paddingTop: spacing.sm, paddingBottom: spacing.xs },
-  headerTitle: { fontSize: 22, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
-  headerSub: { fontSize: 12.5, color: colors.slate, marginTop: 2 },
+  headerTitle: { ...typography.heading, color: colors.charcoal },
+  headerSub: { ...typography.caption, color: colors.slate, marginTop: 2 },
   row: {
     flexDirection: 'row', alignItems: 'center', gap: spacing.sm, backgroundColor: colors.white,
     borderRadius: radius.lg, padding: spacing.md, borderWidth: 1, borderColor: colors.border,

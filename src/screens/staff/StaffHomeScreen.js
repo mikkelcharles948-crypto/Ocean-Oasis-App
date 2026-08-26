@@ -1,11 +1,12 @@
 import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
 import { Card, SectionHeader, Badge, KpiCard, timeAgo } from '../../components/UI';
-import { colors, spacing, radius, font } from '../../theme/theme';
+import AnimatedPressable from '../../components/AnimatedPressable';
+import { colors, spacing, radius, font, typography } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 const PRIORITY_TONE = { URGENT: 'error', HIGH: 'warning', NORMAL: 'neutral' };
@@ -64,13 +65,13 @@ export default function StaffHomeScreen({ navigation }) {
             {openRequests.length === 0 ? (
               <Text style={styles.emptyText}>{t('staff.dashboard.noOpenRequests')}</Text>
             ) : openRequests.slice(0, 5).map((r, i) => (
-              <TouchableOpacity key={r.id} style={[styles.row, i > 0 && styles.rowBorder]} onPress={() => navigation.navigate('Requests')}>
+              <AnimatedPressable key={r.id} style={[styles.row, i > 0 && styles.rowBorder]} onPress={() => navigation.navigate('Requests')}>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.rowTitle}>Room {r.roomNumber} — {r.category}</Text>
                   <Text style={styles.rowSub}>{r.department} · {timeAgo(r.createdAt)}</Text>
                 </View>
                 <Badge label={r.priority} tone={PRIORITY_TONE[r.priority]} />
-              </TouchableOpacity>
+              </AnimatedPressable>
             ))}
           </Card>
         </View>
@@ -111,7 +112,9 @@ export default function StaffHomeScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  eyebrow: { fontSize: 11, fontWeight: '700', letterSpacing: 1.5, color: colors.gold },
+  // colors.gold is ~2.4:1 against ivory (fails WCAG AA as text); goldDark
+  // reaches ~4.9:1. typography.label supplies the shared eyebrow scale.
+  eyebrow: { ...typography.label, color: colors.goldDark },
   greeting: { fontSize: 24, fontWeight: '700', color: colors.charcoal, fontFamily: font.display, marginTop: 4 },
   dateLine: { fontSize: 13, color: colors.slate, marginTop: 2, marginBottom: spacing.md },
   kpiRow: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },

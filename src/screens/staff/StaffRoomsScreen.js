@@ -6,8 +6,9 @@ import { BlurView } from 'expo-blur';
 import { useTranslation } from 'react-i18next';
 
 import { Card, Badge } from '../../components/UI';
+import AnimatedPressable from '../../components/AnimatedPressable';
 import GlassSurface from '../../components/GlassSurface';
-import { colors, spacing, radius, font } from '../../theme/theme';
+import { colors, spacing, radius, font, typography } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 import { ROOM_STATUSES, ROOM_STATUS_LABELS } from '../../data/mockData';
 
@@ -66,13 +67,13 @@ export default function StaffRoomsScreen({ navigation }) {
         renderItem={({ item }) => {
           const dnd = guestInRoom(item.number)?.housekeepingPreference === 'DO_NOT_DISTURB';
           return (
-            <TouchableOpacity style={{ flex: 1 / 3, marginBottom: spacing.sm }} onPress={() => setActiveId(item.id)}>
+            <AnimatedPressable style={{ flex: 1 / 3, marginBottom: spacing.sm }} onPress={() => setActiveId(item.id)}>
               <Card style={{ padding: spacing.sm, alignItems: 'center' }}>
                 {dnd && <Ionicons name="moon" size={12} color={colors.gold} style={styles.dndBadge} />}
                 <Text style={styles.roomNum}>{item.number}</Text>
                 <View style={[styles.dot, { backgroundColor: dotColor(item.status) }]} />
               </Card>
-            </TouchableOpacity>
+            </AnimatedPressable>
           );
         }}
       />
@@ -124,7 +125,7 @@ function dotColor(status) {
 
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.lg, paddingTop: spacing.sm, paddingBottom: spacing.xs, gap: spacing.sm },
-  headerTitle: { fontSize: 22, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
+  headerTitle: { ...typography.heading, color: colors.charcoal },
   headerSub: { fontSize: 12.5, color: colors.slate, marginTop: 2 },
   newBookingBtn: {
     flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: colors.deepOcean,
