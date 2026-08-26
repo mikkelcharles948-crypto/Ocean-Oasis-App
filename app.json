@@ -36,7 +36,14 @@
           "color": "#0B3B45"
         }
       ],
-      "@sentry/react-native",
+      [
+        "@sentry/react-native",
+        {
+          "organization": "mcharles767s-team",
+          "project": "react-native",
+          "url": "https://sentry.io/"
+        }
+      ],
       "expo-video"
     ],
     "extra": {
