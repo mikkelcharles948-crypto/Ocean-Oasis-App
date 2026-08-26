@@ -419,13 +419,17 @@ export function AppProvider({ children }) {
     return { ok: true };
   }, []);
   const signUp = useCallback(async ({ email, password, firstName, lastName }) => {
+    // Carries the interests picked during onboarding (local-only until now)
+    // into the new auth user's metadata, so the handle_new_user() DB
+    // trigger can seed them onto the real guests row at creation time —
+    // otherwise they were silently discarded the moment a guest signed up.
     const { data, error } = await supabase.auth.signUp({
       email: email.trim(),
       password,
-      options: { data: { first_name: firstName, last_name: lastName } },
+      options: { data: { first_name: firstName, last_name: lastName, interests: guest.interests || [] } },
     });
     return { ok: !error, error: error?.message, data };
-  }, []);
+  }, [guest.interests]);
   const sendMagicLink = useCallback(async (email) => {
     if (!email?.trim()) return { ok: false, error: 'Enter your email address.' };
     const { error } = await supabase.auth.signInWithOtp({
@@ -442,11 +446,12 @@ export function AppProvider({ children }) {
   const updateGuest = useCallback(async (changes) => {
     if (authSession?.user?.id && guest.id !== GUEST.id) {
       try {
-        const persistedGuest = await updateRemoteGuestProfile(guest.id, {
-          first_name: changes.firstName,
-          last_name: changes.lastName,
-          phone: changes.phone,
-        });
+        const remoteChanges = {};
+        if (changes.firstName !== undefined) remoteChanges.first_name = changes.firstName;
+        if (changes.lastName !== undefined) remoteChanges.last_name = changes.lastName;
+        if (changes.phone !== undefined) remoteChanges.phone = changes.phone;
+        if (changes.interests !== undefined) remoteChanges.interests = changes.interests;
+        const persistedGuest = await updateRemoteGuestProfile(guest.id, remoteChanges);
         setGuest(persistedGuest);
         return { ok: true, data: persistedGuest };
       } catch (error) {

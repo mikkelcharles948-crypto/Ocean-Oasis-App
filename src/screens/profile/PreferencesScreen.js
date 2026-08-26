@@ -12,21 +12,25 @@ import { useApp } from '../../context/AppContext';
 
 export default function PreferencesScreen({ navigation }) {
   const { t } = useTranslation();
-  const { guest, setGuest } = useApp();
+  const { guest, updateGuest } = useApp();
   const [selected, setSelected] = useState(guest.interests || []);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
 
   const toggle = (id) => {
     setSelected((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   };
 
-  const save = () => {
+  const save = async () => {
     setSaving(true);
-    setTimeout(() => {
-      setGuest((g) => ({ ...g, interests: selected }));
-      setSaving(false);
-      navigation.goBack();
-    }, 500);
+    setError('');
+    const result = await updateGuest({ interests: selected });
+    setSaving(false);
+    if (!result?.ok) {
+      setError(result?.error || t('profile.savePreferencesError'));
+      return;
+    }
+    navigation.goBack();
   };
 
   return (
@@ -40,6 +44,7 @@ export default function PreferencesScreen({ navigation }) {
             <Pill key={i.id} label={t(`onboarding.interests.${i.id}`)} selected={selected.includes(i.id)} onPress={() => toggle(i.id)} />
           ))}
         </View>
+        {error ? <Text style={styles.error}>{error}</Text> : null}
         <Button label={t('profile.savePreferences')} onPress={save} loading={saving} style={{ marginTop: spacing.lg }} />
       </ScrollView>
     </SafeAreaView>
@@ -50,4 +55,5 @@ const styles = StyleSheet.create({
   heading: { ...typography.subheading, color: colors.charcoal },
   sub: { ...typography.bodySmall, color: colors.slate, marginTop: 4, marginBottom: spacing.md },
   pillWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 4 },
+  error: { ...typography.bodySmall, color: colors.error, marginTop: spacing.md },
 });

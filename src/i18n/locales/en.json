@@ -494,6 +494,7 @@
     "whatInterested": "What are you interested in?",
     "personalizeSub": "We'll use this to personalize recommendations across the app.",
     "savePreferences": "Save Preferences",
+    "savePreferencesError": "Your preferences could not be saved. Please try again.",
     "languageScreenTitle": "Language",
     "languageNames": {
       "en": "English",

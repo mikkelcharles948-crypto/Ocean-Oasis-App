@@ -494,6 +494,7 @@
     "whatInterested": "¿Qué te interesa?",
     "personalizeSub": "Lo usaremos para personalizar las recomendaciones en toda la aplicación.",
     "savePreferences": "Guardar preferencias",
+    "savePreferencesError": "No se pudieron guardar tus preferencias. Por favor, inténtalo de nuevo.",
     "languageScreenTitle": "Idioma",
     "languageNames": {
       "en": "English",

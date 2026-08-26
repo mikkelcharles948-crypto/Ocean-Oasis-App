@@ -494,6 +494,7 @@
     "whatInterested": "Qu'est-ce qui vous intéresse ?",
     "personalizeSub": "Nous nous en servirons pour personnaliser les recommandations dans toute l'application.",
     "savePreferences": "Enregistrer les préférences",
+    "savePreferencesError": "Vos préférences n'ont pas pu être enregistrées. Veuillez réessayer.",
     "languageScreenTitle": "Langue",
     "languageNames": {
       "en": "English",

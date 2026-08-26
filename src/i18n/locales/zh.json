@@ -494,6 +494,7 @@
     "whatInterested": "您对哪些方面感兴趣？",
     "personalizeSub": "我们将据此为您在应用内个性化推荐内容。",
     "savePreferences": "保存偏好",
+    "savePreferencesError": "您的偏好设置未能保存，请重试。",
     "languageScreenTitle": "语言",
     "languageNames": {
       "en": "English",
