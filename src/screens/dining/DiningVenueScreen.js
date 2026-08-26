@@ -13,6 +13,7 @@ import { DINING_VENUES } from '../../data/mockData';
 import { getLocalizedContent } from '../../i18n/content';
 import diningVenuesContent from '../../i18n/content/diningVenues';
 import { optimizeImageUrl } from '../../utils/optimizeImageUrl';
+import { useApp } from '../../context/AppContext';
 
 const TYPE_KEY = {
   'Signature Restaurant': 'signatureRestaurant',
@@ -23,6 +24,7 @@ const TYPE_KEY = {
 
 export default function DiningVenueScreen({ route, navigation }) {
   const { t, i18n } = useTranslation();
+  const { submitServiceRequest } = useApp();
   const { venueId } = route.params || {};
   const rawVenue = DINING_VENUES.find((v) => v.id === venueId);
   const venue = rawVenue ? getLocalizedContent(diningVenuesContent, rawVenue.id, i18n.language, rawVenue) : null;
@@ -31,6 +33,7 @@ export default function DiningVenueScreen({ route, navigation }) {
   const [time, setTime] = useState('7:00 PM');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   if (!venue) {
     return (
@@ -40,12 +43,24 @@ export default function DiningVenueScreen({ route, navigation }) {
     );
   }
 
-  const submit = () => {
+  // Routed through the real service-request pipeline (reaches staff's
+  // actual queue) rather than a fake local confirmation — there's no
+  // dedicated dining-reservation table/RPC, but Concierge/Room Service
+  // requests are real, Supabase-backed, and already staff-visible.
+  const submit = async () => {
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setSubmitted(true);
-    }, 800);
+    setError('');
+    const category = venue.reservationRequired ? 'Concierge' : 'Room Service';
+    const description = venue.reservationRequired
+      ? t('dining.reservationRequestDescription', { venue: venue.name, party, time })
+      : t('dining.roomServiceRequestDescription', { venue: venue.name });
+    const result = await submitServiceRequest({ category, description, preferredTime: time });
+    setLoading(false);
+    if (!result?.ok) {
+      setError(result?.error || t('dining.requestError'));
+      return;
+    }
+    setSubmitted(true);
   };
 
   return (
@@ -86,6 +101,7 @@ export default function DiningVenueScreen({ route, navigation }) {
               <View style={styles.formBox}>
                 <Field label={t('dining.partySize')} value={party} onChangeText={setParty} keyboardType="number-pad" />
                 <Field label={t('dining.preferredTime')} value={time} onChangeText={setTime} />
+                {error ? <Text style={styles.errorText}>{error}</Text> : null}
                 <Button label={t('dining.submit')} onPress={submit} loading={loading} />
               </View>
             )
@@ -128,4 +144,5 @@ const styles = StyleSheet.create({
     padding: spacing.md, borderRadius: radius.md, marginTop: spacing.lg,
   },
   confirmText: { flex: 1, fontSize: 12.5, color: colors.success, lineHeight: 18 },
+  errorText: { fontSize: 12.5, color: colors.error, marginTop: spacing.sm },
 });
