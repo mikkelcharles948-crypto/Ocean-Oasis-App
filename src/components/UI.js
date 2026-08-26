@@ -189,13 +189,17 @@ export function Field({ label, value, onChangeText, placeholder, multiline, keyb
 }
 
 export function Pill({ label, selected, onPress }) {
+  // Rebuilt defensively after category-filter labels were reported invisible
+  // on real devices with no reproducible cause found in code review: plain
+  // merged style objects instead of `cond && style` array entries, no
+  // numberOfLines truncation, and the pill sized only to its own text
+  // (flexShrink: 0, alignSelf: 'flex-start') so it's never asked to
+  // collapse inside the horizontal ScrollView row.
+  const pillStyle = selected ? { ...styles.pill, ...styles.pillSelected } : styles.pill;
+  const textStyle = selected ? { ...styles.pillText, ...styles.pillTextSelected } : styles.pillText;
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      style={[styles.pill, selected && styles.pillSelected]}
-      activeOpacity={0.85}
-    >
-      <Text style={[styles.pillText, selected && styles.pillTextSelected]} numberOfLines={1}>{label}</Text>
+    <TouchableOpacity onPress={onPress} style={pillStyle} activeOpacity={0.85}>
+      <Text style={textStyle}>{label || ''}</Text>
     </TouchableOpacity>
   );
 }
@@ -319,8 +323,9 @@ const styles = StyleSheet.create({
   pill: {
     paddingHorizontal: 16, paddingVertical: 9, borderRadius: radius.pill,
     backgroundColor: colors.white, borderWidth: 1, borderColor: colors.border, marginRight: 8,
+    alignSelf: 'flex-start', flexShrink: 0,
   },
   pillSelected: { backgroundColor: colors.deepOcean, borderColor: colors.deepOcean },
-  pillText: { fontSize: 13, fontWeight: '600', color: colors.charcoal, flexShrink: 1 },
+  pillText: { fontSize: 13, fontWeight: '600', color: colors.charcoal },
   pillTextSelected: { color: colors.white },
 });
