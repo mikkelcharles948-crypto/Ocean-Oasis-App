@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
@@ -13,6 +13,11 @@ const STATUS_TONE = { DRAFT: 'neutral', SCHEDULED: 'warning', PUBLISHED: 'succes
 export default function ManagementContentScreen({ navigation }) {
   const { t } = useTranslation();
   const { contentItems, setContentStatus } = useApp();
+
+  const handleSetStatus = async (id, status) => {
+    const result = await setContentStatus(id, status);
+    if (!result?.ok) Alert.alert(t('common.somethingWrong'), result?.error || t('common.pleaseTryAgain'));
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
@@ -31,7 +36,7 @@ export default function ManagementContentScreen({ navigation }) {
             <Text style={styles.meta}>{t('management.content.updatedLabel', { time: timeAgo(item.updatedAt) })}</Text>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: spacing.sm }}>
               {CONTENT_STATUSES.map((s) => (
-                <TouchableOpacity key={s} onPress={() => setContentStatus(item.id, s)} style={[styles.chip, item.status === s && styles.chipActive]}>
+                <TouchableOpacity key={s} onPress={() => handleSetStatus(item.id, s)} style={[styles.chip, item.status === s && styles.chipActive]}>
                   <Text style={[styles.chipText, item.status === s && styles.chipTextActive]}>{s}</Text>
                 </TouchableOpacity>
               ))}

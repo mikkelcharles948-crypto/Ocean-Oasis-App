@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
@@ -19,12 +19,36 @@ export default function ManagementPromotionsScreen({ navigation }) {
   const { promotions, createPromotion, publishPromotion, archivePromotion } = useApp();
   const [showNew, setShowNew] = useState(false);
   const [form, setForm] = useState({ title: '', description: '', discount: '10%', startDate: '2026-08-20', endDate: '2026-09-20', targetAudience: 'All guests' });
+  const [saving, setSaving] = useState(false);
+  const [formError, setFormError] = useState('');
 
-  const submit = () => {
+  const closeModal = () => {
+    setFormError('');
+    setShowNew(false);
+  };
+
+  const submit = async () => {
     if (!form.title.trim()) return;
-    createPromotion({ ...form, validity: `${form.startDate} – ${form.endDate}`, terms: 'See front desk for full terms.', image: 'gift' });
+    setSaving(true);
+    setFormError('');
+    const result = await createPromotion({ ...form, validity: `${form.startDate} – ${form.endDate}`, terms: 'See front desk for full terms.', image: 'gift' });
+    setSaving(false);
+    if (!result?.ok) {
+      setFormError(result?.error || t('management.promotions.createError'));
+      return;
+    }
     setForm({ title: '', description: '', discount: '10%', startDate: '2026-08-20', endDate: '2026-09-20', targetAudience: 'All guests' });
     setShowNew(false);
+  };
+
+  const handlePublish = async (id) => {
+    const result = await publishPromotion(id);
+    if (!result?.ok) Alert.alert(t('common.somethingWrong'), result?.error || t('common.pleaseTryAgain'));
+  };
+
+  const handleArchive = async (id) => {
+    const result = await archivePromotion(id);
+    if (!result?.ok) Alert.alert(t('common.somethingWrong'), result?.error || t('common.pleaseTryAgain'));
   };
 
   return (
@@ -54,24 +78,24 @@ export default function ManagementPromotionsScreen({ navigation }) {
               </View>
               <Text style={styles.conversion}>{t('management.promotions.conversionLine', { conversion, redemptions: item.redemptions })}</Text>
               {(item.status === 'DRAFT' || item.status === 'SCHEDULED') && (
-                <Button label={t('staff.activities.publish')} onPress={() => publishPromotion(item.id)} style={{ marginTop: spacing.sm }} />
+                <Button label={t('staff.activities.publish')} onPress={() => handlePublish(item.id)} style={{ marginTop: spacing.sm }} />
               )}
               {item.status === 'PUBLISHED' && (
-                <Button label={t('management.promotions.archive')} variant="outline" onPress={() => archivePromotion(item.id)} style={{ marginTop: spacing.sm }} />
+                <Button label={t('management.promotions.archive')} variant="outline" onPress={() => handleArchive(item.id)} style={{ marginTop: spacing.sm }} />
               )}
             </Card>
           );
         }}
       />
 
-      <Modal visible={showNew} transparent animationType="slide" onRequestClose={() => setShowNew(false)}>
+      <Modal visible={showNew} transparent animationType="slide" onRequestClose={closeModal}>
         <View style={styles.modalBackdrop}>
           <BlurView intensity={20} tint="dark" style={StyleSheet.absoluteFill} />
           <GlassSurface style={styles.modalPanel} borderRadius={0} intensity={38} tint="light">
             <ScrollView keyboardShouldPersistTaps="handled">
               <View style={styles.modalHeader}>
                 <Text style={styles.modalTitle}>{t('management.promotions.newPromotion')}</Text>
-                <TouchableOpacity onPress={() => setShowNew(false)}><Ionicons name="close" size={22} color={colors.slate} /></TouchableOpacity>
+                <TouchableOpacity onPress={closeModal}><Ionicons name="close" size={22} color={colors.slate} /></TouchableOpacity>
               </View>
               <Field label={t('management.promotions.titleLabel')} value={form.title} onChangeText={(v) => setForm({ ...form, title: v })} />
               <Field label={t('management.promotions.descriptionLabel')} value={form.description} onChangeText={(v) => setForm({ ...form, description: v })} multiline />
@@ -84,7 +108,8 @@ export default function ManagementPromotionsScreen({ navigation }) {
               </View>
               <Field label={t('management.promotions.startDateLabel')} value={form.startDate} onChangeText={(v) => setForm({ ...form, startDate: v })} />
               <Field label={t('management.promotions.endDateLabel')} value={form.endDate} onChangeText={(v) => setForm({ ...form, endDate: v })} />
-              <Button label={t('staff.events.saveAsDraft')} onPress={submit} style={{ marginTop: spacing.sm, marginBottom: spacing.lg }} />
+              {formError ? <Text style={styles.formError}>{formError}</Text> : null}
+              <Button label={t('staff.events.saveAsDraft')} onPress={submit} loading={saving} style={{ marginTop: spacing.sm, marginBottom: spacing.lg }} />
             </ScrollView>
           </GlassSurface>
         </View>
@@ -116,4 +141,5 @@ const styles = StyleSheet.create({
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.md },
   modalTitle: { fontSize: 18, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
   fieldLabel: { fontSize: 12.5, fontWeight: '700', color: colors.charcoal, marginBottom: 8 },
+  formError: { color: colors.error, fontSize: 12.5, marginBottom: spacing.sm },
 });

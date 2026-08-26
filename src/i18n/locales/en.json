@@ -370,6 +370,7 @@
       "checkIn": "Check-in",
       "checkOut": "Check-out",
       "guestDetailsTitle": "Guest details",
+      "guestDetailsSub": "Please confirm these are correct. To make changes, contact the front desk.",
       "firstName": "First Name",
       "lastName": "Last Name",
       "email": "Email",
@@ -1117,6 +1118,7 @@
       "startDateLabel": "Start Date (YYYY-MM-DD)",
       "endDateLabel": "End Date (YYYY-MM-DD)",
       "archive": "Archive",
+      "createError": "The promotion could not be created. Please try again.",
       "stats": {
         "impressions": "Impressions",
         "clicks": "Clicks",

@@ -370,6 +370,7 @@
       "checkIn": "Entrada",
       "checkOut": "Salida",
       "guestDetailsTitle": "Datos del huésped",
+      "guestDetailsSub": "Confirme que estos datos son correctos. Para modificarlos, comuníquese con la recepción.",
       "firstName": "Nombre",
       "lastName": "Apellido",
       "email": "Correo electrónico",
@@ -1117,6 +1118,7 @@
       "startDateLabel": "Fecha de inicio (AAAA-MM-DD)",
       "endDateLabel": "Fecha de fin (AAAA-MM-DD)",
       "archive": "Archivar",
+      "createError": "No se pudo crear la promoción. Inténtalo de nuevo.",
       "stats": {
         "impressions": "Impresiones",
         "clicks": "Clics",

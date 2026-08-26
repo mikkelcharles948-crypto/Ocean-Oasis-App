@@ -370,6 +370,7 @@
       "checkIn": "入住",
       "checkOut": "退房",
       "guestDetailsTitle": "住客信息",
+      "guestDetailsSub": "请确认以下信息无误。如需更改，请联系前台。",
       "firstName": "名字",
       "lastName": "姓氏",
       "email": "电子邮箱",
@@ -1117,6 +1118,7 @@
       "startDateLabel": "开始日期（YYYY-MM-DD）",
       "endDateLabel": "结束日期（YYYY-MM-DD）",
       "archive": "归档",
+      "createError": "无法创建促销活动，请重试。",
       "stats": {
         "impressions": "曝光量",
         "clicks": "点击量",
