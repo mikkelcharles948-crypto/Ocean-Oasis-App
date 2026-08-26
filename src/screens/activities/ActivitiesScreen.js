@@ -22,14 +22,18 @@ export default function ActivitiesScreen({ navigation }) {
   );
 
   const renderActivity = useCallback(
-    ({ item, index }) => {
+    ({ item }) => {
       const localized = getLocalizedContent(activitiesContent, item.id, i18n.language, item);
       const cardData = { ...localized, category: t(`common.category.${item.category}`) };
       return (
+        // Uniform size deliberately — see ExploreScreen.js's renderItem for
+        // why: mixing a "large" first row with "medium" rows after it in a
+        // FlatList with no getItemLayout is what caused card titles to
+        // render blank for any category with more than one item.
         <ExperienceCard
           activity={cardData}
           priceLabel={formatActivityPrice(item, t)}
-          size={index === 0 ? 'large' : 'medium'}
+          size="medium"
           onPress={() => navigation.navigate('ActivityDetail', { activityId: item.id })}
         />
       );

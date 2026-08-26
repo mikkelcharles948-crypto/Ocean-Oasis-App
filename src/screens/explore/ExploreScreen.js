@@ -19,7 +19,7 @@ import destinationsContent from '../../i18n/content/destinations';
 // Real Dominica rainforest swimming hole (Emerald Pool), used as a hero
 // backdrop behind the page title — ambience of the destinations being
 // browsed, not a depiction of the hotel itself. Verified on Wikimedia Commons.
-const EXPLORE_HERO_URL = 'https://commons.wikimedia.org/wiki/Special:FilePath/Emerald_Pool%2C_Dominica.jpg';
+const EXPLORE_HERO_URL = 'https://upload.wikimedia.org/wikipedia/commons/a/a0/Emerald_Pool%2C_Dominica.jpg';
 
 export default function ExploreScreen({ navigation }) {
   const { t, i18n } = useTranslation();
@@ -31,7 +31,7 @@ export default function ExploreScreen({ navigation }) {
   );
 
   const renderItem = useCallback(
-    ({ item, index }) => {
+    ({ item }) => {
       const localized = getLocalizedContent(destinationsContent, item.id, i18n.language, item);
       // ExperienceCard reads `.location` for its meta line; destinations
       // don't have one, so the (already-short) travel time stands in —
@@ -42,9 +42,15 @@ export default function ExploreScreen({ navigation }) {
         location: localized.travelTime,
       };
       return (
+        // Every row is the same size deliberately — this FlatList has no
+        // getItemLayout, and varying the first row's height (the previous
+        // "large" first card, "medium" thereafter) is what caused card
+        // titles to render blank on Android for any category with more
+        // than one item: mismatched row heights corrupt FlatList's layout
+        // estimation. A uniform size is the actual fix, not a workaround.
         <ExperienceCard
           activity={cardData}
-          size={index === 0 ? 'large' : 'medium'}
+          size="medium"
           onPress={() => navigation.navigate('DestinationDetail', { destinationId: item.id })}
         />
       );
