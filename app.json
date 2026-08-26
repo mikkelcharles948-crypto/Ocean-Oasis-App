@@ -44,7 +44,13 @@
           "url": "https://sentry.io/"
         }
       ],
-      "expo-video"
+      "expo-video",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Ocean Oasis uses your location to show your position on the map relative to the hotel, beaches, trails, and dining."
+        }
+      ]
     ],
     "extra": {
       "eas": {

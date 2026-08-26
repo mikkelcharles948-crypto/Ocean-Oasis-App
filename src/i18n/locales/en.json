@@ -97,13 +97,9 @@
     "difficulty": "Difficulty",
     "pricingNotice": "Exact pricing and availability vary by season. Ask our concierge for current details.",
     "map": "Map",
-    "mapFilter": {
-      "all": "All",
-      "hotel": "Hotel",
-      "attraction": "Attraction",
-      "dining": "Dining"
-    },
-    "mapNotice": "Mock map — connect Google Maps / Mapbox for live geolocation."
+    "recenterHotel": "Center on hotel",
+    "myLocation": "My location",
+    "locationDenied": "Location access is off. Enable it in Settings to see your position on the map."
   },
   "activities": {
     "title": "Activities",

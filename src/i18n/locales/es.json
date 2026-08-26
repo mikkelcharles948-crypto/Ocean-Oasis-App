@@ -97,13 +97,9 @@
     "difficulty": "Dificultad",
     "pricingNotice": "El precio y la disponibilidad exactos varían según la temporada. Consulta a nuestra conserjería para conocer los detalles actuales.",
     "map": "Mapa",
-    "mapFilter": {
-      "all": "Todo",
-      "hotel": "Hotel",
-      "attraction": "Atracción",
-      "dining": "Restaurantes"
-    },
-    "mapNotice": "Mapa de muestra — conecta Google Maps / Mapbox para geolocalización en vivo."
+    "recenterHotel": "Centrar en el hotel",
+    "myLocation": "Mi ubicación",
+    "locationDenied": "El acceso a la ubicación está desactivado. Actívalo en Ajustes para ver tu posición en el mapa."
   },
   "activities": {
     "title": "Actividades",

@@ -1,111 +1,214 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { WebView } from 'react-native-webview';
+import * as Location from 'expo-location';
+import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Pill } from '../../components/UI';
-import { colors, spacing, radius, font } from '../../theme/theme';
-import { DESTINATIONS, DINING_VENUES } from '../../data/mockData';
+import { colors, spacing, radius } from '../../theme/theme';
+import { DESTINATIONS, DESTINATION_CATEGORIES } from '../../data/mockData';
+import { HOTEL_LOCATION, DESTINATION_COORDS } from '../../data/geoData';
+import { getLocalizedContent } from '../../i18n/content';
+import destinationsContent from '../../i18n/content/destinations';
 
-// Mock coordinate map. Structured so this screen can later be swapped for a
-// real MapView (react-native-maps) or WebView-based Google Maps / Mapbox embed.
-const MAP_PINS = [
-  { id: 'hotel', label: 'Ocean Oasis', type: 'Hotel', x: '50%', y: '52%', icon: 'home' },
-  ...DESTINATIONS.slice(0, 5).map((d, i) => ({
-    id: d.id, label: d.title, type: 'Attraction',
-    x: `${20 + i * 15}%`, y: `${20 + (i % 3) * 22}%`, icon: 'map-marker',
-  })),
-  ...DINING_VENUES.slice(0, 2).map((v, i) => ({
-    id: v.id, label: v.name, type: 'Dining',
-    x: `${60 + i * 10}%`, y: `${65 + i * 8}%`, icon: 'silverware-fork-knife',
-  })),
-];
+// Real OpenStreetMap tiles rendered via Leaflet inside a WebView — no native
+// map module (react-native-maps/expo-maps) and no Google Maps API key, so
+// this keeps working in plain Expo Go, unlike a native MapView which needs
+// a custom dev client. The plain tile.openstreetmap.org server is fine for
+// this kind of light, occasional use; a production release doing this at
+// real scale should move to a paid tile host (MapTiler, Stadia, etc.) per
+// OSM's usage policy.
+function buildMapHtml() {
+  return `<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    html, body, #map { height: 100%; margin: 0; padding: 0; background: #DCEEEA; }
+    .pin-hotel { background: #0B3B45; border: 2px solid #fff; border-radius: 50%; width: 26px; height: 26px; }
+    .pin-dest { background: #1F8A8C; border: 2px solid #fff; border-radius: 50%; width: 18px; height: 18px; }
+    .pin-me { background: #2E7DE1; border: 3px solid #fff; border-radius: 50%; width: 18px; height: 18px; box-shadow: 0 0 0 6px rgba(46,125,225,0.25); }
+    .leaflet-popup-content { font-family: -apple-system, Roboto, sans-serif; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    var map = L.map('map', { zoomControl: false }).setView([${HOTEL_LOCATION.lat}, ${HOTEL_LOCATION.lng}], 11);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
 
-const FILTERS = ['All', 'Hotel', 'Attraction', 'Dining'];
-const FILTER_KEY = { All: 'all', Hotel: 'hotel', Attraction: 'attraction', Dining: 'dining' };
+    var hotelIcon = L.divIcon({ className: 'pin-hotel', iconSize: [26, 26] });
+    var destIcon = L.divIcon({ className: 'pin-dest', iconSize: [18, 18] });
+    var meIcon = L.divIcon({ className: 'pin-me', iconSize: [18, 18] });
+
+    L.marker([${HOTEL_LOCATION.lat}, ${HOTEL_LOCATION.lng}], { icon: hotelIcon })
+      .addTo(map)
+      .bindPopup(${JSON.stringify(HOTEL_LOCATION.label)});
+
+    var markers = {};
+    var pins = ${JSON.stringify(
+      DESTINATIONS.filter((d) => DESTINATION_COORDS[d.id]).map((d) => ({
+        id: d.id,
+        category: d.category,
+        label: d.title,
+        lat: DESTINATION_COORDS[d.id].lat,
+        lng: DESTINATION_COORDS[d.id].lng,
+      }))
+    )};
+    pins.forEach(function (p) {
+      var m = L.marker([p.lat, p.lng], { icon: destIcon }).addTo(map).bindPopup(p.label);
+      markers[p.id] = { marker: m, category: p.category };
+    });
+
+    var meMarker = null;
+    function setMyLocation(lat, lng) {
+      if (meMarker) {
+        meMarker.setLatLng([lat, lng]);
+      } else {
+        meMarker = L.marker([lat, lng], { icon: meIcon, zIndexOffset: 1000 }).addTo(map);
+      }
+    }
+    function focusOn(lat, lng, zoom) {
+      map.setView([lat, lng], zoom || map.getZoom());
+    }
+    function applyFilter(category) {
+      Object.keys(markers).forEach(function (id) {
+        var entry = markers[id];
+        var show = category === 'All' || entry.category === category;
+        if (show && !map.hasLayer(entry.marker)) map.addLayer(entry.marker);
+        if (!show && map.hasLayer(entry.marker)) map.removeLayer(entry.marker);
+      });
+    }
+
+    document.addEventListener('message', handleMessage);
+    window.addEventListener('message', handleMessage);
+    function handleMessage(event) {
+      try {
+        var msg = JSON.parse(event.data);
+        if (msg.type === 'location') setMyLocation(msg.lat, msg.lng);
+        if (msg.type === 'focus') focusOn(msg.lat, msg.lng, msg.zoom);
+        if (msg.type === 'filter') applyFilter(msg.category);
+      } catch (e) {}
+    }
+  </script>
+</body>
+</html>`;
+}
+
+const MAP_HTML = buildMapHtml();
 
 export default function MapScreen({ navigation }) {
-  const { t } = useTranslation();
-  const [filter, setFilter] = useState('All');
-  const [selected, setSelected] = useState(null);
-  const pins = filter === 'All' ? MAP_PINS : MAP_PINS.filter((p) => p.type === filter);
+  const { t, i18n } = useTranslation();
+  const [category, setCategory] = useState('All');
+  const [permissionState, setPermissionState] = useState('checking'); // checking | granted | denied
+  const webviewRef = useRef(null);
+  const lastKnownLocation = useRef(null);
+
+  const destinationTitleById = useMemo(() => {
+    const map = {};
+    DESTINATIONS.forEach((d) => {
+      const localized = getLocalizedContent(destinationsContent, d.id, i18n.language, d);
+      map[d.id] = localized.title || d.title;
+    });
+    return map;
+  }, [i18n.language]);
+
+  const postToMap = useCallback((message) => {
+    webviewRef.current?.postMessage(JSON.stringify(message));
+  }, []);
+
+  useEffect(() => {
+    let subscription;
+    (async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setPermissionState('denied');
+        return;
+      }
+      setPermissionState('granted');
+      subscription = await Location.watchPositionAsync(
+        { accuracy: Location.Accuracy.Balanced, timeInterval: 5000, distanceInterval: 15 },
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          lastKnownLocation.current = { lat: latitude, lng: longitude };
+          postToMap({ type: 'location', lat: latitude, lng: longitude });
+        }
+      );
+    })();
+    return () => subscription?.remove();
+  }, [postToMap]);
+
+  const handleCategoryChange = (c) => {
+    setCategory(c);
+    postToMap({ type: 'filter', category: c });
+  };
+
+  const recenterOnHotel = () => postToMap({ type: 'focus', lat: HOTEL_LOCATION.lat, lng: HOTEL_LOCATION.lng, zoom: 11 });
+
+  const recenterOnMe = () => {
+    if (!lastKnownLocation.current) return;
+    postToMap({ type: 'focus', lat: lastKnownLocation.current.lat, lng: lastKnownLocation.current.lng, zoom: 14 });
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
       <ScreenHeader title={t('explore.map')} onBack={() => navigation.goBack()} />
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexGrow: 0, marginBottom: spacing.sm }} contentContainerStyle={{ paddingHorizontal: spacing.lg }}>
-        {FILTERS.map((f) => (
-          <Pill key={f} label={t(`explore.mapFilter.${FILTER_KEY[f]}`)} selected={filter === f} onPress={() => setFilter(f)} />
+        <Pill label={t('explore.all')} selected={category === 'All'} onPress={() => handleCategoryChange('All')} />
+        {DESTINATION_CATEGORIES.map((c) => (
+          <Pill key={c} label={t(`common.category.${c}`)} selected={category === c} onPress={() => handleCategoryChange(c)} />
         ))}
       </ScrollView>
 
       <View style={styles.mapArea}>
-        <View style={styles.grid} pointerEvents="none">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <View key={`h${i}`} style={[styles.gridLineH, { top: `${i * 18}%` }]} />
-          ))}
-          {Array.from({ length: 6 }).map((_, i) => (
-            <View key={`v${i}`} style={[styles.gridLineV, { left: `${i * 20}%` }]} />
-          ))}
-        </View>
-        {pins.map((pin) => (
-          <TouchableOpacity
-            key={pin.id}
-            style={[styles.pin, { left: pin.x, top: pin.y }]}
-            onPress={() => setSelected(pin)}
-            accessibilityRole="button"
-            accessibilityLabel={pin.label}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          >
-            <View style={[styles.pinDot, pin.id === 'hotel' && styles.pinDotHotel]}>
-              <MaterialCommunityIcons name={pin.icon} size={14} color={colors.white} />
-            </View>
+        <WebView
+          ref={webviewRef}
+          source={{ html: MAP_HTML }}
+          style={{ flex: 1, backgroundColor: '#DCEEEA' }}
+          onMessage={() => {}}
+          javaScriptEnabled
+          domStorageEnabled
+          geolocationEnabled
+        />
+        <View style={styles.mapButtons}>
+          <TouchableOpacity style={styles.mapButton} onPress={recenterOnHotel} accessibilityRole="button" accessibilityLabel={t('explore.recenterHotel')}>
+            <Ionicons name="home" size={18} color={colors.deepOcean} />
           </TouchableOpacity>
-        ))}
-        <Text style={styles.mapNotice}>{t('explore.mapNotice')}</Text>
-      </View>
-
-      {selected && (
-        <View style={styles.calloutCard}>
-          <View>
-            <Text style={styles.calloutTitle}>{selected.label}</Text>
-            <Text style={styles.calloutType}>{t(`explore.mapFilter.${FILTER_KEY[selected.type]}`)}</Text>
+          {permissionState === 'granted' && (
+            <TouchableOpacity style={styles.mapButton} onPress={recenterOnMe} accessibilityRole="button" accessibilityLabel={t('explore.myLocation')}>
+              <Ionicons name="locate" size={18} color={colors.deepOcean} />
+            </TouchableOpacity>
+          )}
+        </View>
+        {permissionState === 'denied' && (
+          <View style={styles.noticeBanner}>
+            <Ionicons name="location-outline" size={14} color={colors.slate} />
+            <Text style={styles.noticeText}>{t('explore.locationDenied')}</Text>
           </View>
-          <TouchableOpacity
-            onPress={() => setSelected(null)}
-            accessibilityRole="button"
-            accessibilityLabel={t('common.close')}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          >
-            <Ionicons name="close" size={20} color={colors.slate} />
-          </TouchableOpacity>
-        </View>
-      )}
+        )}
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  mapArea: { flex: 1, backgroundColor: '#DCEEEA', margin: spacing.lg, borderRadius: radius.lg, overflow: 'hidden' },
-  grid: { ...StyleSheet.absoluteFillObject },
-  gridLineH: { position: 'absolute', left: 0, right: 0, height: 1, backgroundColor: 'rgba(11,59,69,0.08)' },
-  gridLineV: { position: 'absolute', top: 0, bottom: 0, width: 1, backgroundColor: 'rgba(11,59,69,0.08)' },
-  pin: { position: 'absolute', transform: [{ translateX: -14 }, { translateY: -14 }] },
-  pinDot: {
-    width: 28, height: 28, borderRadius: 14, backgroundColor: colors.turquoiseDark,
-    alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: colors.white,
+  mapArea: { flex: 1, margin: spacing.lg, borderRadius: radius.lg, overflow: 'hidden', backgroundColor: '#DCEEEA' },
+  mapButtons: { position: 'absolute', right: spacing.sm, top: spacing.sm, gap: spacing.sm },
+  mapButton: {
+    width: 36, height: 36, borderRadius: 18, backgroundColor: colors.white,
+    alignItems: 'center', justifyContent: 'center',
+    ...Platform.select({ ios: { shadowColor: '#000', shadowOpacity: 0.15, shadowRadius: 4, shadowOffset: { width: 0, height: 2 } }, android: { elevation: 3 } }),
   },
-  pinDotHotel: { backgroundColor: colors.deepOcean, width: 34, height: 34, borderRadius: 17 },
-  mapNotice: {
-    position: 'absolute', bottom: 10, alignSelf: 'center', fontSize: 10.5, color: colors.slate,
-    backgroundColor: 'rgba(255,255,255,0.85)', paddingHorizontal: 10, paddingVertical: 4, borderRadius: radius.pill,
+  noticeBanner: {
+    position: 'absolute', bottom: 10, left: 10, right: 10, flexDirection: 'row', alignItems: 'center', gap: 6,
+    backgroundColor: 'rgba(255,255,255,0.92)', paddingHorizontal: 10, paddingVertical: 8, borderRadius: radius.md,
   },
-  calloutCard: {
-    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-    backgroundColor: colors.white, marginHorizontal: spacing.lg, marginBottom: spacing.lg,
-    padding: spacing.md, borderRadius: radius.md, borderWidth: 1, borderColor: colors.border,
-  },
-  calloutTitle: { fontSize: 15, fontWeight: '700', color: colors.charcoal },
-  calloutType: { fontSize: 12, color: colors.slate, marginTop: 2 },
+  noticeText: { fontSize: 11.5, color: colors.slate, flex: 1 },
 });

@@ -97,13 +97,9 @@
     "difficulty": "难度",
     "pricingNotice": "具体价格和可预订情况因季节而异，详情请咨询我们的礼宾部。",
     "map": "地图",
-    "mapFilter": {
-      "all": "全部",
-      "hotel": "酒店",
-      "attraction": "景点",
-      "dining": "餐饮"
-    },
-    "mapNotice": "示例地图 — 如需实时定位，请接入 Google Maps / Mapbox。"
+    "recenterHotel": "定位到酒店",
+    "myLocation": "我的位置",
+    "locationDenied": "定位功能已关闭。请在设置中开启，以在地图上显示您的位置。"
   },
   "activities": {
     "title": "活动",
