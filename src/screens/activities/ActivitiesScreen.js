@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { FlatList } from 'react-native';
+import { View, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
@@ -44,15 +44,15 @@ export default function ActivitiesScreen({ navigation }) {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
       <ScreenHeader title={t('activities.title')} onBack={() => navigation.goBack()} />
-      <FlatList
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        data={['All', ...ACTIVITY_CATEGORIES]}
-        keyExtractor={(c) => c}
-        style={{ flexGrow: 0, marginVertical: spacing.sm }}
-        contentContainerStyle={{ paddingHorizontal: spacing.lg }}
-        renderItem={({ item }) => <Pill label={item === 'All' ? t('explore.all') : t(`common.category.${item}`)} selected={category === item} onPress={() => setCategory(item)} />}
-      />
+      {/* A plain wrapping row, not a horizontal FlatList/ScrollView: on-device
+          testing found filter-pill labels rendering blank specifically
+          inside a horizontal scroll container on Android — see
+          ExploreScreen.js's identical fix for the full explanation. */}
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, paddingHorizontal: spacing.lg, marginVertical: spacing.sm }}>
+        {['All', ...ACTIVITY_CATEGORIES].map((item) => (
+          <Pill key={item} label={item === 'All' ? t('explore.all') : t(`common.category.${item}`)} selected={category === item} onPress={() => setCategory(item)} />
+        ))}
+      </View>
       <FlatList
         data={filtered}
         keyExtractor={(a) => a.id}

@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, StyleSheet, ScrollView, FlatList } from 'react-native';
+import { View, StyleSheet, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -109,12 +109,18 @@ export default function ExploreScreen({ navigation }) {
         </View>
       </View>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.pillScroll} contentContainerStyle={{ paddingHorizontal: spacing.lg }}>
+      {/* A plain wrapping row, not a horizontal ScrollView: on-device testing
+          found filter-pill labels rendering blank specifically inside a
+          horizontal ScrollView on Android (background/selection state drew
+          fine, only the Text failed to paint) — the identical Pill component
+          renders correctly elsewhere in the app in this flex-wrap layout,
+          so this sidesteps whatever that ScrollView-specific defect is. */}
+      <View style={styles.pillRow}>
         <Pill label={t('explore.all')} selected={category === 'All'} onPress={() => setCategory('All')} />
         {DESTINATION_CATEGORIES.map((c) => (
           <Pill key={c} label={t(`common.category.${c}`)} selected={category === c} onPress={() => setCategory(c)} />
         ))}
-      </ScrollView>
+      </View>
 
       <FlatList
         data={filtered}
@@ -154,5 +160,5 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: spacing.sm,
   },
-  pillScroll: { marginTop: spacing.md, flexGrow: 0 },
+  pillRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, paddingHorizontal: spacing.lg, marginTop: spacing.md },
 });

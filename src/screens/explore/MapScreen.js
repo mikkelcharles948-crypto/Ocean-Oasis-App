@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { WebView } from 'react-native-webview';
 import * as Location from 'expo-location';
@@ -160,12 +160,14 @@ export default function MapScreen({ navigation }) {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
       <ScreenHeader title={t('explore.map')} onBack={() => navigation.goBack()} />
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexGrow: 0, marginBottom: spacing.sm }} contentContainerStyle={{ paddingHorizontal: spacing.lg }}>
+      {/* A plain wrapping row, not a horizontal ScrollView — see
+          ExploreScreen.js's renderItem comment for why. */}
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, paddingHorizontal: spacing.lg, marginBottom: spacing.sm }}>
         <Pill label={t('explore.all')} selected={category === 'All'} onPress={() => handleCategoryChange('All')} />
         {DESTINATION_CATEGORIES.map((c) => (
           <Pill key={c} label={t(`common.category.${c}`)} selected={category === c} onPress={() => handleCategoryChange(c)} />
         ))}
-      </ScrollView>
+      </View>
 
       <View style={styles.mapArea}>
         <WebView
