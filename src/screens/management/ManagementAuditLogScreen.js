@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, EmptyState, timeAgo } from '../../components/UI';
-import { colors, spacing } from '../../theme/theme';
+import { colors, spacing, radius } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 import { ROLE_LABELS } from '../../data/mockData';
 
@@ -36,7 +36,7 @@ export default function ManagementAuditLogScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', gap: spacing.sm, backgroundColor: colors.white, borderRadius: 14, padding: spacing.md, borderWidth: 1, borderColor: colors.border },
+  row: { flexDirection: 'row', gap: spacing.sm, backgroundColor: colors.white, borderRadius: radius.md, padding: spacing.md, borderWidth: 1, borderColor: colors.border },
   dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.turquoise, marginTop: 5 },
   action: { fontSize: 13.5, color: colors.charcoal, fontWeight: '600' },
   meta: { fontSize: 11.5, color: colors.slate, marginTop: 3 },

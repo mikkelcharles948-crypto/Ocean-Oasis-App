@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { Card, SectionHeader, KpiCard, ProgressBar, timeAgo } from '../../components/UI';
-import { colors, spacing, font } from '../../theme/theme';
+import { colors, spacing, typography } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 const CATEGORY_KEY = { Room: 'room', Cleanliness: 'cleanliness', Service: 'service', Food: 'food', Activities: 'activities' };
@@ -75,8 +75,8 @@ export default function ManagementGuestExperienceScreen() {
 }
 
 const styles = StyleSheet.create({
-  heading: { fontSize: 22, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
-  sub: { fontSize: 13, color: colors.slate, marginTop: 2, marginBottom: spacing.md },
+  heading: { ...typography.heading, color: colors.charcoal },
+  sub: { ...typography.bodySmall, color: colors.slate, marginTop: 2, marginBottom: spacing.md },
   kpiRow: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
   catLabel: { fontSize: 13, fontWeight: '700', color: colors.charcoal },
   catValue: { fontSize: 12, color: colors.slate },

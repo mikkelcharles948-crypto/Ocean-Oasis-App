@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { Card, SectionHeader, KpiCard, ProgressBar } from '../../components/UI';
-import { colors, spacing, font } from '../../theme/theme';
+import { colors, spacing, typography } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 export default function ManagementOverviewScreen() {
@@ -71,9 +71,9 @@ export default function ManagementOverviewScreen() {
 }
 
 const styles = StyleSheet.create({
-  eyebrow: { fontSize: 11, fontWeight: '700', letterSpacing: 1.5, color: colors.gold },
-  heading: { fontSize: 24, fontWeight: '700', color: colors.charcoal, fontFamily: font.display, marginTop: 4 },
-  sub: { fontSize: 13, color: colors.slate, marginTop: 2, marginBottom: spacing.md },
+  eyebrow: { ...typography.label, color: colors.goldDark },
+  heading: { ...typography.heading, color: colors.charcoal, marginTop: 4 },
+  sub: { ...typography.bodySmall, color: colors.slate, marginTop: 2, marginBottom: spacing.md },
   kpiRow: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
   deptLabel: { fontSize: 13, fontWeight: '700', color: colors.charcoal },
   deptValue: { fontSize: 11.5, color: colors.slate },

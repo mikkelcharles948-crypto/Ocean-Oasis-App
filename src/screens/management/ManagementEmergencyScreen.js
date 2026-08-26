@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Card, Field } from '../../components/UI';
 import Button from '../../components/Button';
-import { colors, spacing, radius, font } from '../../theme/theme';
+import AnimatedPressable from '../../components/AnimatedPressable';
+import { colors, spacing, radius, font, typography } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 const PRESETS = [
@@ -72,10 +73,16 @@ export default function ManagementEmergencyScreen({ navigation }) {
         <Text style={styles.label}>{t('management.emergency.presetsLabel')}</Text>
         <View style={styles.presetRow}>
           {PRESETS.map((p) => (
-            <TouchableOpacity key={p.key} style={styles.presetChip} onPress={() => applyPreset(p.key)}>
+            <AnimatedPressable
+              key={p.key}
+              style={styles.presetChip}
+              onPress={() => applyPreset(p.key)}
+              accessibilityRole="button"
+              accessibilityLabel={t(`management.emergency.presets.${p.key}.chip`)}
+            >
               <Ionicons name={p.icon} size={16} color={colors.deepOcean} />
               <Text style={styles.presetLabel}>{t(`management.emergency.presets.${p.key}.chip`)}</Text>
-            </TouchableOpacity>
+            </AnimatedPressable>
           ))}
         </View>
 
@@ -99,7 +106,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.md, padding: spacing.md, marginBottom: spacing.lg, borderWidth: 1, borderColor: '#EAD2B8',
   },
   warningText: { flex: 1, fontSize: 12.5, color: '#7A4A1E', lineHeight: 18 },
-  label: { fontSize: 12.5, fontWeight: '700', color: colors.charcoal, marginBottom: spacing.sm },
+  label: { ...typography.label, color: colors.charcoal, marginBottom: spacing.sm },
   presetRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginBottom: spacing.lg },
   presetChip: {
     flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: colors.white,

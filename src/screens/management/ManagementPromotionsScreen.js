@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { useTranslation } from 'react-i18next';
 
-import { Card, ScreenHeader, Badge, Field } from '../../components/UI';
+import { Card, ScreenHeader, Badge, Field, Pill } from '../../components/UI';
 import GlassSurface from '../../components/GlassSurface';
 import Button from '../../components/Button';
 import { colors, spacing, radius, font } from '../../theme/theme';
@@ -77,11 +77,9 @@ export default function ManagementPromotionsScreen({ navigation }) {
               <Field label={t('management.promotions.descriptionLabel')} value={form.description} onChangeText={(v) => setForm({ ...form, description: v })} multiline />
               <Field label={t('management.promotions.discountLabel')} value={form.discount} onChangeText={(v) => setForm({ ...form, discount: v })} />
               <Text style={styles.fieldLabel}>{t('management.promotions.targetAudienceLabel')}</Text>
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: spacing.md }}>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: spacing.md }}>
                 {TARGET_AUDIENCES.map((a) => (
-                  <TouchableOpacity key={a} onPress={() => setForm({ ...form, targetAudience: a })} style={[styles.chip, form.targetAudience === a && styles.chipActive]}>
-                    <Text style={[styles.chipText, form.targetAudience === a && styles.chipTextActive]}>{a}</Text>
-                  </TouchableOpacity>
+                  <Pill key={a} label={a} selected={form.targetAudience === a} onPress={() => setForm({ ...form, targetAudience: a })} />
                 ))}
               </View>
               <Field label={t('management.promotions.startDateLabel')} value={form.startDate} onChangeText={(v) => setForm({ ...form, startDate: v })} />
@@ -118,8 +116,4 @@ const styles = StyleSheet.create({
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.md },
   modalTitle: { fontSize: 18, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
   fieldLabel: { fontSize: 12.5, fontWeight: '700', color: colors.charcoal, marginBottom: 8 },
-  chip: { paddingHorizontal: 12, paddingVertical: 7, borderRadius: radius.pill, backgroundColor: colors.sandLight },
-  chipActive: { backgroundColor: colors.deepOcean },
-  chipText: { fontSize: 11.5, fontWeight: '600', color: colors.charcoal },
-  chipTextActive: { color: colors.white },
 });

@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { Card, ScreenHeader, SectionHeader, KpiCard } from '../../components/UI';
-import { colors, spacing, font } from '../../theme/theme';
+import { colors, spacing, typography } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 export default function ManagementRevenueScreen({ navigation }) {
@@ -66,8 +66,7 @@ export default function ManagementRevenueScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  heading: { fontSize: 22, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
-  sub: { fontSize: 13, color: colors.slate, marginTop: 2, marginBottom: spacing.md },
+  sub: { ...typography.bodySmall, color: colors.slate, marginTop: 2, marginBottom: spacing.md },
   noteText: { fontSize: 12.5, color: colors.charcoal, lineHeight: 19 },
   kpiRow: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: spacing.md },

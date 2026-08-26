@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
 import { Card, ScreenHeader } from '../../components/UI';
-import { colors, spacing, radius, font } from '../../theme/theme';
+import AnimatedPressable from '../../components/AnimatedPressable';
+import { colors, spacing, radius, font, typography } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 import { PROPERTY_INFO, ROLE_LABELS } from '../../data/mockData';
 
@@ -47,10 +48,15 @@ export default function ManagementSettingsScreen({ navigation }) {
           </Text>
         </Card>
 
-        <TouchableOpacity style={styles.switchBtn} onPress={handleSwitch}>
+        <AnimatedPressable
+          style={styles.switchBtn}
+          onPress={handleSwitch}
+          accessibilityRole="button"
+          accessibilityLabel={t('staff.profile.switchExperience')}
+        >
           <Ionicons name="swap-horizontal" size={20} color={colors.deepOcean} />
           <Text style={styles.switchText}>{t('staff.profile.switchExperience')}</Text>
-        </TouchableOpacity>
+        </AnimatedPressable>
       </View>
     </SafeAreaView>
   );
@@ -66,7 +72,7 @@ function Row({ label, value }) {
 }
 
 const styles = StyleSheet.create({
-  cardTitle: { fontSize: 13, fontWeight: '700', color: colors.charcoal, marginBottom: 8 },
+  cardTitle: { ...typography.label, color: colors.charcoal, marginBottom: 8 },
   name: { fontSize: 16, fontWeight: '700', color: colors.charcoal, fontFamily: font.display },
   meta: { fontSize: 12, color: colors.slate, marginTop: 2 },
   row: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 6, borderTopWidth: 1, borderTopColor: colors.border },
