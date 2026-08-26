@@ -160,7 +160,8 @@ export const DESTINATIONS = [
     difficulty: 'Challenging',
     duration: '3 hrs',
     image: 'gorge',
-    // No verified real photo found for this specific site yet — falls back to the icon placeholder.
+    // Real photo from justgodominica.com's own Titou Gorge tour page.
+    imageUrl: 'https://justgodominica.com/wp-content/uploads/2020/01/Titou-Gorge_dominica-005-400x284.jpg',
   },
   {
     id: 'd_10',
@@ -277,7 +278,8 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: '1.5 hrs',
     image: 'wine',
-    // No verified real photo found for this specific experience yet — falls back to the icon placeholder.
+    // Real photo of a Dominica bush-rum shack, from the Discover Dominica Authority's own media CDN.
+    imageUrl: 'https://cdn.discoverdominica.com/production/20200218085528-dsc-23064.jpeg',
   },
   {
     id: 'd_19',
@@ -316,7 +318,8 @@ export const DESTINATIONS = [
     difficulty: 'Challenging',
     duration: '2 hrs',
     image: 'waterfall',
-    // No verified real photo found for this specific site yet — falls back to the icon placeholder.
+    // Real photo from Rosalie Forest (the eco-tourism operator based at Wavine Cyrique's trailhead).
+    imageUrl: 'https://i0.wp.com/www.rosalieforest.com/wp-content/uploads/2015/05/wavine-cyrique-21.jpg?w=1872',
   },
 ];
 
@@ -447,6 +450,7 @@ export const ACTIVITIES = [
     meetingPoint: 'Hotel Lobby',
     cancellationPolicy: 'Free cancellation up to 48 hours before the activity.',
     image: 'gorge',
+    imageUrl: 'https://justgodominica.com/wp-content/uploads/2020/01/Titou-Gorge_dominica-005-400x284.jpg',
   },
   {
     id: 'a_7',
