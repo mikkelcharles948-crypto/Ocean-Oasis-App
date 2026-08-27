@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, Switch, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { ScreenHeader, Card, Pill } from '../../components/UI';
 import { colors, spacing, font } from '../../theme/theme';
+import { REDUCE_MOTION_OVERRIDE_KEY, setReducedMotionOverride } from '../../theme/motion';
 
 const TEXT_SIZES = ['Standard', 'Large', 'Extra Large'];
 const TEXT_SIZE_KEY = { Standard: 'standard', Large: 'large', 'Extra Large': 'extraLarge' };
@@ -12,9 +14,23 @@ const TEXT_SIZE_KEY = { Standard: 'standard', Large: 'large', 'Extra Large': 'ex
 export default function AccessibilityScreen({ navigation }) {
   const { t } = useTranslation();
   const [reduceMotion, setReduceMotion] = useState(false);
+  // Bold Text and High Contrast aren't wired to anything yet — actually
+  // applying them needs a font-weight/color theming layer that doesn't
+  // exist yet, not just this screen's toggle. Left visible rather than
+  // removed since that's a product decision, but flagged here so it's
+  // not mistaken for a working preference.
   const [highContrast, setHighContrast] = useState(false);
   const [boldText, setBoldText] = useState(false);
   const [textSize, setTextSize] = useState('Standard');
+
+  useEffect(() => {
+    AsyncStorage.getItem(REDUCE_MOTION_OVERRIDE_KEY).then((value) => setReduceMotion(value === 'true'));
+  }, []);
+
+  const toggleReduceMotion = (value) => {
+    setReduceMotion(value);
+    setReducedMotionOverride(value);
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
@@ -33,7 +49,7 @@ export default function AccessibilityScreen({ navigation }) {
           <View style={styles.divider} />
           <ToggleRow label={t('accessibility.highContrast')} description={t('accessibility.highContrastDesc')} value={highContrast} onValueChange={setHighContrast} />
           <View style={styles.divider} />
-          <ToggleRow label={t('accessibility.reduceMotion')} description={t('accessibility.reduceMotionDesc')} value={reduceMotion} onValueChange={setReduceMotion} />
+          <ToggleRow label={t('accessibility.reduceMotion')} description={t('accessibility.reduceMotionDesc')} value={reduceMotion} onValueChange={toggleReduceMotion} />
         </Card>
 
         <Text style={styles.footnote}>{t('accessibility.footnote')}</Text>
