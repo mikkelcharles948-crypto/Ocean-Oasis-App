@@ -21,7 +21,7 @@
       "package": "com.oceanoasisdominica.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon-square.png",
-        "backgroundColor": "#0B3B45"
+        "backgroundColor": "#202057"
       },
       "permissions": [
         "USE_BIOMETRIC",
@@ -57,7 +57,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/icon-square.png",
+          "image": "./assets/logo-mark.png",
           "imageWidth": 140,
           "backgroundColor": "#0B3B45"
         }
