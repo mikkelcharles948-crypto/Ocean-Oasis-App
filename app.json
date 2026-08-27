@@ -6,7 +6,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
-    "icon": "./assets/logo-mark.png",
+    "icon": "./assets/icon-square.png",
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -20,7 +20,7 @@
     "android": {
       "package": "com.oceanoasisdominica.app",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/logo-mark.png",
+        "foregroundImage": "./assets/icon-square.png",
         "backgroundColor": "#0B3B45"
       },
       "permissions": [
@@ -57,7 +57,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/logo-mark.png",
+          "image": "./assets/icon-square.png",
           "imageWidth": 140,
           "backgroundColor": "#0B3B45"
         }
