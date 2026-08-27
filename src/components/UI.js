@@ -1,5 +1,7 @@
 import React, { useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text } from './AppText';
+import { TextInput } from './AppTextInput';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -81,6 +83,7 @@ export function ScreenHeader({ title, onBack, right }) {
   // ScrollView normally (nothing scrolls underneath it), so this is a
   // lighter-touch "glass" treatment: a translucent/frosted panel with a
   // soft edge, not a truly floating header with content blurring behind it.
+  const { t } = useTranslation();
   return (
     <View style={styles.screenHeaderShadowWrap}>
       <GlassSurface
@@ -94,7 +97,13 @@ export function ScreenHeader({ title, onBack, right }) {
         </View>
         <View style={styles.screenHeader}>
           {onBack ? (
-            <TouchableOpacity onPress={onBack} style={styles.backBtn}>
+            <TouchableOpacity
+              onPress={onBack}
+              style={styles.backBtn}
+              accessibilityRole="button"
+              accessibilityLabel={t('common.back')}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
               <Ionicons name="chevron-back" size={24} color={colors.deepOcean} />
             </TouchableOpacity>
           ) : (
@@ -287,7 +296,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.sm,
   },
-  backBtn: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
+  backBtn: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   screenHeaderTitle: { flex: 1, textAlign: 'center', fontSize: 17, fontWeight: '700', color: colors.charcoal },
   empty: { alignItems: 'center', justifyContent: 'center', paddingVertical: spacing.xxl, paddingHorizontal: spacing.lg },
   emptyIconWrap: {

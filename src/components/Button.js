@@ -1,5 +1,6 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, View } from 'react-native';
+import { TouchableOpacity, StyleSheet, ActivityIndicator, View } from 'react-native';
+import { Text } from './AppText';
 import { colors, radius, font, shadow } from '../theme/theme';
 
 export default function Button({

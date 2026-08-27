@@ -9,6 +9,7 @@ import * as Notifications from 'expo-notifications';
 import * as Sentry from '@sentry/react-native';
 
 import { AppProvider, useApp } from './src/context/AppContext';
+import { AccessibilityProvider } from './src/context/AccessibilityContext';
 import RootNavigator from './src/navigation/RootNavigator';
 
 // Keep the native splash up until the initial Supabase session check and the
@@ -66,10 +67,12 @@ function App() {
   return (
     <SafeAreaProvider>
       <AppProvider>
-        <StatusBar style="dark" />
-        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-          <AppContent />
-        </KeyboardAvoidingView>
+        <AccessibilityProvider>
+          <StatusBar style="dark" />
+          <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+            <AppContent />
+          </KeyboardAvoidingView>
+        </AccessibilityProvider>
       </AppProvider>
     </SafeAreaProvider>
   );
