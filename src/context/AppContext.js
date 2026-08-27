@@ -1,8 +1,10 @@
 import React, { createContext, useContext, useMemo, useState, useCallback, useEffect } from 'react';
 import { Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as LocalAuthentication from 'expo-local-authentication';
 import * as SecureStore from 'expo-secure-store';
 import * as Notifications from 'expo-notifications';
+import * as ExpoLinking from 'expo-linking';
 import Constants from 'expo-constants';
 import {
   GUEST, RESERVATION, ROOM, INITIAL_SERVICE_REQUESTS, INITIAL_NOTIFICATIONS,
@@ -47,6 +49,12 @@ import {
 } from '../services/supabaseStaffData';
 
 const BIOMETRIC_PREF_KEY = 'oo_biometric_enabled';
+const ONBOARDING_STORAGE_KEY = 'oo_has_onboarded';
+// Where Supabase email links (magic-link sign-in, password reset) send the
+// user back to. Must also be added to the redirect URL allowlist in the
+// Supabase dashboard (Authentication -> URL Configuration) — a build-time
+// URL isn't something the app can register there itself.
+const AUTH_CALLBACK_URL = ExpoLinking.createURL('auth-callback');
 
 const AppContext = createContext(null);
 
@@ -72,6 +80,25 @@ export function AppProvider({ children }) {
   const [dataLoading, setDataLoading] = useState(false);
   const [dataError, setDataError] = useState(null);
   const [hasOnboarded, setHasOnboarded] = useState(false);
+  // Whether the persisted onboarding flag has finished loading — RootNavigator
+  // waits on this (alongside authLoading) before deciding what to show, so a
+  // returning guest who already onboarded doesn't get flashed the onboarding
+  // screen again every cold start while AsyncStorage is still being read.
+  const [onboardingChecked, setOnboardingChecked] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    AsyncStorage.getItem(ONBOARDING_STORAGE_KEY).then((value) => {
+      if (!mounted) return;
+      if (value === 'true') setHasOnboarded(true);
+      setOnboardingChecked(true);
+    }).catch(() => {
+      if (mounted) setOnboardingChecked(true);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   // Which top-level experience is active: null (picker), 'guest', 'staff', 'management'.
   const [experience, setExperience] = useState(null);
@@ -95,6 +122,12 @@ export function AppProvider({ children }) {
   const [biometricSupported, setBiometricSupported] = useState(false);
   const [biometricEnabled, setBiometricEnabled] = useState(false);
   const [biometricLockActive, setBiometricLockActive] = useState(false);
+
+  // Set when a password-reset email link lands back in the app — Supabase
+  // signs the recovery link's session in immediately (isAuthenticated would
+  // otherwise flip true and RootNavigator would route straight into the
+  // main app, skipping the "choose a new password" step entirely).
+  const [passwordRecoveryActive, setPasswordRecoveryActive] = useState(false);
 
   const [guest, setGuest] = useState(GUEST);
   const [reservation, setReservation] = useState(RESERVATION);
@@ -141,14 +174,39 @@ export function AppProvider({ children }) {
         setAuthLoading(false);
       }
     });
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
       setAuthSession(session);
       setAuthLoading(false);
+      if (event === 'PASSWORD_RECOVERY') setPasswordRecoveryActive(true);
     });
     return () => {
       mounted = false;
       listener.subscription.unsubscribe();
     };
+  }, []);
+
+  // Handles the app being opened from a Supabase auth email link (magic-link
+  // sign-in or password reset) — both use the "implicit" flow, which returns
+  // the session as a URL fragment (#access_token=...&refresh_token=...&type=...)
+  // rather than a query param, so it has to be parsed out manually here and
+  // handed to setSession(); the client itself has detectSessionInUrl:false
+  // since that Supabase feature assumes a browser's window.location, which
+  // doesn't exist in React Native.
+  useEffect(() => {
+    const handleUrl = (url) => {
+      if (!url) return;
+      const fragment = url.split('#')[1];
+      if (!fragment) return;
+      const params = new URLSearchParams(fragment);
+      const access_token = params.get('access_token');
+      const refresh_token = params.get('refresh_token');
+      if (access_token && refresh_token) {
+        supabase.auth.setSession({ access_token, refresh_token }).catch(() => {});
+      }
+    };
+    ExpoLinking.getInitialURL().then(handleUrl).catch(() => {});
+    const sub = ExpoLinking.addEventListener('url', ({ url }) => handleUrl(url));
+    return () => sub.remove();
   }, []);
 
   const refreshGuestData = useCallback(async () => {
@@ -399,6 +457,7 @@ export function AppProvider({ children }) {
   const completeOnboarding = useCallback((interests) => {
     setGuest((g) => ({ ...g, interests: interests || [] }));
     setHasOnboarded(true);
+    AsyncStorage.setItem(ONBOARDING_STORAGE_KEY, 'true').catch(() => {});
   }, []);
 
   const chooseExperience = useCallback((exp) => setExperience(exp), []);
@@ -434,13 +493,33 @@ export function AppProvider({ children }) {
     if (!email?.trim()) return { ok: false, error: 'Enter your email address.' };
     const { error } = await supabase.auth.signInWithOtp({
       email: email.trim(),
-      options: { shouldCreateUser: true },
+      options: { shouldCreateUser: true, emailRedirectTo: AUTH_CALLBACK_URL },
     });
     return error ? { ok: false, error: error.message } : { ok: true };
   }, []);
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
     setExperience(null);
+  }, []);
+
+  const sendPasswordReset = useCallback(async (email) => {
+    if (!email?.trim()) return { ok: false, error: 'Enter your email address.' };
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: AUTH_CALLBACK_URL });
+    return error ? { ok: false, error: error.message } : { ok: true };
+  }, []);
+
+  // Completes a password-reset flow after the recovery link has landed back
+  // in the app (see the deep-link effect above) and Supabase has signed in
+  // the temporary recovery session — this is the step ForgotPasswordScreen's
+  // "send reset link" had no counterpart for until now.
+  const completePasswordRecovery = useCallback(async (newPassword) => {
+    if (!newPassword || newPassword.length < 8) {
+      return { ok: false, error: 'Password must be at least 8 characters.' };
+    }
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (error) return { ok: false, error: error.message };
+    setPasswordRecoveryActive(false);
+    return { ok: true };
   }, []);
 
   const updateGuest = useCallback(async (changes) => {
@@ -943,9 +1022,10 @@ export function AppProvider({ children }) {
 
   const value = useMemo(
     () => ({
-      hasOnboarded, completeOnboarding,
+      hasOnboarded, completeOnboarding, onboardingChecked,
       experience, chooseExperience, exitToExperiencePicker,
       isAuthenticated, authSession, authLoading, dataLoading, dataError, refreshGuestData, signIn, signUp, sendMagicLink, signOut,
+      sendPasswordReset, completePasswordRecovery, passwordRecoveryActive,
       updateGuest,
       opsSession, opsSignIn, opsSignOut, canAccessSurface,
       guest, setGuest, reservation, room,
@@ -974,8 +1054,10 @@ export function AppProvider({ children }) {
       searchAvailableRoomsStaff, createReservationForGuest, createGuestProfile,
     }),
     [
-      hasOnboarded, completeOnboarding, experience, chooseExperience, exitToExperiencePicker,
-      isAuthenticated, authSession, authLoading, dataLoading, dataError, refreshGuestData, signIn, signUp, sendMagicLink, signOut, updateGuest, opsSession, opsSignIn, opsSignOut, canAccessSurface,
+      hasOnboarded, completeOnboarding, onboardingChecked, experience, chooseExperience, exitToExperiencePicker,
+      isAuthenticated, authSession, authLoading, dataLoading, dataError, refreshGuestData, signIn, signUp, sendMagicLink, signOut,
+      sendPasswordReset, completePasswordRecovery, passwordRecoveryActive,
+      updateGuest, opsSession, opsSignIn, opsSignOut, canAccessSurface,
       guest, reservation, room, itinerary, addToItinerary, removeFromItinerary,
       serviceRequests, submitServiceRequest, assignRequestToStaff, updateRequestStatus, addRequestNote,
       savedActivityIds, toggleSavedActivity, notifications, markNotificationRead, markAllNotificationsRead, unreadNotificationCount,

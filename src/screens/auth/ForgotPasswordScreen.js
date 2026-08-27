@@ -7,10 +7,11 @@ import { useTranslation } from 'react-i18next';
 import { ScreenHeader, Field } from '../../components/UI';
 import Button from '../../components/Button';
 import { colors, spacing, typography } from '../../theme/theme';
-import { supabase } from '../../lib/supabase';
+import { useApp } from '../../context/AppContext';
 
 export default function ForgotPasswordScreen({ navigation }) {
   const { t } = useTranslation();
+  const { sendPasswordReset } = useApp();
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -23,10 +24,10 @@ export default function ForgotPasswordScreen({ navigation }) {
     }
     setError('');
     setLoading(true);
-    const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.trim());
+    const result = await sendPasswordReset(email);
     setLoading(false);
-    if (resetError) {
-      setError(resetError.message);
+    if (!result?.ok) {
+      setError(result?.error || t('auth.unableToSendLink'));
       return;
     }
     setSent(true);

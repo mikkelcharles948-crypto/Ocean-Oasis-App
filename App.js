@@ -1,14 +1,22 @@
 import './src/i18n';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
+import * as SplashScreen from 'expo-splash-screen';
 import * as Notifications from 'expo-notifications';
 import * as Sentry from '@sentry/react-native';
 
-import { AppProvider } from './src/context/AppContext';
+import { AppProvider, useApp } from './src/context/AppContext';
 import RootNavigator from './src/navigation/RootNavigator';
+
+// Keep the native splash up until the initial Supabase session check and the
+// persisted onboarding flag have both loaded — without this, a returning
+// signed-in guest would see a flash of the onboarding/sign-in screen for the
+// instant it takes those to resolve, before RootNavigator can route them
+// straight to their already-authenticated Main tabs.
+SplashScreen.preventAutoHideAsync().catch(() => {});
 
 // Crash/error reporting — no-ops safely if EXPO_PUBLIC_SENTRY_DSN isn't
 // set (e.g. local development without a Sentry project configured yet).
@@ -44,13 +52,23 @@ Notifications.setNotificationHandler({
 // has to handle keyboard avoidance itself — focusing any TextInput anywhere
 // in the app automatically shifts the visible area up so the field being
 // typed into is never hidden behind the keyboard.
+function AppContent() {
+  const { authLoading, onboardingChecked } = useApp();
+  useEffect(() => {
+    if (!authLoading && onboardingChecked) {
+      SplashScreen.hideAsync().catch(() => {});
+    }
+  }, [authLoading, onboardingChecked]);
+  return <RootNavigator />;
+}
+
 function App() {
   return (
     <SafeAreaProvider>
       <AppProvider>
         <StatusBar style="dark" />
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-          <RootNavigator />
+          <AppContent />
         </KeyboardAvoidingView>
       </AppProvider>
     </SafeAreaProvider>
