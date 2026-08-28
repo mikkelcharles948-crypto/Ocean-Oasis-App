@@ -283,7 +283,9 @@
     "greeting": "¿Cómo podemos hacer tu estancia aún mejor?",
     "suggestedQuestions": "Preguntas sugeridas",
     "inputPlaceholder": "Pregunta a la conserjería…",
-    "fallbackAnswer": "Puedo ayudarte con los servicios del hotel, actividades, restaurantes y eventos. Prueba una de las preguntas sugeridas abajo, o contacta a recepción para algo más específico."
+    "fallbackAnswer": "Puedo ayudarte con los servicios del hotel, actividades, restaurantes y eventos. Prueba una de las preguntas sugeridas abajo, o contacta a recepción para algo más específico.",
+    "handoffBanner": "Ahora estás hablando con nuestro equipo de conserjería.",
+    "staffLabel": "Equipo de conserjería"
   },
   "contact": {
     "title": "Contactar recepción",
@@ -770,6 +772,10 @@
       "title": "Más",
       "subtitle": "Todo lo demás en Operaciones de Personal.",
       "items": {
+        "concierge": {
+          "label": "Conserjería IA",
+          "sub": "Conversaciones y derivaciones al equipo"
+        },
         "guests": {
           "label": "Huéspedes",
           "sub": "Perfiles de huéspedes unificados"
@@ -794,6 +800,23 @@
           "label": "Perfil",
           "sub": "Tu cuenta"
         }
+      }
+    },
+    "concierge": {
+      "title": "Conserjería IA",
+      "empty": "Aún no hay conversaciones con huéspedes.",
+      "unknownGuest": "Huésped",
+      "replyPlaceholder": "Escribe una respuesta…",
+      "markResolved": "Marcar como resuelto",
+      "status": {
+        "active": "Gestionada por IA",
+        "escalated": "Requiere tu atención",
+        "resolved": "Resuelta"
+      },
+      "role": {
+        "guest": "Huésped",
+        "assistant": "Conserjería IA",
+        "staff": "Tú"
       }
     },
     "dashboard": {
@@ -1070,7 +1093,9 @@
         "responsesSub": "{{count}} respuestas",
         "totalSub": "{{count}} en total",
         "platformRevenue": "Ingresos de la plataforma",
-        "revenueSub": "actividades + promociones"
+        "revenueSub": "actividades + promociones",
+        "aiConcierge": "Conserjería IA",
+        "aiConciergeSub": "{{count}} requieren atención"
       },
       "requestsByDepartment": "Solicitudes por departamento",
       "completedOfTotal": "{{completed}}/{{total}} completadas",

@@ -212,3 +212,32 @@ export async function updateGuestProfile(guestId, changes) {
   if (error) throw error;
   return mapGuest(data);
 }
+
+export function mapConciergeMessage(row) {
+  if (!row) return null;
+  return { id: row.id, conversationId: row.conversation_id, role: row.role, content: row.content, createdAt: row.created_at };
+}
+
+// The Edge Function (supabase/functions/concierge-chat) holds the actual
+// Anthropic API key server-side and is the only thing that ever calls it —
+// this just invokes it and inserts nothing itself. faqContext is the
+// already-localized static hotel FAQ (src/data/mockData.js's CONCIERGE_FAQ,
+// via getLocalizedContent) — sent per-call rather than duplicated inside
+// the Edge Function, so hotel facts still have exactly one source of truth.
+export async function sendConciergeMessage(conversationId, message, faqContext) {
+  const { data, error } = await supabase.functions.invoke('concierge-chat', {
+    body: { conversationId, message, faqContext },
+  });
+  if (error) throw error;
+  return data;
+}
+
+export async function loadConciergeMessages(conversationId) {
+  const { data, error } = await supabase
+    .from('concierge_messages')
+    .select('*')
+    .eq('conversation_id', conversationId)
+    .order('created_at', { ascending: true });
+  if (error) throw error;
+  return (data || []).map(mapConciergeMessage);
+}

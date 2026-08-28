@@ -10,7 +10,7 @@ import { useApp } from '../../context/AppContext';
 
 export default function ManagementOverviewScreen() {
   const { t } = useTranslation();
-  const { opsSession, rooms, serviceRequests, feedback, activityBookings, promotions } = useApp();
+  const { opsSession, rooms, serviceRequests, feedback, activityBookings, promotions, conciergeConversations } = useApp();
 
   const inHouseCount = rooms.filter((r) => r.status.startsWith('OCCUPIED')).length;
   const occupancy = rooms.length ? Math.round((inHouseCount / rooms.length) * 100) : 0;
@@ -18,6 +18,7 @@ export default function ManagementOverviewScreen() {
   const avgSatisfaction = feedback.length ? Math.round((feedback.reduce((s, f) => s + f.overall, 0) / feedback.length) * 10) / 10 : 0;
   const activityRevenue = activityBookings.reduce((s, b) => s + (b.amount || 0), 0);
   const promotionRevenue = promotions.reduce((s, p) => s + (p.revenue || 0), 0);
+  const escalatedConversations = conciergeConversations.filter((c) => c.status === 'escalated').length;
 
   const byDepartment = useMemo(() => {
     const map = {};
@@ -41,6 +42,7 @@ export default function ManagementOverviewScreen() {
           <KpiCard label={t('management.overview.kpi.guestSatisfaction')} value={`${avgSatisfaction}/5`} sub={t('management.overview.kpi.responsesSub', { count: feedback.length })} />
           <KpiCard label={t('staff.dashboard.kpi.openRequests')} value={openRequests.length} sub={t('management.overview.kpi.totalSub', { count: serviceRequests.length })} />
           <KpiCard label={t('management.overview.kpi.platformRevenue')} value={`$${(activityRevenue + promotionRevenue).toLocaleString()}`} sub={t('management.overview.kpi.revenueSub')} />
+          <KpiCard label={t('management.overview.kpi.aiConcierge')} value={conciergeConversations.length} sub={t('management.overview.kpi.aiConciergeSub', { count: escalatedConversations })} />
         </View>
 
         <View style={{ marginTop: spacing.md }}>

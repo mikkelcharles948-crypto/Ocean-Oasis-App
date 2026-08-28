@@ -23,6 +23,8 @@ import {
   registerPushToken as registerRemotePushToken,
   searchAvailableRooms as searchRemoteAvailableRooms,
   createReservation as createRemoteReservation,
+  sendConciergeMessage as sendRemoteConciergeMessage,
+  loadConciergeMessages as loadRemoteConciergeMessages,
 } from '../services/supabaseData';
 import {
   loadStaffData, loadStaffDirectory, writeAuditEntry,
@@ -46,10 +48,14 @@ import {
   searchAvailableRoomsStaff as searchRemoteAvailableRoomsStaff,
   createReservationForGuest as createRemoteReservationForGuest,
   createGuestProfile as createRemoteGuestProfile,
+  loadConciergeConversationMessages as loadRemoteStaffConciergeThread,
+  replyToConciergeConversation as replyToRemoteConciergeConversation,
+  resolveConciergeConversation as resolveRemoteConciergeConversation,
 } from '../services/supabaseStaffData';
 
 const BIOMETRIC_PREF_KEY = 'oo_biometric_enabled';
 const ONBOARDING_STORAGE_KEY = 'oo_has_onboarded';
+const CONCIERGE_CONVERSATION_KEY = 'oo_concierge_conversation_id';
 // Where Supabase email links (magic-link sign-in, password reset) send the
 // user back to. Must also be added to the redirect URL allowlist in the
 // Supabase dashboard (Authentication -> URL Configuration) — a build-time
@@ -98,6 +104,12 @@ export function AppProvider({ children }) {
     return () => {
       mounted = false;
     };
+  }, []);
+
+  useEffect(() => {
+    AsyncStorage.getItem(CONCIERGE_CONVERSATION_KEY).then((value) => {
+      if (value) setConciergeConversationId(value);
+    }).catch(() => {});
   }, []);
 
   // Which top-level experience is active: null (picker), 'guest', 'staff', 'management'.
@@ -165,6 +177,12 @@ export function AppProvider({ children }) {
   const [propertySettings, setPropertySettings] = useState({ lowRatingThreshold: 3 });
   const [staffDirectory, setStaffDirectory] = useState([]);
   const [allGuestsForStaff, setAllGuestsForStaff] = useState([]);
+  // The guest's own AI concierge thread — persisted so reopening the
+  // Concierge tab resumes the same conversation instead of starting a new
+  // one every time. Staff-side conversation list (all guests) is separate,
+  // in conciergeConversations below.
+  const [conciergeConversationId, setConciergeConversationId] = useState(null);
+  const [conciergeConversations, setConciergeConversations] = useState([]);
 
   useEffect(() => {
     let mounted = true;
@@ -251,6 +269,7 @@ export function AppProvider({ children }) {
       setAuditLog(staffData.auditLog);
       setStaffNotifications(staffData.staffNotifications);
       setAllGuestsForStaff(staffData.allGuestsForStaff);
+      setConciergeConversations(staffData.conciergeConversations);
       setStaffDirectory(directory);
       return { ok: true };
     } catch (error) {
@@ -447,6 +466,21 @@ export function AppProvider({ children }) {
         if (!row?.id || !row.recipient_role) return;
         setStaffNotifications((prev) => (prev.some((n) => n.id === row.id) ? prev : [{ ...row, createdAt: row.created_at }, ...prev]));
       })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'concierge_conversations' }, (payload) => {
+        const row = payload.new;
+        if (!row?.id) return;
+        setConciergeConversations((prev) => {
+          const exists = prev.some((c) => c.id === row.id);
+          if (exists) {
+            return prev.map((c) => (c.id === row.id ? { ...c, status: row.status, escalatedRequestId: row.escalated_request_id, lastMessageAt: row.last_message_at } : c));
+          }
+          // A brand-new conversation from realtime alone has no joined guest
+          // name yet (the raw payload doesn't include it) — the next full
+          // refreshStaffData() fills it in; showing it nameless in the
+          // meantime still surfaces that a guest needs attention.
+          return [{ id: row.id, guestId: row.guest_id, guestName: '', status: row.status, escalatedRequestId: row.escalated_request_id, createdAt: row.created_at, lastMessageAt: row.last_message_at }, ...prev];
+        });
+      })
       .subscribe();
     return () => supabase.removeChannel(channel);
   }, [opsSession]);
@@ -625,6 +659,61 @@ export function AppProvider({ children }) {
     setStaffNotifications((prev) => [{ id: nextId('sn'), title: 'New guest request', body: `${category} — Room ${room.number}`, category: 'Requests', createdAt: new Date().toISOString(), read: false }, ...prev]);
     return { ok: true, data: newRequest };
   }, [room, guest, authSession?.user?.id]);
+
+  // Sends one guest turn to the AI concierge (supabase/functions/concierge-chat)
+  // and returns its reply. conciergeConversationId is threaded through and
+  // persisted so the same conversation resumes next time the guest opens
+  // the Concierge tab, rather than starting fresh every time.
+  const sendConciergeMessage = useCallback(async (message, faqContext) => {
+    try {
+      const result = await sendRemoteConciergeMessage(conciergeConversationId, message, faqContext);
+      if (result?.conversationId && result.conversationId !== conciergeConversationId) {
+        setConciergeConversationId(result.conversationId);
+        AsyncStorage.setItem(CONCIERGE_CONVERSATION_KEY, result.conversationId).catch(() => {});
+      }
+      return { ok: true, data: result };
+    } catch (error) {
+      return { ok: false, error: 'Our concierge is unavailable right now — please try again in a moment.' };
+    }
+  }, [conciergeConversationId]);
+
+  const loadConciergeThread = useCallback(async () => {
+    if (!conciergeConversationId) return [];
+    try {
+      return await loadRemoteConciergeMessages(conciergeConversationId);
+    } catch (error) {
+      return [];
+    }
+  }, [conciergeConversationId]);
+
+  const loadStaffConciergeThread = useCallback(async (conversationId) => {
+    try {
+      return await loadRemoteStaffConciergeThread(conversationId);
+    } catch (error) {
+      return [];
+    }
+  }, []);
+
+  const replyToConcierge = useCallback(async (conversationId, text) => {
+    if (!opsSession?.id) return { ok: false, error: 'Sign in required.' };
+    try {
+      const updated = await replyToRemoteConciergeConversation(conversationId, opsSession.id, text);
+      setConciergeConversations((prev) => prev.map((c) => (c.id === conversationId ? updated : c)));
+      return { ok: true, data: updated };
+    } catch (error) {
+      return { ok: false, error: 'Could not send your reply. Please try again.' };
+    }
+  }, [opsSession?.id]);
+
+  const resolveConcierge = useCallback(async (conversationId) => {
+    try {
+      const updated = await resolveRemoteConciergeConversation(conversationId);
+      setConciergeConversations((prev) => prev.map((c) => (c.id === conversationId ? updated : c)));
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: 'Could not resolve this conversation.' };
+    }
+  }, []);
 
   const assignRequestToStaff = useCallback(async (requestId, staffId) => {
     // service_requests already has a DB audit trigger — no separate logAudit call needed.
@@ -1052,6 +1141,8 @@ export function AppProvider({ children }) {
       enableBiometricLogin, disableBiometricLogin, unlockWithBiometrics, unlockWithPasswordFallback,
       searchAvailableRooms, createReservation,
       searchAvailableRoomsStaff, createReservationForGuest, createGuestProfile,
+      conciergeConversationId, sendConciergeMessage, loadConciergeThread,
+      conciergeConversations, replyToConcierge, resolveConcierge, loadStaffConciergeThread,
     }),
     [
       hasOnboarded, completeOnboarding, onboardingChecked, experience, chooseExperience, exitToExperiencePicker,
@@ -1070,6 +1161,8 @@ export function AppProvider({ children }) {
       biometricSupported, biometricEnabled, biometricLockActive,
       enableBiometricLogin, disableBiometricLogin, unlockWithBiometrics, unlockWithPasswordFallback,
       searchAvailableRooms, createReservation, searchAvailableRoomsStaff, createReservationForGuest, createGuestProfile,
+      conciergeConversationId, sendConciergeMessage, loadConciergeThread,
+      conciergeConversations, replyToConcierge, resolveConcierge, loadStaffConciergeThread,
     ]
   );
 

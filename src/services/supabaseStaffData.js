@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import { mapServiceRequest, mapActivity, mapEvent, mapPromotion, mapBooking, mapNotification, mapReservation } from './supabaseData';
+import { mapServiceRequest, mapActivity, mapEvent, mapPromotion, mapBooking, mapNotification, mapReservation, mapConciergeMessage } from './supabaseData';
 
 // notifications.id has no DB-generated default (unlike the other tables), so
 // staff/guest-originated inserts need a client-side id.
@@ -61,7 +61,7 @@ export async function loadStaffData() {
   const [
     requestsResult, roomsResult, activitiesResult, eventsResult, promotionsResult,
     bookingsResult, maintenanceResult, feedbackResult, contentResult, auditResult,
-    notificationsResult, guestsResult,
+    notificationsResult, guestsResult, conciergeResult,
   ] = await Promise.all([
     supabase.from('service_requests').select('*, guests(first_name, last_name)').order('created_at', { ascending: false }),
     supabase.from('rooms').select('*').order('number'),
@@ -78,10 +78,11 @@ export async function loadStaffData() {
     supabase.from('audit_log').select('*').order('created_at', { ascending: false }).limit(200),
     supabase.from('notifications').select('*').not('recipient_role', 'is', null).order('created_at', { ascending: false }),
     supabase.from('guests').select('id, first_name, last_name, reservations(id, reservation_number, check_in, check_out, housekeeping_preference, rooms(number))').order('created_at', { ascending: false }),
+    supabase.from('concierge_conversations').select('*, guests(first_name, last_name)').order('last_message_at', { ascending: false }).limit(100),
   ]);
   const failed = [
     requestsResult, roomsResult, activitiesResult, eventsResult, promotionsResult, bookingsResult,
-    maintenanceResult, feedbackResult, contentResult, auditResult, notificationsResult, guestsResult,
+    maintenanceResult, feedbackResult, contentResult, auditResult, notificationsResult, guestsResult, conciergeResult,
   ].find((r) => r.error);
   if (failed) throw failed.error;
 
@@ -98,6 +99,20 @@ export async function loadStaffData() {
     auditLog: (auditResult.data || []).map(mapAuditLog),
     staffNotifications: (notificationsResult.data || []).map(mapNotification),
     allGuestsForStaff: (guestsResult.data || []).map(mapStaffGuest),
+    conciergeConversations: (conciergeResult.data || []).map(mapConciergeConversation),
+  };
+}
+
+export function mapConciergeConversation(row) {
+  if (!row) return null;
+  return {
+    id: row.id,
+    guestId: row.guest_id,
+    guestName: guestName(row),
+    status: row.status,
+    escalatedRequestId: row.escalated_request_id,
+    createdAt: row.created_at,
+    lastMessageAt: row.last_message_at,
   };
 }
 
@@ -307,4 +322,44 @@ export async function sendEmergencyBroadcast(title, body) {
     // Non-fatal — in-app notifications already went out above.
   }
   return data;
+}
+
+export async function loadConciergeConversationMessages(conversationId) {
+  const { data, error } = await supabase
+    .from('concierge_messages')
+    .select('*')
+    .eq('conversation_id', conversationId)
+    .order('created_at', { ascending: true });
+  if (error) throw error;
+  return (data || []).map(mapConciergeMessage);
+}
+
+// A staff reply here is a real hand-off, not just another chat turn: the
+// concierge-chat Edge Function refuses to generate further AI replies once
+// a conversation's status isn't 'active', so once a staff member sends one
+// message the guest is talking to a person from then on, not the bot.
+export async function replyToConciergeConversation(conversationId, staffId, text) {
+  const { error: msgError } = await supabase
+    .from('concierge_messages')
+    .insert({ conversation_id: conversationId, role: 'staff', content: text, staff_id: staffId });
+  if (msgError) throw msgError;
+  const { data, error } = await supabase
+    .from('concierge_conversations')
+    .update({ status: 'escalated' })
+    .eq('id', conversationId)
+    .select('*, guests(first_name, last_name)')
+    .single();
+  if (error) throw error;
+  return mapConciergeConversation(data);
+}
+
+export async function resolveConciergeConversation(conversationId) {
+  const { data, error } = await supabase
+    .from('concierge_conversations')
+    .update({ status: 'resolved' })
+    .eq('id', conversationId)
+    .select('*, guests(first_name, last_name)')
+    .single();
+  if (error) throw error;
+  return mapConciergeConversation(data);
 }

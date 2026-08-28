@@ -283,7 +283,9 @@
     "greeting": "有什么可以让您的住宿更愉快的吗？",
     "suggestedQuestions": "推荐问题",
     "inputPlaceholder": "向礼宾部提问…",
-    "fallbackAnswer": "我可以协助您了解酒店服务、活动、餐饮和活动日程。请尝试下方的推荐问题，或联系前台获取更具体的帮助。"
+    "fallbackAnswer": "我可以协助您了解酒店服务、活动、餐饮和活动日程。请尝试下方的推荐问题，或联系前台获取更具体的帮助。",
+    "handoffBanner": "您现在正在与我们的礼宾团队对话。",
+    "staffLabel": "礼宾团队"
   },
   "contact": {
     "title": "联系前台",
@@ -770,6 +772,10 @@
       "title": "更多",
       "subtitle": "员工运营的其他功能。",
       "items": {
+        "concierge": {
+          "label": "AI 礼宾",
+          "sub": "住客对话与转接团队"
+        },
         "guests": {
           "label": "住客",
           "sub": "统一的住客档案"
@@ -794,6 +800,23 @@
           "label": "个人资料",
           "sub": "您的账户"
         }
+      }
+    },
+    "concierge": {
+      "title": "AI 礼宾",
+      "empty": "暂无住客对话。",
+      "unknownGuest": "住客",
+      "replyPlaceholder": "输入回复…",
+      "markResolved": "标记为已解决",
+      "status": {
+        "active": "AI 处理中",
+        "escalated": "需要您处理",
+        "resolved": "已解决"
+      },
+      "role": {
+        "guest": "住客",
+        "assistant": "AI 礼宾",
+        "staff": "您"
       }
     },
     "dashboard": {
@@ -1070,7 +1093,9 @@
         "responsesSub": "{{count}} 条回复",
         "totalSub": "共 {{count}} 项",
         "platformRevenue": "平台营收",
-        "revenueSub": "活动 + 促销"
+        "revenueSub": "活动 + 促销",
+        "aiConcierge": "AI 礼宾",
+        "aiConciergeSub": "{{count}} 项需人工处理"
       },
       "requestsByDepartment": "按部门划分的请求",
       "completedOfTotal": "已完成 {{completed}}/{{total}}",

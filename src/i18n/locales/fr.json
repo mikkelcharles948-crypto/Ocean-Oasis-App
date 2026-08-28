@@ -283,7 +283,9 @@
     "greeting": "Comment pouvons-nous rendre votre séjour encore meilleur ?",
     "suggestedQuestions": "Questions suggérées",
     "inputPlaceholder": "Posez une question à la conciergerie…",
-    "fallbackAnswer": "Je peux vous aider avec les services de l'hôtel, les activités, la restauration et les événements. Essayez l'une des questions suggérées ci-dessous, ou contactez la réception pour toute demande plus spécifique."
+    "fallbackAnswer": "Je peux vous aider avec les services de l'hôtel, les activités, la restauration et les événements. Essayez l'une des questions suggérées ci-dessous, ou contactez la réception pour toute demande plus spécifique.",
+    "handoffBanner": "Vous échangez maintenant avec notre équipe de conciergerie.",
+    "staffLabel": "Équipe de conciergerie"
   },
   "contact": {
     "title": "Contacter la réception",
@@ -770,6 +772,10 @@
       "title": "Plus",
       "subtitle": "Tout le reste des opérations du personnel.",
       "items": {
+        "concierge": {
+          "label": "Conciergerie IA",
+          "sub": "Conversations et transferts vers l'équipe"
+        },
         "guests": {
           "label": "Clients",
           "sub": "Profils clients unifiés"
@@ -794,6 +800,23 @@
           "label": "Profil",
           "sub": "Votre compte"
         }
+      }
+    },
+    "concierge": {
+      "title": "Conciergerie IA",
+      "empty": "Aucune conversation avec un client pour le moment.",
+      "unknownGuest": "Client",
+      "replyPlaceholder": "Écrire une réponse…",
+      "markResolved": "Marquer comme résolu",
+      "status": {
+        "active": "Gérée par l'IA",
+        "escalated": "Votre intervention requise",
+        "resolved": "Résolue"
+      },
+      "role": {
+        "guest": "Client",
+        "assistant": "Conciergerie IA",
+        "staff": "Vous"
       }
     },
     "dashboard": {
@@ -1070,7 +1093,9 @@
         "responsesSub": "{{count}} réponses",
         "totalSub": "{{count}} au total",
         "platformRevenue": "Revenus de la plateforme",
-        "revenueSub": "activités + promotions"
+        "revenueSub": "activités + promotions",
+        "aiConcierge": "Conciergerie IA",
+        "aiConciergeSub": "{{count}} nécessitent votre attention"
       },
       "requestsByDepartment": "Demandes par service",
       "completedOfTotal": "{{completed}}/{{total}} terminées",

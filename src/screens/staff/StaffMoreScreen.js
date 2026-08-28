@@ -10,6 +10,7 @@ import { colors, spacing, radius, typography } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 const ITEMS = [
+  { key: 'StaffConcierge', i18nKey: 'concierge', icon: 'chatbubble-ellipses-outline' },
   { key: 'StaffGuests', i18nKey: 'guests', icon: 'people-outline' },
   { key: 'StaffMaintenance', i18nKey: 'maintenance', icon: 'build-outline' },
   { key: 'StaffEvents', i18nKey: 'events', icon: 'musical-notes-outline' },
@@ -20,7 +21,8 @@ const ITEMS = [
 
 export default function StaffMoreScreen({ navigation }) {
   const { t } = useTranslation();
-  const { unreadStaffNotificationCount } = useApp();
+  const { unreadStaffNotificationCount, conciergeConversations } = useApp();
+  const escalatedConciergeCount = conciergeConversations.filter((c) => c.status === 'escalated').length;
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
@@ -38,6 +40,9 @@ export default function StaffMoreScreen({ navigation }) {
             </View>
             {item.key === 'StaffNotifications' && unreadStaffNotificationCount > 0 && (
               <View style={styles.badge}><Text style={styles.badgeText}>{unreadStaffNotificationCount}</Text></View>
+            )}
+            {item.key === 'StaffConcierge' && escalatedConciergeCount > 0 && (
+              <View style={styles.badge}><Text style={styles.badgeText}>{escalatedConciergeCount}</Text></View>
             )}
             <Ionicons name="chevron-forward" size={18} color={colors.slate} />
           </AnimatedPressable>

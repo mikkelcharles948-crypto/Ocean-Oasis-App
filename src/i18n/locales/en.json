@@ -283,7 +283,9 @@
     "greeting": "How can we help make your stay better?",
     "suggestedQuestions": "Suggested questions",
     "inputPlaceholder": "Ask the concierge…",
-    "fallbackAnswer": "I can help with hotel services, activities, dining, and events. Try one of the suggested questions below, or contact reception for anything more specific."
+    "fallbackAnswer": "I can help with hotel services, activities, dining, and events. Try one of the suggested questions below, or contact reception for anything more specific.",
+    "handoffBanner": "You're now talking with our concierge team.",
+    "staffLabel": "Concierge Team"
   },
   "contact": {
     "title": "Contact Reception",
@@ -770,6 +772,10 @@
       "title": "More",
       "subtitle": "Everything else in Staff Operations.",
       "items": {
+        "concierge": {
+          "label": "AI Concierge",
+          "sub": "Guest conversations & handoffs"
+        },
         "guests": {
           "label": "Guests",
           "sub": "Unified guest profiles"
@@ -794,6 +800,23 @@
           "label": "Profile",
           "sub": "Your account"
         }
+      }
+    },
+    "concierge": {
+      "title": "AI Concierge",
+      "empty": "No guest conversations yet.",
+      "unknownGuest": "Guest",
+      "replyPlaceholder": "Type a reply…",
+      "markResolved": "Mark Resolved",
+      "status": {
+        "active": "AI handling",
+        "escalated": "Needs you",
+        "resolved": "Resolved"
+      },
+      "role": {
+        "guest": "Guest",
+        "assistant": "AI Concierge",
+        "staff": "You"
       }
     },
     "dashboard": {
@@ -1070,7 +1093,9 @@
         "responsesSub": "{{count}} responses",
         "totalSub": "{{count}} total",
         "platformRevenue": "Platform Revenue",
-        "revenueSub": "activities + promotions"
+        "revenueSub": "activities + promotions",
+        "aiConcierge": "AI Concierge",
+        "aiConciergeSub": "{{count}} need staff"
       },
       "requestsByDepartment": "Requests by Department",
       "completedOfTotal": "{{completed}}/{{total}} completed",

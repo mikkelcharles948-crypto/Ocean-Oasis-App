@@ -18,6 +18,8 @@ import StaffEventsScreen from '../screens/staff/StaffEventsScreen';
 import StaffFeedbackScreen from '../screens/staff/StaffFeedbackScreen';
 import StaffNotificationsScreen from '../screens/staff/StaffNotificationsScreen';
 import StaffProfileScreen from '../screens/staff/StaffProfileScreen';
+import StaffConciergeScreen from '../screens/staff/StaffConciergeScreen';
+import StaffConciergeThreadScreen from '../screens/staff/StaffConciergeThreadScreen';
 import { colors } from '../theme/theme';
 import { useApp } from '../context/AppContext';
 import GlassSurface from '../components/GlassSurface';
@@ -37,6 +39,8 @@ function MoreStackNav() {
       <Stack.Screen name="StaffFeedback" component={StaffFeedbackScreen} />
       <Stack.Screen name="StaffNotifications" component={StaffNotificationsScreen} />
       <Stack.Screen name="StaffProfile" component={StaffProfileScreen} />
+      <Stack.Screen name="StaffConcierge" component={StaffConciergeScreen} />
+      <Stack.Screen name="StaffConciergeThread" component={StaffConciergeThreadScreen} />
     </Stack.Navigator>
   );
 }
