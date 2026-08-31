@@ -16,9 +16,10 @@ import { getLocalizedContent } from '../../i18n/content';
 import eventsContent from '../../i18n/content/events';
 import { optimizeImageUrl } from '../../utils/optimizeImageUrl';
 
-// No hero photography exists for hotel events yet (see docs/UI_UX_AUDIT.md
-// on asset organization) — a graceful icon-on-gradient treatment stands in
-// rather than substituting stock photography, per the redesign brief.
+// Falls back to an icon-on-gradient treatment both when an event genuinely
+// has no photo yet, and when one fails to load (onError below) — the two
+// cases render identically on purpose, so a transient failed load never
+// just shows blank.
 const ICON_MAP = {
   coffee: 'cafe-outline',
   nature: 'leaf-outline',
@@ -37,6 +38,7 @@ export default function EventDetailScreen({ route, navigation }) {
   const rawEvent = events.find((e) => e.id === eventId);
   const event = rawEvent ? getLocalizedContent(eventsContent, rawEvent.id, i18n.language, rawEvent) : null;
   const [reminderSet, setReminderSet] = useState(false);
+  const [imageFailed, setImageFailed] = useState(false);
 
   if (!event) {
     return (
@@ -56,8 +58,8 @@ export default function EventDetailScreen({ route, navigation }) {
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['bottom']}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.hero}>
-          {event.imageUrl ? (
-            <Image source={{ uri: optimizeImageUrl(event.imageUrl, 900) }} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} />
+          {event.imageUrl && !imageFailed ? (
+            <Image source={{ uri: optimizeImageUrl(event.imageUrl, 900) }} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} onError={() => setImageFailed(true)} />
           ) : (
             <LinearGradient colors={gradients.ocean} style={StyleSheet.absoluteFill}>
               <View style={styles.heroIconWrap}>

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { Text } from '../../components/AppText';
-import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -10,13 +9,13 @@ import { useTranslation } from 'react-i18next';
 import AnimatedPressable from '../../components/AnimatedPressable';
 import FloatingHeader from '../../components/FloatingHeader';
 import { Badge, ErrorState } from '../../components/UI';
+import ImagePlaceholder from '../../components/ImagePlaceholder';
 import Button from '../../components/Button';
 import { colors, spacing, radius, typography, shadow, gradients } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 import { getLocalizedContent } from '../../i18n/content';
 import activitiesContent from '../../i18n/content/activities';
 import { formatActivityPrice } from '../../utils/formatActivityPrice';
-import { optimizeImageUrl } from '../../utils/optimizeImageUrl';
 
 const AVAILABILITY_KEY = { Available: 'available', 'Limited spots': 'limitedSpots' };
 // Hero is tall enough to feel cinematic (per the brief: "entering the
@@ -57,12 +56,7 @@ export default function ActivityDetailScreen({ route, navigation }) {
         scrollEventThrottle={16}
       >
         <View style={styles.hero}>
-          <Image
-            source={{ uri: optimizeImageUrl(activity.imageUrl, 1100) }}
-            style={StyleSheet.absoluteFillObject}
-            contentFit="cover"
-            transition={300}
-          />
+          <ImagePlaceholder kind={activity.image} uri={activity.imageUrl} width={1100} style={StyleSheet.absoluteFillObject} borderRadius={0} iconSize={56} />
           <LinearGradient colors={TOP_SCRIM} style={styles.heroTopScrim} pointerEvents="none" />
         </View>
 

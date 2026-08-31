@@ -35,6 +35,7 @@ export default function DiningVenueScreen({ route, navigation }) {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [imageFailed, setImageFailed] = useState(false);
 
   if (!venue) {
     return (
@@ -68,8 +69,8 @@ export default function DiningVenueScreen({ route, navigation }) {
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['bottom']}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.hero}>
-          {venue.imageUrl ? (
-            <Image source={{ uri: optimizeImageUrl(venue.imageUrl, 900) }} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} />
+          {venue.imageUrl && !imageFailed ? (
+            <Image source={{ uri: optimizeImageUrl(venue.imageUrl, 900) }} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} onError={() => setImageFailed(true)} />
           ) : (
             <View style={[StyleSheet.absoluteFill, styles.heroFallback]}>
               <Ionicons name="restaurant-outline" size={48} color={colors.turquoiseDark} />

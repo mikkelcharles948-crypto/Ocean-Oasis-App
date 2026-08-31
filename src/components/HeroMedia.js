@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { Image } from 'expo-image';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { LinearGradient } from 'expo-linear-gradient';
-import { gradients } from '../theme/theme';
+import { colors, gradients } from '../theme/theme';
 import { useReducedMotion } from '../theme/motion';
 import { optimizeImageUrl } from '../utils/optimizeImageUrl';
 
@@ -24,9 +24,12 @@ export default function HeroMedia({ video, fallbackImage, imageWidth = 1200, scr
   const reducedMotion = useReducedMotion();
   const [videoFailed, setVideoFailed] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
+  const [imageFailed, setImageFailed] = useState(false);
   const showVideo = !!video && !reducedMotion && !videoFailed;
+  // A local require()'d asset (no .uri) can't fail to load the way a
+  // remote one can, so imageFailed only ever suppresses the remote case.
   const optimizedFallback = fallbackImage?.uri
-    ? { ...fallbackImage, uri: optimizeImageUrl(fallbackImage.uri, imageWidth) }
+    ? (imageFailed ? null : { ...fallbackImage, uri: optimizeImageUrl(fallbackImage.uri, imageWidth) })
     : fallbackImage;
 
   const player = useVideoPlayer(showVideo ? video : null, (p) => {
@@ -49,7 +52,13 @@ export default function HeroMedia({ video, fallbackImage, imageWidth = 1200, scr
 
   return (
     <View style={[styles.wrap, style]}>
-      <Image source={optimizedFallback} style={StyleSheet.absoluteFill} contentFit="cover" transition={250} />
+      {optimizedFallback ? (
+        <Image source={optimizedFallback} style={StyleSheet.absoluteFill} contentFit="cover" transition={250} onError={() => setImageFailed(true)} />
+      ) : (
+        // Keeps whatever text/controls are overlaid on the hero legible
+        // even if the photo fails to load, instead of a blank/white gap.
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.deepOcean }]} />
+      )}
       {showVideo ? (
         <VideoView
           player={player}

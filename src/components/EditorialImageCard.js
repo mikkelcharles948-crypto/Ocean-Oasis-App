@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Text } from './AppText';
 import { Image } from 'expo-image';
@@ -40,12 +40,13 @@ export default function EditorialImageCard({
   style,
 }) {
   const { height, imageWidth, titleStyle } = SIZES[size] || SIZES.medium;
-  const optimizedImage = image?.uri ? { ...image, uri: optimizeImageUrl(image.uri, imageWidth) } : image;
+  const [failed, setFailed] = useState(false);
+  const optimizedImage = image?.uri && !failed ? { ...image, uri: optimizeImageUrl(image.uri, imageWidth) } : null;
 
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.9} style={[styles.wrap, { height }, style]}>
       {optimizedImage ? (
-        <Image source={optimizedImage} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} />
+        <Image source={optimizedImage} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} onError={() => setFailed(true)} />
       ) : (
         <View style={[StyleSheet.absoluteFill, styles.fallback]}>
           <Ionicons name={fallbackIcon} size={36} color={colors.turquoiseDark} />

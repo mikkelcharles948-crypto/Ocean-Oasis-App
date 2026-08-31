@@ -96,6 +96,7 @@ function UpgradeCard({ tier: rawTier, featured, onRequested }) {
 export default function MyStayScreen({ navigation }) {
   const { t, i18n } = useTranslation();
   const { guest, reservation, room } = useApp();
+  const [heroImageFailed, setHeroImageFailed] = useState(false);
   const currentTierIndex = ROOM_TYPES.findIndex((rt) => rt.name === room.type);
   const upgradeOptions = currentTierIndex >= 0 ? ROOM_TYPES.slice(currentTierIndex + 1) : [];
 
@@ -120,7 +121,9 @@ export default function MyStayScreen({ navigation }) {
             This is the primary, most prominent element on the screen; every
             section below is a calmer secondary layer. */}
         <View style={styles.hero}>
-          <Image source={{ uri: optimizeImageUrl(MYSTAY_HERO_URL, 1100) }} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} />
+          {!heroImageFailed && (
+            <Image source={{ uri: optimizeImageUrl(MYSTAY_HERO_URL, 1100) }} style={StyleSheet.absoluteFill} contentFit="cover" transition={200} onError={() => setHeroImageFailed(true)} />
+          )}
           <LinearGradient colors={gradients.scrim} style={StyleSheet.absoluteFill} pointerEvents="none" />
           <Text style={[typography.label, styles.heroEyebrow]}>{t('mystay.title')}</Text>
           <Text style={[typography.display, styles.heroName]} numberOfLines={1}>{guest.firstName} {guest.lastName}</Text>
@@ -279,6 +282,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
     borderRadius: radius.lg,
     overflow: 'hidden',
+    backgroundColor: colors.deepOcean,
     justifyContent: 'flex-end',
     padding: spacing.lg,
     backgroundColor: colors.sandLight,

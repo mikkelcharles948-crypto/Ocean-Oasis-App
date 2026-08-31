@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, ScrollView, StyleSheet, useWindowDimensions } from 'react-native';
 import { Image } from 'expo-image';
+import { Ionicons } from '@expo/vector-icons';
 import { colors, radius } from '../theme/theme';
 import { optimizeImageUrl } from '../utils/optimizeImageUrl';
 
@@ -14,6 +15,7 @@ export default function ImageCarousel({ images = [], height = 260, width, border
   const { width: windowWidth } = useWindowDimensions();
   const resolvedWidth = width || windowWidth;
   const [index, setIndex] = useState(0);
+  const [failedIndexes, setFailedIndexes] = useState(() => new Set());
 
   if (!images.length) return null;
 
@@ -32,8 +34,24 @@ export default function ImageCarousel({ images = [], height = 260, width, border
         scrollEventThrottle={16}
       >
         {images.map((source, i) => {
+          if (failedIndexes.has(i)) {
+            return (
+              <View key={i} style={[{ width: resolvedWidth, height }, styles.fallback]}>
+                <Ionicons name="image-outline" size={36} color={colors.turquoiseDark} />
+              </View>
+            );
+          }
           const optimized = source?.uri ? { ...source, uri: optimizeImageUrl(source.uri, Math.round(resolvedWidth)) } : source;
-          return <Image key={i} source={optimized} style={{ width: resolvedWidth, height }} contentFit="cover" transition={200} />;
+          return (
+            <Image
+              key={i}
+              source={optimized}
+              style={{ width: resolvedWidth, height }}
+              contentFit="cover"
+              transition={200}
+              onError={() => setFailedIndexes((prev) => new Set(prev).add(i))}
+            />
+          );
         })}
       </ScrollView>
       {images.length > 1 ? (
@@ -54,4 +72,5 @@ const styles = StyleSheet.create({
   },
   dot: { width: 6, height: 6, borderRadius: 3, backgroundColor: 'rgba(255,255,255,0.5)' },
   dotActive: { backgroundColor: colors.white, width: 16 },
+  fallback: { alignItems: 'center', justifyContent: 'center', backgroundColor: colors.sandLight },
 });
