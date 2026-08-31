@@ -55,6 +55,17 @@ export default function StaffRequestsScreen() {
   };
 
   const handleStatusChange = async (requestId, status) => {
+    // Assignment and status are separate calls (a request can be picked
+    // up by whoever's free, not necessarily the person who set the
+    // status), but the two need to happen together in practice: leaving
+    // status free to advance with no assignee produced live rows sitting
+    // at "Completed" with assigned_staff_id still null — which is why
+    // Staff Performance's per-person completed count/avg never moved,
+    // since nothing was ever actually attributed to anyone.
+    if (status !== 'Received' && status !== 'Cancelled' && !active?.assignedStaffId) {
+      Alert.alert(t('staff.requests.assignFirstTitle'), t('staff.requests.assignFirstBody'));
+      return;
+    }
     const result = await updateRequestStatus(requestId, status);
     if (!result.ok) Alert.alert(t('common.somethingWrong'), result.error);
   };

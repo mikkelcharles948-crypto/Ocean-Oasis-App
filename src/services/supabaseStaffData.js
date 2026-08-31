@@ -284,6 +284,16 @@ export async function setContentStatus(contentId, status) {
   return mapContentItem(data);
 }
 
+export async function createContentItem(type, title, description) {
+  const { data, error } = await supabase.rpc('create_content_item', {
+    p_type: type,
+    p_title: title,
+    p_description: description || null,
+  });
+  if (error) throw error;
+  return mapContentItem(data);
+}
+
 export async function notifyStaffRole(role, { category, title, body }) {
   const { error } = await supabase.from('notifications').insert({
     id: generateId('n'),

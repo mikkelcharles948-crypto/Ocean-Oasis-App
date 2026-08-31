@@ -863,6 +863,8 @@
       "descriptionLabel": "描述：",
       "preferredTimeLabel": "偏好时间：",
       "assignToStaff": "分配给员工",
+      "assignFirstTitle": "请先分配人员",
+      "assignFirstBody": "在将此请求状态从「已接收」推进之前，请先在下方选择一名员工——否则该请求将不会计入任何人的绩效。",
       "updateStatus": "更新状态",
       "internalNotes": "内部备注",
       "notePlaceholder": "添加内部备注…",
@@ -1180,14 +1182,38 @@
     },
     "content": {
       "title": "内容",
-      "updatedLabel": "更新于 {{time}}"
+      "updatedLabel": "更新于 {{time}}",
+      "newItem": "新建内容",
+      "empty": "暂无内容项",
+      "emptySub": "点击上方 + 按钮创建一项。",
+      "form": {
+        "type": "类型",
+        "typePlaceholder": "例如：横幅、公告",
+        "itemTitle": "标题",
+        "itemTitlePlaceholder": "例如：假日营业时间通知",
+        "description": "描述",
+        "descriptionPlaceholder": "可选详情",
+        "create": "创建",
+        "required": "类型和标题为必填项。"
+      }
     },
     "staffPerformance": {
-      "title": "员工绩效"
+      "title": "员工绩效",
+      "feedbackSummary": "{{rating}}/5，来自 {{count}} 条住客反馈",
+      "noFeedback": "暂无住客反馈"
     },
     "auditLog": {
       "title": "审计日志",
-      "empty": "暂无活动记录"
+      "empty": "暂无活动记录",
+      "guest": "住客",
+      "someone": "某人",
+      "desc": {
+        "newRequest": "新的{{category}}请求 — {{room}}号房",
+        "assigned": "{{category}}请求（{{room}}号房）已分配给{{name}}",
+        "statusChange": "{{category}}请求（{{room}}号房）→ {{status}}",
+        "roomStatus": "{{room}}号房 → {{status}}",
+        "newBooking": "新的活动预订（{{count}}位住客）"
+      }
     },
     "settings": {
       "title": "设置",

@@ -863,6 +863,8 @@
       "descriptionLabel": "Descripción: ",
       "preferredTimeLabel": "Hora preferida: ",
       "assignToStaff": "Asignar a personal",
+      "assignFirstTitle": "Asigna a alguien primero",
+      "assignFirstBody": "Elige un miembro del personal abajo antes de avanzar esta solicitud más allá de \"Recibida\" — de lo contrario no contará en el desempeño de nadie.",
       "updateStatus": "Actualizar estado",
       "internalNotes": "Notas internas",
       "notePlaceholder": "Añadir una nota interna…",
@@ -1180,14 +1182,38 @@
     },
     "content": {
       "title": "Contenido",
-      "updatedLabel": "Actualizado {{time}}"
+      "updatedLabel": "Actualizado {{time}}",
+      "newItem": "Nuevo contenido",
+      "empty": "Aún no hay elementos de contenido",
+      "emptySub": "Crea uno con el botón + de arriba.",
+      "form": {
+        "type": "Tipo",
+        "typePlaceholder": "ej. Banner, Anuncio",
+        "itemTitle": "Título",
+        "itemTitlePlaceholder": "ej. Aviso de horario festivo",
+        "description": "Descripción",
+        "descriptionPlaceholder": "Detalles opcionales",
+        "create": "Crear",
+        "required": "El tipo y el título son obligatorios."
+      }
     },
     "staffPerformance": {
-      "title": "Rendimiento del personal"
+      "title": "Rendimiento del personal",
+      "feedbackSummary": "{{rating}}/5 de {{count}} comentarios de huéspedes",
+      "noFeedback": "Aún no hay comentarios de huéspedes"
     },
     "auditLog": {
       "title": "Registro de auditoría",
-      "empty": "Aún no hay actividad"
+      "empty": "Aún no hay actividad",
+      "guest": "Huésped",
+      "someone": "alguien",
+      "desc": {
+        "newRequest": "Nueva solicitud de {{category}} — Habitación {{room}}",
+        "assigned": "Solicitud de {{category}} (Habitación {{room}}) asignada a {{name}}",
+        "statusChange": "Solicitud de {{category}} (Habitación {{room}}) → {{status}}",
+        "roomStatus": "Habitación {{room}} → {{status}}",
+        "newBooking": "Nueva reserva de actividad ({{count}} huéspedes)"
+      }
     },
     "settings": {
       "title": "Configuración",

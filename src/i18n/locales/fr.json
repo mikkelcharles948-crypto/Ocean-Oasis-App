@@ -863,6 +863,8 @@
       "descriptionLabel": "Description : ",
       "preferredTimeLabel": "Heure préférée : ",
       "assignToStaff": "Assigner à un membre du personnel",
+      "assignFirstTitle": "Assignez d'abord quelqu'un",
+      "assignFirstBody": "Choisissez un membre du personnel ci-dessous avant de faire avancer cette demande au-delà de « Reçue » — sinon elle ne comptera pour les performances de personne.",
       "updateStatus": "Mettre à jour le statut",
       "internalNotes": "Notes internes",
       "notePlaceholder": "Ajouter une note interne…",
@@ -1180,14 +1182,38 @@
     },
     "content": {
       "title": "Contenu",
-      "updatedLabel": "Mis à jour {{time}}"
+      "updatedLabel": "Mis à jour {{time}}",
+      "newItem": "Nouveau contenu",
+      "empty": "Aucun contenu pour l'instant",
+      "emptySub": "Créez-en un avec le bouton + ci-dessus.",
+      "form": {
+        "type": "Type",
+        "typePlaceholder": "ex. Bannière, Annonce",
+        "itemTitle": "Titre",
+        "itemTitlePlaceholder": "ex. Avis horaires des fêtes",
+        "description": "Description",
+        "descriptionPlaceholder": "Détails facultatifs",
+        "create": "Créer",
+        "required": "Le type et le titre sont obligatoires."
+      }
     },
     "staffPerformance": {
-      "title": "Performance du personnel"
+      "title": "Performance du personnel",
+      "feedbackSummary": "{{rating}}/5 sur {{count}} avis client",
+      "noFeedback": "Aucun avis client pour l'instant"
     },
     "auditLog": {
       "title": "Journal d'audit",
-      "empty": "Aucune activité pour le moment"
+      "empty": "Aucune activité pour le moment",
+      "guest": "Client",
+      "someone": "quelqu'un",
+      "desc": {
+        "newRequest": "Nouvelle demande {{category}} — Chambre {{room}}",
+        "assigned": "Demande {{category}} (Chambre {{room}}) assignée à {{name}}",
+        "statusChange": "Demande {{category}} (Chambre {{room}}) → {{status}}",
+        "roomStatus": "Chambre {{room}} → {{status}}",
+        "newBooking": "Nouvelle réservation d'activité ({{count}} personnes)"
+      }
     },
     "settings": {
       "title": "Paramètres",

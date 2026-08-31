@@ -863,6 +863,8 @@
       "descriptionLabel": "Description: ",
       "preferredTimeLabel": "Preferred time: ",
       "assignToStaff": "Assign to staff",
+      "assignFirstTitle": "Assign someone first",
+      "assignFirstBody": "Pick a staff member below before moving this request past Received — otherwise it won't count toward anyone's performance.",
       "updateStatus": "Update status",
       "internalNotes": "Internal notes",
       "notePlaceholder": "Add an internal note…",
@@ -1180,14 +1182,38 @@
     },
     "content": {
       "title": "Content",
-      "updatedLabel": "Updated {{time}}"
+      "updatedLabel": "Updated {{time}}",
+      "newItem": "New Content Item",
+      "empty": "No content items yet",
+      "emptySub": "Create one with the + button above.",
+      "form": {
+        "type": "Type",
+        "typePlaceholder": "e.g. Banner, Announcement",
+        "itemTitle": "Title",
+        "itemTitlePlaceholder": "e.g. Holiday Hours Notice",
+        "description": "Description",
+        "descriptionPlaceholder": "Optional details",
+        "create": "Create",
+        "required": "Type and title are required."
+      }
     },
     "staffPerformance": {
-      "title": "Staff Performance"
+      "title": "Staff Performance",
+      "feedbackSummary": "{{rating}}/5 from {{count}} guest feedback",
+      "noFeedback": "No guest feedback yet"
     },
     "auditLog": {
       "title": "Audit Log",
-      "empty": "No activity yet"
+      "empty": "No activity yet",
+      "guest": "Guest",
+      "someone": "someone",
+      "desc": {
+        "newRequest": "New {{category}} request — Room {{room}}",
+        "assigned": "{{category}} request (Room {{room}}) assigned to {{name}}",
+        "statusChange": "{{category}} request (Room {{room}}) → {{status}}",
+        "roomStatus": "Room {{room}} → {{status}}",
+        "newBooking": "New activity booking ({{count}} guests)"
+      }
     },
     "settings": {
       "title": "Settings",

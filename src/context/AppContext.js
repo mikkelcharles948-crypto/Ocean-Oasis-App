@@ -41,6 +41,7 @@ import {
   updateMaintenanceStatus as updateRemoteMaintenanceStatus,
   resolveFeedback as resolveRemoteFeedback,
   setContentStatus as setRemoteContentStatus,
+  createContentItem as createRemoteContentItem,
   notifyStaffRole,
   markNotificationRead as markRemoteNotificationRead,
   markAllStaffNotificationsRead as markAllRemoteStaffNotificationsRead,
@@ -968,6 +969,17 @@ export function AppProvider({ children }) {
     }
   }, [logAudit]);
 
+  const createContentItem = useCallback(async (type, title, description) => {
+    try {
+      const item = await createRemoteContentItem(type, title, description);
+      setContentItems((prev) => [item, ...prev]);
+      logAudit(`Created content "${title}"`);
+      return { ok: true, data: item };
+    } catch (error) {
+      return { ok: false, error: 'The content item could not be created. Please try again.' };
+    }
+  }, [logAudit]);
+
   // ---------------------------------------------------------------------
   // Notifications (guest + staff, kept separate since they're different audiences)
   // ---------------------------------------------------------------------
@@ -1129,7 +1141,7 @@ export function AppProvider({ children }) {
       promotions, createPromotion, publishPromotion, archivePromotion,
       rooms, updateRoomStatus,
       maintenanceIssues, createMaintenanceIssue, updateMaintenanceStatus,
-      contentItems, setContentStatus,
+      contentItems, setContentStatus, createContentItem,
       auditLog,
       staffNotifications, markStaffNotificationRead, markAllStaffNotificationsRead, unreadStaffNotificationCount,
       staffDirectory,
@@ -1155,7 +1167,7 @@ export function AppProvider({ children }) {
       submitFeedback, feedback, resolveFeedback, checkedIn, completeDigitalCheckIn, setHousekeepingPreference,
       activities, createActivity, activityBookings, bookActivity, events, createEvent, publishEvent,
       promotions, createPromotion, publishPromotion, archivePromotion, rooms, updateRoomStatus,
-      maintenanceIssues, createMaintenanceIssue, updateMaintenanceStatus, contentItems, setContentStatus,
+      maintenanceIssues, createMaintenanceIssue, updateMaintenanceStatus, contentItems, setContentStatus, createContentItem,
       auditLog, staffNotifications, markStaffNotificationRead, markAllStaffNotificationsRead, unreadStaffNotificationCount,
       staffDirectory, allGuestsForStaff, refreshStaffData, propertySettings, sendEmergencyBroadcast,
       biometricSupported, biometricEnabled, biometricLockActive,
