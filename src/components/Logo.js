@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Image, StyleSheet } from 'react-native';
 import GlassSurface from './GlassSurface';
+import { colors } from '../theme/theme';
 
 // Official Ocean Oasis, Dominica logo, processed from the original source
 // artwork (which shipped as an opaque cream-filled rectangle) into two
@@ -20,11 +21,15 @@ const MARK_ASPECT_RATIO = 1; // logo-mark.png is square
 
 // `variant`: 'full' (mark + wordmark, the default) or 'mark' (icon only,
 // for tight chrome like tab bars).
-// `light`: true when the full-lockup logo sits on a dark/photo background
-// — since the wordmark itself is a dark teal, it needs a translucent
-// frosted (Liquid Glass) panel behind it for contrast, not a flat white
-// box. The mark-only variant never gets a background treatment — it's
-// meant to sit directly on the tab bar's own glass, fully zoomed in.
+// `light`: true when the logo sits on a dark/photo background rather than
+// a flat surface. For 'full' this adds a translucent frosted (Liquid
+// Glass) panel behind it, since the wordmark is a dark teal that needs
+// contrast from something other than the photo itself. For 'mark', the
+// logo-mark.png artwork is a mid-tone teal — legible on the tab bar's own
+// light glass, but low-contrast and easy to lose against a photo (an ocean
+// hero shot is very often teal-toned too) — so `light` here instead tints
+// the mark white, the same fix already used successfully for the bell icon
+// sitting right next to it in HomeScreen's hero.
 export default function Logo({ size = 'md', light = false, variant = 'full' }) {
   const height = typeof size === 'number' ? size : { sm: 40, md: 60, lg: 96 }[size];
 
@@ -32,7 +37,7 @@ export default function Logo({ size = 'md', light = false, variant = 'full' }) {
     return (
       <Image
         source={LOGO_MARK}
-        style={{ width: height, height }}
+        style={[{ width: height, height }, light && { tintColor: colors.white }]}
         resizeMode="contain"
         accessibilityLabel="Ocean Oasis Hotel, Dominica"
       />
