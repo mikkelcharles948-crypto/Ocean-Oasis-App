@@ -65,7 +65,7 @@ function EntranceItem({ delayMs = 0, style, children }) {
 // itself. Verified on Wikimedia Commons. No hero video exists for this app
 // yet (see docs/UI_UX_AUDIT.md) — HeroMedia gracefully renders the photo
 // alone until a real video asset is sourced.
-const HOME_HERO_URL = 'https://upload.wikimedia.org/wikipedia/commons/c/c2/Soufri%C3%A8re_Bay%2C_Dominica_008.JPG';
+const HOME_HERO_URL = 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Soufri%C3%A8re_Bay%2C_Dominica_008.JPG/1280px-Soufri%C3%A8re_Bay%2C_Dominica_008.JPG';
 
 const QUICK_LINKS = [
   { key: 'requestSomething', icon: 'chatbubble-ellipses-outline', route: 'NewRequest' },
@@ -105,7 +105,7 @@ export default function HomeScreen({ navigation }) {
           scrimLocations={[0, 1]}
         >
           <EntranceItem delayMs={entrance.title} style={styles.heroTopRow}>
-            <Logo size={40} variant="mark" />
+            <Logo size={56} variant="mark" light />
             <TouchableOpacity
               onPress={() => navigation.navigate('Notifications')}
               style={styles.bellWrap}
@@ -247,7 +247,7 @@ export default function HomeScreen({ navigation }) {
           <View style={[styles.section, { marginBottom: 0 }]}>
             <View style={{ paddingHorizontal: spacing.lg }}>
               <EditorialImageCard
-                image={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/8/86/Trafalgar_Falls_at_Morne_Trois_Pitons_National_Park.jpg' }}
+                image={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Trafalgar_Falls_at_Morne_Trois_Pitons_National_Park.jpg/1280px-Trafalgar_Falls_at_Morne_Trois_Pitons_National_Park.jpg' }}
                 fallbackIcon="compass-outline"
                 eyebrow={t('nav.explore')}
                 title={t('explore.title')}

@@ -56,7 +56,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: '1.5–2 hrs',
     image: 'ocean',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/40/Scotts_Head%2C_Dominica_014.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Scotts_Head%2C_Dominica_014.jpg/1280px-Scotts_Head%2C_Dominica_014.jpg',
   },
   {
     id: 'd_2',
@@ -82,7 +82,7 @@ export const DESTINATIONS = [
     difficulty: 'Moderate',
     duration: '1.5 hrs',
     image: 'waterfall',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/86/Trafalgar_Falls_at_Morne_Trois_Pitons_National_Park.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Trafalgar_Falls_at_Morne_Trois_Pitons_National_Park.jpg/1280px-Trafalgar_Falls_at_Morne_Trois_Pitons_National_Park.jpg',
   },
   {
     id: 'd_4',
@@ -95,7 +95,7 @@ export const DESTINATIONS = [
     difficulty: 'Moderate',
     duration: 'Half day',
     image: 'rainforest',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/3/3f/Morne_Trois_Pitons_National_Park%2C_Dominica_-_jungle.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Morne_Trois_Pitons_National_Park%2C_Dominica_-_jungle.jpg/1280px-Morne_Trois_Pitons_National_Park%2C_Dominica_-_jungle.jpg',
   },
   {
     id: 'd_5',
@@ -108,7 +108,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: '1 hr',
     image: 'pool',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a0/Emerald_Pool%2C_Dominica.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Emerald_Pool%2C_Dominica.jpg/1280px-Emerald_Pool%2C_Dominica.jpg',
   },
   {
     id: 'd_6',
@@ -121,7 +121,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: '3 hrs',
     image: 'whale',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/4d/Baleine_Ile_de_la_Dominique.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Baleine_Ile_de_la_Dominique.jpg/1280px-Baleine_Ile_de_la_Dominique.jpg',
   },
   {
     id: 'd_7',
@@ -134,7 +134,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: '2 hrs',
     image: 'market',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/d6/Produce_Market%2C_Roseau%2C_Dominica.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Produce_Market%2C_Roseau%2C_Dominica.jpg/1280px-Produce_Market%2C_Roseau%2C_Dominica.jpg',
   },
   {
     id: 'd_8',
@@ -147,7 +147,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: '1.5 hrs',
     image: 'springs',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Dominica%2C_Karibik_-_Laudat_-_Wotten_Waven_%E2%80%93_Fond_Cani_-_panoramio.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Dominica%2C_Karibik_-_Laudat_-_Wotten_Waven_%E2%80%93_Fond_Cani_-_panoramio.jpg/1280px-Dominica%2C_Karibik_-_Laudat_-_Wotten_Waven_%E2%80%93_Fond_Cani_-_panoramio.jpg',
   },
   {
     id: 'd_9',
@@ -174,7 +174,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: '2 hrs',
     image: 'market',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Fort_Shirley%2C_Dominica%2C_2026.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Fort_Shirley%2C_Dominica%2C_2026.jpg/1280px-Fort_Shirley%2C_Dominica%2C_2026.jpg',
   },
   {
     id: 'd_11',
@@ -187,7 +187,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: '1.5 hrs',
     image: 'rainforest',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/0/03/Indian_River_in_Portsmouth%2C_Dominica.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Indian_River_in_Portsmouth%2C_Dominica.jpg/1280px-Indian_River_in_Portsmouth%2C_Dominica.jpg',
   },
   {
     id: 'd_12',
@@ -200,7 +200,7 @@ export const DESTINATIONS = [
     difficulty: 'Challenging',
     duration: '3 hrs',
     image: 'waterfall',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/20/Middleham_Falls_at_Morne_Trois_Pitons_National_Park.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Middleham_Falls_at_Morne_Trois_Pitons_National_Park.jpg/1280px-Middleham_Falls_at_Morne_Trois_Pitons_National_Park.jpg',
   },
   {
     id: 'd_13',
@@ -226,7 +226,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: 'Half day',
     image: 'culture',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/fd/Carib_Territory_%28Dominica%29.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Carib_Territory_%28Dominica%29.jpg/1280px-Carib_Territory_%28Dominica%29.jpg',
   },
   {
     id: 'd_15',
@@ -239,7 +239,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: '1.5 hrs',
     image: 'nature',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/1d/Amazona_imperialis_-Roseau_-Dominica_-aviary-6a.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Amazona_imperialis_-Roseau_-Dominica_-aviary-6a.jpg/1280px-Amazona_imperialis_-Roseau_-Dominica_-aviary-6a.jpg',
   },
   {
     id: 'd_16',
@@ -252,7 +252,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: '2 hrs',
     image: 'ocean',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e7/MERO_BEACH%2C_DOMINICA.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/MERO_BEACH%2C_DOMINICA.jpg/1280px-MERO_BEACH%2C_DOMINICA.jpg',
   },
   {
     id: 'd_17',
@@ -265,7 +265,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: '2 hrs',
     image: 'culture',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/c/c2/Soufri%C3%A8re_Bay%2C_Dominica_008.JPG',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Soufri%C3%A8re_Bay%2C_Dominica_008.JPG/1280px-Soufri%C3%A8re_Bay%2C_Dominica_008.JPG',
   },
   {
     id: 'd_18',
@@ -292,7 +292,7 @@ export const DESTINATIONS = [
     difficulty: 'Easy',
     duration: '1.5 hrs',
     image: 'ocean',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/59/Scotts_Head_Dominica_1.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Scotts_Head_Dominica_1.jpg/1280px-Scotts_Head_Dominica_1.jpg',
   },
   {
     id: 'd_20',
@@ -305,7 +305,7 @@ export const DESTINATIONS = [
     difficulty: 'Moderate',
     duration: '2.5 hrs',
     image: 'pool',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/df/Boeri_Lake.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Boeri_Lake.jpg/1280px-Boeri_Lake.jpg',
   },
   {
     id: 'd_21',
@@ -345,7 +345,7 @@ export const ACTIVITIES = [
     meetingPoint: 'Ocean Oasis Beach Desk',
     cancellationPolicy: 'Free cancellation up to 24 hours before the activity.',
     image: 'snorkel',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/40/Scotts_Head%2C_Dominica_014.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Scotts_Head%2C_Dominica_014.jpg/1280px-Scotts_Head%2C_Dominica_014.jpg',
   },
   {
     id: 'a_2',
@@ -366,7 +366,7 @@ export const ACTIVITIES = [
     meetingPoint: 'Hotel Lobby',
     cancellationPolicy: 'Free cancellation up to 24 hours before the activity.',
     image: 'rainforest',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/26/Rainforest_%28Dominica%29.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Rainforest_%28Dominica%29.jpg/1280px-Rainforest_%28Dominica%29.jpg',
   },
   {
     id: 'a_3',
@@ -387,7 +387,7 @@ export const ACTIVITIES = [
     meetingPoint: 'Marina Dock',
     cancellationPolicy: 'Free cancellation up to 48 hours before departure.',
     image: 'catamaran',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Sailing_Catamaran_at_sunset.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Sailing_Catamaran_at_sunset.jpg/1280px-Sailing_Catamaran_at_sunset.jpg',
   },
   {
     id: 'a_4',
@@ -408,7 +408,7 @@ export const ACTIVITIES = [
     meetingPoint: 'Beach Yoga Deck',
     cancellationPolicy: 'No cancellation fee.',
     image: 'yoga',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/7/77/Yoga_At_Dawn_on_Bondi_Beach.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Yoga_At_Dawn_on_Bondi_Beach.jpg/1280px-Yoga_At_Dawn_on_Bondi_Beach.jpg',
   },
   {
     id: 'a_5',
@@ -429,7 +429,7 @@ export const ACTIVITIES = [
     meetingPoint: 'Culinary Studio',
     cancellationPolicy: 'Free cancellation up to 24 hours before class.',
     image: 'cooking',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/0/02/Chef_prepares_fresh_ingredients_by_chopping_red_vegetables.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Chef_prepares_fresh_ingredients_by_chopping_red_vegetables.jpg/1280px-Chef_prepares_fresh_ingredients_by_chopping_red_vegetables.jpg',
   },
   {
     id: 'a_6',
@@ -471,7 +471,7 @@ export const ACTIVITIES = [
     meetingPoint: 'Hotel Lobby',
     cancellationPolicy: 'Free cancellation up to 24 hours before the activity.',
     image: 'rainforest',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/0/03/Indian_River_in_Portsmouth%2C_Dominica.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Indian_River_in_Portsmouth%2C_Dominica.jpg/1280px-Indian_River_in_Portsmouth%2C_Dominica.jpg',
   },
   {
     id: 'a_8',
@@ -492,7 +492,7 @@ export const ACTIVITIES = [
     meetingPoint: 'Hotel Lobby',
     cancellationPolicy: 'Free cancellation up to 48 hours before the activity.',
     image: 'culture',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/fd/Carib_Territory_%28Dominica%29.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Carib_Territory_%28Dominica%29.jpg/1280px-Carib_Territory_%28Dominica%29.jpg',
   },
   {
     id: 'a_9',
@@ -513,7 +513,7 @@ export const ACTIVITIES = [
     meetingPoint: 'Ocean Oasis Private Pier',
     cancellationPolicy: 'Free cancellation up to 48 hours before the activity.',
     image: 'whale',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/4d/Baleine_Ile_de_la_Dominique.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Baleine_Ile_de_la_Dominique.jpg/1280px-Baleine_Ile_de_la_Dominique.jpg',
   },
   {
     id: 'a_10',
@@ -687,7 +687,7 @@ export const PROMOTIONS = [
     validity: 'Valid through September 15, 2026',
     terms: 'Discount applies to lower-priced activity. Subject to availability.',
     image: 'adventure',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/26/Rainforest_%28Dominica%29.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Rainforest_%28Dominica%29.jpg/1280px-Rainforest_%28Dominica%29.jpg',
     status: 'PUBLISHED', targetAudience: 'Adventure interest', impressions: 410, clicks: 96, bookings: 31, redemptions: 26, revenue: 1860,
   },
   {

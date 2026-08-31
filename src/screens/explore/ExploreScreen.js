@@ -19,7 +19,7 @@ import destinationsContent from '../../i18n/content/destinations';
 // Real Dominica rainforest swimming hole (Emerald Pool), used as a hero
 // backdrop behind the page title — ambience of the destinations being
 // browsed, not a depiction of the hotel itself. Verified on Wikimedia Commons.
-const EXPLORE_HERO_URL = 'https://upload.wikimedia.org/wikipedia/commons/a/a0/Emerald_Pool%2C_Dominica.jpg';
+const EXPLORE_HERO_URL = 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Emerald_Pool%2C_Dominica.jpg/1280px-Emerald_Pool%2C_Dominica.jpg';
 
 export default function ExploreScreen({ navigation }) {
   const { t, i18n } = useTranslation();

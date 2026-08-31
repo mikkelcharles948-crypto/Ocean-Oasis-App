@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { Text } from '../../components/AppText';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
@@ -10,12 +9,12 @@ import Button from '../../components/Button';
 import AnimatedPressable from '../../components/AnimatedPressable';
 import FloatingHeader from '../../components/FloatingHeader';
 import { ErrorState } from '../../components/UI';
+import ImagePlaceholder from '../../components/ImagePlaceholder';
 import { colors, spacing, radius, typography, shadow } from '../../theme/theme';
 import { DESTINATIONS } from '../../data/mockData';
 import { getLocalizedContent } from '../../i18n/content';
 import destinationsContent from '../../i18n/content/destinations';
 import { openInGoogleMaps } from '../../utils/openMap';
-import { optimizeImageUrl } from '../../utils/optimizeImageUrl';
 
 // Tall enough to read as a cinematic hero rather than a thumbnail; the
 // FloatingHeader stays in "light" tone (icons/text readable over the photo)
@@ -56,13 +55,7 @@ export default function DestinationDetailScreen({ route, navigation }) {
         onScroll={(e) => setScrollY(e.nativeEvent.contentOffset.y)}
         scrollEventThrottle={16}
       >
-        {destination.imageUrl ? (
-          <Image source={{ uri: optimizeImageUrl(destination.imageUrl, 1100) }} style={styles.hero} contentFit="cover" transition={200} />
-        ) : (
-          <View style={[styles.hero, styles.heroFallback]}>
-            <Ionicons name="image-outline" size={56} color={colors.turquoiseDark} />
-          </View>
-        )}
+        <ImagePlaceholder kind={destination.image} uri={destination.imageUrl} width={1100} style={styles.hero} borderRadius={0} iconSize={56} />
 
         <View style={styles.content}>
           <Text style={[typography.label, styles.eyebrow]}>{t(`common.category.${destination.category}`)}</Text>
@@ -120,7 +113,6 @@ function Stat({ icon, label, value }) {
 
 const styles = StyleSheet.create({
   hero: { width: '100%', height: HERO_HEIGHT, backgroundColor: colors.sandLight },
-  heroFallback: { alignItems: 'center', justifyContent: 'center' },
   content: {
     padding: spacing.lg, marginTop: -radius.xl, backgroundColor: colors.ivory,
     borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, ...shadow.soft,

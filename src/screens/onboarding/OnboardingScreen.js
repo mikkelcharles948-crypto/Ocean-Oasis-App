@@ -19,7 +19,7 @@ const { width } = Dimensions.get('window');
 // Real Dominica coastline (Scotts Head), used as the first-impression hero
 // backdrop on the welcome slide only — ambience of the destination, not a
 // depiction of the hotel itself. Verified on Wikimedia Commons.
-const WELCOME_HERO_URL = 'https://upload.wikimedia.org/wikipedia/commons/4/40/Scotts_Head%2C_Dominica_014.jpg';
+const WELCOME_HERO_URL = 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Scotts_Head%2C_Dominica_014.jpg/1280px-Scotts_Head%2C_Dominica_014.jpg';
 
 const SLIDES = [
   { key: 's1', kind: 'welcome' },

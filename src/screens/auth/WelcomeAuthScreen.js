@@ -15,7 +15,7 @@ import { colors, spacing, shadow, typography } from '../../theme/theme';
 // first-impression hero backdrop on this auth "front door" screen —
 // ambience of the destination, not a depiction of the hotel itself.
 // Verified on Wikimedia Commons.
-const AUTH_HERO_URL = 'https://upload.wikimedia.org/wikipedia/commons/2/20/Middleham_Falls_at_Morne_Trois_Pitons_National_Park.jpg';
+const AUTH_HERO_URL = 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Middleham_Falls_at_Morne_Trois_Pitons_National_Park.jpg/1280px-Middleham_Falls_at_Morne_Trois_Pitons_National_Park.jpg';
 
 export default function WelcomeAuthScreen({ navigation }) {
   const { t } = useTranslation();
