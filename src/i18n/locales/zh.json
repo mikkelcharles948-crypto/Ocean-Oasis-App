@@ -788,6 +788,10 @@
           "label": "活动",
           "sub": "发布酒店活动"
         },
+        "photoLibrary": {
+          "label": "图库管理",
+          "sub": "更新应用内的照片"
+        },
         "feedback": {
           "label": "反馈",
           "sub": "住客体验提醒"
@@ -1068,6 +1072,10 @@
           "label": "内容",
           "sub": "目的地、常见问题、公告"
         },
+        "photoLibrary": {
+          "label": "图库管理",
+          "sub": "更新应用内的照片"
+        },
         "staffPerformance": {
           "label": "员工绩效",
           "sub": "已分配与已完成请求对比"
@@ -1195,6 +1203,19 @@
         "descriptionPlaceholder": "可选详情",
         "create": "创建",
         "required": "类型和标题为必填项。"
+      }
+    },
+    "photoLibrary": {
+      "title": "图库管理",
+      "subtitle": "点击任意照片即可替换——更改会立即对所有住客生效。",
+      "urlLabel": "图片链接",
+      "invalidUrl": "请输入有效的图片链接（以 http:// 或 https:// 开头）。",
+      "categories": {
+        "Destinations": "目的地",
+        "Dining": "餐饮",
+        "Activities": "活动项目",
+        "Events": "活动",
+        "Promotions": "促销"
       }
     },
     "staffPerformance": {

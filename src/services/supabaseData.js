@@ -66,6 +66,21 @@ export function mapNotification(row) {
   return row ? { ...row, createdAt: row.created_at } : row;
 }
 
+// Destination/dining-venue photos staff have replaced via the Photo
+// Library (see supabaseStaffData.js's updatePhotoOverride) — keyed by the
+// same slot_key screens look it up with, e.g. "destination:d_1". Loaded
+// independently of guest/staff data since it's identical for everyone and
+// isn't scoped to one guest.
+export async function loadPhotoOverrides() {
+  const { data, error } = await supabase.from('photo_overrides').select('*');
+  if (error) throw error;
+  const map = {};
+  (data || []).forEach((row) => {
+    map[row.slot_key] = { imageUrl: row.image_url, label: row.label, category: row.category };
+  });
+  return map;
+}
+
 export async function loadGuestData(userId) {
   const guestResult = await supabase.from('guests').select('*').eq('auth_user_id', userId).maybeSingle();
   if (guestResult.error) throw guestResult.error;

@@ -25,6 +25,7 @@ import {
   createReservation as createRemoteReservation,
   sendConciergeMessage as sendRemoteConciergeMessage,
   loadConciergeMessages as loadRemoteConciergeMessages,
+  loadPhotoOverrides as loadRemotePhotoOverrides,
 } from '../services/supabaseData';
 import {
   loadStaffData, loadStaffDirectory, writeAuditEntry,
@@ -52,6 +53,10 @@ import {
   loadConciergeConversationMessages as loadRemoteStaffConciergeThread,
   replyToConciergeConversation as replyToRemoteConciergeConversation,
   resolveConciergeConversation as resolveRemoteConciergeConversation,
+  updateActivityImage as updateRemoteActivityImage,
+  updateEventImage as updateRemoteEventImage,
+  updatePromotionImage as updateRemotePromotionImage,
+  updatePhotoOverride as updateRemotePhotoOverride,
 } from '../services/supabaseStaffData';
 
 const BIOMETRIC_PREF_KEY = 'oo_biometric_enabled';
@@ -184,6 +189,10 @@ export function AppProvider({ children }) {
   // in conciergeConversations below.
   const [conciergeConversationId, setConciergeConversationId] = useState(null);
   const [conciergeConversations, setConciergeConversations] = useState([]);
+  // { [slotKey]: { imageUrl, label, category } } — destination/dining-venue
+  // photo replacements from the Photo Library. Loaded for both guests
+  // (to actually see the current photo) and staff (to edit it).
+  const [photoOverrides, setPhotoOverrides] = useState({});
 
   useEffect(() => {
     let mounted = true;
@@ -233,7 +242,7 @@ export function AppProvider({ children }) {
     setDataLoading(true);
     setDataError(null);
     try {
-      const data = await loadGuestData(authSession.user.id);
+      const [data, overrides] = await Promise.all([loadGuestData(authSession.user.id), loadRemotePhotoOverrides()]);
       if (data.guest) setGuest(data.guest);
       if (data.reservation) setReservation(data.reservation);
       setRooms(data.rooms);
@@ -244,6 +253,7 @@ export function AppProvider({ children }) {
       setActivities(data.activities);
       setEvents(data.events);
       setPromotions(data.promotions);
+      setPhotoOverrides(overrides);
       return { ok: true };
     } catch (error) {
       setDataError('We could not load your latest stay data. Please retry.');
@@ -257,7 +267,7 @@ export function AppProvider({ children }) {
     setDataLoading(true);
     setDataError(null);
     try {
-      const [staffData, directory] = await Promise.all([loadStaffData(), loadStaffDirectory()]);
+      const [staffData, directory, overrides] = await Promise.all([loadStaffData(), loadStaffDirectory(), loadRemotePhotoOverrides()]);
       setServiceRequests(staffData.serviceRequests);
       setRooms(staffData.rooms);
       setActivities(staffData.activities);
@@ -272,6 +282,7 @@ export function AppProvider({ children }) {
       setAllGuestsForStaff(staffData.allGuestsForStaff);
       setConciergeConversations(staffData.conciergeConversations);
       setStaffDirectory(directory);
+      setPhotoOverrides(overrides);
       return { ok: true };
     } catch (error) {
       setDataError('We could not load the latest operations data. Please retry.');
@@ -981,6 +992,53 @@ export function AppProvider({ children }) {
   }, [logAudit]);
 
   // ---------------------------------------------------------------------
+  // Photo Library — staff/management editing photos used across the app
+  // ---------------------------------------------------------------------
+  const updateActivityImage = useCallback(async (activityId, imageUrl) => {
+    try {
+      const updated = await updateRemoteActivityImage(activityId, imageUrl);
+      setActivities((prev) => prev.map((a) => (a.id === activityId ? { ...a, ...updated } : a)));
+      logAudit(`Updated photo for activity "${updated.name}"`);
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: 'Could not update this photo. Please try again.' };
+    }
+  }, [logAudit]);
+
+  const updateEventImage = useCallback(async (eventId, imageUrl) => {
+    try {
+      const updated = await updateRemoteEventImage(eventId, imageUrl);
+      setEvents((prev) => prev.map((e) => (e.id === eventId ? { ...e, ...updated } : e)));
+      logAudit(`Updated photo for event "${updated.title}"`);
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: 'Could not update this photo. Please try again.' };
+    }
+  }, [logAudit]);
+
+  const updatePromotionImage = useCallback(async (promoId, imageUrl) => {
+    try {
+      const updated = await updateRemotePromotionImage(promoId, imageUrl);
+      setPromotions((prev) => prev.map((p) => (p.id === promoId ? { ...p, ...updated } : p)));
+      logAudit(`Updated photo for promotion "${updated.title}"`);
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: 'Could not update this photo. Please try again.' };
+    }
+  }, [logAudit]);
+
+  const updatePhotoOverride = useCallback(async (slotKey, category, label, imageUrl) => {
+    try {
+      const updated = await updateRemotePhotoOverride(slotKey, category, label, imageUrl);
+      setPhotoOverrides((prev) => ({ ...prev, [slotKey]: updated }));
+      logAudit(`Updated photo for "${label}"`);
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: 'Could not update this photo. Please try again.' };
+    }
+  }, [logAudit]);
+
+  // ---------------------------------------------------------------------
   // Notifications (guest + staff, kept separate since they're different audiences)
   // ---------------------------------------------------------------------
   const markNotificationRead = useCallback(async (id) => {
@@ -1155,6 +1213,7 @@ export function AppProvider({ children }) {
       searchAvailableRoomsStaff, createReservationForGuest, createGuestProfile,
       conciergeConversationId, sendConciergeMessage, loadConciergeThread,
       conciergeConversations, replyToConcierge, resolveConcierge, loadStaffConciergeThread,
+      photoOverrides, updateActivityImage, updateEventImage, updatePromotionImage, updatePhotoOverride,
     }),
     [
       hasOnboarded, completeOnboarding, onboardingChecked, experience, chooseExperience, exitToExperiencePicker,
@@ -1175,6 +1234,7 @@ export function AppProvider({ children }) {
       searchAvailableRooms, createReservation, searchAvailableRoomsStaff, createReservationForGuest, createGuestProfile,
       conciergeConversationId, sendConciergeMessage, loadConciergeThread,
       conciergeConversations, replyToConcierge, resolveConcierge, loadStaffConciergeThread,
+      photoOverrides, updateActivityImage, updateEventImage, updatePromotionImage, updatePhotoOverride,
     ]
   );
 

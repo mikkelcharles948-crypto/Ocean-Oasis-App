@@ -15,6 +15,7 @@ import { getLocalizedContent } from '../../i18n/content';
 import diningVenuesContent from '../../i18n/content/diningVenues';
 import { optimizeImageUrl } from '../../utils/optimizeImageUrl';
 import { useApp } from '../../context/AppContext';
+import { resolvePhotoUrl } from '../../utils/photoOverrides';
 
 const TYPE_KEY = {
   'Signature Restaurant': 'signatureRestaurant',
@@ -25,10 +26,13 @@ const TYPE_KEY = {
 
 export default function DiningVenueScreen({ route, navigation }) {
   const { t, i18n } = useTranslation();
-  const { submitServiceRequest } = useApp();
+  const { submitServiceRequest, photoOverrides } = useApp();
   const { venueId } = route.params || {};
   const rawVenue = DINING_VENUES.find((v) => v.id === venueId);
-  const venue = rawVenue ? getLocalizedContent(diningVenuesContent, rawVenue.id, i18n.language, rawVenue) : null;
+  const localizedVenue = rawVenue ? getLocalizedContent(diningVenuesContent, rawVenue.id, i18n.language, rawVenue) : null;
+  const venue = localizedVenue
+    ? { ...localizedVenue, imageUrl: resolvePhotoUrl(photoOverrides, `dining:${venueId}`, localizedVenue.imageUrl) }
+    : null;
   const [showForm, setShowForm] = useState(false);
   const [party, setParty] = useState('2');
   const [time, setTime] = useState('7:00 PM');

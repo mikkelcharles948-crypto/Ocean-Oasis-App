@@ -9,6 +9,8 @@ import { colors, spacing } from '../../theme/theme';
 import { DINING_VENUES } from '../../data/mockData';
 import { getLocalizedContent } from '../../i18n/content';
 import diningVenuesContent from '../../i18n/content/diningVenues';
+import { useApp } from '../../context/AppContext';
+import { resolvePhotoUrl } from '../../utils/photoOverrides';
 
 const TYPE_KEY = {
   'Signature Restaurant': 'signatureRestaurant',
@@ -19,6 +21,7 @@ const TYPE_KEY = {
 
 export default function DiningScreen({ navigation }) {
   const { t, i18n } = useTranslation();
+  const { photoOverrides } = useApp();
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
       <ScreenHeader title={t('dining.title')} onBack={() => navigation.goBack()} />
@@ -28,9 +31,10 @@ export default function DiningScreen({ navigation }) {
         contentContainerStyle={{ padding: spacing.lg, gap: spacing.md }}
         renderItem={({ item }) => {
           const localized = getLocalizedContent(diningVenuesContent, item.id, i18n.language, item);
+          const imageUrl = resolvePhotoUrl(photoOverrides, `dining:${item.id}`, item.imageUrl);
           return (
             <EditorialImageCard
-              image={item.imageUrl ? { uri: item.imageUrl } : null}
+              image={imageUrl ? { uri: imageUrl } : null}
               fallbackIcon="restaurant-outline"
               eyebrow={t(`dining.type.${TYPE_KEY[item.type] || 'roomService'}`)}
               title={item.name}

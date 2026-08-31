@@ -284,6 +284,40 @@ export async function setContentStatus(contentId, status) {
   return mapContentItem(data);
 }
 
+// --- Photo Library — lets staff/management update photos across the app ---
+
+export async function updateActivityImage(activityId, imageUrl) {
+  const { data, error } = await supabase.from('activities').update({ image_url: imageUrl }).eq('id', activityId).select().single();
+  if (error) throw error;
+  return mapActivity(data);
+}
+
+export async function updateEventImage(eventId, imageUrl) {
+  const { data, error } = await supabase.from('events').update({ image_url: imageUrl }).eq('id', eventId).select().single();
+  if (error) throw error;
+  return mapEvent(data);
+}
+
+export async function updatePromotionImage(promoId, imageUrl) {
+  const { data, error } = await supabase.from('promotions').update({ image_url: imageUrl }).eq('id', promoId).select().single();
+  if (error) throw error;
+  return mapPromotion(data);
+}
+
+// Destinations/dining venues have no DB row of their own (bundled mock
+// data) — this is an upsert against the slot_key rather than an update,
+// since the very first edit to a given slot has no existing row yet.
+export async function updatePhotoOverride(slotKey, category, label, imageUrl) {
+  const { data: userData } = await supabase.auth.getUser();
+  const { data, error } = await supabase
+    .from('photo_overrides')
+    .upsert({ slot_key: slotKey, category, label, image_url: imageUrl, updated_by: userData?.user?.id || null })
+    .select()
+    .single();
+  if (error) throw error;
+  return { imageUrl: data.image_url, label: data.label, category: data.category };
+}
+
 export async function createContentItem(type, title, description) {
   const { data, error } = await supabase.rpc('create_content_item', {
     p_type: type,

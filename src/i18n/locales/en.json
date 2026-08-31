@@ -788,6 +788,10 @@
           "label": "Events",
           "sub": "Publish hotel events"
         },
+        "photoLibrary": {
+          "label": "Photo Library",
+          "sub": "Update photos across the app"
+        },
         "feedback": {
           "label": "Feedback",
           "sub": "Guest experience alerts"
@@ -1068,6 +1072,10 @@
           "label": "Content",
           "sub": "Destinations, FAQs, announcements"
         },
+        "photoLibrary": {
+          "label": "Photo Library",
+          "sub": "Update photos across the app"
+        },
         "staffPerformance": {
           "label": "Staff Performance",
           "sub": "Assigned vs. completed requests"
@@ -1195,6 +1203,19 @@
         "descriptionPlaceholder": "Optional details",
         "create": "Create",
         "required": "Type and title are required."
+      }
+    },
+    "photoLibrary": {
+      "title": "Photo Library",
+      "subtitle": "Tap any photo to replace it — changes go live for every guest immediately.",
+      "urlLabel": "Image URL",
+      "invalidUrl": "Enter a valid image URL (starting with http:// or https://).",
+      "categories": {
+        "Destinations": "Destinations",
+        "Dining": "Dining",
+        "Activities": "Activities",
+        "Events": "Events",
+        "Promotions": "Promotions"
       }
     },
     "staffPerformance": {

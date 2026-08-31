@@ -12,6 +12,7 @@ const ITEMS = [
   { key: 'ManagementRevenue', i18nKey: 'revenue', icon: 'cash-outline' },
   { key: 'ManagementActivities', i18nKey: 'activities', icon: 'flag-outline' },
   { key: 'ManagementContent', i18nKey: 'content', icon: 'reader-outline' },
+  { key: 'PhotoLibrary', i18nKey: 'photoLibrary', icon: 'images-outline' },
   { key: 'ManagementStaffPerformance', i18nKey: 'staffPerformance', icon: 'people-outline' },
   { key: 'ManagementAuditLog', i18nKey: 'auditLog', icon: 'list-outline' },
   { key: 'ManagementEmergency', i18nKey: 'emergency', icon: 'warning-outline' },

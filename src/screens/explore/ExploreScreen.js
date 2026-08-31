@@ -15,6 +15,8 @@ import { colors, spacing } from '../../theme/theme';
 import { DESTINATIONS, DESTINATION_CATEGORIES } from '../../data/mockData';
 import { getLocalizedContent } from '../../i18n/content';
 import destinationsContent from '../../i18n/content/destinations';
+import { useApp } from '../../context/AppContext';
+import { resolvePhotoUrl } from '../../utils/photoOverrides';
 
 // Real Dominica rainforest swimming hole (Emerald Pool), used as a hero
 // backdrop behind the page title — ambience of the destinations being
@@ -23,6 +25,7 @@ const EXPLORE_HERO_URL = 'https://upload.wikimedia.org/wikipedia/commons/thumb/a
 
 export default function ExploreScreen({ navigation }) {
   const { t, i18n } = useTranslation();
+  const { photoOverrides } = useApp();
   const [category, setCategory] = useState('All');
 
   const filtered = useMemo(
@@ -40,6 +43,7 @@ export default function ExploreScreen({ navigation }) {
         ...localized,
         category: t(`common.category.${item.category}`),
         location: localized.travelTime,
+        imageUrl: resolvePhotoUrl(photoOverrides, `destination:${item.id}`, localized.imageUrl),
       };
       return (
         // Every row is the same size deliberately — this FlatList has no
@@ -55,7 +59,7 @@ export default function ExploreScreen({ navigation }) {
         />
       );
     },
-    [i18n.language, t, navigation]
+    [i18n.language, t, navigation, photoOverrides]
   );
 
   return (

@@ -14,6 +14,7 @@ const ITEMS = [
   { key: 'StaffGuests', i18nKey: 'guests', icon: 'people-outline' },
   { key: 'StaffMaintenance', i18nKey: 'maintenance', icon: 'build-outline' },
   { key: 'StaffEvents', i18nKey: 'events', icon: 'musical-notes-outline' },
+  { key: 'PhotoLibrary', i18nKey: 'photoLibrary', icon: 'images-outline' },
   { key: 'StaffFeedback', i18nKey: 'feedback', icon: 'star-outline' },
   { key: 'StaffNotifications', i18nKey: 'notifications', icon: 'notifications-outline' },
   { key: 'StaffProfile', i18nKey: 'profile', icon: 'person-circle-outline' },

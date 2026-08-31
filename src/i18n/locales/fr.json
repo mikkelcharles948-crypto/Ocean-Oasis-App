@@ -788,6 +788,10 @@
           "label": "Événements",
           "sub": "Publier les événements de l'hôtel"
         },
+        "photoLibrary": {
+          "label": "Bibliothèque photo",
+          "sub": "Mettre à jour les photos de l'application"
+        },
         "feedback": {
           "label": "Avis",
           "sub": "Alertes sur l'expérience client"
@@ -1068,6 +1072,10 @@
           "label": "Contenu",
           "sub": "Destinations, FAQ, annonces"
         },
+        "photoLibrary": {
+          "label": "Bibliothèque photo",
+          "sub": "Mettre à jour les photos de l'application"
+        },
         "staffPerformance": {
           "label": "Performance du personnel",
           "sub": "Demandes assignées vs terminées"
@@ -1195,6 +1203,19 @@
         "descriptionPlaceholder": "Détails facultatifs",
         "create": "Créer",
         "required": "Le type et le titre sont obligatoires."
+      }
+    },
+    "photoLibrary": {
+      "title": "Bibliothèque photo",
+      "subtitle": "Touchez une photo pour la remplacer — les changements sont visibles immédiatement pour tous les clients.",
+      "urlLabel": "URL de l'image",
+      "invalidUrl": "Saisissez une URL d'image valide (commençant par http:// ou https://).",
+      "categories": {
+        "Destinations": "Destinations",
+        "Dining": "Restauration",
+        "Activities": "Activités",
+        "Events": "Événements",
+        "Promotions": "Promotions"
       }
     },
     "staffPerformance": {

@@ -15,6 +15,8 @@ import { DESTINATIONS } from '../../data/mockData';
 import { getLocalizedContent } from '../../i18n/content';
 import destinationsContent from '../../i18n/content/destinations';
 import { openInGoogleMaps } from '../../utils/openMap';
+import { useApp } from '../../context/AppContext';
+import { resolvePhotoUrl } from '../../utils/photoOverrides';
 
 // Tall enough to read as a cinematic hero rather than a thumbnail; the
 // FloatingHeader stays in "light" tone (icons/text readable over the photo)
@@ -25,10 +27,14 @@ const HEADER_SWITCH_POINT = HERO_HEIGHT - 120;
 
 export default function DestinationDetailScreen({ route, navigation }) {
   const { t, i18n } = useTranslation();
+  const { photoOverrides } = useApp();
   const { destinationId } = route.params || {};
   const rawDestination = DESTINATIONS.find((d) => d.id === destinationId);
-  const destination = rawDestination
+  const localizedDestination = rawDestination
     ? getLocalizedContent(destinationsContent, rawDestination.id, i18n.language, rawDestination)
+    : null;
+  const destination = localizedDestination
+    ? { ...localizedDestination, imageUrl: resolvePhotoUrl(photoOverrides, `destination:${destinationId}`, localizedDestination.imageUrl) }
     : null;
   const [scrollY, setScrollY] = useState(0);
 
