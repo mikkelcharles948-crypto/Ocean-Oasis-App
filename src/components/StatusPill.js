@@ -4,37 +4,46 @@ import { Text } from './AppText';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, radius, font } from '../theme/theme';
 
-// The elegant status-ladder the brief asks for in place of a flat
-// "In Progress" badge: a horizontal row of steps, each Received /
-// In Progress / Completed, with everything up to and including the
-// current step filled and everything after it left as a quiet outline.
-// Not yet wired into StaffRequestsScreen/MyStayScreen — those still use
-// UI.js's Badge — this is the new component for the Phase 5+ rework of
-// the service-request status display.
+// The elegant status-ladder: a horizontal row of steps, each with
+// everything up to and including the current step filled and everything
+// after it left as a quiet outline.
 //
 //   <StatusPill steps={['Received', 'Assigned', 'In Progress', 'Completed']} activeIndex={1} />
+//
+// Rebuilt after the connector line (previously flex:1 with a negative
+// horizontal margin, between fixed-width steps) was found to visibly bleed
+// into a neighboring dot/label on narrower screens or longer labels — this
+// component is shared across 4 screens with very different step counts and
+// label lengths (a 2-3 word request status vs. a loyalty tier name), so a
+// fixed per-step width was never going to fit all of them. Every step is
+// now an equal flexible column (always exactly fills the row, never
+// overflows or compresses unpredictably), and the connector is a single
+// absolutely-positioned line drawn once behind the dots, spanning exactly
+// from the first dot's center to the last — not a real per-segment element
+// with margins that can escape its bounds.
 export default function StatusPill({ steps, activeIndex, labels }) {
+  const stepCount = steps.length;
+  const halfStepPercent = 50 / stepCount;
+  const progressFraction = stepCount > 1 ? Math.max(0, Math.min(1, activeIndex / (stepCount - 1))) : 0;
+
   return (
     <View style={styles.row}>
+      <View style={[styles.connectorTrack, { left: `${halfStepPercent}%`, right: `${halfStepPercent}%` }]} pointerEvents="none">
+        <View style={[styles.connectorFill, { width: `${progressFraction * 100}%` }]} />
+      </View>
       {steps.map((step, i) => {
         const done = i < activeIndex;
         const current = i === activeIndex;
         const label = labels?.[step] ?? step;
         return (
-          <React.Fragment key={step}>
-            {i > 0 ? <View style={[styles.connector, (done || current) && styles.connectorActive]} /> : null}
-            <View style={styles.step}>
-              <View style={[styles.dot, done && styles.dotDone, current && styles.dotCurrent]}>
-                {done ? <Ionicons name="checkmark" size={11} color={colors.white} /> : null}
-              </View>
-              <Text
-                style={[styles.label, (done || current) && styles.labelActive]}
-                numberOfLines={1}
-              >
-                {label}
-              </Text>
+          <View key={step} style={styles.step}>
+            <View style={[styles.dot, done && styles.dotDone, current && styles.dotCurrent]}>
+              {done ? <Ionicons name="checkmark" size={11} color={colors.white} /> : null}
             </View>
-          </React.Fragment>
+            <Text style={[styles.label, (done || current) && styles.labelActive]} numberOfLines={1}>
+              {label}
+            </Text>
+          </View>
         );
       })}
     </View>
@@ -42,10 +51,10 @@ export default function StatusPill({ steps, activeIndex, labels }) {
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', alignItems: 'flex-start' },
-  step: { alignItems: 'center', width: 68 },
-  connector: { height: 2, flex: 1, backgroundColor: colors.border, marginTop: 9, marginHorizontal: -8 },
-  connectorActive: { backgroundColor: colors.turquoise },
+  row: { flexDirection: 'row', alignItems: 'flex-start', position: 'relative' },
+  step: { flex: 1, alignItems: 'center', paddingHorizontal: 2 },
+  connectorTrack: { position: 'absolute', top: 9, height: 2, backgroundColor: colors.border },
+  connectorFill: { height: 2, backgroundColor: colors.turquoise },
   dot: {
     width: 20, height: 20, borderRadius: radius.pill,
     borderWidth: 2, borderColor: colors.border, backgroundColor: colors.white,
