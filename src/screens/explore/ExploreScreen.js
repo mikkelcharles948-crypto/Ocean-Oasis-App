@@ -13,7 +13,7 @@ import GlassSurface from '../../components/GlassSurface';
 import SectionHeading from '../../components/SectionHeading';
 import ExperienceCard from '../../components/ExperienceCard';
 import { colors, spacing, radius } from '../../theme/theme';
-import { DESTINATIONS, DESTINATION_CATEGORIES } from '../../data/mockData';
+import { DESTINATION_CATEGORIES } from '../../data/mockData';
 import { getLocalizedContent } from '../../i18n/content';
 import destinationsContent from '../../i18n/content/destinations';
 import { useApp } from '../../context/AppContext';
@@ -26,12 +26,12 @@ const EXPLORE_HERO_URL = 'https://upload.wikimedia.org/wikipedia/commons/thumb/a
 
 export default function ExploreScreen({ navigation }) {
   const { t, i18n } = useTranslation();
-  const { photoOverrides } = useApp();
+  const { photoOverrides, destinations } = useApp();
   const [category, setCategory] = useState('All');
 
   const filtered = useMemo(
-    () => (category === 'All' ? DESTINATIONS : DESTINATIONS.filter((d) => d.category === category)),
-    [category]
+    () => (category === 'All' ? destinations : destinations.filter((d) => d.category === category)),
+    [category, destinations]
   );
 
   const renderItem = useCallback(

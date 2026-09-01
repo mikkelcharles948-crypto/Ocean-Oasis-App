@@ -69,6 +69,24 @@ export function mapNotification(row) {
   return row ? { ...row, createdAt: row.created_at } : row;
 }
 
+// destinations/dining_venues/room_types/concierge_faqs — the Phase 3 tables
+// that replaced the equivalent mockData.js constants (DESTINATIONS,
+// DINING_VENUES + DINING_MENUS, ROOM_TYPES, CONCIERGE_FAQ). Field names
+// match those constants' original shape so the screens that consumed them
+// needed minimal changes when switched over to reading from context.
+export function mapDestination(row) {
+  return row ? { id: row.id, title: row.title, category: row.category, description: row.description, distance: row.distance, travelTime: row.travel_time, difficulty: row.difficulty, duration: row.duration, image: row.icon, imageUrl: row.image_url } : row;
+}
+export function mapDiningVenue(row) {
+  return row ? { id: row.id, name: row.name, type: row.type, description: row.description, hours: row.hours, dressCode: row.dress_code, location: row.location, reservationRequired: row.reservation_required, image: row.icon, imageUrl: row.image_url, menuSections: row.menu || [] } : row;
+}
+export function mapRoomType(row) {
+  return row ? { id: row.id, name: row.name, tier: row.tier, description: row.description, bedConfig: row.bed_config, maxOccupancy: row.max_occupancy, amenities: row.amenities || [], fromPricePerNight: Number(row.from_price_per_night || 0) } : row;
+}
+export function mapConciergeFaqRow(row) {
+  return row ? { id: row.id, question: row.question, answer: row.answer } : row;
+}
+
 // Destination/dining-venue photos staff have replaced via the Photo
 // Library (see supabaseStaffData.js's updatePhotoOverride) — keyed by the
 // same slot_key screens look it up with, e.g. "destination:d_1". Loaded
@@ -101,9 +119,9 @@ export async function loadGuestData(userId) {
   const guestResult = await supabase.from('guests').select('*').eq('auth_user_id', userId).maybeSingle();
   if (guestResult.error) throw guestResult.error;
   const guest = guestResult.data;
-  if (!guest) return { guest: null, reservation: null, rooms: [], serviceRequests: [], activityBookings: [], feedback: [], notifications: [], activities: [], events: [], promotions: [], savedEventIds: [] };
+  if (!guest) return { guest: null, reservation: null, rooms: [], serviceRequests: [], activityBookings: [], feedback: [], notifications: [], activities: [], events: [], promotions: [], savedEventIds: [], destinations: [], diningVenues: [], roomTypes: [], conciergeFaqs: [] };
 
-  const [reservationResult, roomResult, requestResult, bookingResult, feedbackResult, notificationResult, activityResult, eventResult, promotionResult, savedEventResult] = await Promise.all([
+  const [reservationResult, roomResult, requestResult, bookingResult, feedbackResult, notificationResult, activityResult, eventResult, promotionResult, savedEventResult, destinationResult, diningVenueResult, roomTypeResult, faqResult] = await Promise.all([
     supabase.from('reservations').select('*').eq('guest_id', guest.id).order('check_in', { ascending: false }),
     supabase.from('rooms').select('*'),
     supabase.from('service_requests').select('*').eq('guest_id', guest.id).order('created_at', { ascending: false }),
@@ -114,11 +132,19 @@ export async function loadGuestData(userId) {
     supabase.from('events').select('*').eq('status', 'PUBLISHED').order('event_date'),
     supabase.from('promotions').select('*').eq('status', 'PUBLISHED').order('created_at', { ascending: false }),
     supabase.from('itinerary_saved_events').select('event_id').eq('guest_id', guest.id),
+    supabase.from('destinations').select('*'),
+    supabase.from('dining_venues').select('*'),
+    supabase.from('room_types').select('*').order('tier'),
+    supabase.from('concierge_faqs').select('*').order('sort_order'),
   ]);
-  const result = [reservationResult, roomResult, requestResult, bookingResult, feedbackResult, notificationResult, activityResult, eventResult, promotionResult, savedEventResult].find((item) => item.error);
+  const result = [reservationResult, roomResult, requestResult, bookingResult, feedbackResult, notificationResult, activityResult, eventResult, promotionResult, savedEventResult, destinationResult, diningVenueResult, roomTypeResult, faqResult].find((item) => item.error);
   if (result) throw result.error;
 
   return {
+    destinations: (destinationResult.data || []).map(mapDestination),
+    diningVenues: (diningVenueResult.data || []).map(mapDiningVenue),
+    roomTypes: (roomTypeResult.data || []).map(mapRoomType),
+    conciergeFaqs: (faqResult.data || []).map(mapConciergeFaqRow),
     guest: mapGuest(guest),
     reservation: mapReservation(first(reservationResult.data)),
     rooms: roomResult.data || [],

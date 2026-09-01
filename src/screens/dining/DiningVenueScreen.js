@@ -10,7 +10,6 @@ import { ErrorState, Field } from '../../components/UI';
 import FloatingHeader from '../../components/FloatingHeader';
 import Button from '../../components/Button';
 import { colors, spacing, radius, typography } from '../../theme/theme';
-import { DINING_VENUES } from '../../data/mockData';
 import { getLocalizedContent } from '../../i18n/content';
 import diningVenuesContent from '../../i18n/content/diningVenues';
 import { optimizeImageUrl } from '../../utils/optimizeImageUrl';
@@ -26,9 +25,9 @@ const TYPE_KEY = {
 
 export default function DiningVenueScreen({ route, navigation }) {
   const { t, i18n } = useTranslation();
-  const { submitServiceRequest, photoOverrides } = useApp();
+  const { submitServiceRequest, photoOverrides, diningVenues } = useApp();
   const { venueId } = route.params || {};
-  const rawVenue = DINING_VENUES.find((v) => v.id === venueId);
+  const rawVenue = diningVenues.find((v) => v.id === venueId);
   const localizedVenue = rawVenue ? getLocalizedContent(diningVenuesContent, rawVenue.id, i18n.language, rawVenue) : null;
   const venue = localizedVenue
     ? { ...localizedVenue, imageUrl: resolvePhotoUrl(photoOverrides, `dining:${venueId}`, localizedVenue.imageUrl) }

@@ -11,7 +11,6 @@ import { ScreenHeader, Pill } from '../../components/UI';
 import Button from '../../components/Button';
 import { colors, spacing, radius } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
-import { DESTINATIONS, DINING_VENUES } from '../../data/mockData';
 import { resolvePhotoUrl } from '../../utils/photoOverrides';
 
 const CATEGORIES = ['All', 'Destinations', 'Dining', 'Activities', 'Events', 'Promotions'];
@@ -23,17 +22,17 @@ const CATEGORIES = ['All', 'Destinations', 'Dining', 'Activities', 'Events', 'Pr
 // directly). Presented as one flat, filterable list either way; only the
 // save path differs, handled in handleSave below.
 function useAllPhotoSlots() {
-  const { photoOverrides, activities, events, promotions } = useApp();
+  const { photoOverrides, activities, events, promotions, destinations, diningVenues } = useApp();
 
   return useMemo(() => {
-    const destinationSlots = DESTINATIONS.map((d) => ({
+    const destinationSlots = destinations.map((d) => ({
       slotKey: `destination:${d.id}`,
       kind: 'override',
       category: 'Destinations',
       label: d.title,
       imageUrl: resolvePhotoUrl(photoOverrides, `destination:${d.id}`, d.imageUrl),
     }));
-    const diningSlots = DINING_VENUES.map((v) => ({
+    const diningSlots = diningVenues.map((v) => ({
       slotKey: `dining:${v.id}`,
       kind: 'override',
       category: 'Dining',
@@ -65,7 +64,7 @@ function useAllPhotoSlots() {
       imageUrl: p.imageUrl,
     }));
     return [...destinationSlots, ...diningSlots, ...activitySlots, ...eventSlots, ...promotionSlots];
-  }, [photoOverrides, activities, events, promotions]);
+  }, [photoOverrides, activities, events, promotions, destinations, diningVenues]);
 }
 
 export default function PhotoLibraryScreen({ navigation }) {

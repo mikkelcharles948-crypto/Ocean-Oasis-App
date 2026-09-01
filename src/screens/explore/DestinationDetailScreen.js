@@ -11,7 +11,6 @@ import FloatingHeader from '../../components/FloatingHeader';
 import { ErrorState } from '../../components/UI';
 import ImagePlaceholder from '../../components/ImagePlaceholder';
 import { colors, spacing, radius, typography, shadow } from '../../theme/theme';
-import { DESTINATIONS } from '../../data/mockData';
 import { getLocalizedContent } from '../../i18n/content';
 import destinationsContent from '../../i18n/content/destinations';
 import { openInGoogleMaps } from '../../utils/openMap';
@@ -27,9 +26,9 @@ const HEADER_SWITCH_POINT = HERO_HEIGHT - 120;
 
 export default function DestinationDetailScreen({ route, navigation }) {
   const { t, i18n } = useTranslation();
-  const { photoOverrides } = useApp();
+  const { photoOverrides, destinations } = useApp();
   const { destinationId } = route.params || {};
-  const rawDestination = DESTINATIONS.find((d) => d.id === destinationId);
+  const rawDestination = destinations.find((d) => d.id === destinationId);
   const localizedDestination = rawDestination
     ? getLocalizedContent(destinationsContent, rawDestination.id, i18n.language, rawDestination)
     : null;

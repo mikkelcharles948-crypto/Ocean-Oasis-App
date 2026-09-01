@@ -9,10 +9,11 @@ import { useTranslation } from 'react-i18next';
 
 import { ScreenHeader, Pill } from '../../components/UI';
 import { colors, spacing, radius } from '../../theme/theme';
-import { DESTINATIONS, DESTINATION_CATEGORIES } from '../../data/mockData';
+import { DESTINATION_CATEGORIES } from '../../data/mockData';
 import { HOTEL_LOCATION, DESTINATION_COORDS } from '../../data/geoData';
 import { getLocalizedContent } from '../../i18n/content';
 import destinationsContent from '../../i18n/content/destinations';
+import { useApp } from '../../context/AppContext';
 
 // Real OpenStreetMap tiles rendered via Leaflet inside a WebView — no native
 // map module (react-native-maps/expo-maps) and no Google Maps API key, so
@@ -21,7 +22,7 @@ import destinationsContent from '../../i18n/content/destinations';
 // this kind of light, occasional use; a production release doing this at
 // real scale should move to a paid tile host (MapTiler, Stadia, etc.) per
 // OSM's usage policy.
-function buildMapHtml() {
+function buildMapHtml(destinations) {
   return `<!DOCTYPE html>
 <html>
 <head>
@@ -55,7 +56,7 @@ function buildMapHtml() {
 
     var markers = {};
     var pins = ${JSON.stringify(
-      DESTINATIONS.filter((d) => DESTINATION_COORDS[d.id]).map((d) => ({
+      destinations.filter((d) => DESTINATION_COORDS[d.id]).map((d) => ({
         id: d.id,
         category: d.category,
         label: d.title,
@@ -103,23 +104,28 @@ function buildMapHtml() {
 </html>`;
 }
 
-const MAP_HTML = buildMapHtml();
-
 export default function MapScreen({ navigation }) {
   const { t, i18n } = useTranslation();
+  const { destinations } = useApp();
   const [category, setCategory] = useState('All');
   const [permissionState, setPermissionState] = useState('checking'); // checking | granted | denied
   const webviewRef = useRef(null);
   const lastKnownLocation = useRef(null);
 
+  // Built once per destinations list (not per render, since it's a fairly
+  // large HTML string), rather than the previous module-level constant —
+  // that baked the destination pins in at bundle-load time, before any
+  // hotel's destinations could possibly be known.
+  const mapHtml = useMemo(() => buildMapHtml(destinations), [destinations]);
+
   const destinationTitleById = useMemo(() => {
     const map = {};
-    DESTINATIONS.forEach((d) => {
+    destinations.forEach((d) => {
       const localized = getLocalizedContent(destinationsContent, d.id, i18n.language, d);
       map[d.id] = localized.title || d.title;
     });
     return map;
-  }, [i18n.language]);
+  }, [i18n.language, destinations]);
 
   const postToMap = useCallback((message) => {
     webviewRef.current?.postMessage(JSON.stringify(message));
@@ -173,7 +179,7 @@ export default function MapScreen({ navigation }) {
       <View style={styles.mapArea}>
         <WebView
           ref={webviewRef}
-          source={{ html: MAP_HTML }}
+          source={{ html: mapHtml }}
           style={{ flex: 1, backgroundColor: '#DCEEEA' }}
           onMessage={() => {}}
           javaScriptEnabled

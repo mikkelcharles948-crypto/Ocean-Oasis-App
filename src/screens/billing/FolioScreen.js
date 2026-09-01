@@ -9,7 +9,6 @@ import { ScreenHeader, Card, Badge } from '../../components/UI';
 import Button from '../../components/Button';
 import { colors, spacing, radius, font, shadow } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
-import { ROOM_TYPES } from '../../data/mockData';
 
 function money(n) {
   return `$${(n || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -17,12 +16,12 @@ function money(n) {
 
 export default function FolioScreen({ navigation }) {
   const { t } = useTranslation();
-  const { reservation, room, activityBookings, activities, guest, submitServiceRequest } = useApp();
+  const { reservation, room, activityBookings, activities, guest, submitServiceRequest, roomTypes } = useApp();
   const [requesting, setRequesting] = useState(false);
   const [requested, setRequested] = useState(false);
   const [error, setError] = useState('');
 
-  const tier = ROOM_TYPES.find((rt) => rt.name === room.type);
+  const tier = roomTypes.find((rt) => rt.name === room.type);
   const nightlyRate = tier?.fromPricePerNight || 0;
   const roomTotal = nightlyRate * (reservation.nights || 0);
 

@@ -9,7 +9,6 @@ import { ScreenHeader, Card, Pill, EmptyState, SectionHeader } from '../../compo
 import Button from '../../components/Button';
 import { colors, spacing, radius, font, typography } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
-import { ROOM_TYPES } from '../../data/mockData';
 import { getLocalizedString } from '../../i18n/content';
 import roomAmenitiesContent from '../../i18n/content/roomAmenities';
 
@@ -62,7 +61,8 @@ function Stepper({ value, min, max, onChange, label }) {
 
 function RoomResultCard({ room, nights, checkIn, checkOut, adults, childrenCount, navigation }) {
   const { t, i18n } = useTranslation();
-  const tier = ROOM_TYPES.find((rt) => rt.name === room.type);
+  const { roomTypes } = useApp();
+  const tier = roomTypes.find((rt) => rt.name === room.type);
   const perNight = tier?.fromPricePerNight ?? null;
   const total = perNight != null ? perNight * nights : null;
   const amenities = Array.isArray(room.amenities) ? room.amenities.slice(0, 4) : [];
@@ -107,7 +107,7 @@ function RoomResultCard({ room, nights, checkIn, checkOut, adults, childrenCount
 
 export default function NewReservationScreen({ navigation }) {
   const { t } = useTranslation();
-  const { searchAvailableRooms } = useApp();
+  const { searchAvailableRooms, roomTypes } = useApp();
 
   const quickDates = useMemo(() => {
     const now = new Date();
@@ -173,7 +173,7 @@ export default function NewReservationScreen({ navigation }) {
         <Text style={styles.label}>{t('booking.roomTypeLabel')}</Text>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
           <Pill label={t('booking.anyRoomType')} selected={roomType === null} onPress={() => setRoomType(null)} />
-          {ROOM_TYPES.map((rt) => (
+          {roomTypes.map((rt) => (
             <Pill key={rt.id} label={rt.name} selected={roomType === rt.name} onPress={() => setRoomType(rt.name)} />
           ))}
         </View>

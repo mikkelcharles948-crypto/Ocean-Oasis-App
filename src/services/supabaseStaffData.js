@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import { mapServiceRequest, mapActivity, mapEvent, mapPromotion, mapBooking, mapNotification, mapReservation, mapConciergeMessage } from './supabaseData';
+import { mapServiceRequest, mapActivity, mapEvent, mapPromotion, mapBooking, mapNotification, mapReservation, mapConciergeMessage, mapDestination, mapDiningVenue, mapRoomType, mapConciergeFaqRow } from './supabaseData';
 
 // notifications.id has no DB-generated default (unlike the other tables), so
 // staff/guest-originated inserts need a client-side id.
@@ -62,6 +62,7 @@ export async function loadStaffData() {
     requestsResult, roomsResult, activitiesResult, eventsResult, promotionsResult,
     bookingsResult, maintenanceResult, feedbackResult, contentResult, auditResult,
     notificationsResult, guestsResult, conciergeResult,
+    destinationResult, diningVenueResult, roomTypeResult, faqResult,
   ] = await Promise.all([
     supabase.from('service_requests').select('*, guests(first_name, last_name)').order('created_at', { ascending: false }),
     supabase.from('rooms').select('*').order('number'),
@@ -79,10 +80,15 @@ export async function loadStaffData() {
     supabase.from('notifications').select('*').not('recipient_role', 'is', null).order('created_at', { ascending: false }),
     supabase.from('guests').select('id, first_name, last_name, reservations(id, reservation_number, check_in, check_out, housekeeping_preference, rooms(number))').order('created_at', { ascending: false }),
     supabase.from('concierge_conversations').select('*, guests(first_name, last_name)').order('last_message_at', { ascending: false }).limit(100),
+    supabase.from('destinations').select('*'),
+    supabase.from('dining_venues').select('*'),
+    supabase.from('room_types').select('*').order('tier'),
+    supabase.from('concierge_faqs').select('*').order('sort_order'),
   ]);
   const failed = [
     requestsResult, roomsResult, activitiesResult, eventsResult, promotionsResult, bookingsResult,
     maintenanceResult, feedbackResult, contentResult, auditResult, notificationsResult, guestsResult, conciergeResult,
+    destinationResult, diningVenueResult, roomTypeResult, faqResult,
   ].find((r) => r.error);
   if (failed) throw failed.error;
 
@@ -100,6 +106,10 @@ export async function loadStaffData() {
     staffNotifications: (notificationsResult.data || []).map(mapNotification),
     allGuestsForStaff: (guestsResult.data || []).map(mapStaffGuest),
     conciergeConversations: (conciergeResult.data || []).map(mapConciergeConversation),
+    destinations: (destinationResult.data || []).map(mapDestination),
+    diningVenues: (diningVenueResult.data || []).map(mapDiningVenue),
+    roomTypes: (roomTypeResult.data || []).map(mapRoomType),
+    conciergeFaqs: (faqResult.data || []).map(mapConciergeFaqRow),
   };
 }
 

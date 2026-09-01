@@ -12,7 +12,6 @@ import GlassSurface from '../../components/GlassSurface';
 import Button from '../../components/Button';
 import { colors, spacing, radius, font, typography } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
-import { ROOM_TYPES } from '../../data/mockData';
 
 // -----------------------------------------------------------------------
 // Date helpers — this project has no date-picker dependency installed, so
@@ -98,7 +97,7 @@ const STEPS = ['guest', 'details', 'confirm'];
 
 export default function StaffNewBookingScreen({ navigation }) {
   const { t, i18n } = useTranslation();
-  const { allGuestsForStaff, searchAvailableRoomsStaff, createReservationForGuest, createGuestProfile } = useApp();
+  const { allGuestsForStaff, searchAvailableRoomsStaff, createReservationForGuest, createGuestProfile, roomTypes } = useApp();
 
   const [stepIndex, setStepIndex] = useState(0);
   const step = STEPS[stepIndex];
@@ -403,7 +402,7 @@ export default function StaffNewBookingScreen({ navigation }) {
               <TouchableOpacity onPress={() => { setRoomTypeFilter(null); setAvailableRooms(null); }} style={[styles.chip, !roomTypeFilter && styles.chipActive]}>
                 <Text style={[styles.chipText, !roomTypeFilter && styles.chipTextActive]}>{t('staff.newBooking.anyRoomType')}</Text>
               </TouchableOpacity>
-              {ROOM_TYPES.map((rt) => (
+              {roomTypes.map((rt) => (
                 <TouchableOpacity key={rt.id} onPress={() => { setRoomTypeFilter(rt.name); setAvailableRooms(null); }} style={[styles.chip, roomTypeFilter === rt.name && styles.chipActive]}>
                   <Text style={[styles.chipText, roomTypeFilter === rt.name && styles.chipTextActive]}>{rt.name}</Text>
                 </TouchableOpacity>

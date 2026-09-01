@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import { ScreenHeader } from '../../components/UI';
 import EditorialImageCard from '../../components/EditorialImageCard';
 import { colors, spacing } from '../../theme/theme';
-import { DINING_VENUES } from '../../data/mockData';
 import { getLocalizedContent } from '../../i18n/content';
 import diningVenuesContent from '../../i18n/content/diningVenues';
 import { useApp } from '../../context/AppContext';
@@ -21,12 +20,12 @@ const TYPE_KEY = {
 
 export default function DiningScreen({ navigation }) {
   const { t, i18n } = useTranslation();
-  const { photoOverrides } = useApp();
+  const { photoOverrides, diningVenues } = useApp();
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
       <ScreenHeader title={t('dining.title')} onBack={() => navigation.goBack()} />
       <FlatList
-        data={DINING_VENUES}
+        data={diningVenues}
         keyExtractor={(v) => v.id}
         contentContainerStyle={{ padding: spacing.lg, gap: spacing.md }}
         renderItem={({ item }) => {

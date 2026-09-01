@@ -9,6 +9,7 @@ import Constants from 'expo-constants';
 import {
   GUEST, RESERVATION, ROOM, INITIAL_SERVICE_REQUESTS, INITIAL_NOTIFICATIONS,
   ACTIVITIES, EVENTS, PROMOTIONS, ROOMS, REQUEST_CATEGORY_TO_DEPARTMENT, REQUEST_CATEGORY_TO_ROLE, ROLE_SURFACES,
+  DESTINATIONS, DINING_VENUES, ROOM_TYPES, CONCIERGE_FAQ,
 } from '../data/mockData';
 import { supabase } from '../lib/supabase';
 import {
@@ -179,6 +180,14 @@ export function AppProvider({ children }) {
   const [activityBookings, setActivityBookings] = useState([]);
   const [events, setEvents] = useState(EVENTS);
   const [promotions, setPromotions] = useState(PROMOTIONS);
+  // Phase 3 of the platform pivot: real hotel-scoped tables that replaced
+  // the equivalent mockData.js constants (DESTINATIONS, DINING_VENUES,
+  // ROOM_TYPES, CONCIERGE_FAQ) — seeded from mockData.js's own constants,
+  // used here only as the pre-fetch placeholder shape.
+  const [destinations, setDestinations] = useState(DESTINATIONS);
+  const [diningVenues, setDiningVenues] = useState(DINING_VENUES);
+  const [roomTypes, setRoomTypes] = useState(ROOM_TYPES);
+  const [conciergeFaqs, setConciergeFaqs] = useState(CONCIERGE_FAQ);
 
   // A guest's real schedule: confirmed activity bookings (already real
   // reservations) plus any events they've bookmarked. Previously this was
@@ -301,6 +310,10 @@ export function AppProvider({ children }) {
       setEvents(data.events);
       setPromotions(data.promotions);
       setSavedEventIds(data.savedEventIds || []);
+      setDestinations(data.destinations);
+      setDiningVenues(data.diningVenues);
+      setRoomTypes(data.roomTypes);
+      setConciergeFaqs(data.conciergeFaqs);
       setPhotoOverrides(overrides);
       return { ok: true };
     } catch (error) {
@@ -329,6 +342,10 @@ export function AppProvider({ children }) {
       setStaffNotifications(staffData.staffNotifications);
       setAllGuestsForStaff(staffData.allGuestsForStaff);
       setConciergeConversations(staffData.conciergeConversations);
+      setDestinations(staffData.destinations);
+      setDiningVenues(staffData.diningVenues);
+      setRoomTypes(staffData.roomTypes);
+      setConciergeFaqs(staffData.conciergeFaqs);
       setStaffDirectory(directory);
       setPhotoOverrides(overrides);
       return { ok: true };
@@ -1356,6 +1373,7 @@ export function AppProvider({ children }) {
       conciergeConversations, replyToConcierge, resolveConcierge, loadStaffConciergeThread,
       photoOverrides, updateActivityImage, updateEventImage, updatePromotionImage, updatePhotoOverride,
       hotels, refreshPlatformData, createHotel, updateHotel, hotelBranding,
+      destinations, diningVenues, roomTypes, conciergeFaqs,
     }),
     [
       hasOnboarded, completeOnboarding, onboardingChecked, experience, chooseExperience, exitToExperiencePicker,
@@ -1378,6 +1396,7 @@ export function AppProvider({ children }) {
       conciergeConversations, replyToConcierge, resolveConcierge, loadStaffConciergeThread,
       photoOverrides, updateActivityImage, updateEventImage, updatePromotionImage, updatePhotoOverride,
       hotels, refreshPlatformData, createHotel, updateHotel, hotelBranding,
+      destinations, diningVenues, roomTypes, conciergeFaqs,
     ]
   );
 

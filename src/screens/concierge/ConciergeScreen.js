@@ -9,7 +9,6 @@ import { useTranslation } from 'react-i18next';
 import { ScreenHeader } from '../../components/UI';
 import AnimatedPressable from '../../components/AnimatedPressable';
 import { colors, spacing, radius, font } from '../../theme/theme';
-import { CONCIERGE_FAQ } from '../../data/mockData';
 import { getLocalizedContent } from '../../i18n/content';
 import conciergeFaqContent from '../../i18n/content/conciergeFaq';
 import { useApp } from '../../context/AppContext';
@@ -22,7 +21,7 @@ import { supabase } from '../../lib/supabase';
 // server-side.
 export default function ConciergeScreen({ navigation }) {
   const { t, i18n } = useTranslation();
-  const { conciergeConversationId, sendConciergeMessage, loadConciergeThread } = useApp();
+  const { conciergeConversationId, sendConciergeMessage, loadConciergeThread, conciergeFaqs: CONCIERGE_FAQ } = useApp();
   const [messages, setMessages] = useState([{ id: 'm0', role: 'assistant', text: t('concierge.greeting') }]);
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);

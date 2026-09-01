@@ -14,7 +14,6 @@ import StatusPill from '../../components/StatusPill';
 import SectionHeading from '../../components/SectionHeading';
 import { colors, spacing, radius, font, shadow, gradients, typography } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
-import { ROOM_TYPES } from '../../data/mockData';
 import { getLocalizedContent, getLocalizedString } from '../../i18n/content';
 import roomTypesContent from '../../i18n/content/roomTypes';
 import roomAmenitiesContent from '../../i18n/content/roomAmenities';
@@ -95,10 +94,10 @@ function UpgradeCard({ tier: rawTier, featured, onRequested }) {
 
 export default function MyStayScreen({ navigation }) {
   const { t, i18n } = useTranslation();
-  const { guest, reservation, room } = useApp();
+  const { guest, reservation, room, roomTypes } = useApp();
   const [heroImageFailed, setHeroImageFailed] = useState(false);
-  const currentTierIndex = ROOM_TYPES.findIndex((rt) => rt.name === room.type);
-  const upgradeOptions = currentTierIndex >= 0 ? ROOM_TYPES.slice(currentTierIndex + 1) : [];
+  const currentTierIndex = roomTypes.findIndex((rt) => rt.name === room.type);
+  const upgradeOptions = currentTierIndex >= 0 ? roomTypes.slice(currentTierIndex + 1) : [];
 
   const stayStatusIndex = Math.max(0, STAY_STATUS_STEPS.indexOf(reservation.status));
   const stayStatusLabels = {

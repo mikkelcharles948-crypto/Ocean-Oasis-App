@@ -10,7 +10,6 @@ import { ScreenHeader, Field, ErrorState } from '../../components/UI';
 import Button from '../../components/Button';
 import { colors, spacing, radius, typography, shadow, gradients } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
-import { ROOM_TYPES } from '../../data/mockData';
 
 function formatDateShort(iso) {
   return new Date(iso + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -45,7 +44,7 @@ function Stepper({ value, min, max, onChange, label }) {
 
 export default function BookRoomScreen({ route, navigation }) {
   const { t } = useTranslation();
-  const { createReservation } = useApp();
+  const { createReservation, roomTypes } = useApp();
   const { room, checkIn, checkOut, nights, adults: initialAdults, children: initialChildren } = route.params || {};
 
   const [adults, setAdults] = useState(initialAdults || 2);
@@ -64,7 +63,7 @@ export default function BookRoomScreen({ route, navigation }) {
     );
   }
 
-  const tier = ROOM_TYPES.find((rt) => rt.name === room.type);
+  const tier = roomTypes.find((rt) => rt.name === room.type);
   const perNight = tier?.fromPricePerNight ?? null;
   const total = perNight != null ? perNight * nights : null;
   const maxOccupancy = room.max_occupancy || tier?.maxOccupancy || 4;
