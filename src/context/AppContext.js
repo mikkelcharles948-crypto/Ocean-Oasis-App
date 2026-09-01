@@ -13,6 +13,7 @@ import {
 import { supabase } from '../lib/supabase';
 import {
   loadGuestData,
+  loadHotelBranding as loadRemoteHotelBranding,
   mapReservation,
   createServiceRequest as createRemoteServiceRequest,
   updateServiceRequest as updateRemoteServiceRequest,
@@ -223,6 +224,12 @@ export function AppProvider({ children }) {
   // MCX Technologies' own layer above every hotel — only ever populated for
   // a signed-in PLATFORM_ADMIN, never mixed into staff/guest data loading.
   const [hotels, setHotels] = useState([]);
+  // The signed-in guest/staff member's own hotel — { id, name, theme }, or
+  // null before it's resolved (or for a platform admin, who has none). Only
+  // Logo.js currently reads theme.logoUrl from this; the rest of the app's
+  // colors are still the shared static palette — see loadHotelBranding's
+  // comment for why full per-hotel reskinning needs a larger follow-up.
+  const [hotelBranding, setHotelBranding] = useState(null);
   // The guest's own AI concierge thread — persisted so reopening the
   // Concierge tab resumes the same conversation instead of starting a new
   // one every time. Staff-side conversation list (all guests) is separate,
@@ -396,6 +403,25 @@ export function AppProvider({ children }) {
       mounted = false;
     };
   }, [authSession?.user?.id, refreshGuestData, refreshStaffData, refreshPlatformData]);
+
+  // Resolves once the signed-in guest or staff member's hotel is known
+  // (guest.hotelId is set the moment they have a reservation; opsSession.
+  // hotelId comes from their profiles row). A platform admin has neither,
+  // so this simply stays null for them.
+  useEffect(() => {
+    const hotelId = opsSession?.hotelId || guest?.hotelId;
+    if (!hotelId) {
+      setHotelBranding(null);
+      return;
+    }
+    let mounted = true;
+    loadRemoteHotelBranding(hotelId)
+      .then((branding) => mounted && setHotelBranding(branding))
+      .catch(() => mounted && setHotelBranding(null));
+    return () => {
+      mounted = false;
+    };
+  }, [opsSession?.hotelId, guest?.hotelId]);
 
   // Register this device's Expo push token once signed in, so emergency
   // broadcasts (and, in future, other alerts) reach this device even when
@@ -1329,7 +1355,7 @@ export function AppProvider({ children }) {
       conciergeConversationId, sendConciergeMessage, loadConciergeThread,
       conciergeConversations, replyToConcierge, resolveConcierge, loadStaffConciergeThread,
       photoOverrides, updateActivityImage, updateEventImage, updatePromotionImage, updatePhotoOverride,
-      hotels, refreshPlatformData, createHotel, updateHotel,
+      hotels, refreshPlatformData, createHotel, updateHotel, hotelBranding,
     }),
     [
       hasOnboarded, completeOnboarding, onboardingChecked, experience, chooseExperience, exitToExperiencePicker,
@@ -1351,7 +1377,7 @@ export function AppProvider({ children }) {
       conciergeConversationId, sendConciergeMessage, loadConciergeThread,
       conciergeConversations, replyToConcierge, resolveConcierge, loadStaffConciergeThread,
       photoOverrides, updateActivityImage, updateEventImage, updatePromotionImage, updatePhotoOverride,
-      hotels, refreshPlatformData, createHotel, updateHotel,
+      hotels, refreshPlatformData, createHotel, updateHotel, hotelBranding,
     ]
   );
 

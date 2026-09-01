@@ -11,7 +11,10 @@ import { useApp } from '../../context/AppContext';
 
 const STATUSES = ['ACTIVE', 'TRIAL', 'SUSPENDED'];
 const STATUS_TONE = { ACTIVE: 'success', TRIAL: 'warning', SUSPENDED: 'neutral' };
-const EMPTY_FORM = { name: '', slug: '', legalName: '', address: '', phone: '', email: '', timezone: 'UTC', currency: 'USD' };
+const EMPTY_FORM = {
+  name: '', slug: '', legalName: '', address: '', phone: '', email: '', timezone: 'UTC', currency: 'USD',
+  logoUrl: '', primaryColor: '', accentColor: '',
+};
 
 // The one screen MCX Technologies (the owner's own company, above every
 // hotel) uses to onboard and manage properties in Phase 1 of the platform
@@ -42,6 +45,7 @@ export default function PlatformHotelsScreen() {
     setForm({
       name: hotel.name, slug: hotel.slug, legalName: hotel.legalName, address: hotel.address,
       phone: hotel.phone, email: hotel.email, timezone: hotel.timezone, currency: hotel.currency,
+      logoUrl: hotel.theme?.logoUrl || '', primaryColor: hotel.theme?.colors?.deepOcean || '', accentColor: hotel.theme?.colors?.turquoise || '',
     });
     setError('');
     setShowForm(true);
@@ -54,7 +58,17 @@ export default function PlatformHotelsScreen() {
     }
     setSaving(true);
     setError('');
-    const result = editingId ? await updateHotel(editingId, form) : await createHotel(form);
+    const theme = {
+      ...(form.logoUrl.trim() ? { logoUrl: form.logoUrl.trim() } : {}),
+      ...((form.primaryColor.trim() || form.accentColor.trim()) ? {
+        colors: {
+          ...(form.primaryColor.trim() ? { deepOcean: form.primaryColor.trim() } : {}),
+          ...(form.accentColor.trim() ? { turquoise: form.accentColor.trim() } : {}),
+        },
+      } : {}),
+    };
+    const payload = { ...form, theme };
+    const result = editingId ? await updateHotel(editingId, payload) : await createHotel(payload);
     setSaving(false);
     if (!result?.ok) {
       setError(result?.error || 'Something went wrong. Please try again.');
@@ -136,6 +150,15 @@ export default function PlatformHotelsScreen() {
             <Field label="Email" value={form.email} onChangeText={(v) => setForm({ ...form, email: v })} placeholder="stay@example.com" keyboardType="email-address" />
             <Field label="Timezone" value={form.timezone} onChangeText={(v) => setForm({ ...form, timezone: v })} placeholder="America/Dominica" />
             <Field label="Currency" value={form.currency} onChangeText={(v) => setForm({ ...form, currency: v })} placeholder="USD" />
+            <Text style={styles.sectionLabel}>Branding</Text>
+            <Text style={styles.sectionHint}>
+              Logo shows immediately once set. Brand colors are stored now but not yet applied
+              app-wide — that needs a larger follow-up (most screens' colors are baked in at
+              build time, not read live per hotel yet).
+            </Text>
+            <Field label="Logo URL" value={form.logoUrl} onChangeText={(v) => setForm({ ...form, logoUrl: v })} placeholder="https://…/logo.png" />
+            <Field label="Primary color (hex)" value={form.primaryColor} onChangeText={(v) => setForm({ ...form, primaryColor: v })} placeholder="#0B3B45" />
+            <Field label="Accent color (hex)" value={form.accentColor} onChangeText={(v) => setForm({ ...form, accentColor: v })} placeholder="#2FB8B0" />
             {error ? <Text style={styles.error}>{error}</Text> : null}
             <Button label={editingId ? 'Save changes' : 'Create hotel'} onPress={handleSave} loading={saving} style={{ marginTop: spacing.sm, marginBottom: spacing.xl }} />
           </ScrollView>
@@ -147,6 +170,8 @@ export default function PlatformHotelsScreen() {
 
 const styles = StyleSheet.create({
   subtitle: { fontSize: 12.5, color: colors.slate, paddingHorizontal: spacing.lg },
+  sectionLabel: { fontSize: 13, fontWeight: '700', color: colors.charcoal, marginTop: spacing.md },
+  sectionHint: { fontSize: 11.5, color: colors.slate, marginTop: 2, marginBottom: spacing.xs, lineHeight: 16 },
   name: { fontSize: 15.5, fontWeight: '700', color: colors.charcoal },
   meta: { fontSize: 12, color: colors.slate, marginTop: 2 },
   chip: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: radius.pill, backgroundColor: colors.sandLight },

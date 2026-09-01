@@ -30,7 +30,7 @@ export async function loadHotels() {
   return (data || []).map(mapHotel);
 }
 
-export async function createHotel({ slug, name, legalName, address, phone, email, timezone, currency }) {
+export async function createHotel({ slug, name, legalName, address, phone, email, timezone, currency, theme }) {
   const { data, error } = await supabase.from('hotels').insert({
     slug: slug.trim(),
     name: name.trim(),
@@ -40,6 +40,7 @@ export async function createHotel({ slug, name, legalName, address, phone, email
     email: email || null,
     timezone: timezone || 'UTC',
     currency: currency || 'USD',
+    theme: theme || {},
   }).select().single();
   if (error) throw error;
   return mapHotel(data);

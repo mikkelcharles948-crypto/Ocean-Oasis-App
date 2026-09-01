@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Image, StyleSheet } from 'react-native';
 import GlassSurface from './GlassSurface';
 import { colors } from '../theme/theme';
+import { useApp } from '../context/AppContext';
 
 // Official Ocean Oasis, Dominica logo, processed from the original source
 // artwork (which shipped as an opaque cream-filled rectangle) into two
@@ -31,15 +32,23 @@ const MARK_ASPECT_RATIO = 1; // logo-mark.png is square
 // the mark white, the same fix already used successfully for the bell icon
 // sitting right next to it in HomeScreen's hero.
 export default function Logo({ size = 'md', light = false, variant = 'full' }) {
+  const { hotelBranding } = useApp();
   const height = typeof size === 'number' ? size : { sm: 40, md: 60, lg: 96 }[size];
+  // A hotel with its own logo configured (Platform Admin -> Hotels ->
+  // theme.logoUrl) overrides the bundled Ocean Oasis artwork. No hotel
+  // logo yet (including for the demo/single-hotel case today) falls back
+  // to it exactly as before.
+  const hotelName = hotelBranding?.name;
+  const remoteLogoUrl = hotelBranding?.theme?.logoUrl;
+  const accessibilityLabel = hotelName ? `${hotelName} logo` : 'Ocean Oasis Hotel, Dominica';
 
   if (variant === 'mark') {
     return (
       <Image
-        source={LOGO_MARK}
-        style={[{ width: height, height }, light && { tintColor: colors.white }]}
+        source={remoteLogoUrl ? { uri: remoteLogoUrl } : LOGO_MARK}
+        style={[{ width: height, height }, light && !remoteLogoUrl && { tintColor: colors.white }]}
         resizeMode="contain"
-        accessibilityLabel="Ocean Oasis Hotel, Dominica"
+        accessibilityLabel={accessibilityLabel}
       />
     );
   }
@@ -47,10 +56,10 @@ export default function Logo({ size = 'md', light = false, variant = 'full' }) {
   const width = height * FULL_ASPECT_RATIO;
   const image = (
     <Image
-      source={LOGO_FULL}
+      source={remoteLogoUrl ? { uri: remoteLogoUrl } : LOGO_FULL}
       style={{ width, height }}
       resizeMode="contain"
-      accessibilityLabel="Ocean Oasis Hotel, Dominica"
+      accessibilityLabel={accessibilityLabel}
     />
   );
 

@@ -19,6 +19,7 @@ export function mapGuest(row) {
     loyaltyTier: row.loyalty_tier || '',
     language: row.language || 'English',
     interests: row.interests || [],
+    hotelId: row.hotel_id || null,
   };
 }
 
@@ -81,6 +82,19 @@ export async function loadPhotoOverrides() {
     map[row.slot_key] = { imageUrl: row.image_url, label: row.label, category: row.category };
   });
   return map;
+}
+
+// The signed-in guest/staff member's own hotel row — hotels_own_read RLS
+// only ever lets this return the caller's own hotel, never another one.
+// Used to drive whatever dynamic branding (logo, name) is wired up to read
+// it; most of the app's color palette is still the shared static theme
+// (see src/theme/theme.js) since it's baked in at bundle-load time via
+// StyleSheet.create, not re-readable per hotel yet.
+export async function loadHotelBranding(hotelId) {
+  if (!hotelId) return null;
+  const { data, error } = await supabase.from('hotels').select('id, name, theme').eq('id', hotelId).maybeSingle();
+  if (error) throw error;
+  return data ? { id: data.id, name: data.name, theme: data.theme || {} } : null;
 }
 
 export async function loadGuestData(userId) {
