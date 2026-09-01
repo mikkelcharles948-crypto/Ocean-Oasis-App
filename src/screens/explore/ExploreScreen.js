@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
+import { Text } from '../../components/AppText';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -11,7 +12,7 @@ import AnimatedPressable from '../../components/AnimatedPressable';
 import GlassSurface from '../../components/GlassSurface';
 import SectionHeading from '../../components/SectionHeading';
 import ExperienceCard from '../../components/ExperienceCard';
-import { colors, spacing } from '../../theme/theme';
+import { colors, spacing, radius } from '../../theme/theme';
 import { DESTINATIONS, DESTINATION_CATEGORIES } from '../../data/mockData';
 import { getLocalizedContent } from '../../i18n/content';
 import destinationsContent from '../../i18n/content/destinations';
@@ -126,6 +127,20 @@ export default function ExploreScreen({ navigation }) {
         ))}
       </View>
 
+      {/* Trail Maps / Local Guide as real Explore content, not just the
+          small hero corner icons above — this is their primary entry point
+          now that Profile no longer links to them. */}
+      <View style={styles.resourceRow}>
+        <AnimatedPressable style={styles.resourceLink} onPress={() => navigation.navigate('TrailMaps')} accessibilityRole="button">
+          <Ionicons name="trail-sign-outline" size={18} color={colors.deepOcean} />
+          <Text style={styles.resourceLinkLabel} numberOfLines={1}>{t('trailMaps.title')}</Text>
+        </AnimatedPressable>
+        <AnimatedPressable style={styles.resourceLink} onPress={() => navigation.navigate('LocalGuide')} accessibilityRole="button">
+          <Ionicons name="compass-outline" size={18} color={colors.deepOcean} />
+          <Text style={styles.resourceLinkLabel} numberOfLines={1}>{t('localGuide.title')}</Text>
+        </AnimatedPressable>
+      </View>
+
       <FlatList
         data={filtered}
         keyExtractor={(item) => item.id}
@@ -165,4 +180,11 @@ const styles = StyleSheet.create({
     bottom: spacing.sm,
   },
   pillRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, paddingHorizontal: spacing.lg, marginTop: spacing.md },
+  resourceRow: { flexDirection: 'row', gap: spacing.sm, paddingHorizontal: spacing.lg, marginTop: spacing.md },
+  resourceLink: {
+    flexDirection: 'row', alignItems: 'center', gap: 6, flex: 1,
+    paddingHorizontal: 12, paddingVertical: 10, borderRadius: radius.pill,
+    backgroundColor: colors.sandLight,
+  },
+  resourceLinkLabel: { fontSize: 12.5, fontWeight: '600', color: colors.deepOcean, flexShrink: 1 },
 });

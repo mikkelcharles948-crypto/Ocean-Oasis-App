@@ -96,10 +96,6 @@ export default function ProfileScreen({ navigation }) {
           <Row icon="bed-outline" label={t('profile.roomPreferencesRow')} onPress={() => navigation.navigate('RoomPreferences')} />
           <Divider />
           <Row icon="information-circle-outline" label={t('profile.hotelAmenitiesRow')} onPress={() => navigation.navigate('HotelAmenities')} />
-          <Divider />
-          <Row icon="map-outline" label={t('profile.localGuideRow')} onPress={() => navigation.navigate('LocalGuide')} />
-          <Divider />
-          <Row icon="trail-sign-outline" label={t('profile.trailMapsRow')} onPress={() => navigation.navigate('TrailMaps')} />
         </Card>
 
         <SectionLabel text={t('profile.app')} />
