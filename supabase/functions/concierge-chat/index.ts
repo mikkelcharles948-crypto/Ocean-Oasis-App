@@ -34,10 +34,17 @@ Deno.serve(async (req) => {
 
     const { data: guest } = await supabase
       .from('guests')
-      .select('id, first_name, last_name, interests')
+      .select('id, first_name, last_name, interests, hotel_id')
       .eq('auth_user_id', userData.user.id)
       .maybeSingle();
     if (!guest) return json({ error: 'No guest profile for this account' }, 403);
+    if (!guest.hotel_id) return json({ error: 'No active hotel stay on this account yet' }, 403);
+
+    const { data: hotel } = await supabase
+      .from('hotels')
+      .select('name, address')
+      .eq('id', guest.hotel_id)
+      .maybeSingle();
 
     // Resolve or create the conversation, and make sure it actually
     // belongs to this guest rather than trusting the client-supplied id.
@@ -47,7 +54,7 @@ Deno.serve(async (req) => {
       conversation = data;
     }
     if (!conversation) {
-      const { data, error } = await supabase.from('concierge_conversations').insert({ guest_id: guest.id }).select().single();
+      const { data, error } = await supabase.from('concierge_conversations').insert({ guest_id: guest.id, hotel_id: guest.hotel_id }).select().single();
       if (error) throw error;
       conversation = data;
     }
@@ -82,13 +89,14 @@ Deno.serve(async (req) => {
         .order('created_at', { ascending: false })
         .limit(1)
         .maybeSingle(),
-      supabase.from('activities').select('name, category, short_description, price, duration').eq('status', 'PUBLISHED').limit(25),
-      supabase.from('events').select('title, category, date, time, location, description').eq('status', 'PUBLISHED').limit(25),
-      supabase.from('promotions').select('title, description, validity').eq('status', 'PUBLISHED').limit(15),
+      supabase.from('activities').select('name, category, short_description, price, duration').eq('status', 'PUBLISHED').eq('hotel_id', guest.hotel_id).limit(25),
+      supabase.from('events').select('title, category, date, time, location, description').eq('status', 'PUBLISHED').eq('hotel_id', guest.hotel_id).limit(25),
+      supabase.from('promotions').select('title, description, validity').eq('status', 'PUBLISHED').eq('hotel_id', guest.hotel_id).limit(15),
     ]);
 
     const systemPrompt = buildSystemPrompt({
       guest,
+      hotel,
       reservation: reservationRes.data,
       activities: activitiesRes.data || [],
       events: eventsRes.data || [],
@@ -151,6 +159,7 @@ Deno.serve(async (req) => {
           category: 'Concierge',
           department: 'Concierge',
           description: `Escalated from AI concierge chat. Guest's message: "${message.trim()}"`,
+          hotel_id: guest.hotel_id,
         })
         .select()
         .single();
@@ -163,6 +172,7 @@ Deno.serve(async (req) => {
         category: 'Concierge',
         title: 'Guest needs help — AI concierge handoff',
         body: `${guest.first_name} ${guest.last_name}: "${message.trim()}"`,
+        hotel_id: guest.hotel_id,
       });
     }
 
@@ -172,7 +182,7 @@ Deno.serve(async (req) => {
   }
 });
 
-function buildSystemPrompt({ guest, reservation, activities, events, promotions, faqContext }) {
+function buildSystemPrompt({ guest, hotel, reservation, activities, events, promotions, faqContext }) {
   const stay = reservation
     ? `They are staying in a ${reservation.rooms?.type || 'room'} (room ${reservation.rooms?.number || 'unassigned'}), check-in ${reservation.check_in}, check-out ${reservation.check_out}, status: ${reservation.status}.`
     : 'They do not have an active reservation on file.';
@@ -181,7 +191,11 @@ function buildSystemPrompt({ guest, reservation, activities, events, promotions,
     ? faqContext.map((f) => `Q: ${f.question}\nA: ${f.answer}`).join('\n\n')
     : '(none provided)';
 
-  return `You are the AI concierge for Ocean Oasis, a real hotel in Castle Comfort, Roseau, Dominica. You are chatting with ${guest.first_name}, a current guest. ${stay}
+  const hotelDescriptor = hotel?.name
+    ? `${hotel.name}${hotel.address ? `, a real hotel at ${hotel.address}` : ''}`
+    : 'this hotel';
+
+  return `You are the AI concierge for ${hotelDescriptor}. You are chatting with ${guest.first_name}, a current guest. ${stay}
 
 Only answer using the hotel information below and the guest's own stay details above. Never invent prices, hours, availability, or policies that aren't given to you here — if you don't have the real answer, say so plainly and end your reply with the exact text ${ESCALATE_MARKER} on its own, which will connect them with a real staff member. Keep replies short and warm, like a real concierge — a few sentences, not a list, unless the guest asked for a list.
 

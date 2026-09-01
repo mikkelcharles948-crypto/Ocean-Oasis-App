@@ -33,12 +33,18 @@ Deno.serve(async (req) => {
     if (userError || !userData?.user) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
     }
-    const { data: profile } = await supabase.from('profiles').select('role').eq('id', userData.user.id).maybeSingle();
+    const { data: profile } = await supabase.from('profiles').select('role, hotel_id').eq('id', userData.user.id).maybeSingle();
     if (!profile?.role) {
       return new Response(JSON.stringify({ error: 'Staff access required' }), { status: 403 });
     }
+    // Every hotel on the platform shares this one function — without this,
+    // any staff member at any hotel could push-notify every device
+    // registered across every other hotel too.
+    if (!profile.hotel_id) {
+      return new Response(JSON.stringify({ error: 'No hotel assigned to this account' }), { status: 403 });
+    }
 
-    const { data: tokens, error } = await supabase.from('push_tokens').select('token');
+    const { data: tokens, error } = await supabase.from('push_tokens').select('token').eq('hotel_id', profile.hotel_id);
     if (error) throw error;
 
     const messages = (tokens || [])
