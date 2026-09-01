@@ -51,7 +51,7 @@ export default function EventDetailScreen({ route, navigation }) {
   const isSaved = itinerary.some((i) => i.type === 'event' && i.refId === event.id);
 
   const handleSave = () => {
-    addToItinerary({ type: 'event', refId: event.id, title: event.title, date: event.date, time: event.time, location: event.location });
+    addToItinerary(event.id);
   };
 
   return (

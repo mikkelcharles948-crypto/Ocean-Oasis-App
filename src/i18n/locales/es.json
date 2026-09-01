@@ -873,7 +873,14 @@
       "internalNotes": "Notas internas",
       "notePlaceholder": "Añadir una nota interna…",
       "addNote": "Añadir",
-      "statusCancelled": "Cancelada"
+      "statusCancelled": "Cancelada",
+      "roomUpgrade": {
+        "pickRoomTitle": "Selecciona la nueva habitación del huésped",
+        "pickRoomSub": "Completar esta solicitud trasladará al huésped y liberará su habitación actual para limpieza.",
+        "noRoomsAvailable": "No hay habitaciones limpias y disponibles en este momento.",
+        "confirm": "Trasladar y completar",
+        "roomOption": "Habitación {{number}} · {{type}}"
+      }
     },
     "rooms": {
       "title": "Habitaciones y limpieza",

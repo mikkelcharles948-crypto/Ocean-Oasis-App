@@ -23,10 +23,13 @@ const STATUSES = ['Received', 'Assigned', 'In Progress', 'Completed', 'Cancelled
 
 export default function StaffRequestsScreen() {
   const { t } = useTranslation();
-  const { serviceRequests, assignRequestToStaff, updateRequestStatus, addRequestNote, staffDirectory } = useApp();
+  const { serviceRequests, assignRequestToStaff, updateRequestStatus, completeRoomUpgrade, addRequestNote, staffDirectory, rooms } = useApp();
   const [filter, setFilter] = useState('Open');
   const [activeId, setActiveId] = useState(null);
   const [noteText, setNoteText] = useState('');
+  const [roomPickerRequestId, setRoomPickerRequestId] = useState(null);
+  const [completingUpgrade, setCompletingUpgrade] = useState(false);
+  const availableRooms = useMemo(() => rooms.filter((r) => r.status === 'VACANT_CLEAN'), [rooms]);
   const statusLabel = (s) => (REQUEST_STATUS_KEY[s] ? t(`requests.status.${REQUEST_STATUS_KEY[s]}`) : s === 'Cancelled' ? t('staff.requests.statusCancelled') : s);
   const filterLabel = (f) => (f === 'Open' ? t('staff.requests.filters.open') : f === 'All' ? t('staff.requests.filters.all') : statusLabel(f));
 
@@ -66,8 +69,26 @@ export default function StaffRequestsScreen() {
       Alert.alert(t('staff.requests.assignFirstTitle'), t('staff.requests.assignFirstBody'));
       return;
     }
+    // Completing a Room Upgrade needs a specific new room picked — that's
+    // the whole point of the request — so it branches into its own picker
+    // instead of just flipping status like every other category.
+    if (status === 'Completed' && active?.category === 'Room Upgrade') {
+      setRoomPickerRequestId(requestId);
+      return;
+    }
     const result = await updateRequestStatus(requestId, status);
     if (!result.ok) Alert.alert(t('common.somethingWrong'), result.error);
+  };
+
+  const handleConfirmRoomUpgrade = async (newRoomId) => {
+    setCompletingUpgrade(true);
+    const result = await completeRoomUpgrade(roomPickerRequestId, newRoomId);
+    setCompletingUpgrade(false);
+    if (!result.ok) {
+      Alert.alert(t('common.somethingWrong'), result.error);
+      return;
+    }
+    setRoomPickerRequestId(null);
   };
 
   return (
@@ -184,6 +205,38 @@ export default function StaffRequestsScreen() {
           </GlassSurface>
         </View>
       </Modal>
+
+      <Modal visible={!!roomPickerRequestId} animationType="slide" transparent onRequestClose={() => setRoomPickerRequestId(null)}>
+        <View style={styles.modalBackdrop}>
+          <BlurView intensity={20} tint="dark" style={StyleSheet.absoluteFill} />
+          <GlassSurface style={styles.modalPanel} borderRadius={0} intensity={38} tint="light">
+            <ScrollView keyboardShouldPersistTaps="handled">
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>{t('staff.requests.roomUpgrade.pickRoomTitle')}</Text>
+                <TouchableOpacity onPress={() => setRoomPickerRequestId(null)}><Ionicons name="close" size={24} color={colors.slate} /></TouchableOpacity>
+              </View>
+              <Text style={styles.desc}>{t('staff.requests.roomUpgrade.pickRoomSub')}</Text>
+              {availableRooms.length === 0 ? (
+                <EmptyState icon="bed-outline" title={t('staff.requests.roomUpgrade.noRoomsAvailable')} />
+              ) : (
+                <View style={{ marginTop: spacing.md, gap: 8 }}>
+                  {availableRooms.map((r) => (
+                    <TouchableOpacity
+                      key={r.id}
+                      style={styles.roomOption}
+                      disabled={completingUpgrade}
+                      onPress={() => handleConfirmRoomUpgrade(r.id)}
+                    >
+                      <Text style={styles.roomOptionText}>{t('staff.requests.roomUpgrade.roomOption', { number: r.number, type: r.type })}</Text>
+                      <Ionicons name="chevron-forward" size={18} color={colors.turquoiseDark} />
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
+            </ScrollView>
+          </GlassSurface>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -218,4 +271,10 @@ const styles = StyleSheet.create({
   noteInput: { flex: 1, padding: spacing.sm, borderRadius: radius.sm, borderWidth: 1, borderColor: colors.border, fontSize: 12.5, color: colors.charcoal },
   noteAddBtn: { paddingHorizontal: 14, justifyContent: 'center', borderRadius: radius.sm, backgroundColor: colors.deepOcean },
   noteAddBtnText: { color: colors.white, fontWeight: '700', fontSize: 12.5 },
+  roomOption: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    backgroundColor: colors.white, borderWidth: 1, borderColor: colors.border,
+    borderRadius: radius.sm, paddingHorizontal: spacing.md, paddingVertical: spacing.sm,
+  },
+  roomOptionText: { fontSize: 13.5, fontWeight: '600', color: colors.charcoal },
 });

@@ -13,12 +13,14 @@ import {
 import { supabase } from '../lib/supabase';
 import {
   loadGuestData,
+  mapReservation,
   createServiceRequest as createRemoteServiceRequest,
   updateServiceRequest as updateRemoteServiceRequest,
   bookActivity as bookRemoteActivity,
   updateGuestProfile as updateRemoteGuestProfile,
   createFeedback as createRemoteFeedback,
   completeGuestCheckIn as completeRemoteGuestCheckIn,
+  completeRoomUpgrade as completeRemoteRoomUpgrade,
   setHousekeepingPreference as setRemoteHousekeepingPreference,
   registerPushToken as registerRemotePushToken,
   searchAvailableRooms as searchRemoteAvailableRooms,
@@ -26,6 +28,8 @@ import {
   sendConciergeMessage as sendRemoteConciergeMessage,
   loadConciergeMessages as loadRemoteConciergeMessages,
   loadPhotoOverrides as loadRemotePhotoOverrides,
+  saveEventToItinerary as saveRemoteEventToItinerary,
+  removeSavedEvent as removeRemoteSavedEvent,
 } from '../services/supabaseData';
 import {
   loadStaffData, loadStaffDirectory, writeAuditEntry,
@@ -150,7 +154,12 @@ export function AppProvider({ children }) {
   const [guest, setGuest] = useState(GUEST);
   const [reservation, setReservation] = useState(RESERVATION);
 
-  const [itinerary, setItinerary] = useState([]);
+  // Events a guest has bookmarked ("Add to Itinerary") but not booked —
+  // persisted server-side (itinerary_saved_events) so it survives a
+  // relaunch. Real activity bookings need no separate bookmark: they're
+  // merged into `itinerary` below straight from activityBookings, since a
+  // booking already *is* a real reservation on the guest's schedule.
+  const [savedEventIds, setSavedEventIds] = useState([]);
   const [serviceRequests, setServiceRequests] = useState(INITIAL_SERVICE_REQUESTS);
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
   const [savedActivityIds, setSavedActivityIds] = useState([]);
@@ -164,6 +173,29 @@ export function AppProvider({ children }) {
   const [activityBookings, setActivityBookings] = useState([]);
   const [events, setEvents] = useState(EVENTS);
   const [promotions, setPromotions] = useState(PROMOTIONS);
+
+  // A guest's real schedule: confirmed activity bookings (already real
+  // reservations) plus any events they've bookmarked. Previously this was
+  // its own local-only array that reset to empty on every relaunch, which
+  // is why it read as blank even for guests with real bookings.
+  const itinerary = useMemo(() => {
+    const bookingItems = activityBookings
+      .filter((b) => b.status !== 'CANCELLED')
+      .map((b) => {
+        const act = activities.find((a) => a.id === b.activityId);
+        if (!act) return null;
+        return { id: `booking:${b.id}`, type: 'activity', refId: act.id, title: act.name, date: act.date, time: act.time, location: act.location, removable: false };
+      })
+      .filter(Boolean);
+    const eventItems = savedEventIds
+      .map((eventId) => {
+        const ev = events.find((e) => e.id === eventId);
+        if (!ev) return null;
+        return { id: `event:${ev.id}`, type: 'event', refId: ev.id, title: ev.title, date: ev.date, time: ev.time, location: ev.location, removable: true };
+      })
+      .filter(Boolean);
+    return [...bookingItems, ...eventItems].sort((a, b) => `${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`));
+  }, [activityBookings, activities, savedEventIds, events]);
 
   // Operations data
   const [rooms, setRooms] = useState(ROOMS);
@@ -253,6 +285,7 @@ export function AppProvider({ children }) {
       setActivities(data.activities);
       setEvents(data.events);
       setPromotions(data.promotions);
+      setSavedEventIds(data.savedEventIds || []);
       setPhotoOverrides(overrides);
       return { ok: true };
     } catch (error) {
@@ -429,6 +462,23 @@ export function AppProvider({ children }) {
           const exists = prev.some((item) => item.id === next.id);
           return exists ? prev.map((item) => (item.id === next.id ? { ...item, ...next } : item)) : [next, ...prev];
         });
+      })
+      .subscribe();
+    return () => supabase.removeChannel(channel);
+  }, [authSession?.user?.id, guest?.id]);
+
+  // A completed room-upgrade request reassigns the guest's reservation to a
+  // new room server-side (complete_room_upgrade RPC) — without this, the
+  // guest's own MyStay screen would only ever pick that up on their next
+  // full refresh/relaunch instead of live.
+  useEffect(() => {
+    if (!authSession?.user?.id || !guest?.id || guest.id === GUEST.id) return undefined;
+    const channel = supabase
+      .channel(`reservation-updates-${guest.id}`)
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'reservations', filter: `guest_id=eq.${guest.id}` }, (payload) => {
+        const row = payload.new;
+        if (!row?.id) return;
+        setReservation((r) => (r?.id === row.id ? { ...r, ...mapReservation(row) } : r));
       })
       .subscribe();
     return () => supabase.removeChannel(channel);
@@ -627,17 +677,29 @@ export function AppProvider({ children }) {
   // ---------------------------------------------------------------------
   // Itinerary
   // ---------------------------------------------------------------------
-  const addToItinerary = useCallback((item) => {
-    setItinerary((prev) => {
-      if (prev.some((i) => i.refId === item.refId && i.type === item.type)) return prev;
-      return [...prev, { id: nextId('it'), ...item }].sort((a, b) =>
-        `${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`)
-      );
-    });
-  }, []);
-  const removeFromItinerary = useCallback((id) => {
-    setItinerary((prev) => prev.filter((i) => i.id !== id));
-  }, []);
+  const addToItinerary = useCallback(async (eventId) => {
+    setSavedEventIds((prev) => (prev.includes(eventId) ? prev : [...prev, eventId]));
+    if (authSession?.user?.id && guest.id !== GUEST.id) {
+      try {
+        await saveRemoteEventToItinerary(guest.id, eventId);
+      } catch (error) {
+        setSavedEventIds((prev) => prev.filter((id) => id !== eventId));
+        return { ok: false, error: 'Could not save this event.' };
+      }
+    }
+    return { ok: true };
+  }, [authSession?.user?.id, guest?.id]);
+  const removeFromItinerary = useCallback(async (itemId) => {
+    const eventId = itemId.startsWith('event:') ? itemId.slice('event:'.length) : itemId;
+    setSavedEventIds((prev) => prev.filter((id) => id !== eventId));
+    if (authSession?.user?.id && guest.id !== GUEST.id) {
+      try {
+        await removeRemoteSavedEvent(guest.id, eventId);
+      } catch (error) {
+        // Non-critical — worst case it reappears on the next refresh.
+      }
+    }
+  }, [authSession?.user?.id, guest?.id]);
 
   // ---------------------------------------------------------------------
   // Service Requests — shared between Guest ("Requests") and Staff ("Requests")
@@ -752,6 +814,22 @@ export function AppProvider({ children }) {
     setServiceRequests((prev) => prev.map((r) => (r.id === requestId ? { ...r, status, completedAt: status === 'Completed' ? new Date().toISOString() : r.completedAt } : r)));
     return { ok: true };
   }, [authSession?.user?.id, guest.id, opsSession]);
+
+  // Completing a "Room Upgrade" request used to just flip its own status —
+  // nothing ever moved the guest's reservation onto a new room, so the
+  // guest page never reflected it. This calls the atomic RPC that reassigns
+  // the reservation, frees the old room, and completes the request together.
+  const completeRoomUpgrade = useCallback(async (requestId, newRoomId) => {
+    try {
+      const persistedRequest = await completeRemoteRoomUpgrade(requestId, newRoomId);
+      setServiceRequests((prev) => prev.map((r) => (r.id === requestId ? { ...r, ...persistedRequest } : r)));
+      const newRoomNumber = rooms.find((r) => r.id === newRoomId)?.number || newRoomId;
+      logAudit(`Completed room upgrade — moved guest to room ${newRoomNumber}`, { requestId, newRoomId });
+      return { ok: true, data: persistedRequest };
+    } catch (error) {
+      return { ok: false, error: error?.message || 'The room upgrade could not be completed.' };
+    }
+  }, [rooms, logAudit]);
 
   const addRequestNote = useCallback(async (requestId, text) => {
     try {
@@ -1080,17 +1158,11 @@ export function AppProvider({ children }) {
     }
   }, [staffNotifications]);
 
-  // `details` (arrivalTime/transport/specialRequests from the check-in
-  // form) has no backing column on reservations yet — complete_guest_checkin
-  // only ever flips status — so it's merged into local reservation state
-  // client-side after the status flip, same as the local-only branch below.
-  // Real persistence (surviving a reinstall/re-auth) needs a migration to
-  // add those columns and pass them through the RPC.
   const completeDigitalCheckIn = useCallback(async (details) => {
     if (authSession?.user?.id && guest.id !== GUEST.id && reservation?.id) {
       try {
-        const updated = await completeRemoteGuestCheckIn(reservation.id);
-        setReservation((r) => ({ ...r, ...updated, ...(details || {}) }));
+        const updated = await completeRemoteGuestCheckIn(reservation.id, details);
+        setReservation((r) => ({ ...r, ...updated }));
         return { ok: true };
       } catch (error) {
         return { ok: false, error: 'Check-in could not be completed. Please try again.' };
@@ -1189,7 +1261,7 @@ export function AppProvider({ children }) {
       opsSession, opsSignIn, opsSignOut, canAccessSurface,
       guest, setGuest, reservation, room,
       itinerary, addToItinerary, removeFromItinerary,
-      serviceRequests, submitServiceRequest, assignRequestToStaff, updateRequestStatus, addRequestNote,
+      serviceRequests, submitServiceRequest, assignRequestToStaff, updateRequestStatus, completeRoomUpgrade, addRequestNote,
       savedActivityIds, toggleSavedActivity,
       notifications, markNotificationRead, markAllNotificationsRead, unreadNotificationCount,
       submitFeedback, feedback, resolveFeedback,
@@ -1221,7 +1293,7 @@ export function AppProvider({ children }) {
       sendPasswordReset, completePasswordRecovery, passwordRecoveryActive,
       updateGuest, opsSession, opsSignIn, opsSignOut, canAccessSurface,
       guest, reservation, room, itinerary, addToItinerary, removeFromItinerary,
-      serviceRequests, submitServiceRequest, assignRequestToStaff, updateRequestStatus, addRequestNote,
+      serviceRequests, submitServiceRequest, assignRequestToStaff, updateRequestStatus, completeRoomUpgrade, addRequestNote,
       savedActivityIds, toggleSavedActivity, notifications, markNotificationRead, markAllNotificationsRead, unreadNotificationCount,
       submitFeedback, feedback, resolveFeedback, checkedIn, completeDigitalCheckIn, setHousekeepingPreference,
       activities, createActivity, activityBookings, bookActivity, events, createEvent, publishEvent,

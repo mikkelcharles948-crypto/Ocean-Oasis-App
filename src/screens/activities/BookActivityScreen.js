@@ -17,7 +17,7 @@ import { formatActivityPrice } from '../../utils/formatActivityPrice';
 export default function BookActivityScreen({ route, navigation }) {
   const { t } = useTranslation();
   const { activityId } = route.params || {};
-  const { activities, addToItinerary, bookActivity } = useApp();
+  const { activities, bookActivity } = useApp();
   const activity = activities.find((a) => a.id === activityId);
 
   const [guests, setGuests] = useState(2);
@@ -42,10 +42,6 @@ export default function BookActivityScreen({ route, navigation }) {
       setError(result.error || t('activities.bookingError'));
       return;
     }
-    addToItinerary({
-      type: 'activity', refId: activity.id, title: activity.name,
-      date: activity.date, time: activity.time, location: activity.location,
-    });
     setConfirmed(true);
   };
 

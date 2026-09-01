@@ -873,7 +873,14 @@
       "internalNotes": "Notes internes",
       "notePlaceholder": "Ajouter une note interne…",
       "addNote": "Ajouter",
-      "statusCancelled": "Annulée"
+      "statusCancelled": "Annulée",
+      "roomUpgrade": {
+        "pickRoomTitle": "Sélectionner la nouvelle chambre du client",
+        "pickRoomSub": "Terminer cette demande déplacera le client et libérera sa chambre actuelle pour l'entretien ménager.",
+        "noRoomsAvailable": "Aucune chambre propre et libre disponible pour le moment.",
+        "confirm": "Déplacer le client et terminer",
+        "roomOption": "Chambre {{number}} · {{type}}"
+      }
     },
     "rooms": {
       "title": "Chambres et entretien",

@@ -107,11 +107,17 @@ export default function MyStayScreen({ navigation }) {
     checked_out: t('mystay.statusCheckedOut'),
   };
 
+  // Reflects the reservation's real status rather than fixed flags, so
+  // "Your Journey" actually tracks where the guest is in their stay instead
+  // of always showing arrival as done and everything after as pending.
+  const arrivalDone = reservation.status === 'checked_in' || reservation.status === 'checked_out';
+  const departureDone = reservation.status === 'checked_out';
   const timeline = [
-    { key: 'arrival', label: t('mystay.timeline.arrival'), done: true, icon: 'airplane' },
-    { key: 'stay', label: t('mystay.timeline.duringStay'), done: false, icon: 'sunny' },
-    { key: 'departure', label: t('mystay.timeline.departure'), done: false, icon: 'exit' },
+    { key: 'arrival', label: t('mystay.timeline.arrival'), done: arrivalDone, icon: 'airplane' },
+    { key: 'stay', label: t('mystay.timeline.duringStay'), done: departureDone, icon: 'sunny' },
+    { key: 'departure', label: t('mystay.timeline.departure'), done: departureDone, icon: 'exit' },
   ];
+  const preferenceLabels = (reservation.preferences || []).map((p) => t(`mystay.checkinFlow.prefOptions.${p}`));
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }} edges={['top']}>
@@ -181,14 +187,29 @@ export default function MyStayScreen({ navigation }) {
                   <View style={{ flex: 1, paddingBottom: spacing.lg }}>
                     <Text style={styles.timelineLabel}>{step.label}</Text>
                     {step.key === 'arrival' && (
-                      <Text style={styles.timelineDetail}>
-                        {reservation.arrivalTransport
-                          ? t('mystay.arrivalDetailWithTransport', {
-                              time: reservation.arrivalTime,
-                              transport: t(`mystay.checkinFlow.transportOptions.${reservation.arrivalTransport}`),
-                            })
-                          : t('mystay.arrivalDetail', { time: reservation.arrivalTime })}
-                      </Text>
+                      <>
+                        <Text style={styles.timelineDetail}>
+                          {reservation.arrivalTransport
+                            ? t('mystay.arrivalDetailWithTransport', {
+                                time: reservation.arrivalTime,
+                                transport: t(`mystay.checkinFlow.transportOptions.${reservation.arrivalTransport}`),
+                              })
+                            : t('mystay.arrivalDetail', { time: reservation.arrivalTime })}
+                        </Text>
+                        {preferenceLabels.length > 0 && (
+                          <View style={[styles.amenityWrap, { marginTop: 8 }]}>
+                            {preferenceLabels.map((label) => (
+                              <View key={label} style={styles.amenityChip}>
+                                <Ionicons name="checkmark-circle" size={12} color={colors.success} />
+                                <Text style={styles.amenityText}>{label}</Text>
+                              </View>
+                            ))}
+                          </View>
+                        )}
+                        {!!reservation.specialRequests && (
+                          <Text style={[styles.timelineDetail, { marginTop: 6 }]}>{reservation.specialRequests}</Text>
+                        )}
+                      </>
                     )}
                     {step.key === 'stay' && (
                       <View style={styles.timelineLinks}>

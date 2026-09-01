@@ -60,9 +60,11 @@ export default function ItineraryScreen({ navigation }) {
                 <Text style={styles.itemTitle}>{item.title}</Text>
                 {item.location ? <Text style={styles.itemLocation}>{item.location}</Text> : null}
               </View>
-              <TouchableOpacity onPress={() => removeFromItinerary(item.id)}>
-                <Ionicons name="close-circle" size={20} color={colors.slate} />
-              </TouchableOpacity>
+              {item.removable && (
+                <TouchableOpacity onPress={() => removeFromItinerary(item.id)}>
+                  <Ionicons name="close-circle" size={20} color={colors.slate} />
+                </TouchableOpacity>
+              )}
             </Card>
           )}
           SectionSeparatorComponent={() => <View style={{ height: spacing.md }} />}

@@ -873,7 +873,14 @@
       "internalNotes": "内部备注",
       "notePlaceholder": "添加内部备注…",
       "addNote": "添加",
-      "statusCancelled": "已取消"
+      "statusCancelled": "已取消",
+      "roomUpgrade": {
+        "pickRoomTitle": "选择客人的新房间",
+        "pickRoomSub": "完成此请求将为客人换房，并将其当前房间转为待清洁状态。",
+        "noRoomsAvailable": "目前没有干净、空闲的房间。",
+        "confirm": "换房并完成",
+        "roomOption": "{{number}} 号房 · {{type}}"
+      }
     },
     "rooms": {
       "title": "客房与客房部",

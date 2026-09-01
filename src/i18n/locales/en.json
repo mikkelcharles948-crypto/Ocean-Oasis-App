@@ -873,7 +873,14 @@
       "internalNotes": "Internal notes",
       "notePlaceholder": "Add an internal note…",
       "addNote": "Add",
-      "statusCancelled": "Cancelled"
+      "statusCancelled": "Cancelled",
+      "roomUpgrade": {
+        "pickRoomTitle": "Select the guest's new room",
+        "pickRoomSub": "Completing this request will move the guest and free their current room for housekeeping.",
+        "noRoomsAvailable": "No clean, vacant rooms available right now.",
+        "confirm": "Move guest & complete",
+        "roomOption": "Room {{number}} · {{type}}"
+      }
     },
     "rooms": {
       "title": "Rooms & Housekeeping",

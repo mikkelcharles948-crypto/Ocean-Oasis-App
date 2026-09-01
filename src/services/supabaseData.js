@@ -36,8 +36,10 @@ export function mapReservation(row) {
     children: row.children,
     status: row.status,
     arrivalTime: row.arrival_time,
+    arrivalTransport: row.arrival_transport,
     airportTransfer: row.airport_transfer,
     specialRequests: row.special_requests,
+    preferences: row.preferences || [],
     housekeepingPreference: row.housekeeping_preference || 'DAILY_CLEANING',
   };
 }
@@ -85,9 +87,9 @@ export async function loadGuestData(userId) {
   const guestResult = await supabase.from('guests').select('*').eq('auth_user_id', userId).maybeSingle();
   if (guestResult.error) throw guestResult.error;
   const guest = guestResult.data;
-  if (!guest) return { guest: null, reservation: null, rooms: [], serviceRequests: [], activityBookings: [], feedback: [], notifications: [], activities: [], events: [], promotions: [] };
+  if (!guest) return { guest: null, reservation: null, rooms: [], serviceRequests: [], activityBookings: [], feedback: [], notifications: [], activities: [], events: [], promotions: [], savedEventIds: [] };
 
-  const [reservationResult, roomResult, requestResult, bookingResult, feedbackResult, notificationResult, activityResult, eventResult, promotionResult] = await Promise.all([
+  const [reservationResult, roomResult, requestResult, bookingResult, feedbackResult, notificationResult, activityResult, eventResult, promotionResult, savedEventResult] = await Promise.all([
     supabase.from('reservations').select('*').eq('guest_id', guest.id).order('check_in', { ascending: false }),
     supabase.from('rooms').select('*'),
     supabase.from('service_requests').select('*').eq('guest_id', guest.id).order('created_at', { ascending: false }),
@@ -97,8 +99,9 @@ export async function loadGuestData(userId) {
     supabase.from('activities').select('*').eq('status', 'PUBLISHED').order('activity_date'),
     supabase.from('events').select('*').eq('status', 'PUBLISHED').order('event_date'),
     supabase.from('promotions').select('*').eq('status', 'PUBLISHED').order('created_at', { ascending: false }),
+    supabase.from('itinerary_saved_events').select('event_id').eq('guest_id', guest.id),
   ]);
-  const result = [reservationResult, roomResult, requestResult, bookingResult, feedbackResult, notificationResult, activityResult, eventResult, promotionResult].find((item) => item.error);
+  const result = [reservationResult, roomResult, requestResult, bookingResult, feedbackResult, notificationResult, activityResult, eventResult, promotionResult, savedEventResult].find((item) => item.error);
   if (result) throw result.error;
 
   return {
@@ -115,6 +118,7 @@ export async function loadGuestData(userId) {
     activities: (activityResult.data || []).map(mapActivity),
     events: (eventResult.data || []).map(mapEvent),
     promotions: (promotionResult.data || []).map(mapPromotion),
+    savedEventIds: (savedEventResult.data || []).map((row) => row.event_id),
   };
 }
 
@@ -199,10 +203,41 @@ export async function createFeedback(guestId, { overall, ratings, comments, reso
   return data;
 }
 
-export async function completeGuestCheckIn(reservationId) {
-  const { data, error } = await supabase.rpc('complete_guest_checkin', { p_reservation_id: reservationId });
+export async function completeGuestCheckIn(reservationId, details) {
+  const { data, error } = await supabase.rpc('complete_guest_checkin', {
+    p_reservation_id: reservationId,
+    p_arrival_time: details?.arrivalTime ?? null,
+    p_arrival_transport: details?.arrivalTransport ?? null,
+    p_special_requests: details?.specialRequests ?? null,
+    p_preferences: details?.arrivalPreferences ?? null,
+  });
   if (error) throw error;
   return mapReservation(data);
+}
+
+export async function completeRoomUpgrade(requestId, newRoomId) {
+  const { data, error } = await supabase.rpc('complete_room_upgrade', {
+    p_request_id: requestId,
+    p_new_room_id: newRoomId,
+  });
+  if (error) throw error;
+  return mapServiceRequest(data);
+}
+
+export async function loadSavedEvents(guestId) {
+  const { data, error } = await supabase.from('itinerary_saved_events').select('event_id').eq('guest_id', guestId);
+  if (error) throw error;
+  return (data || []).map((row) => row.event_id);
+}
+
+export async function saveEventToItinerary(guestId, eventId) {
+  const { error } = await supabase.from('itinerary_saved_events').insert({ guest_id: guestId, event_id: eventId });
+  if (error && error.code !== '23505') throw error; // 23505 = already saved, treat as success
+}
+
+export async function removeSavedEvent(guestId, eventId) {
+  const { error } = await supabase.from('itinerary_saved_events').delete().eq('guest_id', guestId).eq('event_id', eventId);
+  if (error) throw error;
 }
 
 export async function setHousekeepingPreference(reservationId, preference) {
