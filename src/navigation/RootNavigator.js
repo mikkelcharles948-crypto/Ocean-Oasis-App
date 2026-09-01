@@ -16,6 +16,7 @@ import BiometricLockScreen from '../screens/auth/BiometricLockScreen';
 import MainTabs from './MainTabs';
 import StaffTabs from './StaffTabs';
 import ManagementTabs from './ManagementTabs';
+import PlatformAdminTabs from './PlatformAdminTabs';
 import { useApp } from '../context/AppContext';
 import { colors } from '../theme/theme';
 
@@ -46,6 +47,7 @@ export default function RootNavigator() {
 
   const staffReady = experience === 'staff' && !!opsSession;
   const managementReady = experience === 'management' && !!opsSession;
+  const platformReady = experience === 'platform' && !!opsSession;
   const guestReady = experience === 'guest' && isAuthenticated;
 
   return (
@@ -61,6 +63,8 @@ export default function RootNavigator() {
           <Stack.Screen name="StaffMain" component={StaffTabs} />
         ) : managementReady ? (
           <Stack.Screen name="ManagementMain" component={ManagementTabs} />
+        ) : platformReady ? (
+          <Stack.Screen name="PlatformMain" component={PlatformAdminTabs} />
         ) : guestReady ? (
           <Stack.Screen name="Main" component={MainTabs} />
         ) : (

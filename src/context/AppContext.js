@@ -32,6 +32,11 @@ import {
   removeSavedEvent as removeRemoteSavedEvent,
 } from '../services/supabaseData';
 import {
+  loadHotels as loadRemoteHotels,
+  createHotel as createRemoteHotel,
+  updateHotel as updateRemoteHotel,
+} from '../services/supabasePlatformData';
+import {
   loadStaffData, loadStaffDirectory, writeAuditEntry,
   assignServiceRequest as assignRemoteServiceRequest,
   addServiceRequestNote as addRemoteServiceRequestNote,
@@ -215,6 +220,9 @@ export function AppProvider({ children }) {
   const [propertySettings, setPropertySettings] = useState({ lowRatingThreshold: 3 });
   const [staffDirectory, setStaffDirectory] = useState([]);
   const [allGuestsForStaff, setAllGuestsForStaff] = useState([]);
+  // MCX Technologies' own layer above every hotel — only ever populated for
+  // a signed-in PLATFORM_ADMIN, never mixed into staff/guest data loading.
+  const [hotels, setHotels] = useState([]);
   // The guest's own AI concierge thread — persisted so reopening the
   // Concierge tab resumes the same conversation instead of starting a new
   // one every time. Staff-side conversation list (all guests) is separate,
@@ -325,6 +333,40 @@ export function AppProvider({ children }) {
     }
   }, []);
 
+  const refreshPlatformData = useCallback(async () => {
+    setDataLoading(true);
+    setDataError(null);
+    try {
+      setHotels(await loadRemoteHotels());
+      return { ok: true };
+    } catch (error) {
+      setDataError('We could not load the platform data. Please retry.');
+      return { ok: false, error: 'Unable to load platform data.' };
+    } finally {
+      setDataLoading(false);
+    }
+  }, []);
+
+  const createHotel = useCallback(async (payload) => {
+    try {
+      const hotel = await createRemoteHotel(payload);
+      setHotels((prev) => [hotel, ...prev]);
+      return { ok: true, data: hotel };
+    } catch (error) {
+      return { ok: false, error: error?.message || 'Could not create this hotel.' };
+    }
+  }, []);
+
+  const updateHotel = useCallback(async (hotelId, changes) => {
+    try {
+      const hotel = await updateRemoteHotel(hotelId, changes);
+      setHotels((prev) => prev.map((h) => (h.id === hotelId ? hotel : h)));
+      return { ok: true, data: hotel };
+    } catch (error) {
+      return { ok: false, error: error?.message || 'Could not update this hotel.' };
+    }
+  }, []);
+
   // Every authenticated session is either a guest or a staff member — decided
   // by whether their profiles.role is set — and loads the matching data. A
   // single bare "always load guest data" effect would wipe staff dashboards
@@ -339,9 +381,10 @@ export function AppProvider({ children }) {
       const { data: profile } = await supabase.from('profiles').select('*').eq('id', authSession.user.id).maybeSingle();
       if (!mounted) return;
       if (profile?.role) {
-        setOpsSession({ id: profile.id, name: `${profile.first_name} ${profile.last_name}`.trim(), role: profile.role, department: profile.department });
+        setOpsSession({ id: profile.id, name: `${profile.first_name} ${profile.last_name}`.trim(), role: profile.role, department: profile.department, hotelId: profile.hotel_id });
         setExperience((current) => current || ROLE_SURFACES[profile.role]?.[0] || 'staff');
-        await refreshStaffData();
+        if (profile.role === 'PLATFORM_ADMIN') await refreshPlatformData();
+        else await refreshStaffData();
       } else {
         setOpsSession(null);
         setExperience((current) => current || 'guest');
@@ -352,7 +395,7 @@ export function AppProvider({ children }) {
     return () => {
       mounted = false;
     };
-  }, [authSession?.user?.id, refreshGuestData, refreshStaffData]);
+  }, [authSession?.user?.id, refreshGuestData, refreshStaffData, refreshPlatformData]);
 
   // Register this device's Expo push token once signed in, so emergency
   // broadcasts (and, in future, other alerts) reach this device even when
@@ -659,7 +702,7 @@ export function AppProvider({ children }) {
       setOpsSession(null);
       return { ok: false, error: 'This account does not have access to this dashboard.' };
     }
-    setOpsSession({ id: profile.id, name: `${profile.first_name} ${profile.last_name}`.trim(), role: profile.role, department: profile.department });
+    setOpsSession({ id: profile.id, name: `${profile.first_name} ${profile.last_name}`.trim(), role: profile.role, department: profile.department, hotelId: profile.hotel_id });
     return { ok: true };
   }, [canAccessSurface]);
 
@@ -1286,6 +1329,7 @@ export function AppProvider({ children }) {
       conciergeConversationId, sendConciergeMessage, loadConciergeThread,
       conciergeConversations, replyToConcierge, resolveConcierge, loadStaffConciergeThread,
       photoOverrides, updateActivityImage, updateEventImage, updatePromotionImage, updatePhotoOverride,
+      hotels, refreshPlatformData, createHotel, updateHotel,
     }),
     [
       hasOnboarded, completeOnboarding, onboardingChecked, experience, chooseExperience, exitToExperiencePicker,
@@ -1307,6 +1351,7 @@ export function AppProvider({ children }) {
       conciergeConversationId, sendConciergeMessage, loadConciergeThread,
       conciergeConversations, replyToConcierge, resolveConcierge, loadStaffConciergeThread,
       photoOverrides, updateActivityImage, updateEventImage, updatePromotionImage, updatePhotoOverride,
+      hotels, refreshPlatformData, createHotel, updateHotel,
     ]
   );
 

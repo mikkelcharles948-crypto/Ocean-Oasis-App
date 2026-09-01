@@ -53,10 +53,19 @@ export default function ExperienceSelectScreen({ navigation }) {
             ))}
           </View>
 
-          <View style={styles.footNote}>
+          {/* Long-press is the only entry point into the hidden MCX
+              Technologies platform-admin surface — deliberately not a
+              visible 4th card, since this is the owner's own layer above
+              every hotel, not something guests/hotel staff should ever see. */}
+          <TouchableOpacity
+            style={styles.footNote}
+            activeOpacity={1}
+            onLongPress={() => navigation.navigate('OpsLogin', { surface: 'platform' })}
+            delayLongPress={2000}
+          >
             <MaterialCommunityIcons name="information-outline" size={16} color={colors.sandLight} />
             <Text style={styles.footNoteText}>{t('experience.demoNote')}</Text>
-          </View>
+          </TouchableOpacity>
         </ScrollView>
       </SafeAreaView>
     </LinearGradient>

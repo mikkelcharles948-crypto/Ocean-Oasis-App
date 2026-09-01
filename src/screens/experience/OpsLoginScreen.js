@@ -44,11 +44,13 @@ export default function OpsLoginScreen({ route, navigation }) {
         </TouchableOpacity>
 
         <View style={styles.iconWrap}>
-          <Ionicons name={surface === 'staff' ? 'headset' : 'stats-chart'} size={26} color={colors.white} />
+          <Ionicons name={surface === 'staff' ? 'headset' : surface === 'platform' ? 'business' : 'stats-chart'} size={26} color={colors.white} />
         </View>
-        <Text style={styles.title}>{surface === 'staff' ? t('experience.staffSignIn') : t('experience.managementSignIn')}</Text>
+        <Text style={styles.title}>
+          {surface === 'staff' ? t('experience.staffSignIn') : surface === 'platform' ? 'MCX Technologies' : t('experience.managementSignIn')}
+        </Text>
         <Text style={styles.subtitle}>
-          {surface === 'staff' ? t('experience.staffSignInSub') : t('experience.managementSignInSub')}
+          {surface === 'staff' ? t('experience.staffSignInSub') : surface === 'platform' ? 'Platform administration' : t('experience.managementSignInSub')}
         </Text>
 
         <View style={{ marginTop: spacing.lg }}>
@@ -57,7 +59,12 @@ export default function OpsLoginScreen({ route, navigation }) {
           {error ? <Text style={styles.error}>{error}</Text> : null}
         </View>
 
-        <Button label={surface === 'staff' ? t('experience.enterStaffDashboard') : t('experience.enterManagementDashboard')} onPress={handleSignIn} loading={loading} style={{ marginTop: spacing.md }} />
+        <Button
+          label={surface === 'staff' ? t('experience.enterStaffDashboard') : surface === 'platform' ? 'Sign in' : t('experience.enterManagementDashboard')}
+          onPress={handleSignIn}
+          loading={loading}
+          style={{ marginTop: spacing.md }}
+        />
       </ScrollView>
     </SafeAreaView>
   );

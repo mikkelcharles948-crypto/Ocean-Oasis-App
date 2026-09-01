@@ -37,6 +37,7 @@
       "limitedSpots": "名额有限"
     },
     "roleLabels": {
+      "PLATFORM_ADMIN": "平台管理员",
       "SUPER_ADMIN": "超级管理员",
       "GENERAL_MANAGER": "总经理",
       "MANAGEMENT": "管理层",

@@ -37,6 +37,7 @@
       "limitedSpots": "Cupos limitados"
     },
     "roleLabels": {
+      "PLATFORM_ADMIN": "Administrador de plataforma",
       "SUPER_ADMIN": "Superadministrador",
       "GENERAL_MANAGER": "Director general",
       "MANAGEMENT": "Dirección",

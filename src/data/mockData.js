@@ -876,11 +876,12 @@ export const PAST_STAYS = [
 // -----------------------------------------------------------------------
 
 export const ROLES = [
-  'SUPER_ADMIN', 'GENERAL_MANAGER', 'MANAGEMENT', 'FRONT_DESK', 'CONCIERGE',
+  'PLATFORM_ADMIN', 'SUPER_ADMIN', 'GENERAL_MANAGER', 'MANAGEMENT', 'FRONT_DESK', 'CONCIERGE',
   'HOUSEKEEPING', 'MAINTENANCE', 'FOOD_AND_BEVERAGE', 'ACTIVITIES_MANAGER', 'MARKETING',
 ];
 
 export const ROLE_LABELS = {
+  PLATFORM_ADMIN: 'Platform Admin',
   SUPER_ADMIN: 'Super Admin',
   GENERAL_MANAGER: 'General Manager',
   MANAGEMENT: 'Management',
@@ -893,8 +894,11 @@ export const ROLE_LABELS = {
   MARKETING: 'Marketing',
 };
 
-// Which surfaces each role may sign into during this demo.
+// Which surfaces each role may sign into. PLATFORM_ADMIN is MCX
+// Technologies' own layer above every hotel — not a hotel role at all, kept
+// deliberately separate from SUPER_ADMIN (a hotel's own top role).
 export const ROLE_SURFACES = {
+  PLATFORM_ADMIN: ['platform'],
   SUPER_ADMIN: ['staff', 'management'],
   GENERAL_MANAGER: ['staff', 'management'],
   MANAGEMENT: ['management'],
