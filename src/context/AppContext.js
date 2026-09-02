@@ -15,6 +15,8 @@ import { supabase } from '../lib/supabase';
 import {
   loadGuestData,
   loadHotelBranding as loadRemoteHotelBranding,
+  loadActiveHotels as loadRemoteActiveHotels,
+  loadRoomTypesForHotel as loadRemoteRoomTypesForHotel,
   mapReservation,
   createServiceRequest as createRemoteServiceRequest,
   updateServiceRequest as updateRemoteServiceRequest,
@@ -37,6 +39,8 @@ import {
   loadHotels as loadRemoteHotels,
   createHotel as createRemoteHotel,
   updateHotel as updateRemoteHotel,
+  loadStaffProfiles as loadRemoteStaffProfiles,
+  assignStaff as assignRemoteStaff,
 } from '../services/supabasePlatformData';
 import {
   loadStaffData, loadStaffDirectory, writeAuditEntry,
@@ -239,6 +243,10 @@ export function AppProvider({ children }) {
   // colors are still the shared static palette — see loadHotelBranding's
   // comment for why full per-hotel reskinning needs a larger follow-up.
   const [hotelBranding, setHotelBranding] = useState(null);
+  // Every staff/management/platform-admin profile, cross-hotel — platform
+  // admin's own view for assigning staff to a hotel. Not loaded for
+  // regular staff/guests (see refreshPlatformData).
+  const [staffProfiles, setStaffProfiles] = useState([]);
   // The guest's own AI concierge thread — persisted so reopening the
   // Concierge tab resumes the same conversation instead of starting a new
   // one every time. Staff-side conversation list (all guests) is separate,
@@ -361,13 +369,25 @@ export function AppProvider({ children }) {
     setDataLoading(true);
     setDataError(null);
     try {
-      setHotels(await loadRemoteHotels());
+      const [hotelsData, profilesData] = await Promise.all([loadRemoteHotels(), loadRemoteStaffProfiles()]);
+      setHotels(hotelsData);
+      setStaffProfiles(profilesData);
       return { ok: true };
     } catch (error) {
       setDataError('We could not load the platform data. Please retry.');
       return { ok: false, error: 'Unable to load platform data.' };
     } finally {
       setDataLoading(false);
+    }
+  }, []);
+
+  const assignStaff = useCallback(async (profileId, role, hotelId, department) => {
+    try {
+      const profile = await assignRemoteStaff(profileId, role, hotelId, department);
+      setStaffProfiles((prev) => prev.map((p) => (p.id === profileId ? profile : p)));
+      return { ok: true, data: profile };
+    } catch (error) {
+      return { ok: false, error: error?.message || 'Could not update this staff assignment.' };
     }
   }, []);
 
@@ -1282,12 +1302,30 @@ export function AppProvider({ children }) {
   }, []);
 
   // Room-booking engine (guest self-service).
-  const searchAvailableRooms = useCallback(async (checkIn, checkOut, roomType, guests) => {
+  const searchAvailableRooms = useCallback(async (checkIn, checkOut, roomType, guests, hotelId) => {
     try {
-      const rooms = await searchRemoteAvailableRooms(checkIn, checkOut, roomType, guests);
+      const rooms = await searchRemoteAvailableRooms(checkIn, checkOut, roomType, guests, hotelId);
       return { ok: true, rooms };
     } catch (error) {
       return { ok: false, error: error?.message || 'Could not search room availability. Please try again.' };
+    }
+  }, []);
+
+  // Guest-facing hotel picker, shown before a self-service booking search —
+  // needed now that a single-hotel fallback isn't safe anymore.
+  const loadActiveHotels = useCallback(async () => {
+    try {
+      return { ok: true, hotels: await loadRemoteActiveHotels() };
+    } catch (error) {
+      return { ok: false, error: 'Could not load hotels. Please try again.', hotels: [] };
+    }
+  }, []);
+
+  const loadRoomTypesForHotel = useCallback(async (hotelId) => {
+    try {
+      return { ok: true, roomTypes: await loadRemoteRoomTypesForHotel(hotelId) };
+    } catch (error) {
+      return { ok: false, error: 'Could not load room types. Please try again.', roomTypes: [] };
     }
   }, []);
 
@@ -1305,24 +1343,26 @@ export function AppProvider({ children }) {
     }
   }, []);
 
-  // Room-booking engine (staff creating a booking on a guest's behalf).
+  // Room-booking engine (staff creating a booking on a guest's behalf) —
+  // always scoped to the signed-in staff member's own hotel, never a picker
+  // (a staff member only ever works at the one hotel they're assigned to).
   const searchAvailableRoomsStaff = useCallback(async (checkIn, checkOut, roomType, guests) => {
     try {
-      const rooms = await searchRemoteAvailableRoomsStaff(checkIn, checkOut, roomType, guests);
+      const rooms = await searchRemoteAvailableRoomsStaff(checkIn, checkOut, roomType, guests, opsSession?.hotelId);
       return { ok: true, rooms };
     } catch (error) {
       return { ok: false, error: error?.message || 'Could not search room availability. Please try again.' };
     }
-  }, []);
+  }, [opsSession?.hotelId]);
 
   const createReservationForGuest = useCallback(async (guestId, payload) => {
     try {
-      const reservation = await createRemoteReservationForGuest(guestId, payload);
+      const reservation = await createRemoteReservationForGuest(guestId, payload, opsSession?.hotelId);
       return { ok: true, reservation };
     } catch (error) {
       return { ok: false, error: error?.message || 'This room could not be booked. Please try again.' };
     }
-  }, []);
+  }, [opsSession?.hotelId]);
 
   const createGuestProfile = useCallback(async (payload) => {
     try {
@@ -1373,7 +1413,8 @@ export function AppProvider({ children }) {
       conciergeConversations, replyToConcierge, resolveConcierge, loadStaffConciergeThread,
       photoOverrides, updateActivityImage, updateEventImage, updatePromotionImage, updatePhotoOverride,
       hotels, refreshPlatformData, createHotel, updateHotel, hotelBranding,
-      destinations, diningVenues, roomTypes, conciergeFaqs,
+      destinations, diningVenues, roomTypes, conciergeFaqs, loadActiveHotels, loadRoomTypesForHotel,
+      staffProfiles, assignStaff,
     }),
     [
       hasOnboarded, completeOnboarding, onboardingChecked, experience, chooseExperience, exitToExperiencePicker,
@@ -1396,7 +1437,8 @@ export function AppProvider({ children }) {
       conciergeConversations, replyToConcierge, resolveConcierge, loadStaffConciergeThread,
       photoOverrides, updateActivityImage, updateEventImage, updatePromotionImage, updatePhotoOverride,
       hotels, refreshPlatformData, createHotel, updateHotel, hotelBranding,
-      destinations, diningVenues, roomTypes, conciergeFaqs,
+      destinations, diningVenues, roomTypes, conciergeFaqs, loadActiveHotels, loadRoomTypesForHotel,
+      staffProfiles, assignStaff,
     ]
   );
 

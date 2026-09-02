@@ -415,6 +415,10 @@
   "booking": {
     "newReservationTitle": "Réserver un nouveau séjour",
     "subtitle": "Recherchez les chambres disponibles pour une prochaine visite.",
+    "chooseHotelSub": "Dans quel hôtel souhaitez-vous séjourner ?",
+    "noHotelsTitle": "Aucun hôtel disponible",
+    "noHotelsSub": "Veuillez revenir bientôt.",
+    "changeHotel": "Changer",
     "checkInLabel": "Arrivée",
     "checkOutLabel": "Départ",
     "quickDates": {

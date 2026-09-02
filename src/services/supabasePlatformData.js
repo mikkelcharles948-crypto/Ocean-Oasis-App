@@ -46,6 +46,37 @@ export async function createHotel({ slug, name, legalName, address, phone, email
   return mapHotel(data);
 }
 
+export function mapPlatformProfile(row) {
+  if (!row) return null;
+  return {
+    id: row.id,
+    name: `${row.first_name || ''} ${row.last_name || ''}`.trim() || '(unnamed)',
+    role: row.role,
+    hotelId: row.hotel_id,
+    department: row.department,
+  };
+}
+
+// Every profile with a role set (i.e. every staff/management/platform-admin
+// account) — profiles_self_or_authorized_staff's `or is_platform_admin()`
+// clause (from Phase 1) is what actually allows this cross-hotel read.
+export async function loadStaffProfiles() {
+  const { data, error } = await supabase.from('profiles').select('*').not('role', 'is', null).order('first_name');
+  if (error) throw error;
+  return (data || []).map(mapPlatformProfile);
+}
+
+export async function assignStaff(profileId, role, hotelId, department) {
+  const { data, error } = await supabase.rpc('platform_assign_staff', {
+    p_profile_id: profileId,
+    p_role: role,
+    p_hotel_id: hotelId,
+    p_department: department || null,
+  });
+  if (error) throw error;
+  return mapPlatformProfile(data);
+}
+
 export async function updateHotel(hotelId, changes) {
   const payload = {};
   if (changes.name !== undefined) payload.name = changes.name;

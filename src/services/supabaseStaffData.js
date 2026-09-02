@@ -131,18 +131,19 @@ export async function writeAuditEntry(actorId, actorName, actorRole, action, met
   if (error) throw error;
 }
 
-export async function searchAvailableRoomsStaff(checkIn, checkOut, roomType, guests) {
+export async function searchAvailableRoomsStaff(checkIn, checkOut, roomType, guests, hotelId) {
   const { data, error } = await supabase.rpc('search_available_rooms', {
     p_check_in: checkIn,
     p_check_out: checkOut,
     p_room_type: roomType || null,
     p_guests: guests || 1,
+    p_hotel_id: hotelId || null,
   });
   if (error) throw error;
   return data || [];
 }
 
-export async function createReservationForGuest(guestId, { roomId, checkIn, checkOut, adults, children, specialRequests, arrivalTime }) {
+export async function createReservationForGuest(guestId, { roomId, checkIn, checkOut, adults, children, specialRequests, arrivalTime }, hotelId) {
   const { data, error } = await supabase.rpc('create_reservation', {
     p_room_id: roomId,
     p_check_in: checkIn,
@@ -152,6 +153,7 @@ export async function createReservationForGuest(guestId, { roomId, checkIn, chec
     p_special_requests: specialRequests || null,
     p_arrival_time: arrivalTime || null,
     p_guest_id: guestId,
+    p_hotel_id: hotelId || null,
   });
   if (error) throw error;
   return mapReservation(data);

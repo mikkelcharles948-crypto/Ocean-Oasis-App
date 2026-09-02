@@ -415,6 +415,10 @@
   "booking": {
     "newReservationTitle": "Book a New Stay",
     "subtitle": "Search available rooms for an upcoming visit.",
+    "chooseHotelSub": "Which hotel would you like to stay at?",
+    "noHotelsTitle": "No hotels available",
+    "noHotelsSub": "Please check back shortly.",
+    "changeHotel": "Change",
     "checkInLabel": "Check-in",
     "checkOutLabel": "Check-out",
     "quickDates": {

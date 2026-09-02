@@ -415,6 +415,10 @@
   "booking": {
     "newReservationTitle": "预订新的入住",
     "subtitle": "为您的下次入住查询可预订房间。",
+    "chooseHotelSub": "您想入住哪家酒店？",
+    "noHotelsTitle": "暂无可用酒店",
+    "noHotelsSub": "请稍后再查看。",
+    "changeHotel": "更改",
     "checkInLabel": "入住日期",
     "checkOutLabel": "退房日期",
     "quickDates": {

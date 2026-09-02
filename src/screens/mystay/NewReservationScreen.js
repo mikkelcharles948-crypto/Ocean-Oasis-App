@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useMemo, useState, useEffect } from 'react';
+import { View, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Text } from '../../components/AppText';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -59,9 +59,8 @@ function Stepper({ value, min, max, onChange, label }) {
   );
 }
 
-function RoomResultCard({ room, nights, checkIn, checkOut, adults, childrenCount, navigation }) {
+function RoomResultCard({ room, nights, checkIn, checkOut, adults, childrenCount, hotelId, roomTypes, navigation }) {
   const { t, i18n } = useTranslation();
-  const { roomTypes } = useApp();
   const tier = roomTypes.find((rt) => rt.name === room.type);
   const perNight = tier?.fromPricePerNight ?? null;
   const total = perNight != null ? perNight * nights : null;
@@ -98,16 +97,62 @@ function RoomResultCard({ room, nights, checkIn, checkOut, adults, childrenCount
       )}
       <Button
         label={t('booking.bookThisRoom')}
-        onPress={() => navigation.navigate('BookRoom', { room, checkIn, checkOut, nights, adults, children: childrenCount })}
+        onPress={() => navigation.navigate('BookRoom', { room, checkIn, checkOut, nights, adults, children: childrenCount, hotelId, roomTypes })}
         style={{ marginTop: spacing.md }}
       />
     </Card>
   );
 }
 
+function HotelPicker({ navigation, onSelect }) {
+  const { t } = useTranslation();
+  const { loadActiveHotels } = useApp();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [hotels, setHotels] = useState([]);
+
+  useEffect(() => {
+    loadActiveHotels().then((result) => {
+      setLoading(false);
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+      setHotels(result.hotels);
+    });
+  }, [loadActiveHotels]);
+
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
+      <ScreenHeader title={t('booking.newReservationTitle')} onBack={() => navigation.goBack()} />
+      <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: spacing.xxl }}>
+        <Text style={styles.subtitle}>{t('booking.chooseHotelSub')}</Text>
+        {loading ? (
+          <ActivityIndicator color={colors.deepOcean} style={{ marginTop: spacing.lg }} />
+        ) : error ? (
+          <Text style={styles.errorText}>{error}</Text>
+        ) : hotels.length === 0 ? (
+          <EmptyState icon="business-outline" title={t('booking.noHotelsTitle')} subtitle={t('booking.noHotelsSub')} />
+        ) : (
+          hotels.map((h) => (
+            <TouchableOpacity key={h.id} onPress={() => onSelect(h)}>
+              <Card style={{ marginBottom: spacing.sm }}>
+                <Text style={styles.resultRoom}>{h.name}</Text>
+                {h.address ? <Text style={styles.resultMeta}>{h.address}</Text> : null}
+              </Card>
+            </TouchableOpacity>
+          ))
+        )}
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
 export default function NewReservationScreen({ navigation }) {
   const { t } = useTranslation();
-  const { searchAvailableRooms, roomTypes } = useApp();
+  const { searchAvailableRooms, loadRoomTypesForHotel } = useApp();
+  const [hotel, setHotel] = useState(null);
+  const [hotelRoomTypes, setHotelRoomTypes] = useState([]);
 
   const quickDates = useMemo(() => {
     const now = new Date();
@@ -130,7 +175,7 @@ export default function NewReservationScreen({ navigation }) {
     setSearching(true);
     setSearchError('');
     setSearched(true);
-    const result = await searchAvailableRooms(checkIn, checkOut, roomType, adults + children);
+    const result = await searchAvailableRooms(checkIn, checkOut, roomType, adults + children, hotel.id);
     setSearching(false);
     if (!result.ok) {
       setSearchError(result.error || t('booking.searchError'));
@@ -140,11 +185,30 @@ export default function NewReservationScreen({ navigation }) {
     setResults(result.rooms || []);
   };
 
+  // A guest may be booking at a different hotel than the one their current
+  // stay/account is scoped to (or their very first-ever booking), so this
+  // fetches that specific hotel's own room types rather than using the
+  // guest's own-hotel `roomTypes` from context.
+  const handleSelectHotel = async (h) => {
+    setHotel(h);
+    const result = await loadRoomTypesForHotel(h.id);
+    if (result.ok) setHotelRoomTypes(result.roomTypes);
+  };
+
+  if (!hotel) {
+    return <HotelPicker navigation={navigation} onSelect={handleSelectHotel} />;
+  }
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.ivory }}>
-      <ScreenHeader title={t('booking.newReservationTitle')} onBack={() => navigation.goBack()} />
+      <ScreenHeader title={t('booking.newReservationTitle')} onBack={() => setHotel(null)} />
       <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: spacing.xxl }} keyboardShouldPersistTaps="handled">
         <Text style={styles.subtitle}>{t('booking.subtitle')}</Text>
+        <View style={styles.hotelBanner}>
+          <Ionicons name="business" size={16} color={colors.turquoiseDark} />
+          <Text style={styles.hotelBannerText}>{hotel.name}</Text>
+          <TouchableOpacity onPress={() => setHotel(null)}><Text style={styles.hotelBannerChange}>{t('booking.changeHotel')}</Text></TouchableOpacity>
+        </View>
 
         <Text style={styles.label}>{t('booking.checkInLabel')}</Text>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
@@ -173,7 +237,7 @@ export default function NewReservationScreen({ navigation }) {
         <Text style={styles.label}>{t('booking.roomTypeLabel')}</Text>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
           <Pill label={t('booking.anyRoomType')} selected={roomType === null} onPress={() => setRoomType(null)} />
-          {roomTypes.map((rt) => (
+          {hotelRoomTypes.map((rt) => (
             <Pill key={rt.id} label={rt.name} selected={roomType === rt.name} onPress={() => setRoomType(rt.name)} />
           ))}
         </View>
@@ -206,6 +270,8 @@ export default function NewReservationScreen({ navigation }) {
                     checkOut={checkOut}
                     adults={adults}
                     childrenCount={children}
+                    hotelId={hotel.id}
+                    roomTypes={hotelRoomTypes}
                     navigation={navigation}
                   />
                 ))}
@@ -222,6 +288,12 @@ export default function NewReservationScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   subtitle: { fontSize: 13.5, color: colors.slate, marginBottom: spacing.md, lineHeight: 19 },
+  hotelBanner: {
+    flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: colors.sandLight,
+    borderRadius: radius.md, paddingHorizontal: spacing.md, paddingVertical: spacing.sm, marginBottom: spacing.md,
+  },
+  hotelBannerText: { flex: 1, fontSize: 13.5, fontWeight: '700', color: colors.charcoal },
+  hotelBannerChange: { fontSize: 12.5, fontWeight: '600', color: colors.turquoiseDark },
   label: { ...typography.label, color: colors.slate, marginTop: spacing.lg, marginBottom: spacing.sm },
   dateSummary: { flexDirection: 'row', alignItems: 'center', marginTop: spacing.sm },
   dateSummaryText: { fontSize: 14, fontWeight: '700', color: colors.charcoal },

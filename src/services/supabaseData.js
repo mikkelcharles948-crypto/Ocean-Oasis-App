@@ -185,23 +185,44 @@ export async function bookActivity(activityId, guests) {
   return mapBooking(data);
 }
 
-export async function searchAvailableRooms(checkIn, checkOut, roomType, guests) {
+export async function searchAvailableRooms(checkIn, checkOut, roomType, guests, hotelId) {
   const { data, error } = await supabase.rpc('search_available_rooms', {
     p_check_in: checkIn,
     p_check_out: checkOut,
     p_room_type: roomType || null,
     p_guests: guests || 1,
+    p_hotel_id: hotelId || null,
   });
   if (error) throw error;
   return data || [];
 }
 
-export async function createReservation({ roomId, checkIn, checkOut, adults, children, specialRequests, arrivalTime }) {
+// Any ACTIVE hotel on the platform (hotels_browse_active RLS) — used to
+// let a guest pick which hotel they're booking at before searching rooms.
+export async function loadActiveHotels() {
+  const { data, error } = await supabase.from('hotels').select('id, name, address').eq('status', 'ACTIVE').order('name');
+  if (error) throw error;
+  return data || [];
+}
+
+// A specific hotel's room types/pricing for the booking flow, once a guest
+// has picked which hotel to book at — not the same as the `roomTypes` in
+// context, which is always the guest's own current hotel (room_types_
+// browse_active RLS lets any active hotel's types be read here, same
+// reasoning as loadActiveHotels).
+export async function loadRoomTypesForHotel(hotelId) {
+  const { data, error } = await supabase.from('room_types').select('*').eq('hotel_id', hotelId).order('tier');
+  if (error) throw error;
+  return (data || []).map(mapRoomType);
+}
+
+export async function createReservation({ roomId, checkIn, checkOut, adults, children, specialRequests, arrivalTime, hotelId }) {
   const { data, error } = await supabase.rpc('create_reservation', {
     p_room_id: roomId,
     p_check_in: checkIn,
     p_check_out: checkOut,
     p_adults: adults,
+    p_hotel_id: hotelId || null,
     p_children: children || 0,
     p_special_requests: specialRequests || null,
     p_arrival_time: arrivalTime || null,

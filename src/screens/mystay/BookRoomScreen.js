@@ -44,8 +44,8 @@ function Stepper({ value, min, max, onChange, label }) {
 
 export default function BookRoomScreen({ route, navigation }) {
   const { t } = useTranslation();
-  const { createReservation, roomTypes } = useApp();
-  const { room, checkIn, checkOut, nights, adults: initialAdults, children: initialChildren } = route.params || {};
+  const { createReservation } = useApp();
+  const { room, checkIn, checkOut, nights, adults: initialAdults, children: initialChildren, hotelId, roomTypes = [] } = route.params || {};
 
   const [adults, setAdults] = useState(initialAdults || 2);
   const [children, setChildren] = useState(initialChildren || 0);
@@ -71,7 +71,7 @@ export default function BookRoomScreen({ route, navigation }) {
   const handleConfirm = async () => {
     setLoading(true);
     setError('');
-    const result = await createReservation({ roomId: room.id, checkIn, checkOut, adults, children, specialRequests, arrivalTime });
+    const result = await createReservation({ roomId: room.id, checkIn, checkOut, adults, children, specialRequests, arrivalTime, hotelId });
     setLoading(false);
     if (!result.ok) {
       setError(result.error || t('booking.confirm.bookingError'));
