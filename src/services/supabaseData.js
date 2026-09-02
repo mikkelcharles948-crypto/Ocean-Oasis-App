@@ -207,13 +207,15 @@ export async function loadActiveHotels() {
 
 // A specific hotel's room types/pricing for the booking flow, once a guest
 // has picked which hotel to book at — not the same as the `roomTypes` in
-// context, which is always the guest's own current hotel (room_types_
-// browse_active RLS lets any active hotel's types be read here, same
-// reasoning as loadActiveHotels).
+// context, which is always the guest's own current hotel. Goes through the
+// browse_room_types() RPC rather than a broadened RLS policy on room_types
+// itself — a blanket "any active hotel" read policy would leak into every
+// other "my own hotel's room types" read too, since RLS policies are OR'd
+// (this cost a real cross-tenant leak in testing before being caught).
 export async function loadRoomTypesForHotel(hotelId) {
-  const { data, error } = await supabase.from('room_types').select('*').eq('hotel_id', hotelId).order('tier');
+  const { data, error } = await supabase.rpc('browse_room_types', { p_hotel_id: hotelId });
   if (error) throw error;
-  return (data || []).map(mapRoomType);
+  return (data || []).map(mapRoomType).sort((a, b) => a.tier - b.tier);
 }
 
 export async function createReservation({ roomId, checkIn, checkOut, adults, children, specialRequests, arrivalTime, hotelId }) {
