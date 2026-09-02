@@ -20,6 +20,8 @@ export function mapHotel(row) {
     currency: row.currency,
     theme: row.theme || {},
     status: row.status,
+    plan: row.plan,
+    mrr: Number(row.mrr || 0),
     createdAt: row.created_at,
   };
 }
@@ -88,7 +90,44 @@ export async function updateHotel(hotelId, changes) {
   if (changes.currency !== undefined) payload.currency = changes.currency;
   if (changes.status !== undefined) payload.status = changes.status;
   if (changes.theme !== undefined) payload.theme = changes.theme;
+  if (changes.plan !== undefined) payload.plan = changes.plan;
+  if (changes.mrr !== undefined) payload.mrr = changes.mrr;
   const { data, error } = await supabase.from('hotels').update(payload).eq('id', hotelId).select().single();
   if (error) throw error;
   return mapHotel(data);
+}
+
+// Cross-hotel rollups for the platform admin's Analytics screen — plain
+// reads + client-side aggregation rather than new RPCs, since
+// is_platform_admin() already grants full read access to every one of
+// these tables (confirmed during the Phase 6 audit) and the platform's
+// current scale (a handful of hotels) doesn't need server-side aggregation.
+export async function loadPlatformAnalytics() {
+  const [guestsRes, roomsRes, reservationsRes, profilesRes] = await Promise.all([
+    supabase.from('guests').select('id, hotel_id'),
+    supabase.from('rooms').select('id, hotel_id, status'),
+    supabase.from('reservations').select('id, hotel_id, status'),
+    supabase.from('profiles').select('id, hotel_id, role').not('role', 'is', null),
+  ]);
+  const failed = [guestsRes, roomsRes, reservationsRes, profilesRes].find((r) => r.error);
+  if (failed) throw failed.error;
+
+  const byHotel = {};
+  const bump = (hotelId, key, by = 1) => {
+    if (!hotelId) return;
+    byHotel[hotelId] = byHotel[hotelId] || { guests: 0, rooms: 0, occupiedRooms: 0, reservations: 0, activeReservations: 0, staff: 0 };
+    byHotel[hotelId][key] += by;
+  };
+  (guestsRes.data || []).forEach((g) => bump(g.hotel_id, 'guests'));
+  (roomsRes.data || []).forEach((r) => {
+    bump(r.hotel_id, 'rooms');
+    if (r.status?.startsWith('OCCUPIED')) bump(r.hotel_id, 'occupiedRooms');
+  });
+  (reservationsRes.data || []).forEach((r) => {
+    bump(r.hotel_id, 'reservations');
+    if (r.status === 'confirmed' || r.status === 'checked_in') bump(r.hotel_id, 'activeReservations');
+  });
+  (profilesRes.data || []).forEach((p) => bump(p.hotel_id, 'staff'));
+
+  return byHotel;
 }

@@ -4,16 +4,18 @@ import { Text } from '../../components/AppText';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
-import { Card, ScreenHeader, Badge, Field, EmptyState } from '../../components/UI';
+import { Card, ScreenHeader, Badge, Field, EmptyState, Pill } from '../../components/UI';
 import Button from '../../components/Button';
 import { colors, spacing, radius } from '../../theme/theme';
 import { useApp } from '../../context/AppContext';
 
 const STATUSES = ['ACTIVE', 'TRIAL', 'SUSPENDED'];
 const STATUS_TONE = { ACTIVE: 'success', TRIAL: 'warning', SUSPENDED: 'neutral' };
+const PLANS = ['trial', 'starter', 'growth', 'enterprise'];
+const PLAN_LABELS = { trial: 'Trial', starter: 'Starter', growth: 'Growth', enterprise: 'Enterprise' };
 const EMPTY_FORM = {
   name: '', slug: '', legalName: '', address: '', phone: '', email: '', timezone: 'UTC', currency: 'USD',
-  logoUrl: '', primaryColor: '', accentColor: '',
+  logoUrl: '', primaryColor: '', accentColor: '', plan: 'trial', mrr: '0',
 };
 
 // The one screen MCX Technologies (the owner's own company, above every
@@ -46,6 +48,7 @@ export default function PlatformHotelsScreen() {
       name: hotel.name, slug: hotel.slug, legalName: hotel.legalName, address: hotel.address,
       phone: hotel.phone, email: hotel.email, timezone: hotel.timezone, currency: hotel.currency,
       logoUrl: hotel.theme?.logoUrl || '', primaryColor: hotel.theme?.colors?.deepOcean || '', accentColor: hotel.theme?.colors?.turquoise || '',
+      plan: hotel.plan || 'trial', mrr: String(hotel.mrr ?? 0),
     });
     setError('');
     setShowForm(true);
@@ -67,7 +70,7 @@ export default function PlatformHotelsScreen() {
         },
       } : {}),
     };
-    const payload = { ...form, theme };
+    const payload = { ...form, theme, mrr: Number(form.mrr) || 0 };
     const result = editingId ? await updateHotel(editingId, payload) : await createHotel(payload);
     setSaving(false);
     if (!result?.ok) {
@@ -115,10 +118,14 @@ export default function PlatformHotelsScreen() {
             <TouchableOpacity onPress={() => openEdit(item)}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 }}>
                 <Text style={styles.name}>{item.name}</Text>
-                <Badge label={item.status} tone={STATUS_TONE[item.status]} />
+                <View style={{ flexDirection: 'row', gap: 6 }}>
+                  <Badge label={PLAN_LABELS[item.plan] || item.plan} tone="info" />
+                  <Badge label={item.status} tone={STATUS_TONE[item.status]} />
+                </View>
               </View>
               {item.address ? <Text style={styles.meta}>{item.address}</Text> : null}
               <Text style={styles.meta}>{item.slug} · {item.timezone} · {item.currency}</Text>
+              <Text style={styles.meta}>${(item.mrr || 0).toLocaleString()}/mo</Text>
             </TouchableOpacity>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: spacing.sm }}>
               {STATUSES.map((s) => (
@@ -159,6 +166,18 @@ export default function PlatformHotelsScreen() {
             <Field label="Logo URL" value={form.logoUrl} onChangeText={(v) => setForm({ ...form, logoUrl: v })} placeholder="https://…/logo.png" />
             <Field label="Primary color (hex)" value={form.primaryColor} onChangeText={(v) => setForm({ ...form, primaryColor: v })} placeholder="#0B3B45" />
             <Field label="Accent color (hex)" value={form.accentColor} onChangeText={(v) => setForm({ ...form, accentColor: v })} placeholder="#2FB8B0" />
+
+            {editingId && (
+              <>
+                <Text style={styles.sectionLabel}>Subscription</Text>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: spacing.md }}>
+                  {PLANS.map((p) => (
+                    <Pill key={p} label={PLAN_LABELS[p]} selected={form.plan === p} onPress={() => setForm({ ...form, plan: p })} />
+                  ))}
+                </View>
+                <Field label="MRR (USD/mo)" value={form.mrr} onChangeText={(v) => setForm({ ...form, mrr: v })} placeholder="899" keyboardType="numeric" />
+              </>
+            )}
             {error ? <Text style={styles.error}>{error}</Text> : null}
             <Button label={editingId ? 'Save changes' : 'Create hotel'} onPress={handleSave} loading={saving} style={{ marginTop: spacing.sm, marginBottom: spacing.xl }} />
           </ScrollView>

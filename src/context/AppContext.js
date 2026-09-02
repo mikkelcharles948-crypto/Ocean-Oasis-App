@@ -41,6 +41,7 @@ import {
   updateHotel as updateRemoteHotel,
   loadStaffProfiles as loadRemoteStaffProfiles,
   assignStaff as assignRemoteStaff,
+  loadPlatformAnalytics as loadRemotePlatformAnalytics,
 } from '../services/supabasePlatformData';
 import {
   loadStaffData, loadStaffDirectory, writeAuditEntry,
@@ -247,6 +248,8 @@ export function AppProvider({ children }) {
   // admin's own view for assigning staff to a hotel. Not loaded for
   // regular staff/guests (see refreshPlatformData).
   const [staffProfiles, setStaffProfiles] = useState([]);
+  // { [hotelId]: { guests, rooms, occupiedRooms, reservations, activeReservations, staff } }
+  const [platformAnalytics, setPlatformAnalytics] = useState({});
   // The guest's own AI concierge thread — persisted so reopening the
   // Concierge tab resumes the same conversation instead of starting a new
   // one every time. Staff-side conversation list (all guests) is separate,
@@ -369,9 +372,10 @@ export function AppProvider({ children }) {
     setDataLoading(true);
     setDataError(null);
     try {
-      const [hotelsData, profilesData] = await Promise.all([loadRemoteHotels(), loadRemoteStaffProfiles()]);
+      const [hotelsData, profilesData, analyticsData] = await Promise.all([loadRemoteHotels(), loadRemoteStaffProfiles(), loadRemotePlatformAnalytics()]);
       setHotels(hotelsData);
       setStaffProfiles(profilesData);
+      setPlatformAnalytics(analyticsData);
       return { ok: true };
     } catch (error) {
       setDataError('We could not load the platform data. Please retry.');
@@ -1414,7 +1418,7 @@ export function AppProvider({ children }) {
       photoOverrides, updateActivityImage, updateEventImage, updatePromotionImage, updatePhotoOverride,
       hotels, refreshPlatformData, createHotel, updateHotel, hotelBranding,
       destinations, diningVenues, roomTypes, conciergeFaqs, loadActiveHotels, loadRoomTypesForHotel,
-      staffProfiles, assignStaff,
+      staffProfiles, assignStaff, platformAnalytics,
     }),
     [
       hasOnboarded, completeOnboarding, onboardingChecked, experience, chooseExperience, exitToExperiencePicker,
@@ -1438,7 +1442,7 @@ export function AppProvider({ children }) {
       photoOverrides, updateActivityImage, updateEventImage, updatePromotionImage, updatePhotoOverride,
       hotels, refreshPlatformData, createHotel, updateHotel, hotelBranding,
       destinations, diningVenues, roomTypes, conciergeFaqs, loadActiveHotels, loadRoomTypesForHotel,
-      staffProfiles, assignStaff,
+      staffProfiles, assignStaff, platformAnalytics,
     ]
   );
 

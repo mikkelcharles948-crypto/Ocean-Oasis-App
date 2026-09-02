@@ -6,6 +6,7 @@ import { Text } from '../components/AppText';
 
 import PlatformHotelsScreen from '../screens/platform/PlatformHotelsScreen';
 import PlatformStaffScreen from '../screens/platform/PlatformStaffScreen';
+import PlatformAnalyticsScreen from '../screens/platform/PlatformAnalyticsScreen';
 import { colors } from '../theme/theme';
 import GlassSurface from '../components/GlassSurface';
 
@@ -19,11 +20,10 @@ function TabIcon({ name, focused }) {
   );
 }
 
-// MCX Technologies' own layer above every hotel. Two screens for this
-// phase (Hotels, Staff assignment) — analytics/subscriptions land here in
-// a later phase.
+// MCX Technologies' own layer above every hotel. Three screens: Hotels,
+// Staff assignment, and Analytics (cross-hotel rollups + subscriptions).
 export default function PlatformAdminTabs() {
-  const labelMap = { Hotels: 'Hotels', Staff: 'Staff' };
+  const labelMap = { Hotels: 'Hotels', Staff: 'Staff', Analytics: 'Analytics' };
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -34,13 +34,18 @@ export default function PlatformAdminTabs() {
         tabBarLabel: ({ color }) => <Text style={[styles.tabLabel, { color }]}>{labelMap[route.name]}</Text>,
         tabBarBackground: () => <GlassSurface style={styles.tabBarGlass} borderRadius={0} intensity={46} tint="light" />,
         tabBarIcon: ({ focused }) => {
-          const map = { Hotels: focused ? 'business' : 'business-outline', Staff: focused ? 'people' : 'people-outline' };
+          const map = {
+            Hotels: focused ? 'business' : 'business-outline',
+            Staff: focused ? 'people' : 'people-outline',
+            Analytics: focused ? 'stats-chart' : 'stats-chart-outline',
+          };
           return <TabIcon name={map[route.name]} focused={focused} />;
         },
       })}
     >
       <Tab.Screen name="Hotels" component={PlatformHotelsScreen} />
       <Tab.Screen name="Staff" component={PlatformStaffScreen} />
+      <Tab.Screen name="Analytics" component={PlatformAnalyticsScreen} />
     </Tab.Navigator>
   );
 }
