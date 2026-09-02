@@ -10,6 +10,7 @@ import Logo from '../../components/Logo';
 import Button from '../../components/Button';
 import ImagePlaceholder from '../../components/ImagePlaceholder';
 import { colors, spacing, shadow, typography } from '../../theme/theme';
+import { useApp } from '../../context/AppContext';
 
 // Real Dominica rainforest waterfall (Middleham Falls), used as the
 // first-impression hero backdrop on this auth "front door" screen —
@@ -19,6 +20,14 @@ const AUTH_HERO_URL = 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20
 
 export default function WelcomeAuthScreen({ navigation }) {
   const { t } = useTranslation();
+  const { hotelBranding, preAuthHotel, clearPreAuthHotel } = useApp();
+  const hotelName = hotelBranding?.name || preAuthHotel?.name;
+
+  const handleChangeHotel = () => {
+    clearPreAuthHotel();
+    navigation.navigate('HotelSelect');
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: colors.deepOcean2 }}>
       <ImagePlaceholder kind="waterfall" uri={AUTH_HERO_URL} style={StyleSheet.absoluteFill} borderRadius={0} />
@@ -44,8 +53,13 @@ export default function WelcomeAuthScreen({ navigation }) {
         <View style={{ flex: 1 }} />
 
         <View style={styles.card}>
-          <Text style={styles.title}>{t('auth.signInToOceanOasis')}</Text>
+          <Text style={styles.title}>{hotelName ? t('auth.signInToHotel', { name: hotelName }) : t('auth.signInToOceanOasis')}</Text>
           <Text style={styles.subtitle}>{t('auth.accessReservation')}</Text>
+          {preAuthHotel && (
+            <TouchableOpacity onPress={handleChangeHotel} style={{ alignSelf: 'center', marginTop: 6 }}>
+              <Text style={styles.changeHotel}>{t('auth.notMyHotel')}</Text>
+            </TouchableOpacity>
+          )}
 
           <Button label={t('auth.signIn')} onPress={() => navigation.navigate('SignIn')} style={{ marginTop: spacing.lg }} />
           <Button
@@ -97,6 +111,7 @@ const styles = StyleSheet.create({
   card: { backgroundColor: colors.white, borderRadius: 26, padding: spacing.lg, paddingTop: spacing.xl, ...shadow.float },
   title: { ...typography.heading, color: colors.charcoal, textAlign: 'center' },
   subtitle: { ...typography.bodySmall, color: colors.slate, textAlign: 'center', marginTop: 6 },
+  changeHotel: { fontSize: 12, fontWeight: '600', color: colors.turquoiseDark },
   divider: { flexDirection: 'row', alignItems: 'center', marginVertical: spacing.lg },
   line: { flex: 1, height: 1, backgroundColor: colors.border },
   dividerText: { marginHorizontal: 10, color: colors.slate, fontSize: 12 },

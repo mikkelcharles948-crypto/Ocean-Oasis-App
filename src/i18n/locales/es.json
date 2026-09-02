@@ -686,6 +686,8 @@
       "failed": "No se pudo verificar tu identidad."
     },
     "signInToOceanOasis": "Inicia sesión en Ocean Oasis",
+    "signInToHotel": "Inicia sesión en {{name}}",
+    "notMyHotel": "¿No es tu hotel? Cambiar",
     "accessReservation": "Accede a tu reserva, solicitudes y recomendaciones personalizadas.",
     "signIn": "Iniciar sesión",
     "createAccount": "Crear cuenta",

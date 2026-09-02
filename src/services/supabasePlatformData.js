@@ -11,6 +11,7 @@ export function mapHotel(row) {
   return {
     id: row.id,
     slug: row.slug,
+    code: row.code,
     name: row.name,
     legalName: row.legal_name || '',
     address: row.address || '',
@@ -32,9 +33,10 @@ export async function loadHotels() {
   return (data || []).map(mapHotel);
 }
 
-export async function createHotel({ slug, name, legalName, address, phone, email, timezone, currency, theme }) {
+export async function createHotel({ slug, code, name, legalName, address, phone, email, timezone, currency, theme }) {
   const { data, error } = await supabase.from('hotels').insert({
     slug: slug.trim(),
+    code: code.trim().toUpperCase(),
     name: name.trim(),
     legal_name: legalName || null,
     address: address || null,

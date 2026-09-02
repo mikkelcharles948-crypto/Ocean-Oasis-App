@@ -10,6 +10,7 @@ import * as Sentry from '@sentry/react-native';
 
 import { AppProvider, useApp } from './src/context/AppContext';
 import { AccessibilityProvider } from './src/context/AccessibilityContext';
+import { ThemeProvider, useTheme } from './src/theme/ThemeContext';
 import RootNavigator from './src/navigation/RootNavigator';
 
 // Keep the native splash up until the initial Supabase session check and the
@@ -53,6 +54,19 @@ Notifications.setNotificationHandler({
 // has to handle keyboard avoidance itself — focusing any TextInput anywhere
 // in the app automatically shifts the visible area up so the field being
 // typed into is never hidden behind the keyboard.
+// Applies the signed-in guest/staff member's hotel brand colors (or the
+// pre-auth picked hotel's, for a guest who hasn't signed in yet) to the
+// live ThemeContext — the one bridge point between AppContext (which knows
+// which hotel) and ThemeContext (which makes that hotel's colors reactive).
+function ThemeBridge() {
+  const { hotelBranding } = useApp();
+  const { applyHotelTheme } = useTheme();
+  useEffect(() => {
+    applyHotelTheme(hotelBranding?.theme);
+  }, [hotelBranding, applyHotelTheme]);
+  return null;
+}
+
 function AppContent() {
   const { authLoading, onboardingChecked } = useApp();
   useEffect(() => {
@@ -60,20 +74,27 @@ function AppContent() {
       SplashScreen.hideAsync().catch(() => {});
     }
   }, [authLoading, onboardingChecked]);
-  return <RootNavigator />;
+  return (
+    <>
+      <ThemeBridge />
+      <RootNavigator />
+    </>
+  );
 }
 
 function App() {
   return (
     <SafeAreaProvider>
-      <AppProvider>
-        <AccessibilityProvider>
-          <StatusBar style="dark" />
-          <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-            <AppContent />
-          </KeyboardAvoidingView>
-        </AccessibilityProvider>
-      </AppProvider>
+      <ThemeProvider>
+        <AppProvider>
+          <AccessibilityProvider>
+            <StatusBar style="dark" />
+            <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+              <AppContent />
+            </KeyboardAvoidingView>
+          </AccessibilityProvider>
+        </AppProvider>
+      </ThemeProvider>
     </SafeAreaProvider>
   );
 }

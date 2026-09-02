@@ -15,6 +15,7 @@ import ProfileDetailsScreen from '../screens/profile/ProfileDetailsScreen';
 import PreferencesScreen from '../screens/profile/PreferencesScreen';
 import { addSharedScreens } from './sharedScreens';
 import { colors } from '../theme/theme';
+import { useTheme } from '../theme/ThemeContext';
 import { useApp } from '../context/AppContext';
 import GlassSurface from '../components/GlassSurface';
 import Logo from '../components/Logo';
@@ -74,7 +75,7 @@ function ProfileStackNav() {
   );
 }
 
-function TabIcon({ name, focused }) {
+function TabIcon({ name, focused, colors }) {
   return (
     <View style={styles.iconWrap}>
       <Ionicons name={name} size={22} color={focused ? colors.deepOcean : colors.slate} />
@@ -84,6 +85,7 @@ function TabIcon({ name, focused }) {
 
 export default function MainTabs() {
   const { unreadNotificationCount } = useApp();
+  const { colors: themeColors } = useTheme();
   const { t } = useTranslation();
   // Translated tab labels (previously hardcoded to the English route name,
   // which meant this tab bar silently stayed in English no matter which
@@ -106,8 +108,8 @@ export default function MainTabs() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarActiveTintColor: colors.deepOcean,
-        tabBarInactiveTintColor: colors.slate,
+        tabBarActiveTintColor: themeColors.deepOcean,
+        tabBarInactiveTintColor: themeColors.slate,
         tabBarStyle: styles.tabBar,
         tabBarLabelStyle: styles.tabLabel,
         tabBarLabel: renderTabLabel(route.name),
@@ -126,7 +128,7 @@ export default function MainTabs() {
             Requests: focused ? 'chatbox-ellipses' : 'chatbox-ellipses-outline',
             Profile: focused ? 'person-circle' : 'person-circle-outline',
           };
-          return <TabIcon name={map[route.name]} focused={focused} />;
+          return <TabIcon name={map[route.name]} focused={focused} colors={themeColors} />;
         },
       })}
     >

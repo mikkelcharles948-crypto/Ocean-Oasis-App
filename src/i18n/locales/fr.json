@@ -679,6 +679,8 @@
   },
   "auth": {
     "signInToOceanOasis": "Connectez-vous à Ocean Oasis",
+    "signInToHotel": "Connectez-vous à {{name}}",
+    "notMyHotel": "Pas le bon hôtel ? Changer",
     "accessReservation": "Accédez à votre réservation, vos demandes et vos recommandations personnalisées.",
     "signIn": "Se connecter",
     "createAccount": "Créer un compte",

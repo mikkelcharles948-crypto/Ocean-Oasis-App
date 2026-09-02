@@ -679,6 +679,8 @@
   },
   "auth": {
     "signInToOceanOasis": "登录 Ocean Oasis",
+    "signInToHotel": "登录 {{name}}",
+    "notMyHotel": "不是这家酒店？更改",
     "accessReservation": "查看您的预订、服务请求及个性化推荐。",
     "signIn": "登录",
     "createAccount": "创建账户",

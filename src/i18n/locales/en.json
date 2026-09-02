@@ -686,6 +686,8 @@
       "failed": "Could not verify your identity."
     },
     "signInToOceanOasis": "Sign in to Ocean Oasis",
+    "signInToHotel": "Sign in to {{name}}",
+    "notMyHotel": "Not the right hotel? Change",
     "accessReservation": "Access your reservation, requests, and personalized recommendations.",
     "signIn": "Sign In",
     "createAccount": "Create Account",

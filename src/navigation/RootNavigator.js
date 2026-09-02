@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import ExperienceSelectScreen from '../screens/experience/ExperienceSelectScreen';
+import HotelSelectScreen from '../screens/experience/HotelSelectScreen';
 import OpsLoginScreen from '../screens/experience/OpsLoginScreen';
 import OnboardingScreen from '../screens/onboarding/OnboardingScreen';
 import WelcomeAuthScreen from '../screens/auth/WelcomeAuthScreen';
@@ -70,6 +71,7 @@ export default function RootNavigator() {
         ) : (
           <>
             <Stack.Screen name="ExperienceSelect" component={ExperienceSelectScreen} />
+            <Stack.Screen name="HotelSelect" component={HotelSelectScreen} />
             <Stack.Screen name="OpsLogin" component={OpsLoginScreen} />
             <Stack.Screen name="WelcomeAuth" component={WelcomeAuthScreen} />
             <Stack.Screen name="SignIn" component={SignInScreen} />

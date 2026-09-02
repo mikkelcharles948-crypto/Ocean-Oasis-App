@@ -14,7 +14,7 @@ const STATUS_TONE = { ACTIVE: 'success', TRIAL: 'warning', SUSPENDED: 'neutral' 
 const PLANS = ['trial', 'starter', 'growth', 'enterprise'];
 const PLAN_LABELS = { trial: 'Trial', starter: 'Starter', growth: 'Growth', enterprise: 'Enterprise' };
 const EMPTY_FORM = {
-  name: '', slug: '', legalName: '', address: '', phone: '', email: '', timezone: 'UTC', currency: 'USD',
+  name: '', slug: '', code: '', legalName: '', address: '', phone: '', email: '', timezone: 'UTC', currency: 'USD',
   logoUrl: '', primaryColor: '', accentColor: '', plan: 'trial', mrr: '0',
 };
 
@@ -55,8 +55,8 @@ export default function PlatformHotelsScreen() {
   };
 
   const handleSave = async () => {
-    if (!form.name.trim() || (!editingId && !form.slug.trim())) {
-      setError('Name (and slug, for a new hotel) are required.');
+    if (!form.name.trim() || (!editingId && (!form.slug.trim() || !form.code.trim()))) {
+      setError('Name (and slug + code, for a new hotel) are required.');
       return;
     }
     setSaving(true);
@@ -149,7 +149,10 @@ export default function PlatformHotelsScreen() {
             </View>
             <Field label="Name" value={form.name} onChangeText={(v) => setForm({ ...form, name: v })} placeholder="Ocean Oasis" />
             {!editingId && (
-              <Field label="Slug" value={form.slug} onChangeText={(v) => setForm({ ...form, slug: v })} placeholder="ocean-oasis-dm" />
+              <>
+                <Field label="Slug" value={form.slug} onChangeText={(v) => setForm({ ...form, slug: v })} placeholder="ocean-oasis-dm" />
+                <Field label="Code (used in confirmation numbers, e.g. FY-1002)" value={form.code} onChangeText={(v) => setForm({ ...form, code: v })} placeholder="FY" />
+              </>
             )}
             <Field label="Legal name" value={form.legalName} onChangeText={(v) => setForm({ ...form, legalName: v })} placeholder="Ocean Oasis Hotel Dominica" />
             <Field label="Address" value={form.address} onChangeText={(v) => setForm({ ...form, address: v })} placeholder="Castle Comfort, Roseau, Dominica" />

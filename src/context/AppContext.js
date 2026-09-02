@@ -78,6 +78,7 @@ import {
 const BIOMETRIC_PREF_KEY = 'oo_biometric_enabled';
 const ONBOARDING_STORAGE_KEY = 'oo_has_onboarded';
 const CONCIERGE_CONVERSATION_KEY = 'oo_concierge_conversation_id';
+const PRE_AUTH_HOTEL_KEY = 'oo_pre_auth_hotel';
 // Where Supabase email links (magic-link sign-in, password reset) send the
 // user back to. Must also be added to the redirect URL allowlist in the
 // Supabase dashboard (Authentication -> URL Configuration) — a build-time
@@ -132,6 +133,42 @@ export function AppProvider({ children }) {
     AsyncStorage.getItem(CONCIERGE_CONVERSATION_KEY).then((value) => {
       if (value) setConciergeConversationId(value);
     }).catch(() => {});
+  }, []);
+
+  // The hotel a guest picks before they've even signed in — the very first
+  // decision point in the guest experience now, not something buried
+  // inside an already-authenticated "New Reservation" flow. Drives the
+  // theme (via hotelBranding below) and which hotel a brand-new signup
+  // gets attached to. Once the guest actually has a real reservation,
+  // guest.hotelId (their real, DB-backed hotel) takes over as the source
+  // of truth — this is only ever the pre-auth stand-in.
+  const [preAuthHotel, setPreAuthHotel] = useState(null);
+  const [preAuthHotelChecked, setPreAuthHotelChecked] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    AsyncStorage.getItem(PRE_AUTH_HOTEL_KEY).then((value) => {
+      if (!mounted) return;
+      if (value) {
+        try { setPreAuthHotel(JSON.parse(value)); } catch (error) { /* ignore corrupt value */ }
+      }
+      setPreAuthHotelChecked(true);
+    }).catch(() => {
+      if (mounted) setPreAuthHotelChecked(true);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const selectPreAuthHotel = useCallback((hotel) => {
+    setPreAuthHotel(hotel);
+    AsyncStorage.setItem(PRE_AUTH_HOTEL_KEY, JSON.stringify(hotel)).catch(() => {});
+  }, []);
+
+  const clearPreAuthHotel = useCallback(() => {
+    setPreAuthHotel(null);
+    AsyncStorage.removeItem(PRE_AUTH_HOTEL_KEY).catch(() => {});
   }, []);
 
   // Which top-level experience is active: null (picker), 'guest', 'staff', 'management'.
@@ -445,12 +482,13 @@ export function AppProvider({ children }) {
     };
   }, [authSession?.user?.id, refreshGuestData, refreshStaffData, refreshPlatformData]);
 
-  // Resolves once the signed-in guest or staff member's hotel is known
-  // (guest.hotelId is set the moment they have a reservation; opsSession.
-  // hotelId comes from their profiles row). A platform admin has neither,
-  // so this simply stays null for them.
+  // Resolves once the guest/staff member's hotel is known — in priority
+  // order: opsSession.hotelId (staff, from their profiles row), then
+  // guest.hotelId (a real reservation), then preAuthHotel (picked before
+  // signing in, or signed in but not booked yet). A platform admin has
+  // none of these, so this simply stays null for them.
   useEffect(() => {
-    const hotelId = opsSession?.hotelId || guest?.hotelId;
+    const hotelId = opsSession?.hotelId || guest?.hotelId || preAuthHotel?.id;
     if (!hotelId) {
       setHotelBranding(null);
       return;
@@ -462,7 +500,7 @@ export function AppProvider({ children }) {
     return () => {
       mounted = false;
     };
-  }, [opsSession?.hotelId, guest?.hotelId]);
+  }, [opsSession?.hotelId, guest?.hotelId, preAuthHotel?.id]);
 
   // Register this device's Expo push token once signed in, so emergency
   // broadcasts (and, in future, other alerts) reach this device even when
@@ -688,13 +726,16 @@ export function AppProvider({ children }) {
     // into the new auth user's metadata, so the handle_new_user() DB
     // trigger can seed them onto the real guests row at creation time —
     // otherwise they were silently discarded the moment a guest signed up.
+    // Also carries whichever hotel was picked pre-auth, so a brand-new
+    // guest's account is tied to that hotel immediately rather than
+    // waiting for their first reservation to establish it.
     const { data, error } = await supabase.auth.signUp({
       email: email.trim(),
       password,
-      options: { data: { first_name: firstName, last_name: lastName, interests: guest.interests || [] } },
+      options: { data: { first_name: firstName, last_name: lastName, interests: guest.interests || [], hotel_id: preAuthHotel?.id || null } },
     });
     return { ok: !error, error: error?.message, data };
-  }, [guest.interests]);
+  }, [guest.interests, preAuthHotel?.id]);
   const sendMagicLink = useCallback(async (email) => {
     if (!email?.trim()) return { ok: false, error: 'Enter your email address.' };
     const { error } = await supabase.auth.signInWithOtp({
@@ -1419,6 +1460,7 @@ export function AppProvider({ children }) {
       hotels, refreshPlatformData, createHotel, updateHotel, hotelBranding,
       destinations, diningVenues, roomTypes, conciergeFaqs, loadActiveHotels, loadRoomTypesForHotel,
       staffProfiles, assignStaff, platformAnalytics,
+      preAuthHotel, preAuthHotelChecked, selectPreAuthHotel, clearPreAuthHotel,
     }),
     [
       hasOnboarded, completeOnboarding, onboardingChecked, experience, chooseExperience, exitToExperiencePicker,
@@ -1443,6 +1485,7 @@ export function AppProvider({ children }) {
       hotels, refreshPlatformData, createHotel, updateHotel, hotelBranding,
       destinations, diningVenues, roomTypes, conciergeFaqs, loadActiveHotels, loadRoomTypesForHotel,
       staffProfiles, assignStaff, platformAnalytics,
+      preAuthHotel, preAuthHotelChecked, selectPreAuthHotel, clearPreAuthHotel,
     ]
   );
 

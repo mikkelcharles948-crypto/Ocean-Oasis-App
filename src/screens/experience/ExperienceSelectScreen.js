@@ -18,12 +18,17 @@ const OPTIONS = [
 
 export default function ExperienceSelectScreen({ navigation }) {
   const { t } = useTranslation();
-  const { chooseExperience } = useApp();
+  const { chooseExperience, preAuthHotel } = useApp();
 
   const handleChoose = (key) => {
     chooseExperience(key);
-    if (key === 'guest') navigation.navigate('WelcomeAuth');
-    else navigation.navigate('OpsLogin', { surface: key });
+    if (key === 'guest') {
+      // A returning guest who already picked a hotel last time skips
+      // straight back to sign-in instead of being asked again every launch.
+      navigation.navigate(preAuthHotel ? 'WelcomeAuth' : 'HotelSelect');
+    } else {
+      navigation.navigate('OpsLogin', { surface: key });
+    }
   };
 
   return (
