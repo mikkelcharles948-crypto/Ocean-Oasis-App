@@ -29,7 +29,7 @@ function Row({ icon, label, onPress, danger }) {
 
 export default function ProfileScreen({ navigation }) {
   const { t, i18n } = useTranslation();
-  const { guest, signOut, biometricSupported, biometricEnabled, enableBiometricLogin, disableBiometricLogin } = useApp();
+  const { guest, signOut, biometricSupported, biometricEnabled, enableBiometricLogin, disableBiometricLogin, hotelBranding, clearPreAuthHotel } = useApp();
 
   const currentLanguageName = t(`profile.languageNames.${i18n.language}`, { defaultValue: t('profile.languageNames.en') });
 
@@ -46,6 +46,24 @@ export default function ProfileScreen({ navigation }) {
     Alert.alert(t('profile.signOutTitle'), t('profile.signOutMsg'), [
       { text: t('profile.cancel'), style: 'cancel' },
       { text: t('profile.logOut'), style: 'destructive', onPress: signOut },
+    ]);
+  };
+
+  // A guest's real identity is tied to one hotel (via their reservation),
+  // so "switching" isn't a live in-session toggle — it's signing out and
+  // picking again, same as any other guest starting fresh. Clears the
+  // pre-auth pick too, so Experience Select's Guest button goes back
+  // through HotelSelect rather than skipping straight to the old hotel.
+  const confirmSwitchHotel = () => {
+    Alert.alert(t('profile.switchHotelTitle'), t('profile.switchHotelMsg'), [
+      { text: t('profile.cancel'), style: 'cancel' },
+      {
+        text: t('profile.switchHotelConfirm'),
+        onPress: () => {
+          clearPreAuthHotel();
+          signOut();
+        },
+      },
     ]);
   };
 
@@ -131,6 +149,15 @@ export default function ProfileScreen({ navigation }) {
           <Divider />
           <Row icon="shield-checkmark-outline" label={t('profile.privacyPolicy')} onPress={() => navigation.navigate('PrivacyPolicy')} />
         </Card>
+
+        {hotelBranding?.name && (
+          <>
+            <SectionLabel text={t('profile.hotel')} />
+            <Card style={{ paddingVertical: 0 }}>
+              <Row icon="business-outline" label={t('profile.switchHotelRow', { name: hotelBranding.name })} onPress={confirmSwitchHotel} />
+            </Card>
+          </>
+        )}
 
         <Card style={{ marginTop: spacing.md, paddingVertical: 0 }}>
           <Row icon="log-out-outline" label={t('profile.logOut')} onPress={confirmSignOut} danger />

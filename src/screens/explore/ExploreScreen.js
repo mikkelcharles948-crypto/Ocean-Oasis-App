@@ -6,7 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
-import { Pill } from '../../components/UI';
+import { Pill, EmptyState } from '../../components/UI';
 import ImagePlaceholder from '../../components/ImagePlaceholder';
 import AnimatedPressable from '../../components/AnimatedPressable';
 import GlassSurface from '../../components/GlassSurface';
@@ -144,11 +144,14 @@ export default function ExploreScreen({ navigation }) {
       <FlatList
         data={filtered}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.md, gap: spacing.lg }}
+        contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.md, gap: spacing.lg, flexGrow: 1 }}
         renderItem={renderItem}
         initialNumToRender={4}
         maxToRenderPerBatch={4}
         windowSize={5}
+        ListEmptyComponent={
+          <EmptyState icon="compass-outline" title={t('explore.emptyTitle')} subtitle={t('explore.emptySub')} />
+        }
       />
     </SafeAreaView>
   );

@@ -110,9 +110,9 @@ export async function loadPhotoOverrides() {
 // StyleSheet.create, not re-readable per hotel yet.
 export async function loadHotelBranding(hotelId) {
   if (!hotelId) return null;
-  const { data, error } = await supabase.from('hotels').select('id, name, theme').eq('id', hotelId).maybeSingle();
+  const { data, error } = await supabase.from('hotels').select('id, name, theme, features').eq('id', hotelId).maybeSingle();
   if (error) throw error;
-  return data ? { id: data.id, name: data.name, theme: data.theme || {} } : null;
+  return data ? { id: data.id, name: data.name, theme: data.theme || {}, features: data.features || {} } : null;
 }
 
 export async function loadGuestData(userId) {

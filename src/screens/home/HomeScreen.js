@@ -67,17 +67,26 @@ function EntranceItem({ delayMs = 0, style, children }) {
 // alone until a real video asset is sourced.
 const HOME_HERO_URL = 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Soufri%C3%A8re_Bay%2C_Dominica_008.JPG/1280px-Soufri%C3%A8re_Bay%2C_Dominica_008.JPG';
 
+// `feature`: the hotels.features flag gating this link, or null for links
+// every hotel always has (requesting something, reaching reception,
+// leaving feedback aren't optional services). A hotel with dining/
+// concierge turned off simply doesn't show that link — no dead link,
+// no empty section.
 const QUICK_LINKS = [
-  { key: 'requestSomething', icon: 'chatbubble-ellipses-outline', route: 'NewRequest' },
-  { key: 'dining', icon: 'restaurant-outline', route: 'Dining' },
-  { key: 'concierge', icon: 'sparkles-outline', route: 'Concierge' },
-  { key: 'contactReception', icon: 'call-outline', route: 'ContactReception' },
-  { key: 'feedback', icon: 'star-outline', route: 'Feedback' },
+  { key: 'requestSomething', icon: 'chatbubble-ellipses-outline', route: 'NewRequest', feature: null },
+  { key: 'dining', icon: 'restaurant-outline', route: 'Dining', feature: 'dining' },
+  { key: 'concierge', icon: 'sparkles-outline', route: 'Concierge', feature: 'concierge' },
+  { key: 'contactReception', icon: 'call-outline', route: 'ContactReception', feature: null },
+  { key: 'feedback', icon: 'star-outline', route: 'Feedback', feature: null },
 ];
 
 export default function HomeScreen({ navigation }) {
   const { t, i18n } = useTranslation();
-  const { guest, reservation, room, unreadNotificationCount, events, activities, promotions } = useApp();
+  const { guest, reservation, room, unreadNotificationCount, events, activities, promotions, hotelBranding } = useApp();
+  const visibleQuickLinks = useMemo(
+    () => QUICK_LINKS.filter((link) => !link.feature || hotelBranding?.features?.[link.feature] !== false),
+    [hotelBranding?.features]
+  );
 
   const today = '2026-08-15';
   const nightsRemaining = daysBetween(today, reservation.checkOut);
@@ -228,7 +237,7 @@ export default function HomeScreen({ navigation }) {
               </AnimatedPressable>
 
               <View style={styles.quickLinksRow}>
-                {QUICK_LINKS.map((link) => (
+                {visibleQuickLinks.map((link) => (
                   <AnimatedPressable
                     key={link.key}
                     onPress={() => navigation.navigate(link.route)}
